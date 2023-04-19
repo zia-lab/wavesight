@@ -4,8 +4,10 @@ import numpy as np
 from scipy import special
 from scipy.optimize import root_scalar
 from matplotlib import pyplot as plt
+from fieldgen import * 
 
-def round2sigfigs(x, p):
+
+def round2sigfigs(x, p): 
     '''
     Round x to p significant figures.
 
@@ -16,7 +18,7 @@ def round2sigfigs(x, p):
     mags = 10 ** (p - 1 - np.floor(np.log10(x_positive)))
     return np.round(x * mags) / mags
 
-def tmfungen(λfree, n0, n1, a):
+def tmfungen(λfree, n1, n2, a):
     '''
     This function returns the eigenvalue function for TM(0,m) modes.
 
@@ -27,10 +29,10 @@ def tmfungen(λfree, n0, n1, a):
     ----------
     λfree : float
         Free space wavelength in microns.
-    n0 : float
-        Cladding refractive index.
     n1 : float
         Core refractive index.
+    n2 : float
+        Cladding refractive index.
     a : float
         Core radius in microns.
 
@@ -38,12 +40,12 @@ def tmfungen(λfree, n0, n1, a):
     -------
     tm : function
     '''
-    n = 0
-    def tm(γ):
-        return  (n1**2*(special.jv(-1 + n,a*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + n,a*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2))))/(2.*a*n0**2*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2)*special.jv(n,a*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2))) + (-special.kn(-1 + n,a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2)) - special.kn(1 + n,a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2)))/(2.*a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2)*special.kn(n,a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2)))
+    m = 0
+    def tm(kz):
+        return (n1**2*(special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))))/(2.*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))) + (n2**2*(-special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) - special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))))/(2.*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))
     return tm
 
-def tefungen(λfree, n0, n1, a):
+def tefungen(λfree, n1, n2, a):
     '''
     This function returns the eigenvalue function for TE(0,m) modes.
 
@@ -54,10 +56,10 @@ def tefungen(λfree, n0, n1, a):
     ----------
     λfree : float
         Free space wavelength in microns.
-    n0 : float
-        Cladding refractive index.
     n1 : float
         Core refractive index.
+    n2 : float
+        Cladding refractive index.
     a : float
         Core radius in microns.
 
@@ -65,12 +67,12 @@ def tefungen(λfree, n0, n1, a):
     -------
     te : function
     '''
-    n = 0
-    def te(γ):
-        return (special.jv(-1 + n,a*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + n,a*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2)))/(2.*a*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2)*special.jv(n,a*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2))) + (-special.kn(-1 + n,a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2)) - special.kn(1 + n,a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2)))/(2.*a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2)*special.kn(n,a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2)))
+    m = 0
+    def te(kz):
+        return (special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)))/(2.*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))) + (-special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) - special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))/(2.*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))
     return te
 
-def hefungen(λfree, n, n0, n1, a):
+def hefungen(λfree, m, n1, n2, a):
     '''
     This function returns the eigenvalue function for HE(n,m) modes.
 
@@ -81,21 +83,21 @@ def hefungen(λfree, n, n0, n1, a):
     ----------
     λfree : float
         Free space wavelength in microns.
-    n0 : float
-        Cladding refractive index.
     n1 : float
         Core refractive index.
+    n2 : float
+        Cladding refractive index.
     a : float
         Core radius in microns.
-    n : int
+    m : int
         Order of the HE mode.
 
     Returns
     -------
     he : function
     '''
-    def he(γ):
-        return  -((n**2*(1/(γ**2 - (4*n0**2*np.pi**2)/λfree**2) + 1/(-γ**2 + (4*n1**2*np.pi**2)/λfree**2))*(1/(a**2*(γ**2 - (4*n0**2*np.pi**2)/λfree**2)) + n1**2/(a**2*n0**2*(-γ**2 + (4*n1**2*np.pi**2)/λfree**2))))/a**2) + ((special.jv(-1 + n,a*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + n,a*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2)))/(2.*a*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2)*special.jv(n,a*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2))) + (-special.kn(-1 + n,a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2)) - special.kn(1 + n,a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2)))/(2.*a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2)*special.kn(n,a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2))))*((n1**2*(special.jv(-1 + n,a*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + n,a*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2))))/(2.*a*n0**2*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2)*special.jv(n,a*np.sqrt(-γ**2 + (4*n1**2*np.pi**2)/λfree**2))) + (-special.kn(-1 + n,a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2)) - special.kn(1 + n,a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2)))/(2.*a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2)*special.kn(n,a*np.sqrt(γ**2 - (4*n0**2*np.pi**2)/λfree**2))))
+    def he(kz):
+        return  -((m**2*(1/(-kz**2 + (4*n1**2*np.pi**2)/λfree**2) + 1/(kz**2 - (4*n2**2*np.pi**2)/λfree**2))*(n1**2/(-kz**2 + (4*n1**2*np.pi**2)/λfree**2) + n2**2/(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))/a**2) + ((special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)))/(2.*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))) + (-special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) - special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))/(2.*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))))*((n1**2*(special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))))/(2.*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))) + (n2**2*(-special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) - special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))))/(2.*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))))
     return he
 
 def zerocrossings(numarray):
@@ -238,11 +240,11 @@ def multisolver(fiber_spec, drawPlots=False, verbose=False):
     Returns
     -------
     sol : dict with the following keys:
-        TMβ : array
+        TMkz : array
             The propagation constants of the TM(0,n) modes.
-        TEβ : array
+        TEkz : array
             The propagation constants of the TE(0,n) modes.
-        HEβ : dict
+        HEkz : dict
             The propagation constants of the HE(n,m) modes. The keys are the values of n (n>=1).
     '''
     nCore = fiber_spec['nCore']
@@ -252,15 +254,16 @@ def multisolver(fiber_spec, drawPlots=False, verbose=False):
     else:
         nCladding = fiber_spec['nCladding']
         NA =  np.sqrt(nCore**2 - nCladding**2)
+    separator = "="*40
     coreRadius = fiber_spec['coreRadius']
     wavelength = fiber_spec['free_space_wavelength']
-    γmax = nCore*2*np.pi/wavelength
-    γmin = nCladding*2*np.pi/wavelength
-    γspan = γmax - γmin
-    γmax = γmax - 0.001*γspan
-    γmin = γmin + 0.001*γspan
+    kzmax = nCore*2*np.pi/wavelength
+    kzmin = nCladding*2*np.pi/wavelength
+    kzspan = kzmax - kzmin
+    kzmax = kzmax - 0.001*kzspan
+    kzmin = kzmin + 0.001*kzspan
     # split the solution domain in at least 100 parts
-    dγ = (γmax-γmin)/300
+    dkz = (kzmax-kzmin)/300
     sol = fiber_spec
     Vnum = 2*np.pi * coreRadius * NA / wavelength
     sol['Vnum'] = Vnum
@@ -270,50 +273,52 @@ def multisolver(fiber_spec, drawPlots=False, verbose=False):
     numModesHE = int(Vnum*(Vnum-2)/4)
     sol['numModesFromVnum'] = numModes
     sol['nCladding'] = nCladding
+    maxHEmodes = int(np.sqrt(2*numModesHE))
     if verbose:
+        print(separator)
         print("Approx number of complex HE modes: ", numModesHE)
         print("Approx number of TE modes: ", numModesTE)
-        print("Approx number of TE modes: ", numModesTE)
+        print("Approx number of TM modes: ", numModesTM)
         print("Approx number of total modes: ", numModes)
-        print("="*80)
-
-
-    sol['γmax'] = γmax
-    sol['γmin'] = γmin
+        print("Approx Max n for HE modes: ", maxHEmodes)
+        print(separator)
+    
+    sol['kzmax'] = kzmax
+    sol['kzmin'] = kzmin
 
     tmfun = tmfungen(λfree=wavelength, 
-                    n0=nCladding, 
+                    n2=nCladding, 
                     n1=nCore, 
                     a=coreRadius)
 
     sol['tmfun'] = tmfun
 
     tefun = tefungen(λfree=wavelength, 
-                    n0=nCladding, 
+                    n2=nCladding, 
                     n1=nCore, 
                     a=coreRadius)
     
     sol['tefun'] = tefun
 
-    print("Calculting TE(0,n) propagation constants...")
-    dγprime = dγ/numModesTE
-    temodes = findallroots(tefun, γmin, γmax, dγprime, method='brentq', num_sigfigs=6)
+    print("Calculting TE(0,n) propagation constants ...")
+    dkzprime = dkz/numModesTE
+    temodes = findallroots(tefun, kzmin, kzmax, dkzprime, method='brentq', num_sigfigs=6)
 
-    print("Calculting TM(0,n) propagation constants...")
-    tmmodes = findallroots(tmfun, γmin, γmax, dγprime, method='brentq', num_sigfigs=6)
-    γrange = np.linspace(γmin, γmax, 1000)
+    print("Calculting TM(0,n) propagation constants ...")
+    tmmodes = findallroots(tmfun, kzmin, kzmax, dkzprime, method='brentq', num_sigfigs=6)
+    kzrange = np.linspace(kzmin, kzmax, 1000)
     
     if drawPlots:
-        tmvals = tmfun(γrange)
-        tevals = tefun(γrange)
-        tmmodes = findallroots(tmfun, γmin, γmax, dγ, method='bisect', num_sigfigs=6, verbose=False)
+        tmvals = tmfun(kzrange)
+        tevals = tefun(kzrange)
+        tmmodes = findallroots(tmfun, kzmin, kzmax, dkz, method='bisect', num_sigfigs=6, verbose=False)
         tmzerocheck = tmfun(tmmodes)
         tezerocheck = tefun(temodes)
 
         plt.figure(figsize=(10,5))
-        plt.plot(γrange, tmvals, 'r')
+        plt.plot(kzrange, tmvals, 'r')
         plt.scatter(tmmodes,tmzerocheck, c='b')
-        plt.plot([γmin, γmax], [0,0], "w:")
+        plt.plot([kzmin, kzmax], [0,0], "w:")
         plt.ylim(-1,1)
         plt.title('TM eigenvalues')
         plt.show()
@@ -325,50 +330,72 @@ def multisolver(fiber_spec, drawPlots=False, verbose=False):
         zerocrossindices = zerocrossindices[good_crossings]
 
         plt.figure(figsize=(10,5))
-        plt.plot(γrange, tevals, 'r')
+        plt.plot(kzrange, tevals, 'r')
         plt.scatter(temodes,tezerocheck, c='b')
-        plt.plot([γmin, γmax], [0,0], "w:")
+        plt.plot([kzmin, kzmax], [0,0], "w:")
         plt.ylim(-1,1)
         plt.title('TE eigenvalues')
         plt.show()
 
-    n = 1
+    m = 1
     hemodes = {}
-    print("Calculting HE(n,m) propagation constants...")
+    print("Calculting HE(n,m) propagation constants ...")
     sol['hefuns'] = {}
-    maxHEmodes = int(np.sqrt(2*numModesHE))
     while True:
-        approxModes = maxHEmodes - n
+        approxModes = maxHEmodes - m
         approxModes = max(2, approxModes)
-        dγprime = dγ / approxModes
-        print(f'n={n}',end='|')
+        dkzprime = dkz / approxModes
+        print(f'm={m}',end='\r')
         hefun = hefungen(λfree=wavelength, 
-                    n=n, 
-                    n0=nCladding, 
+                    m=m, 
+                    n2=nCladding, 
                     n1=nCore, 
                     a=coreRadius)
-        sol['hefuns'][n] = hefun
-        hevals = hefun(γrange)
-        hezeros = findallroots(hefun, γmin, γmax, dγprime, method='secant', num_sigfigs=10, verbose=False)
+        sol['hefuns'][m] = hefun
+        hevals = hefun(kzrange)
+        hezeros = findallroots(hefun, kzmin, kzmax, dkzprime, method='secant', num_sigfigs=10, verbose=False)
         if len(hezeros) == 0:
             break
-        hemodes[n] = hezeros
+        hemodes[m] = hezeros
         hezerocheck = hefun(hezeros)
         if drawPlots:
             plt.figure(figsize=(15,5))
-            plt.plot(γrange, hevals, 'r')
-            plt.plot([γmin, γmax], [0,0], "w:")
+            plt.plot(kzrange, hevals, 'r')
+            plt.plot([kzmin, kzmax], [0,0], "w:")
             plt.scatter(hezeros, hezerocheck, c='g')
             plt.ylim(-0.01,0.04)
-            plt.title('HE(%d, n) eigenvalues' % n)
+            plt.title('HE(%d, n) eigenvalues' % m)
             plt.show()
         # if n == 1:
         #     break
-        n = n + 1
+        m = m + 1
 
     numCalcModes = (2 * sum(list(map(len,hemodes.values()))), len(temodes), len(tmmodes))
-    print("\nHE = %s, TE = %d, TM = %d, TOTAL = %d, FROM_Vnum = %d" % (*numCalcModes, sum(numCalcModes), numModes))
-    sol['TEβ'] = temodes
-    sol['TMβ'] = tmmodes
-    sol['HEβ'] = hemodes
+    print("")
+    print(separator)
+    print("HE modes = %s\nTE modes = %d\nTM modes = %d\nTOTAL modes = %d\nFROM_Vnum = %d" % (*numCalcModes, sum(numCalcModes), numModes))
+    print(separator)
+    # put the modes in the solution dictionary
+    sol['TEkz'] = temodes
+    sol['TMkz'] = tmmodes
+    sol['HEkz'] = hemodes
     return sol
+
+def Ae(a, n1, n2, λfree, m, kz):
+    return 1
+
+def Ah(a, n1, n2, λfree, m, kz):
+    return ((-1j)*a**2*n1**2*np.pi*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*λfree**2*(4*n2**2*np.pi**2 - kz**2*λfree**2)*(special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)))*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))*(special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))) + 1j*np.pi*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*(a**2*n2**2*(4*n1**2*np.pi**2 - kz**2*λfree**2)*(4*n2**2*np.pi**2 - kz**2*λfree**2)*special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))**2 + 4*kz**2*m**2*(n1**2 - n2**2)*λfree**4*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))**2 + 2*a**2*n2**2*(4*n1**2*np.pi**2 - kz**2*λfree**2)*(4*n2**2*np.pi**2 - kz**2*λfree**2)*special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))*special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + a**2*n2**2*(4*n1**2*np.pi**2 - kz**2*λfree**2)*(4*n2**2*np.pi**2 - kz**2*λfree**2)*special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))**2))/(a*kz*m*λfree**3*(-4*n2**2*np.pi**2 + kz**2*λfree**2)*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))*(np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*(special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)))*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*(special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))))
+
+def Be(a, n1, n2, λfree, m, kz):
+    return special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))/special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))
+
+def Bh(a, n1, n2, λfree, m, kz):
+    return (1j*a**2*n1**2*np.pi*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*λfree**2*(4*n1**2*np.pi**2 - kz**2*λfree**2)*(4*n2**2*np.pi**2 - kz**2*λfree**2)*special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))**2*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + 4j*kz**2*m**2*(n1**2 - n2**2)*np.pi*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*λfree**6*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))**2*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + 1j*a**2*n1**2*np.pi*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*λfree**2*(4*n1**2*np.pi**2 - kz**2*λfree**2)*(4*n2**2*np.pi**2 - kz**2*λfree**2)*special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))**2*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + 1j*a**2*n2**2*np.pi*(4*n2**2*np.pi**2 - kz**2*λfree**2)*(-4*n1**2*np.pi**2 + kz**2*λfree**2)**2*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*(special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))) - 1j*a**2*np.pi*(4*n1**2*np.pi**2 - kz**2*λfree**2)*(4*n2**2*np.pi**2 - kz**2*λfree**2)*special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*(2*n1**2*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*λfree**2*special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + n2**2*(4*n1**2*np.pi**2 - kz**2*λfree**2)*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*(special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))))/(a*kz*m*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*λfree**5*(-4*n1**2*np.pi**2 + kz**2*λfree**2)*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))*(np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*(special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)))*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*(special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))))
+
+def AeAhBeBh(a, n1, n2, λfree, m, kz):
+    return (Ae(a, n1, n2, λfree, m, kz),
+            Ah(a, n1, n2, λfree, m, kz),
+            Be(a, n1, n2, λfree, m, kz),
+            Bh(a, n1, n2, λfree, m, kz))
+
