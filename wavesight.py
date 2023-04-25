@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import numpy as np
-from scipy import special
+from scipy import special 
 from scipy.optimize import root_scalar
 from matplotlib import pyplot as plt
 from fieldgen import * 
@@ -165,7 +165,7 @@ def multisolver(fiber_spec, drawPlots=False, verbose=False):
 
     sol['tmfun'] = tmfun
 
-    tefun = tefungen(λfree=wavelength, 
+    tefun = tefungen(λfree=wavelength,  
                     n2=nCladding, 
                     n1=nCore, 
                     a=coreRadius)

@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# others
+FG050LGA/
+eigenbasis-FG050LGA.pkl
