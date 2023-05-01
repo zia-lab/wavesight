@@ -3,6 +3,30 @@
 import numpy as np
 from scipy import special
 from scipy.optimize import root_scalar
+from subprocess import Popen
+
+def sendtome(message):
+    '''
+    Given a message, send it to my phone via iMessage.
+    Parameters
+    ----------
+    message : str
+        The message to send.
+    Returns
+    -------
+    None
+    '''
+    cmd = f'''
+    tell application "Messages"
+        set targetBuddy to "(401) 338-9488"
+        set targetService to id of 1st account whose service type = iMessage
+        set textMessage to "{message}"
+        set theBuddy to participant targetBuddy of account id targetService
+        send textMessage to theBuddy
+    end tell
+    '''
+    _ = Popen(['osascript', '-e', cmd])
+    return None
 
 def zerocrossings(numarray):
     '''
@@ -10,7 +34,31 @@ def zerocrossings(numarray):
     '''
     return np.where(np.diff(np.sign(numarray)))[0]
 
-def findallroots(fun, xmin, xmax, dx, xtol=1e-9, 
+def count_shared_chars(s1, s2):
+    '''Given two strings, count the number of characters that are the same
+    at the beginning of both strings.
+
+    Parameters
+    ----------
+    s1 : str
+    s2 : str
+
+    Returns
+    -------
+    shared_count : int
+        How many characters are the same at the beginning of both strings
+        until the first character that is different.
+    '''
+    shared_count = 0
+    for c1, c2 in zip(s1, s2):
+        if c1 == c2:
+            shared_count += 1
+        else:
+            break
+    return shared_count
+
+def findallroots(fun, xmin, xmax, dx, dtype,
+                 xtol=1e-9, 
                  max_iter=10000, num_sigfigs=6,
                  razorsharp=0.00001,
                  method='secant',verbose=False):
@@ -66,7 +114,7 @@ def findallroots(fun, xmin, xmax, dx, xtol=1e-9,
     rightzor = 1+razorsharp
     leftzor = 1-razorsharp
     numSamples = int(np.ceil((xmax-xmin)/dx))
-    x = np.linspace(xmin, xmax, numSamples)
+    x = np.linspace(xmin, xmax, numSamples, dtype=dtype)
     y = fun(x)
     zcs = zerocrossings(y)
     zcs = zcs[~np.isnan(y[zcs])]
@@ -115,9 +163,9 @@ def findallroots(fun, xmin, xmax, dx, xtol=1e-9,
             and (the_root <= xmax) 
             and (the_root >= xmin)):
             zeros.append(the_root)
-    zeros = np.array(zeros)
+    zeros = np.array(zeros, dtype=dtype)
     # remove zeros that are equal to the given number of digits
-    zeros = np.unique(round2sigfigs(zeros,num_sigfigs))
+    zeros = np.unique(round2sigfigs(zeros, num_sigfigs))
     zeros = np.sort(zeros)
     return zeros
 

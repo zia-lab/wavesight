@@ -5,7 +5,11 @@ from scipy import special
 from scipy.optimize import root_scalar
 from matplotlib import pyplot as plt
 from fieldgen import * 
-from convstore import *
+from convstore import * 
+from tqdm.notebook import tqdm
+
+real_dtype = np.float64
+complex_dtype = np.complex128  
 
 def tmfungen(λfree, n1, n2, a):
     '''
@@ -104,6 +108,10 @@ def multisolver(fiber_spec, drawPlots=False, verbose=False):
             The radius of the core in microns.
         free_space_wavelength : float
             The wavelength of the light in free space in microns.
+        grid_divider: int, not necessary here but when later
+            used in the layout generator, this is used to determine
+            the fineness of the grid by making it equal to
+            λfree / max(nCore, nCladding, nFree) / grid_divider
     drawPlots : bool, optional
         Whether to draw plots of the mode profiles. The default is False.
     verbose : bool, optional
@@ -111,7 +119,23 @@ def multisolver(fiber_spec, drawPlots=False, verbose=False):
     
     Returns
     -------
-    sol : dict with the following keys:
+    sol : dict with all the keys included in fiber_spec plus these following others:
+        kzmax : float
+            2π/λfree * nCladding
+        kzmin : float
+            2π/λfree * nCore
+        Vnum : float
+            The V number of the fiber.
+        numModesFromVnum: float
+            The number of modes according to the V number.
+        totalNumModes : int
+            The total number of found modes.
+        tmfun : function
+            The eigenvalue function for the TM modes.
+        tefun : function
+            The eigenvalue function for the TE modes.
+        hefuns : dict
+            The eigenvalue functions for the HE modes. The keys are the values of n (n>=1).
         TMkz : array
             The propagation constants of the TM(0,n) modes.
         TEkz : array
@@ -163,27 +187,27 @@ def multisolver(fiber_spec, drawPlots=False, verbose=False):
                     n1=nCore, 
                     a=coreRadius)
 
-    sol['tmfun'] = tmfun
+    # sol['tmfun'] = tmfun
 
     tefun = tefungen(λfree=wavelength,  
                     n2=nCladding, 
                     n1=nCore, 
                     a=coreRadius)
     
-    sol['tefun'] = tefun
+    # sol['tefun'] = tefun
 
     print("Calculting TE(0,n) propagation constants ...")
     dkzprime = dkz/numModesTE
-    temodes = findallroots(tefun, kzmin, kzmax, dkzprime, method='brentq', num_sigfigs=6)
+    temodes = findallroots(tefun, kzmin, kzmax, dkzprime, dtype=real_dtype, method='brentq', num_sigfigs=6)
 
     print("Calculting TM(0,n) propagation constants ...")
-    tmmodes = findallroots(tmfun, kzmin, kzmax, dkzprime, method='brentq', num_sigfigs=6)
-    kzrange = np.linspace(kzmin, kzmax, 1000)
+    tmmodes = findallroots(tmfun, kzmin, kzmax, dkzprime, dtype=real_dtype, method='brentq', num_sigfigs=6)
+    kzrange = np.linspace(kzmin, kzmax, 1000, dtype=real_dtype)
     
     if drawPlots:
         tmvals = tmfun(kzrange)
         tevals = tefun(kzrange)
-        tmmodes = findallroots(tmfun, kzmin, kzmax, dkz, method='bisect', num_sigfigs=6, verbose=False)
+        tmmodes = findallroots(tmfun, kzmin, kzmax, dkz, dtype=real_dtype, method='bisect', num_sigfigs=6, verbose=False)
         tmzerocheck = tmfun(tmmodes)
         tezerocheck = tefun(temodes)
 
@@ -212,7 +236,7 @@ def multisolver(fiber_spec, drawPlots=False, verbose=False):
     m = 1
     hemodes = {}
     print("Calculting HE(m,n) propagation constants ...")
-    sol['hefuns'] = {}
+    # sol['hefuns'] = {}
     while True:
         approxModes = maxHEmodes - m
         approxModes = max(2, approxModes)
@@ -223,9 +247,9 @@ def multisolver(fiber_spec, drawPlots=False, verbose=False):
                     n2=nCladding, 
                     n1=nCore, 
                     a=coreRadius)
-        sol['hefuns'][m] = hefun
+        # sol['hefuns'][m] = hefun
         hevals = hefun(kzrange)
-        hezeros = findallroots(hefun, kzmin, kzmax, dkzprime, method='secant', num_sigfigs=10, verbose=False)
+        hezeros = findallroots(hefun, kzmin, kzmax, dkzprime, dtype=real_dtype, method='secant', num_sigfigs=10, verbose=False)
         if len(hezeros) == 0:
             break
         hemodes[m] = hezeros
@@ -238,8 +262,6 @@ def multisolver(fiber_spec, drawPlots=False, verbose=False):
             plt.ylim(-0.01,0.04)
             plt.title('HE(%d, n) eigenvalues' % m)
             plt.show()
-        # if n == 1:
-        #     break
         m = m + 1  
 
     numCalcModes = (2 * sum(list(map(len,hemodes.values()))), len(temodes), len(tmmodes))
@@ -251,6 +273,10 @@ def multisolver(fiber_spec, drawPlots=False, verbose=False):
     sol['TEkz'] = {0: temodes}
     sol['TMkz'] = {0: tmmodes}
     sol['HEkz'] = hemodes
+    totalModes = sum(list(map(len, sol['HEkz'].values())))
+    totalModes += len(sol['TMkz'][0])
+    totalModes += len(sol['TEkz'][0])
+    sol['totalModes'] = totalModes
     return sol
 
 def Ae(modetype, a, n1, n2, λfree, m, kz):
@@ -291,3 +317,226 @@ def AeAhBeBh(modetype, a, n1, n2, λfree, m, kz):
             Be(modetype, a, n1, n2, λfree, m, kz),
             Bh(modetype, a, n1, n2, λfree, m, kz))
 
+def coordinate_layout(fiber_sol):
+    '''
+    Given a fiber solution, return the coordinate arrays for plotting
+    and coordinating the numerical analysis.
+    Parameters
+    ----------
+    fiber_sol : dict
+        A dictionary containing the fiber solution. It needs to have
+        at least the following keys:
+        - 'coreRadius' : float
+            The radius of the core.
+        - 'claddingIndex' : float  
+            The refractive index of the cladding.
+        - 'coreIndex' : float
+            The refractive index of the core.
+        - 'free_space_wavelenegth' : float
+            The wavelength of the light in free space.
+    Returns
+    -------
+    a, b, Δs, xrange, yrange, ρrange, φrange, Xg, Yg, ρg, φg, nxy, crossMask : tuple
+    a : float
+        The radius of the core.
+    b : float
+        The side of the computational domain.
+    Δs : float
+        The sampling resolution in the x-y direction. Assumed to be half the 
+        wavelength in the core.
+    xrange, yrange : 1D arrays
+        The coordinate arrays for the x-y directions.
+    ρrange, φrange : 1D arrays
+    `   The coordinate arrays for the ρ-φ directions in the cylindrical system.
+    Xg, Yg : 2D arrays
+        The coordinate arrays for x-y.
+    ρg, φg : 2D arrays
+        ρg has the values for the radial coordinate, φg has the values for the
+        azimuthal coordinate.
+    nxy : 2D array
+        The refractive index profile of the waveguide.
+    crossMask : 2D array
+        A mask that is True where the core is and False where the cladding is.
+    
+    '''
+    a = fiber_sol['coreRadius']
+    b = a*1.5 # assumed, ideally the cladding should extend to infinity
+    nCore = fiber_sol['nCore']
+    nCladding = fiber_sol['nCladding']
+    nFree = fiber_sol['nFree']
+    λfree = fiber_sol['free_space_wavelength']
+    grid_divider = fiber_sol['grid_divider']
+    maxIndex = max(nCore, nCladding, nFree)
+    Δs = λfree / maxIndex / grid_divider
+    # calculate the coordinates arrays
+    numSamples = int(2 * b / Δs)
+    xrange = np.linspace(-b, b, numSamples, dtype=real_dtype)
+    yrange = np.linspace(-b, b, numSamples, dtype=real_dtype)
+    ρrange = np.linspace(0 , np.sqrt(2)*b, numSamples, dtype=real_dtype)
+    φrange = np.linspace(-np.pi, np.pi, numSamples, dtype=real_dtype)
+    Xg, Yg = np.meshgrid(xrange, yrange)
+    ρg     = np.sqrt(Xg**2 + Yg**2)
+    φg     = np.arctan2(Yg, Xg)
+
+    crossMask = np.zeros((numSamples, numSamples)).astype(np.bool8)
+    crossMask[ρg <= a] = True
+    crossMask[ρg > a]  = False
+
+    # #Coords-Calc
+    nxy   = np.zeros((numSamples, numSamples))
+    nxy[crossMask]  =  nCore
+    nxy[~crossMask] =  nCladding
+
+    return a, b, Δs, xrange, yrange, ρrange, φrange, Xg, Yg, ρg, φg, nxy, crossMask, numSamples
+
+def calculate_numerical_basis(fiber_sol):
+    '''
+    Given a solution for the propagation modes of the fiber, calculate the numerical basis.
+    
+    Parameters
+    ----------
+    fiber_sol : dict
+        A dictionary containing the fiber solution. It needs to have
+        the following keys:
+        - 'coreRadius' : float
+            The radius of the core.
+        - 'nCladding' : float
+            The refractive index of the cladding.
+        - 'nCore' : float
+            The refractive index of the core.
+        - 'free_space_wavelenegth' : float
+            The wavelength of the light in free space.
+        - 'totalModes' : int
+            The total number of calculated modes.
+        - 'TEkz' : 1D dict
+            A single key equal to m=0, the values are array with
+            the TE modes propagation constants.
+        - 'TMkz' : 1D dict
+            A single key equal to m=0, the values are array with
+            the TM modes propagation constants.
+        - 'HEkz' : 1D dict
+            Keys are m values, values are 1D arrays of kz values.
+    Returns
+    -------
+    fiber_sol : dict:
+        The same dictionary as the input, but with two new keys:
+        - 'coord_layout' : tuple
+            The tuple returned by the coordinate_layout function.
+        - 'eigenbasis' : 5D array
+            The numerical basis. The first dimension is the mode number,
+            the second dimension only has two values, 0 and 1, 0 for the
+            E  field, and 1 for the H field. The third dimension is used
+            for  the  different components of the corresponding field in
+            cylindrical  coordinates.  The  first index being the radial
+            component,  the  second index being the azimuthal component,
+            and  the  third  index  being  the  z component. Finally the
+            fourth  and fifth dimensions are arrays that hold the values
+            of the corresponding field components.
+        - 'eigenbasis_nums': list of tuples
+            A  list  of  tuples,  each  tuple has nine values, the first
+            value  is  a  string, either 'TE', 'TM', or 'HE', the second
+            value is value of m, and the third value is the value of n.m
+            The  order  in  this list is so that the n-th element of the
+            list  corresponds  to  the  n-th mode in the eigenbasis. The
+            fourth  and  fifth values are for the transverse propagation
+            constants  the fourth one being the one inside the core, and
+            the fifth one being the one outside the core. From the sixth
+            to the ninth values are the values for Ae, Ah, Be, and Bh.
+    '''
+    coord_layout = coordinate_layout(fiber_sol)
+    nCore = fiber_sol['nCore']
+    nCladding = fiber_sol['nCladding']
+    λfree = fiber_sol['free_space_wavelength']
+    if 'coord_layout' in fiber_sol:
+        del fiber_sol['coord_layout']
+    if 'eigenbasis' in fiber_sol:
+        del fiber_sol['eigenbasis']
+    a, b, Δs, xrange, yrange, ρrange, φrange, Xg, Yg, ρg, φg, nxy, crossMask, numSamples = coord_layout
+    # determine how many modes there are in total
+    totalModes = fiber_sol['totalModes']
+    eigenbasis = np.zeros((totalModes, 2, 3, numSamples, numSamples),  dtype=complex_dtype)
+    counter = 0
+    eigenbasis_nums = []
+    for modtype in ['TE','TM','HE']:
+        solkey = modtype + 'kz'
+        for m, kzs in fiber_sol[solkey].items():
+            global_phase = np.exp(1j * m * φg)
+            for kzidx, kz in enumerate(tqdm(kzs)):
+                γ = np.sqrt(nCore**2*4*np.pi**2/λfree**2 - kz**2)
+                β = np.sqrt(kz**2 - nCladding**2*4*np.pi**2/λfree**2)
+                # #AB-Calc
+                Ae, Ah, Be, Bh = AeAhBeBh(modtype, a, nCore, nCladding, λfree, m, kz)
+                eigen_nums = (modtype, m, kzidx, γ, β, Ae, Ah, Be, Bh)
+                eigenbasis_nums.append(eigen_nums)
+                # calculate the transverse field components
+                for idx, genfuncs in enumerate([
+                                (Et1genρ, Et2genρ, Ht1genρ, Ht2genρ), 
+                                (Et1genφ, Et2genφ, Ht1genφ, Ht2genφ)]):
+                    Et1genρf, Et2genρf, Ht1genρf, Ht2genρf = genfuncs
+                    Et1ρ = Et1genρf(Ae, Ah, Be, Bh, m, β, γ, kz, λfree, nCore, nCladding)
+                    Et2ρ = Et2genρf(Ae, Ah, Be, Bh, m, β, γ, kz, λfree, nCore, nCladding)
+                    Ht1ρ = Ht1genρf(Ae, Ah, Be, Bh, m, β, γ, kz, λfree, nCore, nCladding)
+                    Ht2ρ = Ht2genρf(Ae, Ah, Be, Bh, m, β, γ, kz, λfree, nCore, nCladding)
+                    Etvals1ρ             = Et1ρ(ρrange)
+                    Etvals1ρ             = np.interp(ρg, ρrange, Etvals1ρ)
+                    Etvals1ρ[~crossMask] = 0
+                    Etvals2ρ             = Et2ρ(ρrange)
+                    Etvals2ρ             = np.interp(ρg, ρrange, Etvals2ρ)
+                    Etvals2ρ[crossMask]  = 0
+                    Etρ                  = Etvals1ρ + Etvals2ρ
+                    Etρ[np.isnan(Etρ)]   = 0
+                    Etnorm               = np.sum(np.abs(Etρ[0,::])**2 + np.abs(Etρ[1,::])**2)
+                    Etnorm               = np.sqrt(Etnorm)
+                    Htvals1ρ             = Ht1ρ(ρrange)
+                    Htvals1ρ             = np.interp(ρg, ρrange, Htvals1ρ)
+                    Htvals1ρ[~crossMask] = 0
+                    Htvals2ρ             = Ht2ρ(ρrange)
+                    Htvals2ρ             = np.interp(ρg, ρrange, Htvals2ρ)
+                    Htvals2ρ[crossMask]  = 0
+                    Htρ                  = Htvals1ρ + Htvals2ρ
+                    Htρ[np.isnan(Htρ)]   = 0
+                    Htnorm               = np.sum(np.abs(Htρ[0,::])**2 + np.abs(Htρ[1,::])**2)
+                    Htnorm               = np.sqrt(Htnorm)
+                    eigenbasis[counter, 0, idx, :, :] = Etρ
+                    eigenbasis[counter, 1, idx, :, :] = Htρ
+                # calculate the axial field components
+                for idx, genfuncs in enumerate([(Ezgen_1, Ezgen_2), 
+                                                (Hzgen_1, Hzgen_2)]):
+                    # Et stands here either for Ez or Hz
+                    # idx stands for the index for E or H
+                    Et1genρf, Et2genρf = genfuncs
+                    if idx == 0:
+                        Et1ρ = Et1genρf(Ae, m, γ)
+                        Et2ρ = Et2genρf(Be, m, β)
+                    else:
+                        Et1ρ = Et1genρf(Ah, m, γ)
+                        Et2ρ = Et2genρf(Bh, m, β)
+                    Etvals1ρ             = Et1ρ(ρrange)
+                    Etvals1ρ             = np.interp(ρg, ρrange, Etvals1ρ)
+                    Etvals1ρ[~crossMask] = 0
+                    Etvals2ρ             = Et2ρ(ρrange)
+                    Etvals2ρ             = np.interp(ρg, ρrange, Etvals2ρ)
+                    Etvals2ρ[crossMask]  = 0
+                    Etρ                  = Etvals1ρ + Etvals2ρ
+                    Etρ[np.isnan(Etρ)]   = 0
+                    # set the third index to the calculated field
+                    # remember that this needs to be multplied by the global phase
+                    eigenbasis[counter, idx, 2, :, :] = Etρ
+                # normalize the field
+                Etnorm = np.sum(np.abs(eigenbasis[counter, 0, 0, :, :])**2 
+                                + np.abs(eigenbasis[counter, 0, 1, :, :])**2
+                                + np.abs(eigenbasis[counter, 0, 2, :, :])**2)
+                Etnorm = np.sqrt(Etnorm)
+                Htnorm = np.sum(np.abs(eigenbasis[counter, 1, 0, :, :])**2 
+                                + np.abs(eigenbasis[counter, 1, 1, :, :])**2
+                                + np.abs(eigenbasis[counter, 1, 2, :, :])**2)
+                Htnorm = np.sqrt(Htnorm)
+                eigenbasis[counter, 0, :, :, :] /= Etnorm
+                eigenbasis[counter, 1, :, :, :] /= Htnorm
+                eigenbasis[counter, 0, :, :, :] *= global_phase
+                eigenbasis[counter, 1, :, :, :] *= global_phase
+                counter += 1
+    fiber_sol['eigenbasis'] = eigenbasis
+    fiber_sol['coord_layout'] = coord_layout
+    fiber_sol['eigenbasis_nums'] = eigenbasis_nums
+    return fiber_sol
