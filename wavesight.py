@@ -540,3 +540,151 @@ def calculate_numerical_basis(fiber_sol):
     fiber_sol['coord_layout'] = coord_layout
     fiber_sol['eigenbasis_nums'] = eigenbasis_nums
     return fiber_sol
+
+def poyntingrefractor(Efield, Hfield, nxy, nFree, verbose=False):
+    '''
+    Approximate  the  refracted  field across a planar interface
+    using  the Poynting vector as an analog to the wavevector of
+    a plane-wave.
+
+    Any  evanescent  fields  are  ignored. All cases where there
+    would  be  total  internal reflection the refracted field is
+    set to zero.
+
+
+    Parameters
+    ----------
+    Efield : np.array (3, N, M)
+        The electric field incident on the interface.
+    Hfield : np.array (3, N, M)
+        The H-field incident on the interface.
+    nxy : np.array    (N, M)
+        The refractive index transverse to the interface inside the incident medium.
+    nFree : float
+        The refractive index of the homogeneous refractive medium.
+    verbose : bool, optional
+        Whether to print or not progress messages, by default False.
+
+    Returns
+    -------
+    Eref, Href : tuple of np.array (3, N, M)
+        The refracted electric and magnetic fields.
+    '''
+    # #EXH-Calc
+    # calculate the Poynting vector
+    if verbose:
+        print("Calculating the Poynting vector field...")
+    Sfield = 0.5*np.real(np.cross(Efield, Hfield, axis=0))
+
+    # #normIncidentk-Calc
+    # calculate the magnitude of the Poynting field
+    if verbose:
+        print("Calculating the magnitude of the Poynting field...")
+    Sfieldmag = np.sqrt(np.sum(Sfield**2, axis=0))
+    if verbose:
+        print("Calculating the transverse component of the Poynting field...")
+    # calculate the unit vector in the direction of the Poynting vector
+    if verbose:
+        print("Calculating the unit vector in the direction of the Poynting vector...")
+    kfield = Sfield / Sfieldmag
+    # calculate the transverse component of the Poynting vector
+    Stransverse = np.sqrt(Sfield[0,:,:]**2 + Sfield[1,:,:]**2)
+
+    # #β-Calc
+    if verbose:
+        print("Calculating the angle of incidence field...")
+    # Assuming that the normal is pointing in the +z direction
+    βfield = np.arctan2(Stransverse, Sfield[2, :, :])
+
+    # #θ-Calc
+    if verbose:
+        print("Calculating the angle of refraction field...")
+    θfield = np.arcsin(nxy/nFree * np.sin(βfield))
+
+    # #FresnelS-Calc
+    if verbose:
+        print("Calculating the Fresnel coefficients...")
+    
+    fresnelS = (2 * nxy * np.cos(βfield) 
+                / ( nxy * np.cos(βfield) 
+                + np.sqrt(nFree**2 
+                                - nxy**2 * np.sin(βfield)**2)
+                    )
+                )
+    
+    # #FresnelP-Calc
+    fresnelP = (2 * nFree * nxy * np.cos(βfield) 
+                / (nFree**2 * np.cos(βfield) 
+                +  nxy * np.sqrt(nFree**2 
+                            - nxy**2 * np.sin(βfield)**2)
+                    )
+                )
+    
+    # #ζ-Calc
+    if verbose:
+        print("Calculating the ζ of the local coord system...")
+    # calculate the unit vector field perpendicular to the plane of incidence
+    # which is basically k X z
+    ζfield = np.zeros(kfield.shape)
+    ζfield[0] = kfield[1]
+    ζfield[1] = -kfield[0]
+    # normalize it
+    ζfield /= np.sqrt(np.sum(np.abs(ζfield)**2, axis=0))
+
+    # in the case of normal incidence, the ζ is not defined
+    # so it can be set to the unit vector in the first direction
+    normalIncidence = (βfield == 0)
+    ζfield[0][normalIncidence] = 1
+    ζfield[1][normalIncidence] = 0
+    ζfield[2][normalIncidence] = 0
+    # #EincS-Calc
+    if verbose:
+        print("Calculating the S and P component of the incident electric field...")
+    # decompose the field in P and S polarizations
+    # first find P-pol and then use the complement to determine S-pol
+    # the S-pol can be obtained by the dot product of E with ζ
+    ESdot = Efield[0,:,:] * ζfield[0] + Efield[1,:,:] * ζfield[1]
+    EincS = np.zeros(ζfield.shape)
+    EincS[0] = ESdot[0] * ζfield[0]
+    EincS[1] = ESdot[1] * ζfield[1]
+    # #EincP-Calc
+    EincP = Efield - EincS
+    del ESdot
+
+    # #ErefS-Calc
+    if verbose:
+        print("Calculating the S and P component of the refracted electric field...")
+    ErefS = np.zeros(Efield.shape)
+    ErefS[0] = fresnelS * EincS[0]
+    ErefS[1] = fresnelS * EincS[1]
+    ErefS[2] = fresnelS * EincS[2]
+    ErefS[np.isnan(ErefS)] = 0
+
+    # #ErefP-Calc
+    ErefP = np.zeros(Efield.shape)
+    ErefP[0] = fresnelP * EincP[0]
+    ErefP[1] = fresnelP * EincP[1]
+    ErefP[2] = fresnelP * EincP[2]
+    ErefP[np.isnan(ErefP)] = 0
+    # #Eref-Calc
+    if verbose:
+        print("Calculating the total refracted electric field...")
+    Eref  = ErefS + ErefP
+
+    # #kref-Calc
+    if verbose:
+        print("Calculating the refracted wavevector (normalized) field...")
+    ξfield    = np.zeros(ζfield.shape)
+    ξfield[0] = -ζfield[1]
+    ξfield[1] = ζfield[0]
+    kref      = np.zeros(kfield.shape)
+    kref[0]   = np.sin(θfield) * ξfield[0]
+    kref[1]   = np.sin(θfield) * ξfield[1]
+    kref[2]   = np.cos(θfield)
+
+    # #Href-Calc
+    if verbose:
+        print("Calculating the refracted H field...")
+    Href = nFree * np.cross(kref, Eref, axis=0)
+
+    return kref, Eref, Href

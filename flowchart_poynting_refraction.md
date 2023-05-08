@@ -92,6 +92,10 @@ localk --> Sdir["[#ζ-Calc]
     <b>ζ(x,y)<b/> = ẑ x k̂
     ζ̂(x,y) = <b>ζ<b/> / |ζ|"]
 
+Sdir --> ξdir["[#ξ-Calc]
+    Third unit vector in local coordinate sys
+    <b>ξ(x,y)<b/> = k̂ x ζ"]
+
 Sdir --> Spol["[#EincS-Calc]
 S-component of E
 E_S = <b>E</b> · ζ̂"]
@@ -112,7 +116,7 @@ EPref & ESref --> Eref["[#Eref-Calc]
 The refracted electric field
 E' = E_S + E_P"]
 
-Coords & localk --> localkrefnorm["[#kref-Calc]
+ξdir & Refracted --> localkrefnorm["[#kref-Calc]
 Normalized refracted k̂' 
 <b>k̂'</b>"]
 
