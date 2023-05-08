@@ -688,3 +688,129 @@ def poyntingrefractor(Efield, Hfield, nxy, nFree, verbose=False):
     Href = nFree * np.cross(kref, Eref, axis=0)
 
     return kref, Eref, Href
+
+def farfield_projector(nearfield, L, λmedium, farfield_extent, dz, replicas=1):
+    '''This function takes a nearfield and projects it into the farfield.
+
+    Parameters
+    ----------
+    nearfield : np.ndarray
+        The nearfield to be projected. The last two indices in the given array
+        must correspond to positions x, y along the transverse direction. Those
+        two dimensions must have the same number of elements.
+
+    L : float
+        The lateral extent of the nearfield in µm. The nearfield is assumed to
+        be square. This, together with the number of elements in the transverse
+        direction, determines the sampling resolution of the nearfield.
+    
+    λmedium: float
+        The wavelength of the light in the medium in µm.
+
+    farfield_extent : float
+        Ditance between the plane at whicih the neafield is given and the last
+        plane at which the farfield is computed.
+
+    dz : float
+        Approximate resolution at which the farfield is sampled. It is approximate
+        since the farfield is sampled at discrete points. At the end the actual
+        used resolution is implied in the returned array for farfield_zaxis.
+
+    replicas : int, optional
+        To avoid artificat from using the finite Fourier transform, the nearfield
+        is replicated in the transverse direction. This parameter controls the
+        number of padding zeroes that are used around the given fields. 
+        The default is 1.
+
+    Returns
+    -------
+    (farfield_zaxis, farfield ): tuple, in which
+        farfield_zaxis : np.ndarray
+            The z-axis at which the farfield is sampled.
+        farfield : np.ndarray
+            An array with four indices. The first index corresponds to the component
+            of the field. The second index corresponds to the position along the z-axis.
+            Together with farfield_zaxis this index can be used to determine the 
+            The last two indices correspond to the transverse coordinates.
+    '''
+    if len(nearfield.shape) == 2:
+        nearfield = nearfield[np.newaxis, :, :]
+    λ = λmedium
+    k = 2 * np.pi / λ
+    zmax = farfield_extent
+    # number of samples along axis
+    Nz = int(zmax/dz) 
+    farfield_zaxis = np.linspace(0, zmax, Nz)
+    # number of components in field
+    num_components = nearfield.shape[0]
+    idx_width = nearfield.shape[1]
+    # lateral resolution of given field
+    dx = L / nearfield.shape[1] 
+    farfield = np.zeros((num_components, Nz, idx_width*(2*replicas-1), idx_width*(2*replicas-1)), 
+                        dtype=np.complex128)
+    for component_idx in range(num_components):
+        field_component = nearfield[component_idx]
+        if replicas != 1:
+            padder = (idx_width * (replicas-1), idx_width * (replicas-1))
+            field_component = np.pad(field_component, padder)
+        # the same propagator can be used for all components
+        if component_idx == 0:
+            kx = 2 * np.pi * (np.fft.fftfreq(field_component.shape[0], d=dx))
+            ky = kx
+            Kx, Ky = np.meshgrid(kx, ky)
+            Kz = np.sqrt(k**2 - Kx**2 - Ky**2 + 0j)
+            gator = 1.j * np.outer(farfield_zaxis, Kz)
+            gator = gator.reshape(*farfield_zaxis.shape, *Kz.shape)
+            gator = np.exp(gator)
+        nearfourier = np.fft.fft2(field_component)
+        farfourier  = nearfourier * gator
+        farfield[component_idx] = np.fft.ifft2(farfourier)
+    return farfield_zaxis, farfield
+
+def from_cyl_cart_to_cart_cart(field):
+    '''
+    Given  a  field  in  cylindrical  coordinates, convert it to
+    cartesian  coordinates.  The  given  field  is assumed to be
+    anchored  to a cartesian coordinate system in the sense that
+    each  of the indices in its array corresponds to a cartesian
+    grid  in the usual sense but the value of the vector at that
+    position is given in terms of cylindrical coordinates.
+
+    This  function  assumes  that  the  region  described by the
+    cartesian coordinates is a squar centered on the axis.
+
+    Parameters
+    ----------
+    field : np.ndarray
+        A  field  in  cylindrical  coordinates  with  shape  (3,
+        numSamples,  numSamples) the indices being the ρ, φ, and
+        z components respectively.
+
+    Returns
+    -------
+    ccfield : np.ndarray
+        A   field   in  cartesian  coordinates  with  shape  (3,
+        numSamples,  numSamples) the indices being the x, y, and
+        z components respectively of the given vector field.
+    '''
+    xrange = np.linspace(-1,1,field.shape[1])
+    yrange = np.linspace(-1,1,field.shape[2])
+    Xg, Yg = np.meshgrid(xrange, yrange)
+    φg     = np.arctan2(Yg, Xg)
+    ccfield = np.zeros(field.shape, dtype=field.dtype)
+    ccfield[2] = field[2]
+    # create the cartesian coordinates of the cylindrical unit vector fields
+    # first for the ρ component
+    uρ = np.zeros((2,field.shape[1],field.shape[2]))
+    uρ[0] = np.cos(φg)
+    uρ[1] = np.sin(φg)
+    # now for the φ component
+    uφ = np.zeros((2,field.shape[1],field.shape[2]))
+    uφ[0] = -np.sin(φg)
+    uφ[1] = np.cos(φg)
+    # using these convert the cylindrical components to cartesian
+    # adding the x components of what comes from the two unit vectors
+    # scaled up by the field values in the cylindrical basis
+    ccfield[0] = field[0]*uρ[0] + field[1]*uφ[0]
+    ccfield[1] = field[0]*uρ[1] + field[1]*uφ[1]
+    return ccfield
