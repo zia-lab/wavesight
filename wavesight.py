@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 from fieldgen import * 
 from convstore import * 
 from tqdm.notebook import tqdm
+from scipy.interpolate import RegularGridInterpolator
 
 real_dtype = np.float64
 complex_dtype = np.complex128  
@@ -814,3 +815,133 @@ def from_cyl_cart_to_cart_cart(field):
     ccfield[0] = field[0]*uρ[0] + field[1]*uφ[0]
     ccfield[1] = field[0]*uρ[1] + field[1]*uφ[1]
     return ccfield
+
+
+def angular_farfield_propagator(field, λFree, nMedium, Zf, Zi, si, sf, Δf = None, options = {}):
+    '''This function approximates the farfield of a field given the nearfield
+    and the propagation distance.
+
+    This is done by using the angular spectrum method. In which the Fourier
+    transform of the nearfield is understood to describe the coeffients that
+    approximate the farfield as the superposition of plane waves.
+
+    It assumes that the nearfield is given on a square grid perpendicular to
+    the z-axis. The farfield is also given on a square grid perpendicular to
+    the z-axis.
+
+    The farfield is approximated by the following formula:
+        Efar = (2π 1j / kFree) * ((Zf-Zi)/Rfsq) * np.exp(1j*kFree*Rf) * S2
+         with
+        S2 equal to the Fourier transform extrapolated to the position
+        of the farfield.
+
+    Parameters
+    ----------
+    field : np.array (3, Ni, Ni) or (Ni, Ni) or (1, Ni, Ni)
+        An array describing the nearfield of the field to be propagated.
+    nMedium : float
+        Refractive index of the homogenous medium or propagation.
+    Zf : float
+        The z-coordinate of the farfield.
+    Zi : float
+        The z-coordinate of the nearfield.
+    si : float
+        The size of the nearfield.
+    sf : float
+        The size of the farfield.
+    Δf : float (optional)
+        Spatial resolution of the farfield. If None, it is set to Δi.
+    options : dict (optional)
+        A dictionary of options for the function. The options are:
+            'return_fourier' : bool
+                If True, the function returns the Fourier transform of the
+                nearfield.
+            'return_as_dict' : bool
+                If True, the function returns a dictionary with the following
+                keys:
+                    'Efar' : np.array (3, Nf, Nf)
+                        The farfield of the field.
+                    'Efourier' : np.array (3, Ni, Ni)
+                        The Fourier transform of the nearfield.
+                If False, the function returns the two arrays in the same order
+                as the keys in the dictionary.
+    '''
+    rmin = abs(Zf - Zi)
+    rmax = np.sqrt(rmin**2 + si**2/2 + sf**2/2)
+    λmedium = λFree/nMedium
+    if rmax - rmin > λmedium:
+        print(f"ATTENTION: {(rmax-rmin)/λmedium:.1f} = (rmax - rmin) / λmedium > 1. The angular spectrum approximation is problematic.")
+        print("Consider decreasing si, decreasing sf, or increasing Zf.")
+    all_options = {'return_fourier': False,
+                   'return_as_dict': False}
+    for k, v in all_options.items():
+        if k in options:
+            globals()[k] = options[k]
+        else:
+            globals()[k] = v
+    c     = 1
+    κ     = 1 # 2 * np.pi
+    ω     = c * 2*np.pi/λFree
+    kFree = ω*nMedium/c
+    far_out = kFree*rmin
+    assert far_out > 100, f'kr = {round(kFree*rmin)} too small for angular-spectrum approximation.'
+    if len(field.shape) == 2:
+        field = np.array([field])
+    num_components = field.shape[0]
+    Ni = field[-1].shape[0]
+    # spatial resolution in the nearfield
+    Δi    = si/Ni
+    if Δf == None:
+        # reduces the resolution of the farfield so that both fields
+        # have the same number of samples
+        Δf    = Δi * (sf / si)
+        Nf    = Ni
+    else:
+        # number of samples in each dir of farfield
+        Nf    = int(np.ceil(sf/Δf))
+    # coordinate layout for the nearfield
+    xi    = np.linspace(-si/2, si/2, Ni)
+    yi    = np.linspace(-si/2, si/2, Ni)
+    # coordinate layout for the farfield
+    xf    = np.linspace(-sf/2, sf/2, Nf)
+    yf    = np.linspace(-sf/2, sf/2, Nf)
+    # coordinate arrays in the farfield
+    Xf, Yf = np.meshgrid(xf, yf)
+    # the square of the distance from the center of neafield to the farfield
+    Rfsq  = Xf**2 + Yf**2 + (Zf-Zi)**2
+    # the distance itself
+    Rf    = np.sqrt(Rfsq)
+    # The direction cosines at the farfield
+    XfoRf = κ * Xf/Rf
+    YfoRf = κ * Yf/Rf
+    # A factor that is common to all components of the farfield
+    S1    = (2 * np.pi * 1j / kFree) * ((Zf-Zi)/Rfsq) * np.exp(1j*kFree*Rf)
+    # Spatial frequencies of the FFT
+    kx    = (np.fft.fftfreq(Ni, d=Δi))
+    kx    = κ * np.fft.fftshift(kx)
+    ky    = kx
+    # Meshgrid of spatial frequencies
+    Kx, Ky = np.meshgrid(kx, ky)
+    # Initialize the farfield
+    Efar  = np.zeros((num_components, Nf, Nf), dtype=np.complex128)
+    if return_fourier:
+        Efourier = np.zeros((num_components, Ni, Ni), dtype=np.complex128)
+    for field_component in range(num_components):
+        afield = field[field_component]
+        Eifou = np.fft.fft2(afield)
+        Eifou = np.fft.fftshift(Eifou)
+        if return_fourier:
+            Efourier[field_component] = Eifou
+        S2interpolator = RegularGridInterpolator((kx, ky), Eifou)
+        S2 = S2interpolator((XfoRf, YfoRf))
+        Efar[field_component] = S1 * S2
+    if return_as_dict:
+        if return_fourier:
+            return {'farfield': Efar, 'fourier': Efourier}
+        else:
+            return {'farfield': Efar}
+    else:
+        if return_fourier:
+            return Efar, Efourier
+        else:
+            return Efar
