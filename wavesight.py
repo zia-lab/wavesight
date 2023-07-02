@@ -8,6 +8,8 @@ from fieldgen import *
 from convstore import * 
 from tqdm.notebook import tqdm
 from scipy.interpolate import RegularGridInterpolator
+from scipy.fftpack import fft2, ifft2
+import cmasher as cmr
 
 real_dtype = np.float64
 complex_dtype = np.complex128  
@@ -945,3 +947,282 @@ def angular_farfield_propagator(field, λFree, nMedium, Zf, Zi, si, sf, Δf = No
             return Efar, Efourier
         else:
             return Efar
+
+def scalarfieldprop(Lobs, z, apertureFunction, λfree, nref, numSamples='auto'):
+    '''
+    scalarfieldprop  takes  a  field  component in an aperture plane and
+    propagates  that  to an observation plane by using an implementation
+    of  the  direct  integration  of the Rayleigh-Sommerfeld diffraction
+    integral.  This  implementation  is based on the method described in
+    Shen and Wang (2006). The field is sampled in the aperture plane and
+    in  the obserbation plane using a uniform grid. The field is assumed
+    to be zero outside of the aperture plane.
+
+    Parameters
+    ----------
+    +  Lobs  (float): spatial width of the obsevation region, in μm. The
+    observation  region  is  assumed to be a squared centered on (x,y) =
+    (0,0),  and  extending  from  -Lobs/2  to Lobs/2 in both the x and y
+    directions.
+
+    + z (float): distance between the aperture plane and the observation
+    plane, given in μm. The aperture plane is assumed to be at z=0.
+
+    +  apertureFunction  (function):  a bi-variate function that returns
+    the  complex  amplitude of the field in the aperture plane. Input to
+    the function is assumed to be in cartesian coordinates x,y.  If  the
+    function has an attribute "null" set to True, then the function will
+    simply return a matrix of zeros.
+
+    + λfree (float): wavelength in vaccum of field, given in μm.
+
+    + nref (float): refractive index of the propagating medium.
+
+    Options
+    -------
+    +  "numSamples"  (int or Automatic): number of samples to use in the
+    aperture  plane  and  the  observation  plane. The aperture plane is
+    sampled  using  a  uniform  grid,  and the observation plane is also
+    sampled using a uniform grid. The default is Automatic in which case
+    numSamples  is  calculated  so that the sample size is equal to half
+    the wavelength of the wave inside of the propagating medium.
+
+    Returns
+    -------
+    (numSamples, xCoords, yCoords, field) (tuple)
+    +  xCoords (np.array): x coordinates of the observation plane, given
+    in μm.
+
+    +  yCoords (np.array): y coordinates of the observation plane, given
+    in μm.
+
+    +   field   (np.array):  complex  amplitude  of  the  field  in  the
+    observation  plane.  The top left corner of the array corresponds to
+    the  lower  left  corner  of  the observation plane. The coordinates
+    associated with each element in the given array should be taken from
+    xCoords and yCoords.
+
+    References
+    ----------
+    +   Shen,   Fabin,  and  Anbo  Wang.  "Fast-Fourier-transform  based
+    numerical integration method for the Rayleigh-Sommerfeld diffraction
+    formula." Applied optics 45, no. 6 (2006): 1102-1110.
+
+    Example (double slit):
+    ----------------------
+
+    def doubleSlit(separation, width, height):
+        def apertureFun(x, y):
+            return np.where((
+                            ((np.abs(x - separation/2) <= width/2) | (np.abs(x + separation/2) <= width/2))
+                            & (np.abs(y) <= height/2)
+            ), 1, 0)
+        return apertureFun
+
+    slitSep = 4.
+    slitWidth = 1.
+    slitHeight = 10.
+    Lobs = 100.
+    z = 100
+    nref = 1
+    λfree = 0.532
+    numSamples = 'auto'
+
+    apFun = doubleSlit(slitSep, slitWidth, slitHeight)
+
+    # Estimate the diffraction pattern from the simplified formula
+    diforders = range(10)
+    xmaxi = []
+    for diforder in diforders:
+        stheta = diforder * λfree / slitSep
+        if stheta > 1:
+            break
+        else:
+            theta = np.arcsin(stheta)
+            xdif = z * np.tan(theta)
+            if np.abs(xdif) <= Lobs/2:
+                xmaxi.append(xdif)
+                xmaxi.append(-xdif)
+
+
+    numSamples, xCoords, yCoords, field = scalarfieldprop(Lobs, z, apFun, λfree, nref, numSamples)
+
+    extent = (xCoords[0], xCoords[-1], yCoords[0], yCoords[-1])
+    pField = np.abs(field)
+    fig, ax = plt.subplots(figsize=(10,10))
+    ax.imshow(pField,
+            extent=extent,
+            cmap=cmr.ember,
+            interpolation='spline16')
+    ax.scatter(xmaxi, np.zeros_like(xmaxi), s=20, facecolors='none', edgecolors='w', alpha=0.5)
+    ax.set_xlabel('x/μm')
+    ax.set_ylabel('y/μm')
+    ax.set_title('Diffraction pattern of a double slit\ns=%.2fμm | w=%.2fμm | L=%.2fμm | Δz=%.2fμm' % (slitWidth, slitWidth, slitHeight, z))
+    plt.show()
+    
+    '''
+    assert z>=0, 'z must be positive'
+
+    λ = λfree / nref
+    k = 2*np.pi/λ
+
+    def gr(r):
+        return (np.exp(1j * k * r) * z) * (1./r - 1j*k) / (2*np.pi * r**2)
+
+    if numSamples == 'auto':
+        numSamples = round(2*Lobs/λ)
+    else:
+        numSamples = numSamples
+
+    apertureSamples = numSamples
+    Lap = Lobs
+    k = 2. * np.pi / λ
+    Δζ = Lap / apertureSamples
+    Δη = Δζ
+
+    # ζ, η are coordinates in the source plane
+    ζCoords = np.linspace(-Lap/2, Lap/2, apertureSamples)
+    ηCoords = np.linspace(-Lap/2, Lap/2, apertureSamples)
+    # x, y are coordinates in the observation plane
+    xCoords = np.linspace(-Lobs/2, Lobs/2, numSamples)
+    yCoords = np.linspace(-Lobs/2, Lobs/2, numSamples)
+
+    # An override to help the cases in vector field propagation
+    # where some field component is identically zero
+
+    if hasattr(apertureFunction, 'null'):
+        if apertureFunction.null:
+            return (numSamples, xCoords, yCoords, np.zeros((numSamples, numSamples)))
+    
+    ζmesh, ηmesh = np.meshgrid(ζCoords, ηCoords)
+    padextra = (2*apertureSamples - 1) - numSamples
+
+    # Put together the U array
+    U = apertureFunction(ζmesh, ηmesh)
+
+    # if z=0 there's nothing to do and the same input field should be returned
+    if z == 0:
+        return (numSamples, xCoords, yCoords, U)
+    
+    U = np.pad(U, 
+            pad_width=((0,padextra),(0,padextra)),
+            mode='constant',
+            constant_values=0.)
+
+    x0 = xCoords[0]
+    y0 = yCoords[0]
+    η0 = ηCoords[0]
+    ζ0 = ζCoords[0]
+    # Put together the H array
+    Hx1 = np.full((apertureSamples-1, 2*apertureSamples-1), x0)
+    Hx2 = np.tile(xCoords, (2*apertureSamples-1,1)).T
+    Hx  = np.concatenate((Hx1, Hx2))
+
+    Hζ2 = np.full((apertureSamples-1, 2*apertureSamples-1), ζ0)
+    Hζ1 = np.tile(ζCoords[::-1], (2*apertureSamples - 1,1)).T
+    Hζ  = np.concatenate((Hζ1, Hζ2)).T
+
+    Hxζ = Hx - Hζ.T
+
+    Hy1 = np.full((apertureSamples-1, 2*apertureSamples-1), y0)
+    Hy2 = np.tile(yCoords, (2*apertureSamples-1,1)).T
+    Hy  = np.concatenate((Hy1, Hy2))
+
+    Hη2 = np.full((apertureSamples-1, 2*apertureSamples-1), η0)
+    Hη1 = np.tile(ηCoords[::-1], (2*apertureSamples - 1,1)).T
+    Hη  = np.concatenate((Hη1, Hη2)).T
+
+    Hyη = (Hy - Hη.T).T
+
+    # calculate r
+    rEva = np.sqrt(Hxζ**2 + Hyη**2 + z**2)
+    # evaluate gr
+    H = gr(rEva)
+
+    # compute the Fourier transforms
+    FFU = fft2(U)
+    FFH = fft2(H)
+    # perform the convolution
+    FFUH = FFU * FFH
+    # invert the result
+    S = ifft2(FFUH)
+    # get the good parts
+    field = (Δη*Δζ) * S[-apertureSamples::,-apertureSamples::]
+
+    return (numSamples, xCoords, yCoords, field)
+
+def vectorfieldprop(Lobs, z, apertureFunctions, λfree, nref, numSamples='auto'):
+    '''
+    vectorfieldprop  takes a field with three cartesian components in an
+    aperture  plane and propagates that to an observation plane by using
+    an  implementation  of  the  direct  integration  of  the  Rayleigh-
+    Sommerfeld diffraction integral. This implementation is based on the
+    method  described  in  Shen and Wang (2006). The field is sampled in
+    the  aperture  plane  and  in  the obserbation plane using a uniform
+    grid. The field is assumed to be zero outside of the aperture plane.
+    No  checks  are  made  that  the given field components constitute a
+    valid electromagnetic field. It assumes that the refractive index is
+    isotropic.
+
+    Parameters
+    ----------
+    +  Lobs  (float): spatial width of the obsevation region, in μm. The
+    observation  region  is  assumed to be a squared centered on (x,y) =
+    (0,0),  and  extending  from  -Lobs/2  to Lobs/2 in both the x and y
+    directions.
+
+    + z (float): distance between the aperture plane and the observation
+    plane, given in μm. The aperture plane is assumed to be at z=0.
+
+    + apertureFunctions (tuple): a tuple with three bi-variate functions
+    which  return  the  complex  amplitude  of  the  corresponding field
+    cartesian component in the aperture plane. Input to the functions is
+    assumed  to  be in cartesian coordinates x,y. If the function has an
+    attribute "null" set to True, then the function will simply return a
+    matrix of zeros.
+
+    + λfree (float): wavelength in vaccum of field, given in μm.
+
+    + nref (float): refractive index of the propagating medium.
+
+    Options
+    -------
+    +  "numSamples"  (int or Automatic): number of samples to use in the
+    aperture  plane  and  the  observation  plane. The aperture plane is
+    sampled  using  a  uniform  grid,  and the observation plane is also
+    sampled using a uniform grid. The default is Automatic in which case
+    numSamples  is  calculated  so that the sample size is equal to half
+    the wavelength of the wave inside of the propagating medium.
+
+    Returns
+    -------
+    (numSamples, xCoords, yCoords, field) (tuple)
+    +  xCoords (np.array): x coordinates of the observation plane, given
+    in μm.
+
+    +  yCoords (np.array): y coordinates of the observation plane, given
+    in μm.
+
+    +  fields  (np.array):  with shape (3, numSamples, numSamples) where
+    the  first  index takes values 0, 1, 2 for the x, y, and z cartesian
+    components  and  the second two indices are anchored to positions in
+    the  obervation plane according to xCoords and yCoords. The top left
+    corner  of  the  array  corresponds  to the lower left corner of the
+    observation plane.
+
+    References
+    ----------
+    +   Shen,   Fabin,  and  Anbo  Wang.  "Fast-Fourier-transform  based
+    numerical integration method for the Rayleigh-Sommerfeld diffraction
+    formula." Applied optics 45, no. 6 (2006): 1102-1110.
+    '''
+    λ = λfree / nref
+    if numSamples == 'auto':
+        numSamples = round(2*Lobs/λ)
+    else:
+        numSamples = numSamples
+    fields = np.zeros((3, numSamples, numSamples), dtype=complex)
+    for field_idx, apertureFunction in enumerate(apertureFunctions):
+        (numSamples, xCoords, yCoords, field) = scalarfieldprop(Lobs, z, apertureFunction, λfree, nref, numSamples)
+        fields[field_idx] = field
+    return (numSamples, xCoords, yCoords, fields)
