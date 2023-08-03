@@ -11,6 +11,8 @@ from scipy.interpolate import RegularGridInterpolator
 from scipy.fftpack import fft2, ifft2
 import cmasher as cmr
 import warnings
+from matplotlib.patches import Rectangle
+from misc import *
 
 real_dtype = np.float64
 complex_dtype = np.complex128  
@@ -114,7 +116,7 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
             and given NA.
         coreRadius : float
             The radius of the core in μm.
-        free_space_wavelength : float
+        λFree : float
             The wavelength of the light in free space in μm.
         grid_divider: int, not necessary here but when later
             used in the layout generator, this is used to determine
@@ -166,7 +168,7 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
         NA        =  np.sqrt(nCore**2 - nCladding**2)
     separator     = "="*40
     coreRadius    = fiber_spec['coreRadius']
-    wavelength    = fiber_spec['free_space_wavelength']
+    wavelength    = fiber_spec['λFree']
     kzmax         = nCore * 2 * np.pi / wavelength
     kzmin         = nCladding * 2 *np.pi / wavelength
     kzspan        = kzmax - kzmin
@@ -354,7 +356,7 @@ def coordinate_layout(fiber_sol):
             The refractive index of the cladding.
         - 'coreIndex' : float
             The refractive index of the core.
-        - 'free_space_wavelenegth' : float
+        - 'free_space_wavelength' : float
             The wavelength of the light in free space.
     
     Returns
@@ -387,7 +389,7 @@ def coordinate_layout(fiber_sol):
     nCore = fiber_sol['nCore']
     nCladding = fiber_sol['nCladding']
     nFree = fiber_sol['nFree']
-    λfree = fiber_sol['free_space_wavelength']
+    λfree = fiber_sol['λFree']
     grid_divider = fiber_sol['grid_divider']
     maxIndex = max(nCore, nCladding, nFree)
     Δs = λfree / maxIndex / grid_divider
@@ -427,7 +429,7 @@ def calculate_numerical_basis(fiber_sol):
             The refractive index of the cladding.
         - 'nCore' : float
             The refractive index of the core.
-        - 'free_space_wavelenegth' : float
+        - 'free_space_wavelength' : float
             The wavelength of the light in free space.
         - 'totalModes' : int
             The total number of calculated modes.
@@ -476,7 +478,7 @@ def calculate_numerical_basis(fiber_sol):
     coord_layout = coordinate_layout(fiber_sol)
     nCore = fiber_sol['nCore']
     nCladding = fiber_sol['nCladding']
-    λfree = fiber_sol['free_space_wavelength']
+    λfree = fiber_sol['λFree']
     if 'coord_layout' in fiber_sol:
         del fiber_sol['coord_layout']
     if 'eigenbasis' in fiber_sol:
@@ -718,83 +720,6 @@ def poyntingrefractor(Efield, Hfield, nxy, nFree, verbose=False):
 
     return kref, Eref, Href
 
-def farfield_projector(nearfield, L, λmedium, farfield_extent, dz, replicas=1):
-    '''This function takes a nearfield and projects it into the farfield.
-
-    Parameters
-    ----------
-    nearfield : np.ndarray
-        The nearfield to be projected. The last two indices in the given array
-        must correspond to positions x, y along the transverse direction. Those
-        two dimensions must have the same number of elements.
-
-    L : float
-        The lateral extent of the nearfield in µm. The nearfield is assumed to
-        be square. This, together with the number of elements in the transverse
-        direction, determines the sampling resolution of the nearfield.
-    
-    λmedium: float
-        The wavelength of the light in the medium in µm.
-
-    farfield_extent : float
-        Ditance between the plane at whicih the neafield is given and the last
-        plane at which the farfield is computed.
-
-    dz : float
-        Approximate resolution at which the farfield is sampled. It is approximate
-        since the farfield is sampled at discrete points. At the end the actual
-        used resolution is implied in the returned array for farfield_zaxis.
-
-    replicas : int, optional
-        To avoid artificat from using the finite Fourier transform, the nearfield
-        is replicated in the transverse direction. This parameter controls the
-        number of padding zeroes that are used around the given fields. 
-        The default is 1.
-
-    Returns
-    -------
-    (farfield_zaxis, farfield ): tuple, in which
-        farfield_zaxis : np.ndarray
-            The z-axis at which the farfield is sampled.
-        farfield : np.ndarray
-            An array with four indices. The first index corresponds to the component
-            of the field. The second index corresponds to the position along the z-axis.
-            Together with farfield_zaxis this index can be used to determine the 
-            The last two indices correspond to the transverse coordinates.
-    '''
-    if len(nearfield.shape) == 2:
-        nearfield = nearfield[np.newaxis, :, :]
-    λ = λmedium
-    k = 2 * np.pi / λ
-    zmax = farfield_extent
-    # number of samples along axis
-    Nz = int(zmax/dz) 
-    farfield_zaxis = np.linspace(0, zmax, Nz)
-    # number of components in field
-    num_components = nearfield.shape[0]
-    idx_width = nearfield.shape[1]
-    # lateral resolution of given field
-    dx = L / nearfield.shape[1] 
-    farfield = np.zeros((num_components, Nz, idx_width*(2*replicas-1), idx_width*(2*replicas-1)), 
-                        dtype=np.complex128)
-    for component_idx in range(num_components):
-        field_component = nearfield[component_idx]
-        if replicas != 1:
-            padder = (idx_width * (replicas-1), idx_width * (replicas-1))
-            field_component = np.pad(field_component, padder)
-        # the same propagator can be used for all components
-        if component_idx == 0:
-            kx = 2 * np.pi * (np.fft.fftfreq(field_component.shape[0], d=dx))
-            ky = kx
-            Kx, Ky = np.meshgrid(kx, ky)
-            Kz = np.sqrt(k**2 - Kx**2 - Ky**2 + 0j)
-            gator = 1.j * np.outer(farfield_zaxis, Kz)
-            gator = gator.reshape(*farfield_zaxis.shape, *Kz.shape)
-            gator = np.exp(gator)
-        nearfourier = np.fft.fft2(field_component)
-        farfourier  = nearfourier * gator
-        farfield[component_idx] = np.fft.ifft2(farfourier)
-    return farfield_zaxis, farfield
 
 def from_cyl_cart_to_cart_cart(field):
     '''
@@ -978,15 +903,103 @@ def angular_farfield_propagator(field, λFree, nMedium, Zf, Zi, si, sf, Δf = No
         else:
             return Efar
 
-def scalarfieldprop(Lobs, z, apertureFunction, λfree, nref, numSamples='auto'):
+def device_layout(device_design):
     '''
-    scalarfieldprop  takes  a  field  component in an aperture plane and
-    propagates  that  to an observation plane by using an implementation
-    of  the  direct  integration  of the Rayleigh-Sommerfeld diffraction
-    integral.  This  implementation  is based on the method described in
-    Shen and Wang (2006). The field is sampled in the aperture plane and
-    in  the obserbation plane using a uniform grid. The field is assumed
-    to be zero outside of the aperture plane.
+    This function creates a figure representing the device layout.
+    
+    Parameters
+    ----------
+    device_design (dict): with at least the following keys:
+        coreRadius (float): the radius of the core in μm
+        mlRadius (float): the radius of the metalens in μm
+        Δ (float): the distance between the end face of the fiber and the start of the metalens in μm
+        mlPitch (float): the pitch of the metalens in μm
+        emDepth (float): the depth of the emitter in the crystal host in μm, measured from the base of the metalens pillars
+        emΔxy (float): the lateral uncertainty (in μm) in the position of the emitter
+        emΔz (float): the uncertainty in the axial position of the emitter in μm
+        mlHeight (float): the height of the metalens in μm
+        λFree (float): the free-space wavelength of the emitter in μm
+        nCore (float): the refractive index of the core
+        nHost (float): the refractive index of the host
+        nClad (float): the refractive index of the cladding
+        NA (float): the numerical aperture of the fiber
+    
+    Returns
+    -------
+    fig, ax: the figure and axis objects
+    '''
+    def CenteredRectangle(xy, width, height, **opts):
+        x, y = xy
+        return Rectangle((x - width/2, y - height/2), width, height, **opts)
+    def BottomRectangle(xy, width, height, **opts):
+        x, y = xy
+        return Rectangle((x - width/2, y), width, height, **opts)
+    coreRadius = device_design['coreRadius']
+    mlRadius = device_design['mlRadius']
+    Δ = device_design['Δ']
+    mlPitch = device_design['mlPitch']
+    emDepth = device_design['emDepth']
+    emΔxy = device_design['emΔxy']
+    emΔz = device_design['emΔz']
+    mlHeight = device_design['mlHeight']
+    λFree = device_design['λFree']
+    nCore = device_design['nCore']
+    nHost = device_design['nHost']
+    wholeWidth  = 1.2*2*max(coreRadius, mlRadius)
+    textframe   = wholeWidth * 0.05
+    fiberTip    = emDepth* 0.75
+    NA = device_design['NA']
+    if 'nCladding' not in device_design:
+        nCladding = np.sqrt(nCore**2 - NA**2)
+    else:
+        nCladding = device_design['nCladding']
+    designSpec  = [f'λFree = {λFree*1000} nm',
+                f'Δ = {Δ} μm',
+                f'coreRad = {coreRadius} μm',
+                f'mlHeight = {mlHeight} μm',
+                f'emDepth = {emDepth} μm',
+                f'Δxy = {emΔxy} μm',
+                f'nCore = {nCore}',
+                f'nHost = {nHost}',
+                'nClad = %.2f' % nCladding,
+                'fiberNA = %.2f' % NA,
+                f'Δz = {emΔz} μm']
+    designSpec = list(sorted(designSpec, key=lambda x: -len(x)))
+    designSpec = '\n'.join(designSpec)
+    wholeHeight = (fiberTip + Δ + mlHeight + emDepth + 4 * emΔz)
+    top_left_corner = (-wholeWidth/2 + textframe, wholeHeight-fiberTip - textframe)
+    finalFieldWidth  =  2*emΔxy*1
+    finalFieldHeight =  2*emΔz*1
+    fig, ax = plt.subplots()
+    clad = BottomRectangle((0, 0-fiberTip), wholeWidth, fiberTip, color='c', alpha=0.5)
+    ax.add_patch(clad)
+    core = BottomRectangle((0, 0-fiberTip), coreRadius*2, fiberTip, color='r', alpha=0.5)
+    ax.add_patch(core)
+    ml = BottomRectangle((0, fiberTip + Δ - fiberTip), 2*mlRadius, mlHeight, color='g', alpha=0.5)
+    ax.add_patch(ml)
+    host = BottomRectangle((0, fiberTip + Δ + mlHeight - fiberTip), wholeWidth, wholeHeight, color='g', alpha=0.3)
+    ax.add_patch(host)
+    fieldBox = CenteredRectangle((0, fiberTip + Δ + mlHeight + emDepth - fiberTip), finalFieldWidth, finalFieldHeight, color='w', alpha=0.5)
+    ax.add_patch(fieldBox)
+    ax.set_xlim(-wholeWidth/2, wholeWidth/2)
+    ax.set_ylim(-fiberTip, wholeHeight - fiberTip)
+    ax.plot(([0,0],[0- fiberTip, wholeHeight- fiberTip]), 'w:', lw=1, alpha=0.2)
+    ax.text(*top_left_corner, designSpec, fontsize=9, ha='left', va = 'top', fontdict={'family': 'monospace'})
+    ax.set_xlabel('x/μm')
+    ax.set_ylabel('z/μm')
+    ax.set_aspect('equal')
+    plt.close()
+    return fig, ax
+
+def scalar_field_func_prop(Lobs, z, apertureFunction, λfree, nref, numSamples='auto', interpFun=False):
+    '''
+    scalar_field_func_prop  takes a field component in an aperture plane
+    and   propagates   that   to   an  observation  plane  by  using  an
+    implementation  of the direct integration of the Rayleigh-Sommerfeld
+    diffraction  integral.  This  implementation  is based on the method
+    described  in  Shen  and  Wang  (2006).  The field is sampled in the
+    aperture  plane  and  in the obserbation plane using a uniform grid.
+    The field is assumed to be zero outside of the aperture plane.
 
     Parameters
     ----------
@@ -1004,13 +1017,13 @@ def scalarfieldprop(Lobs, z, apertureFunction, λfree, nref, numSamples='auto'):
     function has an attribute "null" set to True, then the function will
     simply return a matrix of zeros.
 
-    + λfree (float): wavelength in vaccum of field, given in μm.
+    + λfree (float): wavelength in vacuum of field, given in μm.
 
     + nref (float): refractive index of the propagating medium.
 
     Options
     -------
-    +  "numSamples"  (int or Automatic): number of samples to use in the
+    +  numSamples   (int or Automatic): number of samples to use in  the
     aperture  plane  and  the  observation  plane. The aperture plane is
     sampled  using  a  uniform  grid,  and the observation plane is also
     sampled using a uniform grid. The default is Automatic in which case
@@ -1075,7 +1088,7 @@ def scalarfieldprop(Lobs, z, apertureFunction, λfree, nref, numSamples='auto'):
                 xmaxi.append(-xdif)
 
 
-    numSamples, xCoords, yCoords, field = scalarfieldprop(Lobs, z, apFun, λfree, nref, numSamples)
+    numSamples, xCoords, yCoords, field = scalar_field_func_prop(Lobs, z, apFun, λfree, nref, numSamples)
 
     extent = (xCoords[0], xCoords[-1], yCoords[0], yCoords[-1])
     pField = np.abs(field)
@@ -1091,7 +1104,7 @@ def scalarfieldprop(Lobs, z, apertureFunction, λfree, nref, numSamples='auto'):
     plt.show()
     
     '''
-    assert z>=0, 'z must be positive'
+    assert z>=0, 'z must be non-negative'
 
     λ = λfree / nref
     k = 2*np.pi/λ
@@ -1128,7 +1141,10 @@ def scalarfieldprop(Lobs, z, apertureFunction, λfree, nref, numSamples='auto'):
     padextra = (2*apertureSamples - 1) - numSamples
 
     # Put together the U array
-    U = apertureFunction(ζmesh, ηmesh)
+    if interpFun:
+        U = apertureFunction((ζmesh, ηmesh))
+    else:
+        U = apertureFunction(ζmesh, ηmesh)
 
     # if z=0 there's nothing to do and the same input field should be returned
     if z == 0:
@@ -1181,11 +1197,11 @@ def scalarfieldprop(Lobs, z, apertureFunction, λfree, nref, numSamples='auto'):
 
     return (numSamples, xCoords, yCoords, field)
 
-def vectorfieldprop(Lobs, z, apertureFunctions, λfree, nref, numSamples='auto'):
+def vector_field_func_prop(Lobs, z, apertureFunctions, λfree, nref, numSamples='auto', interpFun = False):
     '''
-    vectorfieldprop  takes a field with three cartesian components in an
-    aperture  plane and propagates that to an observation plane by using
-    an  implementation  of  the  direct  integration  of  the  Rayleigh-
+    vector_field_func_prop takes a field with three cartesian components
+    in  an aperture plane and propagates that to an observation plane by
+    using  an  implementation of the direct integration of the Rayleigh-
     Sommerfeld diffraction integral. This implementation is based on the
     method  described  in  Shen and Wang (2006). The field is sampled in
     the  aperture  plane  and  in  the obserbation plane using a uniform
@@ -1197,7 +1213,7 @@ def vectorfieldprop(Lobs, z, apertureFunctions, λfree, nref, numSamples='auto')
     Parameters
     ----------
     +  Lobs  (float): spatial width of the obsevation region, in μm. The
-    observation  region  is  assumed to be a squared centered on (x,y) =
+    observation  region  is  assumed to be a s quare centered on (x,y) =
     (0,0),  and  extending  from  -Lobs/2  to Lobs/2 in both the x and y
     directions.
 
@@ -1211,7 +1227,7 @@ def vectorfieldprop(Lobs, z, apertureFunctions, λfree, nref, numSamples='auto')
     attribute "null" set to True, then the function will simply return a
     matrix of zeros.
 
-    + λfree (float): wavelength in vaccum of field, given in μm.
+    + λfree (float): wavelength in vacuum of field, given in μm.
 
     + nref (float): refractive index of the propagating medium.
 
@@ -1253,6 +1269,260 @@ def vectorfieldprop(Lobs, z, apertureFunctions, λfree, nref, numSamples='auto')
         numSamples = numSamples
     fields = np.zeros((3, numSamples, numSamples), dtype=complex)
     for field_idx, apertureFunction in enumerate(apertureFunctions):
-        (numSamples, xCoords, yCoords, field) = scalarfieldprop(Lobs, z, apertureFunction, λfree, nref, numSamples)
+        (numSamples, xCoords, yCoords, field) = scalar_field_func_prop(Lobs, z, apertureFunction, λfree, nref, numSamples, interpFun=interpFun)
         fields[field_idx] = field
     return (numSamples, xCoords, yCoords, fields)
+
+def scalar_field_array_prop(zProp, Ufield, ζCoords, ηCoords, λfree, nref):
+    '''
+    scalar_field_array_prop takes a field component in an aperture plane
+    and   propagates   that   to   an  observation  plane  by  using  an
+    implementation  of the direct integration of the Rayleigh-Sommerfeld
+    diffraction  integral.  This  implementation  is based on the method
+    described  in  Shen and Wang (2006). It assumes that the given field
+    is  an  array  representing  the sampling of a field using a uniform
+    grid  in  cartesian  coordinates.  The  field  is assumed to be zero
+    outside of the aperture plane.
+
+    Parameters
+    ----------
+
+    +  zProp  (float):  distance  between  the  aperture  plane  and the
+    observation plane, given in μm.
+
+    + Ufield (np.array): complex amplitude of the field in the aperture,
+    sampled  according  to  the  coordinates  provided  by  ζCoords  and
+    ηCoords.
+
+    + ζCoords (np.array): x coordinates of the aperture plane indexed to
+    the given Ufield.
+
+    + ηCoords (np.array): y coordinates of the aperture plane indexed to
+    the given Ufield.
+
+    + λfree (float): wavelength in vacuum of field, given in μm.
+
+    + nref (float): refractive index of the propagating medium.
+
+    Returns
+    -------
+    (xCoords, yCoords, field) (tuple)
+    +  xCoords (np.array): x coordinates of the observation plane, given
+    in μm.
+
+    +  yCoords (np.array): y coordinates of the observation plane, given
+    in μm.
+
+    +   field   (np.array):  complex  amplitude  of  the  field  in  the
+    observation  plane.  The top left corner of the array corresponds to
+    the  lower  left  corner  of  the observation plane. The coordinates
+    associated with each element in the given array should be taken from
+    xCoords and yCoords.
+
+    References
+    ----------
+    +   Shen,   Fabin,  and  Anbo  Wang.  "Fast-Fourier-transform  based
+    numerical integration method for the Rayleigh-Sommerfeld diffraction
+    formula." Applied optics 45, no. 6 (2006): 1102-1110.
+
+    Example (double slit):
+    ----------------------
+    
+    def doubleSlit(separation, width, height):
+        def apertureFun(x, y):
+            return np.where((
+                            ((np.abs(x - separation/2) <= width/2) | (np.abs(x + separation/2) <= width/2))
+                            & (np.abs(y) <= height/2)
+            ), 1, 0)
+        return apertureFun
+
+    slitSep = 4.
+    slitWidth = 1.
+    slitHeight = 10.
+    zProp = 100.
+    Lobs = 100.
+    z = 100
+    nref = 1
+    λfree = 0.532
+    numSamples = 500
+
+    apFun = doubleSlit(slitSep, slitWidth, slitHeight)
+    ζCoords = np.linspace(-Lobs/2, Lobs/2, numSamples)
+    ηCoords = np.linspace(-Lobs/2, Lobs/2, numSamples)
+    ζGrid, ηGrid = np.meshgrid(ζCoords, ηCoords)
+    apertureField = apFun(ζGrid, ηGrid)
+
+
+    # Estimate the diffraction pattern from the simplified formula
+    diforders = range(10)
+    xmaxi = []
+    for diforder in diforders:
+        stheta = diforder * λfree / slitSep
+        if stheta > 1:
+            break
+        else:
+            theta = np.arcsin(stheta)
+            xdif = z * np.tan(theta)
+            if np.abs(xdif) <= Lobs/2:
+                xmaxi.append(xdif)
+                xmaxi.append(-xdif)
+
+    (xCoords, yCoords, numfield) = ws.scalar_field_array_prop(zProp, apertureField, ζCoords, ηCoords, λfree, nref)
+
+    extent = (xCoords[0], xCoords[-1], yCoords[0], yCoords[-1])
+    pField = np.abs(numfield)
+    fig, ax = plt.subplots(figsize=(10,10))
+    ax.imshow(pField,
+            extent=extent,
+            cmap=cmr.ember,
+            interpolation='spline16')
+    ax.scatter(xmaxi, np.zeros_like(xmaxi), s=20, facecolors='none', edgecolors='w', alpha=0.5)
+    ax.set_xlabel('x/μm')
+    ax.set_ylabel('y/μm')
+    ax.set_title('Diffraction pattern of a double slit\ns=%.2fμm | w=%.2fμm | L=%.2fμm | Δz=%.2fμm' % (slitWidth, slitWidth, slitHeight, z))
+    plt.show()
+    '''
+    assert zProp>=0, 'z must be non-negative'
+
+    λ = λfree / nref
+    k = 2*np.pi / λ
+
+    def gr(r):
+        return (np.exp(1j * k * r) * zProp) * (1./r - 1j*k) / (2*np.pi * r**2)
+
+    numSamples = len(ζCoords)
+    apertureSamples = numSamples
+    assert len(ζCoords) == len(ηCoords), "Input must be square."
+    Lap = (ζCoords[-1] - ζCoords[0])
+    Lobs = Lap
+    k = 2. * np.pi / λ
+    Δζ = Lap / apertureSamples
+    Δη = Δζ
+
+    # ζ, η are coordinates in the source plane
+    # x, y are coordinates in the observation plane
+    xCoords = np.linspace(-Lobs/2, Lobs/2, numSamples)
+    yCoords = np.linspace(-Lobs/2, Lobs/2, numSamples)
+
+    # An override to help the cases in vector field propagation
+    # where some field component is identically zero
+    
+    # ζmesh, ηmesh = np.meshgrid(ζCoords, ηCoords)
+    padextra = (2*apertureSamples - 1) - numSamples
+
+    # if zProp=0 there's nothing to do and the same input field should be returned
+    if zProp == 0:
+        return (numSamples, xCoords, yCoords, Ufield)
+    
+    Ufield = np.pad(Ufield, 
+            pad_width=((0,padextra),(0,padextra)),
+            mode='constant',
+            constant_values=0.)
+
+    x0 = xCoords[0]
+    y0 = yCoords[0]
+    ζ0 = ζCoords[0]
+    η0 = ηCoords[0]
+    # Put together the H array
+    Hx1 = np.full((apertureSamples-1, 2*apertureSamples-1), x0)
+    Hx2 = np.tile(xCoords, (2*apertureSamples-1,1)).T
+    Hx  = np.concatenate((Hx1, Hx2))
+
+    Hζ2 = np.full((apertureSamples-1, 2*apertureSamples-1), ζ0)
+    Hζ1 = np.tile(ζCoords[::-1], (2*apertureSamples - 1,1)).T
+    Hζ  = np.concatenate((Hζ1, Hζ2)).T
+
+    Hxζ = Hx - Hζ.T
+
+    Hy1 = np.full((apertureSamples-1, 2*apertureSamples-1), y0)
+    Hy2 = np.tile(yCoords, (2*apertureSamples-1,1)).T
+    Hy  = np.concatenate((Hy1, Hy2))
+
+    Hη2 = np.full((apertureSamples-1, 2*apertureSamples-1), η0)
+    Hη1 = np.tile(ηCoords[::-1], (2*apertureSamples - 1,1)).T
+    Hη  = np.concatenate((Hη1, Hη2)).T
+
+    Hyη = (Hy - Hη.T).T
+
+    # calculate r
+    rEva = np.sqrt(Hxζ**2 + Hyη**2 + zProp**2)
+    # evaluate gr
+    Hfield = gr(rEva)
+
+    # compute the Fourier transforms
+    FFU = fft2(Ufield)
+    FFH = fft2(Hfield)
+    # perform the convolution
+    FFUH = FFU * FFH
+    # invert the result
+    Sfield = ifft2(FFUH)
+    # get the good parts
+    field = (Δη*Δζ) * Sfield[-apertureSamples::,-apertureSamples::]
+
+    return (xCoords, yCoords, field)
+
+def vector_field_array_prop(zProp, Ufields, ζCoords, ηCoords, λfree, nref):
+    '''
+    vector_field_func_prop takes a field with three cartesian components
+    in  an aperture plane and propagates that to an observation plane by
+    using  an  implementation of the direct integration of the Rayleigh-
+    Sommerfeld diffraction integral. This implementation is based on the
+    method  described  in  Shen and Wang (2006). The field is sampled in
+    the  aperture  plane  and  in  the obserbation plane using a uniform
+    grid. The field is assumed to be zero outside of the aperture plane.
+    No  checks  are  made  that  the given field components constitute a
+    valid electromagnetic field. It assumes that the refractive index is
+    isotropic.
+
+    Parameters
+    ----------
+    +  Lobs  (float): spatial width of the obsevation region, in μm. The
+    observation  region  is  assumed to be a s quare centered on (x,y) =
+    (0,0),  and  extending  from  -Lobs/2  to Lobs/2 in both the x and y
+    directions.
+
+    + z (float): distance between the aperture plane and the observation
+    plane, given in μm. The aperture plane is assumed to be at z=0.
+
+    + apertureFunctions (tuple): a tuple with three bi-variate functions
+    which  return  the  complex  amplitude  of  the  corresponding field
+    cartesian component in the aperture plane. Input to the functions is
+    assumed  to  be in cartesian coordinates x,y. If the function has an
+    attribute "null" set to True, then the function will simply return a
+    matrix of zeros.
+
+    + λfree (float): wavelength in vacuum of field, given in μm.
+
+    + nref (float): refractive index of the propagating medium.
+
+    Returns
+    -------
+    (numSamples, xCoords, yCoords, field) (tuple)
+    +  xCoords (np.array): x coordinates of the observation plane, given
+    in μm.
+
+    +  yCoords (np.array): y coordinates of the observation plane, given
+    in μm.
+
+    +  fields    (np.array):   with  the  same  shape  as  Ufields where
+    the  first  index takes values 0, 1, 2 for the x, y, and z cartesian
+    components  and  the second two indices are anchored to positions in
+    the  obervation plane according to xCoords and yCoords. The top left
+    corner  of  the  array  corresponds  to the lower left corner of the
+    observation plane.
+
+    References
+    ----------
+    +   Shen,   Fabin,  and  Anbo  Wang.  "Fast-Fourier-transform  based
+    numerical integration method for the Rayleigh-Sommerfeld diffraction
+    formula." Applied optics 45, no. 6 (2006): 1102-1110.
+    '''
+    numSamples = len(ζCoords)
+    
+    fields = np.zeros(Ufields.shape, dtype=complex)
+    numComponents = Ufield.shape[0]
+    for field_idx in range(numComponents):
+        Ufield = Ufields[field_idx]
+        (xCoords, yCoords, field) = scalar_field_array_prop(zProp, Ufield, ζCoords, ηCoords, λfree, nref)
+        fields[field_idx] = field
+    return (xCoords, yCoords, fields)
