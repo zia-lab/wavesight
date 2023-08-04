@@ -991,7 +991,7 @@ def device_layout(device_design):
     plt.close()
     return fig, ax
 
-def scalar_field_func_prop(Lobs, z, apertureFunction, λfree, nref, numSamples='auto', interpFun=False):
+def scalar_field_FFT_RS_prop_func(Lobs, z, apertureFunction, λfree, nref, numSamples='auto', interpFun=False):
     '''
     scalar_field_func_prop  takes a field component in an aperture plane
     and   propagates   that   to   an  observation  plane  by  using  an
@@ -1117,15 +1117,18 @@ def scalar_field_func_prop(Lobs, z, apertureFunction, λfree, nref, numSamples='
     else:
         numSamples = numSamples
 
-    apertureSamples = numSamples
     Lap = Lobs
     k = 2. * np.pi / λ
-    Δζ = Lap / apertureSamples
+    Δζ = Lap / numSamples
     Δη = Δζ
 
+    # Simpson's rule with 3/8 tail correction
+    BSimpson = simpson_weights_1D(numSamples)
+    BSimpson = np.matmul(BSimpson.T, BSimpson)
+
     # ζ, η are coordinates in the source plane
-    ζCoords = np.linspace(-Lap/2, Lap/2, apertureSamples)
-    ηCoords = np.linspace(-Lap/2, Lap/2, apertureSamples)
+    ζCoords = np.linspace(-Lap/2, Lap/2, numSamples)
+    ηCoords = np.linspace(-Lap/2, Lap/2, numSamples)
     # x, y are coordinates in the observation plane
     xCoords = np.linspace(-Lobs/2, Lobs/2, numSamples)
     yCoords = np.linspace(-Lobs/2, Lobs/2, numSamples)
@@ -1138,7 +1141,7 @@ def scalar_field_func_prop(Lobs, z, apertureFunction, λfree, nref, numSamples='
             return (numSamples, xCoords, yCoords, np.zeros((numSamples, numSamples)))
     
     ζmesh, ηmesh = np.meshgrid(ζCoords, ηCoords)
-    padextra = (2*apertureSamples - 1) - numSamples
+    padextra = (2*numSamples - 1) - numSamples
 
     # Put together the U array
     if interpFun:
@@ -1150,6 +1153,7 @@ def scalar_field_func_prop(Lobs, z, apertureFunction, λfree, nref, numSamples='
     if z == 0:
         return (numSamples, xCoords, yCoords, U)
     
+    U = BSimpson*U
     U = np.pad(U, 
             pad_width=((0,padextra),(0,padextra)),
             mode='constant',
@@ -1160,22 +1164,22 @@ def scalar_field_func_prop(Lobs, z, apertureFunction, λfree, nref, numSamples='
     η0 = ηCoords[0]
     ζ0 = ζCoords[0]
     # Put together the H array
-    Hx1 = np.full((apertureSamples-1, 2*apertureSamples-1), x0)
-    Hx2 = np.tile(xCoords, (2*apertureSamples-1,1)).T
+    Hx1 = np.full((numSamples-1, 2*numSamples-1), x0)
+    Hx2 = np.tile(xCoords, (2*numSamples-1,1)).T
     Hx  = np.concatenate((Hx1, Hx2))
 
-    Hζ2 = np.full((apertureSamples-1, 2*apertureSamples-1), ζ0)
-    Hζ1 = np.tile(ζCoords[::-1], (2*apertureSamples - 1,1)).T
+    Hζ2 = np.full((numSamples-1, 2*numSamples-1), ζ0)
+    Hζ1 = np.tile(ζCoords[::-1], (2*numSamples - 1,1)).T
     Hζ  = np.concatenate((Hζ1, Hζ2)).T
 
     Hxζ = Hx - Hζ.T
 
-    Hy1 = np.full((apertureSamples-1, 2*apertureSamples-1), y0)
-    Hy2 = np.tile(yCoords, (2*apertureSamples-1,1)).T
+    Hy1 = np.full((numSamples-1, 2*numSamples-1), y0)
+    Hy2 = np.tile(yCoords, (2*numSamples-1,1)).T
     Hy  = np.concatenate((Hy1, Hy2))
 
-    Hη2 = np.full((apertureSamples-1, 2*apertureSamples-1), η0)
-    Hη1 = np.tile(ηCoords[::-1], (2*apertureSamples - 1,1)).T
+    Hη2 = np.full((numSamples-1, 2*numSamples-1), η0)
+    Hη1 = np.tile(ηCoords[::-1], (2*numSamples - 1,1)).T
     Hη  = np.concatenate((Hη1, Hη2)).T
 
     Hyη = (Hy - Hη.T).T
@@ -1193,11 +1197,11 @@ def scalar_field_func_prop(Lobs, z, apertureFunction, λfree, nref, numSamples='
     # invert the result
     S = ifft2(FFUH)
     # get the good parts
-    field = (Δη*Δζ) * S[-apertureSamples::,-apertureSamples::]
+    field = (Δη*Δζ) * S[-numSamples::,-numSamples::]
 
     return (numSamples, xCoords, yCoords, field)
 
-def vector_field_func_prop(Lobs, z, apertureFunctions, λfree, nref, numSamples='auto', interpFun = False):
+def vector_field_FFT_RS_prop_func(Lobs, z, apertureFunctions, λfree, nref, numSamples='auto', interpFun = False):
     '''
     vector_field_func_prop takes a field with three cartesian components
     in  an aperture plane and propagates that to an observation plane by
@@ -1269,35 +1273,69 @@ def vector_field_func_prop(Lobs, z, apertureFunctions, λfree, nref, numSamples=
         numSamples = numSamples
     fields = np.zeros((3, numSamples, numSamples), dtype=complex)
     for field_idx, apertureFunction in enumerate(apertureFunctions):
-        (numSamples, xCoords, yCoords, field) = scalar_field_func_prop(Lobs, z, apertureFunction, λfree, nref, numSamples, interpFun=interpFun)
+        (numSamples, xCoords, yCoords, field) = scalar_field_FFT_RS_prop_func(Lobs, z, apertureFunction, λfree, nref, numSamples, interpFun=interpFun)
         fields[field_idx] = field
     return (numSamples, xCoords, yCoords, fields)
 
-def scalar_field_array_prop(zProp, Ufield, ζCoords, ηCoords, λfree, nref):
+def simpson_weights_1D(numSamples):
     '''
-    scalar_field_array_prop takes a field component in an aperture plane
-    and   propagates   that   to   an  observation  plane  by  using  an
-    implementation  of the direct integration of the Rayleigh-Sommerfeld
-    diffraction  integral.  This  implementation  is based on the method
-    described  in  Shen and Wang (2006). It assumes that the given field
-    is  an  array  representing  the sampling of a field using a uniform
-    grid  in  cartesian  coordinates.  The  field  is assumed to be zero
-    outside of the aperture plane.
+    simpson_weights_1D  returns  the  weights  for Simpson's rule for 1D
+    numerical integration. Ff there's an even number of intervals (which
+    is  the  same  as  an odd number of samples) the 1/3 Simpson rule is
+    used. If there's an odd number of intervals (which is the same as an
+    even number of samples) then Simpson's 1/3 is used for the first n-3
+    points and the 3/8 rule is used for the remaining tail.
+    Parameters
+    ----------
+    numSamples (int): how many evaluation points are avaiable for integration
+    Returns
+    -------
+    BSimpson (np.array): array of weights for mixed Simpson's rule.
+    '''
+    if numSamples % 2 == 1:
+        BSimpson = np.zeros((1,numSamples))
+        BSimpson[0,1::2] = 4
+        BSimpson[0,2::2] = 2
+        BSimpson[0,0] = 1
+        BSimpson[0,-1] = 1
+        BSimpson /= 3.
+    else:
+        BSimpson = np.zeros((1,numSamples))
+        BSimpson[0,1::2] = 4
+        BSimpson[0,2::2] = 2
+        BSimpson[0,0] = 1
+        BSimpson[0,-4] = 1
+        BSimpson /= 3.
+        BSimpson[0,-4] += 3/8.
+        BSimpson[0,-3::] = 3/8*np.array([3,3,1])
+    return BSimpson
+
+def scalar_field_FFT_RS_prop_array(zProp, Ufield, ζCoords, ηCoords, λfree, nref):
+    '''
+    scalar_field_array_prop  takes  a scalar field in a region contained
+    in  a  source  plane  and  propagates  the field to a an observation
+    region  contained  in  a parallel plane at a distance zProp from the
+    source plane. his implementation is based on the method described in
+    Shen and Wang (2006).
+
+    It  assumes  that  array  Ufield  provided  to the function has been
+    adequately  sampled and it uses the same sampling for the propagated
+    field.
 
     Parameters
     ----------
 
-    +  zProp  (float):  distance  between  the  aperture  plane  and the
+    +   zProp  (float):  distance  between  the  source  plane  and  the
     observation plane, given in μm.
 
-    + Ufield (np.array): complex amplitude of the field in the aperture,
-    sampled  according  to  the  coordinates  provided  by  ζCoords  and
-    ηCoords.
+    +  Ufield  (np.array):  complex amplitude of the field in the source
+    plane,  sampled according to the coordinates provided by ζCoords and
+    ηCoords. Must be a square array.
 
-    + ζCoords (np.array): x coordinates of the aperture plane indexed to
+    +  ζCoords  (np.array): x coordinates on the source plane indexed to
     the given Ufield.
 
-    + ηCoords (np.array): y coordinates of the aperture plane indexed to
+    +  ηCoords  (np.array): y coordinates on the source plane indexed to
     the given Ufield.
 
     + λfree (float): wavelength in vacuum of field, given in μm.
@@ -1307,10 +1345,10 @@ def scalar_field_array_prop(zProp, Ufield, ζCoords, ηCoords, λfree, nref):
     Returns
     -------
     (xCoords, yCoords, field) (tuple)
-    +  xCoords (np.array): x coordinates of the observation plane, given
+    +  xCoords (np.array): x coordinates on the observation plane, given
     in μm.
 
-    +  yCoords (np.array): y coordinates of the observation plane, given
+    +  yCoords (np.array): y coordinates on the observation plane, given
     in μm.
 
     +   field   (np.array):  complex  amplitude  of  the  field  in  the
@@ -1336,38 +1374,60 @@ def scalar_field_array_prop(zProp, Ufield, ζCoords, ηCoords, λfree, nref):
             ), 1, 0)
         return apertureFun
 
-    slitSep = 4.
+    slitSep = 5.
     slitWidth = 1.
     slitHeight = 10.
     zProp = 100.
-    Lobs = 100.
+    L_aperture = 100.
     z = 100
     nref = 1
     λfree = 0.532
-    numSamples = 500
+    numSamples = 2*int(L_aperture/λfree)
 
     apFun = doubleSlit(slitSep, slitWidth, slitHeight)
-    ζCoords = np.linspace(-Lobs/2, Lobs/2, numSamples)
-    ηCoords = np.linspace(-Lobs/2, Lobs/2, numSamples)
+    ζCoords = np.linspace(-L_aperture/2, L_aperture/2, numSamples)
+    ηCoords = np.linspace(-L_aperture/2, L_aperture/2, numSamples)
     ζGrid, ηGrid = np.meshgrid(ζCoords, ηCoords)
     apertureField = apFun(ζGrid, ηGrid)
 
-
     # Estimate the diffraction pattern from the simplified formula
     diforders = range(10)
+    difordersV = range(1,10)
     xmaxi = []
-    for diforder in diforders:
-        stheta = diforder * λfree / slitSep
-        if stheta > 1:
-            break
-        else:
-            theta = np.arcsin(stheta)
-            xdif = z * np.tan(theta)
-            if np.abs(xdif) <= Lobs/2:
-                xmaxi.append(xdif)
-                xmaxi.append(-xdif)
+    ymaxi = []
+    for diforderH in diforders:
+        for diforderV in difordersV:
+            stheta = diforderH * λfree / slitSep
+            sthetaV = (2*diforderV+1) * λfree / slitHeight / 2
+            if stheta > 1:
+                continue
+            if sthetaV > 1:
+                continue
+            else:
+                theta = np.arcsin(stheta)
+                xdif = z * np.tan(theta)
+                thetaV = np.arcsin(sthetaV)
+                ydif = z * np.tan(thetaV)
+                if np.abs(xdif) <= L_aperture/2:
+                    if np.abs(ydif) <= L_aperture/2:
+                        xmaxi.append(xdif)
+                        ymaxi.append(ydif)
+                        xmaxi.append(xdif)
+                        ymaxi.append(0)
+                        xmaxi.append(xdif)
+                        ymaxi.append(-ydif)
+                        xmaxi.append(-xdif)
+                        ymaxi.append(ydif)
+                        xmaxi.append(-xdif)
+                        ymaxi.append(0)
+                        xmaxi.append(-xdif)
+                        ymaxi.append(-ydif)
 
-    (xCoords, yCoords, numfield) = ws.scalar_field_array_prop(zProp, apertureField, ζCoords, ηCoords, λfree, nref)
+    difMaxima = list(zip(xmaxi, ymaxi))
+    difMaxima = list(set(difMaxima))
+    difMaxima = np.array(difMaxima)
+
+    (xCoords, yCoords, numfield) = ws.scalar_field_FFT_RS_prop_array(zProp, apertureField, ζCoords, ηCoords, λfree, nref)
 
     extent = (xCoords[0], xCoords[-1], yCoords[0], yCoords[-1])
     pField = np.abs(numfield)
@@ -1375,8 +1435,8 @@ def scalar_field_array_prop(zProp, Ufield, ζCoords, ηCoords, λfree, nref):
     ax.imshow(pField,
             extent=extent,
             cmap=cmr.ember,
-            interpolation='spline16')
-    ax.scatter(xmaxi, np.zeros_like(xmaxi), s=20, facecolors='none', edgecolors='w', alpha=0.5)
+            interpolation='None')
+    ax.scatter(difMaxima[:,0], difMaxima[:,1], s=40, marker='o',facecolors='none', edgecolors='r', alpha=0.5)
     ax.set_xlabel('x/μm')
     ax.set_ylabel('y/μm')
     ax.set_title('Diffraction pattern of a double slit\ns=%.2fμm | w=%.2fμm | L=%.2fμm | Δz=%.2fμm' % (slitWidth, slitWidth, slitHeight, z))
@@ -1391,55 +1451,55 @@ def scalar_field_array_prop(zProp, Ufield, ζCoords, ηCoords, λfree, nref):
         return (np.exp(1j * k * r) * zProp) * (1./r - 1j*k) / (2*np.pi * r**2)
 
     numSamples = len(ζCoords)
-    apertureSamples = numSamples
     assert len(ζCoords) == len(ηCoords), "Input must be square."
     Lap = (ζCoords[-1] - ζCoords[0])
+    # The implementation requires that the size of the source
+    # and observation regions be the same.
     Lobs = Lap
     k = 2. * np.pi / λ
-    Δζ = Lap / apertureSamples
+    Δζ = Lap / numSamples
     Δη = Δζ
+
+    # Simpson's rule with 3/8 tail correction
+    BSimpson = simpson_weights_1D(numSamples)
+    BSimpson = np.matmul(BSimpson.T, BSimpson)
 
     # ζ, η are coordinates in the source plane
     # x, y are coordinates in the observation plane
     xCoords = np.linspace(-Lobs/2, Lobs/2, numSamples)
     yCoords = np.linspace(-Lobs/2, Lobs/2, numSamples)
-
-    # An override to help the cases in vector field propagation
-    # where some field component is identically zero
     
-    # ζmesh, ηmesh = np.meshgrid(ζCoords, ηCoords)
-    padextra = (2*apertureSamples - 1) - numSamples
-
     # if zProp=0 there's nothing to do and the same input field should be returned
     if zProp == 0:
         return (numSamples, xCoords, yCoords, Ufield)
     
-    Ufield = np.pad(Ufield, 
-            pad_width=((0,padextra),(0,padextra)),
+    padextra = (numSamples - 1)
+    Ufield = BSimpson * Ufield
+    Ufield = np.pad(BSimpson * Ufield, 
+            pad_width=((0,padextra), (0,padextra)),
             mode='constant',
             constant_values=0.)
 
-    x0 = xCoords[0]
-    y0 = yCoords[0]
-    ζ0 = ζCoords[0]
-    η0 = ηCoords[0]
+    x0, y0 = xCoords[0], yCoords[0] 
+    ζ0, η0 = ζCoords[0], ηCoords[0]
+
     # Put together the H array
-    Hx1 = np.full((apertureSamples-1, 2*apertureSamples-1), x0)
-    Hx2 = np.tile(xCoords, (2*apertureSamples-1,1)).T
+    Hx1 = np.full((numSamples-1, 2*numSamples-1), x0)
+    Hx2 = np.tile(xCoords, (2*numSamples-1,1)).T
     Hx  = np.concatenate((Hx1, Hx2))
 
-    Hζ2 = np.full((apertureSamples-1, 2*apertureSamples-1), ζ0)
-    Hζ1 = np.tile(ζCoords[::-1], (2*apertureSamples - 1,1)).T
+    Hζ2 = np.full((numSamples-1, 2*numSamples-1), ζ0)
+    Hζ1 = np.tile(ζCoords[::-1], (2*numSamples - 1,1)).T
     Hζ  = np.concatenate((Hζ1, Hζ2)).T
 
     Hxζ = Hx - Hζ.T
 
-    Hy1 = np.full((apertureSamples-1, 2*apertureSamples-1), y0)
-    Hy2 = np.tile(yCoords, (2*apertureSamples-1,1)).T
+    Hy1 = np.full((numSamples-1, 2*numSamples-1), y0)
+    Hy2 = np.tile(yCoords, (2*numSamples-1,1)).T
     Hy  = np.concatenate((Hy1, Hy2))
 
-    Hη2 = np.full((apertureSamples-1, 2*apertureSamples-1), η0)
-    Hη1 = np.tile(ηCoords[::-1], (2*apertureSamples - 1,1)).T
+    Hη2 = np.full((numSamples-1, 2*numSamples-1), η0)
+    Hη1 = np.tile(ηCoords[::-1], (2*numSamples - 1,1)).T
     Hη  = np.concatenate((Hη1, Hη2)).T
 
     Hyη = (Hy - Hη.T).T
@@ -1457,11 +1517,11 @@ def scalar_field_array_prop(zProp, Ufield, ζCoords, ηCoords, λfree, nref):
     # invert the result
     Sfield = ifft2(FFUH)
     # get the good parts
-    field = (Δη*Δζ) * Sfield[-apertureSamples::,-apertureSamples::]
+    field = (Δη*Δζ) * Sfield[-numSamples::,-numSamples::]
 
     return (xCoords, yCoords, field)
 
-def vector_field_array_prop(zProp, Ufields, ζCoords, ηCoords, λfree, nref):
+def vector_field_FFT_RS_prop_array(zProp, Ufields, ζCoords, ηCoords, λfree, nref):
     '''
     vector_field_func_prop takes a field with three cartesian components
     in  an aperture plane and propagates that to an observation plane by
@@ -1523,6 +1583,6 @@ def vector_field_array_prop(zProp, Ufields, ζCoords, ηCoords, λfree, nref):
     numComponents = Ufield.shape[0]
     for field_idx in range(numComponents):
         Ufield = Ufields[field_idx]
-        (xCoords, yCoords, field) = scalar_field_array_prop(zProp, Ufield, ζCoords, ηCoords, λfree, nref)
+        (xCoords, yCoords, field) = scalar_field_FFT_RS_prop_array(zProp, Ufield, ζCoords, ηCoords, λfree, nref)
         fields[field_idx] = field
     return (xCoords, yCoords, fields)
