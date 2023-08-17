@@ -6,6 +6,7 @@ from scipy.optimize import root_scalar
 from matplotlib import pyplot as plt
 from fieldgen import * 
 from convstore import * 
+from fungenerators import *
 from tqdm.notebook import tqdm
 from scipy.interpolate import RegularGridInterpolator
 from scipy.fftpack import fft2, ifft2
@@ -16,88 +17,6 @@ from misc import *
 
 real_dtype = np.float64
 complex_dtype = np.complex128  
-
-def tmfungen(λfree, n1, n2, a):
-    '''
-    This function returns the eigenvalue function for TM(0,m) modes.
-
-    The expressions for the eigenvalue functions are generated in the
-    accompanying Mathematica notebook "wavesight.nb".
-
-    Parameters
-    ----------
-    λfree : float
-        Free space wavelength in μm.
-    n1 : float
-        Core refractive index.
-    n2 : float
-        Cladding refractive index.
-    a : float
-        Core radius in μm.
-
-    Returns
-    -------
-    tm : function
-    '''
-    m = 0
-    def tm(kz):
-        return (n1**2*(special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))))/(2.*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))) + (n2**2*(-special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) - special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))))/(2.*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))
-    return tm
-
-def tefungen(λfree, n1, n2, a):
-    '''
-    This function returns the eigenvalue function for TE(0,m) modes.
-
-    The expressions for the eigenvalue functions are generated in the
-    accompanying Mathematica notebook "wavesight.nb".
-
-    Parameters
-    ----------
-    λfree : float
-        Free space wavelength in μm.
-    n1 : float
-        Core refractive index.
-    n2 : float
-        Cladding refractive index.
-    a : float
-        Core radius in μm.
-
-    Returns
-    -------
-    te : function
-    '''
-    m = 0
-    def te(kz):
-        return (special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)))/(2.*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))) + (-special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) - special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))/(2.*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))
-    return te
-
-def hefungen(λfree, m, n1, n2, a):
-    '''
-    This function returns the eigenvalue function for HE(n,m) modes.
-
-    The expressions for the eigenvalue functions are generated in the
-    accompanying Mathematica notebook "wavesight.nb".
-
-    Parameters
-    ----------
-    λfree : float
-        Free space wavelength in μm.
-    n1 : float
-        Core refractive index.
-    n2 : float
-        Cladding refractive index.
-    a : float
-        Core radius in μm.
-    m : int
-        Order of the HE mode.
-
-    Returns
-    -------
-    he : function
-    '''
-    def he(kz):
-        return  -((m**2*(1/(-kz**2 + (4*n1**2*np.pi**2)/λfree**2) + 1/(kz**2 - (4*n2**2*np.pi**2)/λfree**2))*(n1**2/(-kz**2 + (4*n1**2*np.pi**2)/λfree**2) + n2**2/(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))/a**2) + ((special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)))/(2.*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))) + (-special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) - special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))/(2.*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))))*((n1**2*(special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))))/(2.*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))) + (n2**2*(-special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) - special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))))/(2.*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))))
-    return he
 
 def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False, tm_te_funcs=False):
     '''
@@ -172,8 +91,8 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
     kzmax         = nCore * 2 * np.pi / wavelength
     kzmin         = nCladding * 2 *np.pi / wavelength
     kzspan        = kzmax - kzmin
-    kzmax         = kzmax - 0.001 * kzspan
-    kzmin         = kzmin + 0.001 * kzspan
+    kzmax         = kzmax - 1e-6 * kzspan
+    kzmin         = kzmin + 1e-6 * kzspan
     # split the solution domain in at least 300 parts
     dkz           = (kzmax - kzmin) / 300
     sol           = fiber_spec
@@ -215,45 +134,36 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
         sol['tefun'] = tefun
 
     if solve_modes in ['transverse', 'all']:
-        print("Calculating TE(0,n) propagation constants ...")
-        dkzprime = dkz/numModesTE
-        temodes = findallroots(tefun, kzmin, kzmax, dkzprime, 
-                            dtype=real_dtype, method='brentq', num_sigfigs=6)
-
+        dkzprime = dkz/numModesTE/2.
         print("Calculating TM(0,n) propagation constants ...")
         tmmodes = findallroots(tmfun, kzmin, kzmax, dkzprime, 
-                            dtype=real_dtype, method='brentq', num_sigfigs=6)
+                            dtype=real_dtype, method='brentq', num_sigfigs=10)
+        
+        print("Calculating TE(0,n) propagation constants ...")
+        temodes = findallroots(tefun, kzmin, kzmax, dkzprime, 
+                            dtype=real_dtype, method='brentq', num_sigfigs=10)
         kzrange = np.linspace(kzmin, kzmax, 1000, dtype=real_dtype)
     
     if drawPlots:
         tmvals = tmfun(kzrange)
         tevals = tefun(kzrange)
-        tmmodes = findallroots(tmfun, kzmin, kzmax, dkz, 
-                               dtype=real_dtype, method='bisect', 
-                               num_sigfigs=6, verbose = False)
         tmzerocheck = tmfun(tmmodes)
         tezerocheck = tefun(temodes)
 
-        plt.figure(figsize=(10,5))
+        plt.figure(figsize=(10,3))
         plt.plot(kzrange, tmvals, 'r')
-        plt.scatter(tmmodes,tmzerocheck, c='b')
+        plt.scatter(tmmodes,tmzerocheck, c='y')
         plt.plot([kzmin, kzmax], [0,0], "w:")
         plt.ylim(-1,1)
-        plt.title('TM eigenvalues')
+        plt.title('TM modes (%d found)' % len(tmmodes))
         plt.show()
 
-        zerocrossindices = zerocrossings(tevals)
-        zcvals = tevals[zerocrossindices]
-        good_crossings = np.where(~np.isnan(zcvals))
-        zcvals = zcvals[good_crossings]
-        zerocrossindices = zerocrossindices[good_crossings]
-
-        plt.figure(figsize=(10,5))
+        plt.figure(figsize=(10,3))
         plt.plot(kzrange, tevals, 'r')
-        plt.scatter(temodes,tezerocheck, c='b')
+        plt.scatter(temodes,tezerocheck, c='y')
         plt.plot([kzmin, kzmax], [0,0], "w:")
         plt.ylim(-1,1)
-        plt.title('TE eigenvalues')
+        plt.title('TE modes (%d found)' % len(temodes))
         plt.show()
 
     hemodes = {}
@@ -279,12 +189,12 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
             hemodes[m] = hezeros
             hezerocheck = hefun(hezeros)
             if drawPlots:
-                plt.figure(figsize=(15,5))
+                plt.figure(figsize=(15,3))
                 plt.plot(kzrange, hevals, 'r')
                 plt.plot([kzmin, kzmax], [0,0], "w:")
                 plt.scatter(hezeros, hezerocheck, c='g')
                 plt.ylim(-0.01,0.04)
-                plt.title('HE(%d, n) eigenvalues' % m)
+                plt.title('HE(%d, n) roots (%d found)' % (m, len(hezeros)))
                 plt.show()
             m = m + 1  
 
@@ -1580,7 +1490,7 @@ def vector_field_FFT_RS_prop_array(zProp, Ufields, ζCoords, ηCoords, λfree, n
     numSamples = len(ζCoords)
     
     fields = np.zeros(Ufields.shape, dtype=complex)
-    numComponents = Ufield.shape[0]
+    numComponents = Ufields.shape[0]
     for field_idx in range(numComponents):
         Ufield = Ufields[field_idx]
         (xCoords, yCoords, field) = scalar_field_FFT_RS_prop_array(zProp, Ufield, ζCoords, ηCoords, λfree, nref)
