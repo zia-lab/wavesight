@@ -4,6 +4,7 @@ import os
 from time import time
 import tempfile
 import subprocess
+import numpy as np
 
 def latex_eqn_to_png(tex_code, figname, timed=True, outfolder=os.getcwd()):
     '''
@@ -98,6 +99,27 @@ def latex_eqn_to_png(tex_code, figname, timed=True, outfolder=os.getcwd()):
         os.system('cd "%s"; mv texeqn.jpg "%s"' % (temp_folder, out_jpg_fname))
     return None
 
+def sig_figs_in(num):
+    '''
+    Count how many significant figures are in a given number.
+    This might fail if the number has been calculated with.
+    Only good for number one has input oneself.
+    '''
+    return len(str(num).replace('.',''))
+
+def rounder(num, n):
+    '''
+    Given a number, round it to n significant figures.
+    Parameters
+    ----------
+    num (float)
+    n     (int): how many sig figs to return in the rounded num.
+    Returns
+    -------
+    rounded: the rounded number.
+    '''
+    rounded = round(num, -int(np.floor(np.log10(num))) + (n - 1))
+    return rounded
 
 def num2tex(num, sig_figs):
     '''

@@ -4,7 +4,6 @@ import numpy as np
 from scipy import special 
 from scipy.optimize import root_scalar
 from matplotlib import pyplot as plt
-# from fieldgen import * 
 from convstore import * 
 from fungenerators import *
 from fieldgenesis import *
@@ -232,17 +231,26 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
     sol['totalModes'] = totalModesTE + totalModesTM + 2*totalModesHE
     return sol
 
-def field_dot(E_field, H_field, Δs):
+def field_dot(E_field, H_field, Δs, mask=None):
     '''
     Parameters
     ----------
-    E_field (np.array): an electric field sampled on a cartesian grid of size Δs
-    H_field (np.array): a magnetic field sampled on a cartesian grid of size Δs
+    E_field (np.array): an electric field sampled on a cartesian
+    grid of size Δs
+    H_field  (np.array): a magnetic field sampled on a cartesian
+    grid of size Δs
     Δs (float): the grid spacing
+    mask (np.array): a mask to apply to the fields (same size as
+    E_field[0,:,:] and H_field[0,:,:])
     Returns
     -------
     dotp (float): the dot product of the fields
     '''
+    if mask is not None:
+        E_field[0][~mask] = 0
+        E_field[1][~mask] = 0
+        H_field[0][~mask] = 0
+        H_field[1][~mask] = 0
     sumField = E_field[0] * np.conjugate(H_field[1]) - E_field[1] * np.conjugate(H_field[0])
     dotp = np.sum(sumField)
     dotp = 0.5 * dotp * Δs**2
@@ -371,6 +379,52 @@ def boundary_test(Efuncs, Hfuncs, fiber_spec, modeType, tolerance=1e-5):
         print(claddingBoundary, coreBoundary)
     return (boundaryTest, nonZeroTest, zeroCheck, nonZeroDiff)
 
+def calculate_size_of_grid(fiber_sol):
+    '''
+    Given a solution for the modes of a multimode fiber, determine
+    the half side of the computational domain that would capture
+    most of the energy contained in the solved modes.
+    Parameters
+    ----------
+    fiber_sol (dict): a dictionary containing the solution for the
+    fiber.
+    Returns
+    -------
+    b (float)
+    '''
+    goal_fraction = 0.99 
+    a = fiber_sol['coreRadius']
+    nCore = fiber_sol['nCore']
+    nCladding = fiber_sol['nCladding']
+    nFree = fiber_sol['nFree']
+    λfree = fiber_sol['λFree']
+    kFree = 2*np.pi/λfree
+    grid_divider = fiber_sol['grid_divider']
+    maxIndex = max(nCore, nCladding, nFree)
+    Δs = λfree / maxIndex / grid_divider
+    # calculate the side of the computational domain: START
+    allnums = []
+    for modetype in ['TE', 'TM', 'HE']:
+        allkzs = fiber_sol[modetype + 'kz']
+        for m, kzs in allkzs.items():
+            for kz in kzs:
+                wnums = (modetype, m, kz)
+                allnums.append(wnums)
+    (modetype, m, kz) = sorted(allnums, key=lambda x: x[-1])[0]
+    (Efuncs, Hfuncs) = fieldGenerator(a, kFree, kz, m, nCladding, nCore, modetype)
+    ρrange = np.linspace(0, a + 20 * λfree / nCladding, 1000)
+    fluxCore = Efuncs[0](ρrange) * np.conjugate(Hfuncs[1](ρrange)) - Efuncs[1](ρrange) * np.conjugate(Hfuncs[0](ρrange))
+    fluxCladding = Efuncs[3](ρrange) * np.conjugate(Hfuncs[4](ρrange)) - Efuncs[4](ρrange) * np.conjugate(Hfuncs[3](ρrange))
+    flux = fluxCore
+    flux[ρrange>a] = fluxCladding[ρrange>a]
+    integrand = flux * ρrange
+    total = np.sum(integrand)
+    insideEnergy =  np.cumsum(integrand)/total
+    b = np.interp(goal_fraction, insideEnergy, ρrange) + λfree
+    numSigFigsina = sig_figs_in(a)
+    b = rounder(b, numSigFigsina)
+    return b
+
 def coordinate_layout(fiber_sol):
     '''
     Given a fiber solution, return the coordinate arrays for plotting
@@ -415,14 +469,16 @@ def coordinate_layout(fiber_sol):
     
     '''
     a = fiber_sol['coreRadius']
-    b = a*1.5 # assumed, ideally the cladding should extend to infinity
     nCore = fiber_sol['nCore']
     nCladding = fiber_sol['nCladding']
     nFree = fiber_sol['nFree']
     λfree = fiber_sol['λFree']
+    kFree = 2*np.pi/λfree
     grid_divider = fiber_sol['grid_divider']
     maxIndex = max(nCore, nCladding, nFree)
     Δs = λfree / maxIndex / grid_divider
+    b = calculate_size_of_grid(fiber_sol)
+    # calculate the side of the computational domain: END
     # calculate the coordinates arrays
     numSamples = int(2 * b / Δs)
     xrange     = np.linspace(-b, b, numSamples, dtype=real_dtype)
@@ -502,7 +558,7 @@ def calculate_numerical_basis(fiber_sol, verbose=True):
             corresponding  array  listing the propagation constants. The
             sixth  value  is  the transverse propagation constant inside
             the  core.  The seventh value is the propagation constant in
-            the cladding.
+            the cladding. (modType, parity, m, kzidx, kz, γ, β)
     '''
     warnings.filterwarnings('ignore', 'invalid value encountered in sqrt')
     warnings.filterwarnings('ignore', 'invalid value encountered in multiply')
