@@ -61,7 +61,9 @@ def findallroots(fun, xmin, xmax, dx, dtype,
                  xtol=1e-9, 
                  max_iter=10000, num_sigfigs=6,
                  razorsharp=0.00001,
-                 method='secant',verbose=False):
+                 method='secant',
+                 verbose=False,
+                 reverse=False):
     '''
     Find  all  roots of a function in a given interval. To accomplish this
     the  function  is  sampled  with  the  given  resolution dx within the
@@ -105,6 +107,8 @@ def findallroots(fun, xmin, xmax, dx, dtype,
         'bisect', 'brentq', 'brenth', 'ridder', 'toms748', 'secant'.
     verbose : bool, optional
         If True, print information about the roots as they are found.
+    reverse : bool, optional
+        If True, return the roots in reverse order.
     
     Returns
     -------
@@ -167,6 +171,8 @@ def findallroots(fun, xmin, xmax, dx, dtype,
     # remove zeros that are equal to the given number of digits
     zeros = np.unique(round2sigfigs(zeros, num_sigfigs))
     zeros = np.sort(zeros)
+    if reverse:
+        zeros = np.flip(zeros)
     return zeros
 
 def find_layout_rectangle(ar, N):

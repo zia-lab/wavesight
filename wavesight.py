@@ -4,16 +4,19 @@ import numpy as np
 from scipy import special 
 from scipy.optimize import root_scalar
 from matplotlib import pyplot as plt
-from fieldgen import * 
+# from fieldgen import * 
 from convstore import * 
 from fungenerators import *
+from fieldgenesis import *
+from misc import *
 from tqdm.notebook import tqdm
 from scipy.interpolate import RegularGridInterpolator
 from scipy.fftpack import fft2, ifft2
 import cmasher as cmr
 import warnings
 from matplotlib.patches import Rectangle
-from misc import *
+
+from collections import OrderedDict
 
 real_dtype = np.float64
 complex_dtype = np.complex128  
@@ -60,8 +63,14 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
             The V number of the fiber.
         numModesFromVnum: float
             The number of modes according to the V number.
+        totalNumModesTE : int
+            The total number of TE modes that were found.
+        totalNumModesTM : int
+            The total number of TM modes that were found.
+        totalNumModesHE : int
+            The total number of HE modes that were found, excluding parity.
         totalNumModes : int
-            The total number of modes that were found.
+            The total number of modes that were found, including parity.
         tmfun : function
             The eigenvalue function for the TM modes.
         tefun : function
@@ -79,7 +88,8 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
     warnings.filterwarnings('ignore', 'invalid value encountered in sqrt')
     nCore = fiber_spec['nCore']
     if 'NA' in fiber_spec:
-        print("Estimating nCladding from nCore and NA ...")
+        if verbose:
+            print("Estimating nCladding from nCore and NA ...")
         NA        = fiber_spec['NA']
         nCladding = np.sqrt(nCore**2 - NA**2)
     else:
@@ -88,16 +98,18 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
     separator     = "="*40
     coreRadius    = fiber_spec['coreRadius']
     wavelength    = fiber_spec['λFree']
+    kFree         = 2 * np.pi / wavelength
     kzmax         = nCore * 2 * np.pi / wavelength
     kzmin         = nCladding * 2 *np.pi / wavelength
     kzspan        = kzmax - kzmin
-    kzmax         = kzmax - 1e-6 * kzspan
-    kzmin         = kzmin + 1e-6 * kzspan
+    kzmax         = kzmax - 1e-7 * kzspan
+    kzmin         = kzmin + 1e-7 * kzspan
     # split the solution domain in at least 300 parts
-    dkz           = (kzmax - kzmin) / 300
+    dkz           = (kzmax - kzmin) / 1000
     sol           = fiber_spec
     Vnum          = 2 * np.pi * coreRadius * NA / wavelength
     sol['Vnum']   = Vnum
+    sol['kFree']  = kFree
     numModes      = int(Vnum**2/2)
     numModesTE    = int(Vnum/2)
     numModesTM    = int(Vnum/2)
@@ -135,13 +147,14 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
 
     if solve_modes in ['transverse', 'all']:
         dkzprime = dkz/numModesTE/2.
-        print("Calculating TM(0,n) propagation constants ...")
+        if verbose:
+            print("Calculating TM(0,n) propagation constants ...")
         tmmodes = findallroots(tmfun, kzmin, kzmax, dkzprime, 
-                            dtype=real_dtype, method='brentq', num_sigfigs=10)
-        
-        print("Calculating TE(0,n) propagation constants ...")
+                            dtype=real_dtype, method='brentq', num_sigfigs=10, reverse=True)
+        if verbose:
+            print("Calculating TE(0,n) propagation constants ...")
         temodes = findallroots(tefun, kzmin, kzmax, dkzprime, 
-                            dtype=real_dtype, method='brentq', num_sigfigs=10)
+                            dtype=real_dtype, method='brentq', num_sigfigs=10, reverse=True)
         kzrange = np.linspace(kzmin, kzmax, 1000, dtype=real_dtype)
     
     if drawPlots:
@@ -169,12 +182,14 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
     hemodes = {}
     if solve_modes == 'all':
         m = 1
-        print("Calculating HE(m,n) propagation constants ...")
+        if verbose:
+            print("Calculating HE(m,n) propagation constants ...")
         while True:
             approxModes = maxHEmodes - m
             approxModes = max(2, approxModes)
             dkzprime = dkz / approxModes
-            print(f'm={m}',end='\r')
+            if verbose:
+                print(f'm={m}',end='\r')
             hefun = hefungen(λfree=wavelength, 
                         m=m, 
                         n2=nCladding, 
@@ -183,7 +198,7 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
             # sol['hefuns'][m] = hefun
             hevals = hefun(kzrange)
             hezeros = findallroots(hefun, kzmin, kzmax, dkzprime, 
-                                dtype=real_dtype, method='secant', num_sigfigs=10, verbose=False)
+                                dtype=real_dtype, method='brentq', num_sigfigs=10, verbose=False, reverse=True)
             if len(hezeros) == 0:
                 break
             hemodes[m] = hezeros
@@ -192,64 +207,169 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
                 plt.figure(figsize=(15,3))
                 plt.plot(kzrange, hevals, 'r')
                 plt.plot([kzmin, kzmax], [0,0], "w:")
-                plt.scatter(hezeros, hezerocheck, c='g')
+                plt.scatter(hezeros, hezerocheck, c='y')
                 plt.ylim(-0.01,0.04)
                 plt.title('HE(%d, n) roots (%d found)' % (m, len(hezeros)))
                 plt.show()
             m = m + 1  
 
     numCalcModes = (2 * sum(list(map(len,hemodes.values()))), len(temodes), len(tmmodes))
-    print("")
-    print(separator)
-    print("HE modes = %s\nTE modes = %d\nTM modes = %d\nTOTAL modes = %d\nFROM_Vnum = %d" % (*numCalcModes, sum(numCalcModes), numModes))
-    print(separator)
+    if verbose:
+        print("")
+        print(separator)
+        print("HE modes = %s\nTE modes = %d\nTM modes = %d\nTOTAL modes = %d\nFROM_Vnum = %d" % (*numCalcModes, sum(numCalcModes), numModes))
+        print(separator)
     # put the modes in the solution dictionary
     sol['TEkz'] = {0: temodes}
     sol['TMkz'] = {0: tmmodes}
     sol['HEkz'] = hemodes
-    totalModes = sum(list(map(len, sol['HEkz'].values())))
-    totalModes += len(sol['TMkz'][0])
-    totalModes += len(sol['TEkz'][0])
-    sol['totalModes'] = totalModes
+    totalModesTE = len(sol['TEkz'][0])
+    totalModesTM = len(sol['TMkz'][0])
+    totalModesHE = sum(list(map(len, sol['HEkz'].values())))
+    sol['totalModesTE'] = totalModesTE
+    sol['totalModesTM'] = totalModesTM
+    sol['totalModesHE'] = totalModesHE
+    sol['totalModes'] = totalModesTE + totalModesTM + 2*totalModesHE
     return sol
 
-def Ae(modetype, a, n1, n2, λfree, m, kz):
-    if modetype == "HE":
-        return 1
-    elif modetype == "TE":
-        return 1
-    elif modetype == 'TM':
-        return 0
+def field_dot(E_field, H_field, Δs):
+    '''
+    Parameters
+    ----------
+    E_field (np.array): an electric field sampled on a cartesian grid of size Δs
+    H_field (np.array): a magnetic field sampled on a cartesian grid of size Δs
+    Δs (float): the grid spacing
+    Returns
+    -------
+    dotp (float): the dot product of the fields
+    '''
+    sumField = E_field[0] * np.conjugate(H_field[1]) - E_field[1] * np.conjugate(H_field[0])
+    dotp = np.sum(sumField)
+    dotp = 0.5 * dotp * Δs**2
+    return dotp
 
-def Ah(modetype, a, n1, n2, λfree, m, kz):
-    if modetype == "HE":
-        return ((-1j)*a**2*n1**2*np.pi*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*λfree**2*(4*n2**2*np.pi**2 - kz**2*λfree**2)*(special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)))*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))*(special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))) + 1j*np.pi*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*(a**2*n2**2*(4*n1**2*np.pi**2 - kz**2*λfree**2)*(4*n2**2*np.pi**2 - kz**2*λfree**2)*special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))**2 + 4*kz**2*m**2*(n1**2 - n2**2)*λfree**4*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))**2 + 2*a**2*n2**2*(4*n1**2*np.pi**2 - kz**2*λfree**2)*(4*n2**2*np.pi**2 - kz**2*λfree**2)*special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))*special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + a**2*n2**2*(4*n1**2*np.pi**2 - kz**2*λfree**2)*(4*n2**2*np.pi**2 - kz**2*λfree**2)*special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))**2))/(a*kz*m*λfree**3*(-4*n2**2*np.pi**2 + kz**2*λfree**2)*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))*(np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*(special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)))*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*(special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))))
-    elif modetype == 'TE':
-        return 0
-    elif modetype == 'TM':
-        return 1
+def boundary_test(Efuncs, Hfuncs, fiber_spec, modeType, tolerance=1e-5):
+    '''
+    This  function  checks  that a given solution for the fields
+    satisfies  the  boundary  conditions  at  the  core/cladding
+    interface within tolerance. If the mode is HE the test is on
+    the relative difference of all field components being within
+    tolerance. If the mode is TM or TE then the test is that all
+    the  components  that  should  be zero are exactly zero, and
+    that  the relative difference for the non-zero components is
+    within tolerance.
 
-def Be(modetype, a, n1, n2, λfree, m, kz):
-    if modetype == "HE":
-        return special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))/special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))
-    elif modetype == 'TE':
-        return special.jv(0, a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))/special.kn(0,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))
-    elif modetype == 'TM':
-        return 0
-    
-def Bh(modetype, a, n1, n2, λfree, m, kz):
-    if modetype == 'HE':
-        return (1j*a**2*n1**2*np.pi*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*λfree**2*(4*n1**2*np.pi**2 - kz**2*λfree**2)*(4*n2**2*np.pi**2 - kz**2*λfree**2)*special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))**2*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + 4j*kz**2*m**2*(n1**2 - n2**2)*np.pi*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*λfree**6*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))**2*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + 1j*a**2*n1**2*np.pi*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*λfree**2*(4*n1**2*np.pi**2 - kz**2*λfree**2)*(4*n2**2*np.pi**2 - kz**2*λfree**2)*special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))**2*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + 1j*a**2*n2**2*np.pi*(4*n2**2*np.pi**2 - kz**2*λfree**2)*(-4*n1**2*np.pi**2 + kz**2*λfree**2)**2*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*(special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))) - 1j*a**2*np.pi*(4*n1**2*np.pi**2 - kz**2*λfree**2)*(4*n2**2*np.pi**2 - kz**2*λfree**2)*special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*(2*n1**2*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*λfree**2*special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + n2**2*(4*n1**2*np.pi**2 - kz**2*λfree**2)*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*(special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))))/(a*kz*m*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*λfree**5*(-4*n1**2*np.pi**2 + kz**2*λfree**2)*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))*(np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*(special.jv(-1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)) - special.jv(1 + m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)))*special.kn(m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*special.jv(m,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2))*(special.kn(-1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)) + special.kn(1 + m,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)))))
-    elif modetype == "TE":
-        return 0.
-    elif modetype == 'TM':
-        return -((np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2)*special.jv(1,a*np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)))/(np.sqrt(-kz**2 + (4*n1**2*np.pi**2)/λfree**2)*special.kn(1,a*np.sqrt(kz**2 - (4*n2**2*np.pi**2)/λfree**2))))
-    
-def AeAhBeBh(modetype, a, n1, n2, λfree, m, kz):
-    return (Ae(modetype, a, n1, n2, λfree, m, kz),
-            Ah(modetype, a, n1, n2, λfree, m, kz),
-            Be(modetype, a, n1, n2, λfree, m, kz),
-            Bh(modetype, a, n1, n2, λfree, m, kz))
+    Parameters
+    ----------
+    Efuncs  (tuple):  tuple  of six functions which describe the
+    three  components  of  the  electric  field  in the core and
+    cladding regions.
+
+    Hfuncs  (tuple):  tuple  of six functions which describe the
+    three  components  of  the  H field in the core and cladding
+    regions.
+
+    fiber_spec   (dict):   a  dictionary  containing  the  fiber
+    specifications.
+
+    modeType (str): must be one of 'HE', 'TE', or 'TM'.
+
+    tolerance  (float): the tolerance for the boundary condition
+    test.
+
+    Returns
+    -------
+    boundaryTest (bool): True if test OK, False otherwise.
+    '''
+    (ECoreρ, ECoreϕ, ECorez, ECladdingρ, ECladdingϕ, ECladdingz) = Efuncs
+    (HCoreρ, HCoreϕ, HCorez, HCladdingρ, HCladdingϕ, HCladdingz) = Hfuncs
+    nCore = fiber_spec['nCore']
+    nCladding = fiber_spec['nCladding']
+    a = fiber_spec['coreRadius']
+    coreBoundary = OrderedDict()
+    claddingBoundary = OrderedDict()
+
+    # the radial component of D is continuous,
+    coreBoundary['DCoreρ'] = ECoreρ(a) * nCore**2
+    claddingBoundary['DCladdingρ'] = ECladdingρ(a) * nCladding**2
+
+    # the radial component of B is continuous,
+    coreBoundary['BCoreρ'] = HCoreρ(a)
+    claddingBoundary['BCladdingρ'] = HCladdingρ(a)
+
+    # the azimuthal component of E is continuous,
+    coreBoundary['ECoreϕ'] = ECoreϕ(a)
+    claddingBoundary['ECladdingϕ'] = ECladdingϕ(a)
+
+    # the longitudinal component of E is continuous,
+    coreBoundary['ECorez'] = ECorez(a)
+    claddingBoundary['ECladdingz'] = ECladdingz(a)
+
+    # the azimuthal component of H is continuous,
+    coreBoundary['HCoreϕ'] = HCoreϕ(a)
+    claddingBoundary['HCladdingϕ'] = HCladdingϕ(a)
+
+    # the longitudinal component of H is continuous.
+    coreBoundary['HCorez'] = HCorez(a)
+    claddingBoundary['HCladdingz'] = HCladdingz(a)
+    coreArray = np.array(list(coreBoundary.values()))
+    claddingArray = np.array(list(claddingBoundary.values()))
+    if modeType == 'HE':
+        nonZeroDiff = np.max(np.abs((coreArray / claddingArray)) - 1)
+        nonZeroTest = nonZeroDiff < tolerance
+        zeroCheck = True
+    elif modeType == 'TE':
+        coreZeros     = np.zeros(3,dtype=np.complex128)
+        claddingZeros = np.zeros(3,dtype=np.complex128)
+        # the z-component of E should be zero
+        coreZeros[0] = coreBoundary['ECorez']
+        claddingZeros[0] = claddingBoundary['ECladdingz']
+        # the ρ-component of E should be zero
+        coreZeros[1] = coreBoundary['DCoreρ']
+        claddingZeros[1] = claddingBoundary['DCladdingρ']
+        # the ϕ-component of H should be zero
+        coreZeros[2] = coreBoundary['HCoreϕ']
+        claddingZeros[2] = claddingBoundary['HCladdingϕ']
+        zeroCheck = np.all(coreZeros == np.zeros(3)) and np.all(claddingZeros == np.zeros(3))
+        # Now for all the ones that should be non-zero
+        coreNonZeros = np.zeros(3,dtype=np.complex128)
+        claddingNonZeros = np.zeros(3,dtype=np.complex128)
+        coreNonZeros[0] = coreBoundary['ECoreϕ']
+        claddingNonZeros[0] = claddingBoundary['ECladdingϕ']
+        coreNonZeros[1] = coreBoundary['BCoreρ']
+        claddingNonZeros[1] = claddingBoundary['BCladdingρ']
+        coreNonZeros[2] = coreBoundary['HCorez']
+        claddingNonZeros[2] = claddingBoundary['HCladdingz']
+        nonZeroDiff = np.max(np.abs((coreNonZeros)/claddingNonZeros) - 1)
+        nonZeroTest = nonZeroDiff < tolerance
+    elif modeType == 'TM':
+        coreZeros     = np.zeros(3, dtype=np.complex128)
+        claddingZeros = np.zeros(3, dtype=np.complex128)
+        # the ϕ-component of E should be zero
+        coreZeros[0]     = coreBoundary['ECoreϕ']
+        claddingZeros[0] = claddingBoundary['ECladdingϕ']
+        # the z-component of H should be zero
+        coreZeros[1] = coreBoundary['HCorez']
+        claddingZeros[1] = claddingBoundary['HCladdingz']
+        # the ρ-component of B should be zero
+        coreZeros[2] = coreBoundary['BCoreρ']
+        claddingZeros[2] = claddingBoundary['BCladdingρ']
+        zeroCheck = np.all(coreZeros == np.zeros(3)) and np.all(claddingZeros == np.zeros(3))
+        # Now for all the ones that should be non-zero
+        coreNonZeros = np.zeros(3,dtype=np.complex128)
+        claddingNonZeros = np.zeros(3,dtype=np.complex128)
+        coreNonZeros[0] = coreBoundary['DCoreρ']
+        claddingNonZeros[0] = claddingBoundary['DCladdingρ']
+        coreNonZeros[1] = coreBoundary['ECorez']
+        claddingNonZeros[1] = claddingBoundary['ECladdingz']
+        coreNonZeros[2] = coreBoundary['HCoreϕ']
+        claddingNonZeros[2] = claddingBoundary['HCladdingϕ']
+        nonZeroDiff = np.max(np.abs((coreNonZeros)/claddingNonZeros) - 1)
+        nonZeroTest = nonZeroDiff < tolerance
+    boundaryTest = (nonZeroTest and zeroCheck)
+    if not boundaryTest:
+        print(boundaryDifference, claddingBoundary, coreBoundary)
+    return (boundaryTest, nonZeroTest, zeroCheck, nonZeroDiff)
 
 def coordinate_layout(fiber_sol):
     '''
@@ -324,7 +444,7 @@ def coordinate_layout(fiber_sol):
 
     return a, b, Δs, xrange, yrange, ρrange, φrange, Xg, Yg, ρg, φg, nxy, crossMask, numSamples
 
-def calculate_numerical_basis(fiber_sol):
+def calculate_numerical_basis(fiber_sol, verbose=True):
     '''
     Given a solution for the propagation modes of an optical waveguide, calculate a numerical basis.
     
@@ -372,15 +492,17 @@ def calculate_numerical_basis(fiber_sol):
             TM modes, and finally all HE modes. This same enumeration is
             the one used for the 'eigenbasis_nums' key.
         - 'eigenbasis_nums': list of tuples
-            A  list  of  tuples,  each  tuple has nine values, the first
-            value  is  a  string, either 'TE', 'TM', or 'HE', the second
-            value is value of m, and the third value is the value of  n.
-            The  order  in  this list is so that the i-th element of the
-            list  corresponds  to  the  i-th mode in the eigenbasis. The
-            fourth  and  fifth values are for the transverse propagation
-            constants  the fourth one being the one inside the core, and
-            the fifth one being the one outside the core. From the sixth
-            to the ninth values are the values for Ae, Ah, Be, and Bh.
+            A  list  of tuples, each tuple has 7 values, the first value
+            is  a  string indicating the type of mode, and can be either
+            'TE', 'TM', or 'HE'. The second value is a string indicating
+            the  parity  of the mode. The third value is the value of m.
+            The  fourth  value  corresponds  to  the  value  of  kz, the
+            propagation  constant along the z-direction. The fifth value
+            is   the   index  that  the  value  of  kz  has  within  the
+            corresponding  array  listing the propagation constants. The
+            sixth  value  is  the transverse propagation constant inside
+            the  core.  The seventh value is the propagation constant in
+            the cladding.
     '''
     warnings.filterwarnings('ignore', 'invalid value encountered in sqrt')
     warnings.filterwarnings('ignore', 'invalid value encountered in multiply')
@@ -389,6 +511,7 @@ def calculate_numerical_basis(fiber_sol):
     nCore = fiber_sol['nCore']
     nCladding = fiber_sol['nCladding']
     λfree = fiber_sol['λFree']
+    kFree = 2*np.pi/λfree
     if 'coord_layout' in fiber_sol:
         del fiber_sol['coord_layout']
     if 'eigenbasis' in fiber_sol:
@@ -399,87 +522,85 @@ def calculate_numerical_basis(fiber_sol):
     eigenbasis = np.zeros((totalModes, 2, 3, numSamples, numSamples),  dtype=complex_dtype)
     counter = 0
     eigenbasis_nums = []
-    for modtype in ['TE','TM','HE']:
-        solkey = modtype + 'kz'
+    if verbose:
+        iter_fun = tqdm
+    else:
+        iter_fun = lambda x: x
+    for modType in ['TE','TM','HE']:
+        if modType == 'HE':
+            parities = ['EVEN', 'ODD']
+        else:
+            parities = ['TETM']
+        solkey = modType + 'kz'
         for m, kzs in fiber_sol[solkey].items():
-            global_phase = np.exp(1j * m * φg)
-            for kzidx, kz in enumerate(tqdm(kzs)):
+            cosMesh = np.cos(m*φg)
+            sinMesh = np.sin(m*φg)
+            for kzidx, kz in enumerate(iter_fun(kzs)):
                 γ = np.sqrt(nCore**2*4*np.pi**2/λfree**2 - kz**2)
                 β = np.sqrt(kz**2 - nCladding**2*4*np.pi**2/λfree**2)
-                # #AB-Calc
-                Ae, Ah, Be, Bh = AeAhBeBh(modtype, a, nCore, nCladding, λfree, m, kz)
-                eigen_nums = (modtype, m, kzidx, γ, β, Ae, Ah, Be, Bh)
-                eigenbasis_nums.append(eigen_nums)
-                # calculate the transverse field components
-                for idx, genfuncs in enumerate([
-                                (Et1genρ, Et2genρ, Ht1genρ, Ht2genρ), 
-                                (Et1genφ, Et2genφ, Ht1genφ, Ht2genφ)]):
-                    Et1genρf, Et2genρf, Ht1genρf, Ht2genρf = genfuncs
-                    Et1ρ = Et1genρf(Ae, Ah, Be, Bh, m, β, γ, kz, λfree, nCore, nCladding)
-                    Et2ρ = Et2genρf(Ae, Ah, Be, Bh, m, β, γ, kz, λfree, nCore, nCladding)
-                    Ht1ρ = Ht1genρf(Ae, Ah, Be, Bh, m, β, γ, kz, λfree, nCore, nCladding)
-                    Ht2ρ = Ht2genρf(Ae, Ah, Be, Bh, m, β, γ, kz, λfree, nCore, nCladding)
-                    Etvals1ρ             = Et1ρ(ρrange)
-                    Etvals1ρ             = np.interp(ρg, ρrange, Etvals1ρ)
-                    Etvals1ρ[~crossMask] = 0
-                    Etvals2ρ             = Et2ρ(ρrange)
-                    Etvals2ρ             = np.interp(ρg, ρrange, Etvals2ρ)
-                    Etvals2ρ[crossMask]  = 0
-                    Etρ                  = Etvals1ρ + Etvals2ρ
-                    Etρ[np.isnan(Etρ)]   = 0
-                    Etnorm               = np.sum(np.abs(Etρ[0,::])**2 + np.abs(Etρ[1,::])**2)
-                    Etnorm               = np.sqrt(Etnorm)
-                    Htvals1ρ             = Ht1ρ(ρrange)
-                    Htvals1ρ             = np.interp(ρg, ρrange, Htvals1ρ)
-                    Htvals1ρ[~crossMask] = 0
-                    Htvals2ρ             = Ht2ρ(ρrange)
-                    Htvals2ρ             = np.interp(ρg, ρrange, Htvals2ρ)
-                    Htvals2ρ[crossMask]  = 0
-                    Htρ                  = Htvals1ρ + Htvals2ρ
-                    Htρ[np.isnan(Htρ)]   = 0
-                    Htnorm               = np.sum(np.abs(Htρ[0,::])**2 + np.abs(Htρ[1,::])**2)
-                    Htnorm               = np.sqrt(Htnorm)
-                    eigenbasis[counter, 0, idx, :, :] = Etρ
-                    eigenbasis[counter, 1, idx, :, :] = Htρ
-                # calculate the axial field components
-                for idx, genfuncs in enumerate([(Ezgen_1, Ezgen_2), 
-                                                (Hzgen_1, Hzgen_2)]):
-                    # Et stands here either for Ez or Hz
-                    # idx stands for the index for E or H
-                    Et1genρf, Et2genρf = genfuncs
-                    if idx == 0:
-                        Et1ρ = Et1genρf(Ae, m, γ)
-                        Et2ρ = Et2genρf(Be, m, β)
-                    else:
-                        Et1ρ = Et1genρf(Ah, m, γ)
-                        Et2ρ = Et2genρf(Bh, m, β)
-                    Etvals1ρ             = Et1ρ(ρrange)
-                    Etvals1ρ             = np.interp(ρg, ρrange, Etvals1ρ)
-                    Etvals1ρ[~crossMask] = 0
-                    Etvals2ρ             = Et2ρ(ρrange)
-                    Etvals2ρ             = np.interp(ρg, ρrange, Etvals2ρ)
-                    Etvals2ρ[crossMask]  = 0
-                    Etρ                  = Etvals1ρ + Etvals2ρ
-                    Etρ[np.isnan(Etρ)]   = 0
-                    # set the third index to the calculated field
-                    # remember that this needs to be multplied by the global phase
-                    eigenbasis[counter, idx, 2, :, :] = Etρ
-                # normalize the field
-                Etnorm = np.sum(np.abs(eigenbasis[counter, 0, 0, :, :])**2 
-                                + np.abs(eigenbasis[counter, 0, 1, :, :])**2
-                                + np.abs(eigenbasis[counter, 0, 2, :, :])**2)
-                Etnorm = np.sqrt(Etnorm)
-                Htnorm = np.sum(np.abs(eigenbasis[counter, 1, 0, :, :])**2 
-                                + np.abs(eigenbasis[counter, 1, 1, :, :])**2
-                                + np.abs(eigenbasis[counter, 1, 2, :, :])**2)
-                Htnorm = np.sqrt(Htnorm)
-                eigenbasis[counter, 0, :, :, :] /= Etnorm
-                eigenbasis[counter, 1, :, :, :] /= Htnorm
-                eigenbasis[counter, 0, :, :, :] *= global_phase
-                eigenbasis[counter, 1, :, :, :] *= global_phase
-                counter += 1
-    fiber_sol['eigenbasis'] = eigenbasis
-    fiber_sol['coord_layout'] = coord_layout
+                (Efuncs, Hfuncs) = fieldGenerator(a, kFree, kz, m, nCladding, nCore, modType)
+                (ECoreρ, ECoreϕ, ECorez, ECladdingρ, ECladdingϕ, ECladdingz) = Efuncs
+                (HCoreρ, HCoreϕ, HCorez, HCladdingρ, HCladdingϕ, HCladdingz) = Hfuncs
+                funPairs = (((ECoreρ, ECladdingρ), (HCoreρ, HCladdingρ)),
+                            ((ECoreϕ, ECladdingϕ), (HCoreϕ, HCladdingϕ)),
+                            ((ECorez, ECladdingz), (HCorez, HCladdingz)))
+                this_E = np.zeros((3, numSamples, numSamples), dtype=complex_dtype)
+                this_H = np.zeros((3, numSamples, numSamples), dtype=complex_dtype)
+                for idx, ((EfunCore, EfunCladding), (HfunCore, HfunCladding)) in enumerate(funPairs):
+                    ECorevals             = np.vectorize(EfunCore)(ρrange)
+                    ECorevals             = np.interp(ρg, ρrange, ECorevals)
+                    ECorevals[~crossMask] = 0
+                    ECladdingvals             = np.vectorize(EfunCladding)(ρrange)
+                    ECladdingvals             = np.interp(ρg, ρrange, ECladdingvals)
+                    ECladdingvals[crossMask]  = 0
+                    E_all                  = ECorevals + ECladdingvals
+                    HCorevals              = np.vectorize(HfunCore)(ρrange)
+                    HCorevals              = np.interp(ρg, ρrange, HCorevals)
+                    HCorevals[~crossMask]  = 0
+                    HCladdingvals             = np.vectorize(HfunCladding)(ρrange)
+                    HCladdingvals             = np.interp(ρg, ρrange, HCladdingvals)
+                    HCladdingvals[crossMask]  = 0
+                    H_all                  = HCorevals + HCladdingvals
+                    E_all[np.isnan(E_all)] = 0.
+                    H_all[np.isnan(H_all)] = 0.
+                    this_E[idx, :, :] = E_all
+                    this_H[idx, :, :] = H_all
+                for parity in parities:
+                    if parity == 'TETM':
+                        for idx in range(3):
+                            eigenbasis[counter, 0, idx, :, :] = this_E[idx]
+                            eigenbasis[counter, 1, idx, :, :] = this_H[idx]
+                    elif parity == 'EVEN':
+                        for idx in range(3):
+                            ϕPhaseE = {0: cosMesh,  
+                                       1: -sinMesh,
+                                       2: cosMesh}[idx]
+                            ϕPhaseH = {0: -sinMesh,  
+                                    1: cosMesh,
+                                    2: -sinMesh}[idx]
+                            eigenbasis[counter, 0, idx, :, :] = this_E[idx]*ϕPhaseE
+                            eigenbasis[counter, 1, idx, :, :] = this_H[idx]*ϕPhaseH
+                    elif parity == 'ODD':
+                        for idx in range(3):
+                            ϕPhaseE = {0: sinMesh,
+                                    1: cosMesh, 
+                                    2: sinMesh}[idx]
+                            ϕPhaseH = {0: cosMesh,
+                                    1: sinMesh, 
+                                    2: cosMesh}[idx]
+                            eigenbasis[counter, 0, idx, :, :] = this_E[idx]*ϕPhaseE
+                            eigenbasis[counter, 1, idx, :, :] = this_H[idx]*ϕPhaseH
+                    # normalize the field
+                    E_field = eigenbasis[counter][0]
+                    H_field = eigenbasis[counter][1]
+                    norm_sq = field_dot(E_field, H_field, Δs)
+                    norm = np.sqrt(norm_sq)
+                    eigenbasis[counter][0] = eigenbasis[counter][0] / norm
+                    eigenbasis[counter][1] = eigenbasis[counter][1] / norm
+                    eigenbasis_nums.append((modType, parity, m, kzidx, kz, γ, β))
+                    counter += 1
+    fiber_sol['eigenbasis']      = eigenbasis
+    fiber_sol['coord_layout']    = coord_layout
     fiber_sol['eigenbasis_nums'] = eigenbasis_nums
     return fiber_sol
 
