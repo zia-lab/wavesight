@@ -368,7 +368,7 @@ def boundary_test(Efuncs, Hfuncs, fiber_spec, modeType, tolerance=1e-5):
         nonZeroTest = nonZeroDiff < tolerance
     boundaryTest = (nonZeroTest and zeroCheck)
     if not boundaryTest:
-        print(boundaryDifference, claddingBoundary, coreBoundary)
+        print(claddingBoundary, coreBoundary)
     return (boundaryTest, nonZeroTest, zeroCheck, nonZeroDiff)
 
 def coordinate_layout(fiber_sol):

@@ -1,0 +1,634 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 13.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     25077,        626]
+NotebookOptionsPosition[     23698,        590]
+NotebookOutlinePosition[     24136,        607]
+CellTagsIndexPosition[     24093,        604]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Units in Computational Electromagnetism", "Title",
+ CellChangeTimes->{{3.901720180254066*^9, 3.9017201909416103`*^9}},
+ TextAlignment->Center,ExpressionUUID->"add7a0f4-a7ee-4d68-8429-45949279d0b8"],
+
+Cell["\<\
+In order to have the magnetic field and the electric fields have values that \
+are numerically similar it is seen useful to define both the permittivity and \
+permeability of free space to unity.
+After this, it is frequent that one would decide upon a unit of length that \
+is being implied in the calculation.
+Having chosen this unit of length the relationship that this choice of units \
+have for other quantities are still underdetermined.
+One would need another unit in order to determine the units for other \
+mechanical quantities such as energy, pressure, linear momentum, angular \
+momentum, electric charge.
+What is implied in wavesight is the use of SI units where \[Epsilon]0 and \
+\[Mu]0 have been set to unity.
+Here one may see what are the general expressions for the consecutive units \
+in which different mechanical quantities would be in given the choices for \
+the two remaining units, and one may also see numerically a few examples for \
+some specific choices (usually l=1\[Mu]m).\
+\>", "Text",
+ CellChangeTimes->{{3.901720504186743*^9, 3.9017206616086903`*^9}, {
+  3.90172076441254*^9, 3.901720796087308*^9}, {3.901720834492996*^9, 
+  3.901720872027924*^9}, {3.9017210277530117`*^9, 3.901721095577712*^9}},
+ TextAlignment->Center,ExpressionUUID->"d1be2537-f071-4b0b-a9e8-4e0be81efebb"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", 
+  RowBox[{
+   RowBox[{"(", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"arg1", ",", "arg2"}], "}"}], "=", 
+      RowBox[{
+       RowBox[{"systems", "[", "systemName", "]"}], "[", "\"\<units\>\"", 
+       "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"reps", "=", 
+      RowBox[{
+       RowBox[{"systems", "[", "systemName", "]"}], "[", "\"\<reps\>\"", 
+       "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"unitTable", "=", 
+      RowBox[{"EMUnits", "[", 
+       RowBox[{"arg1", ",", "arg2"}], "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"unitTable", "=", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"Append", "[", 
+         RowBox[{"#", ",", 
+          RowBox[{"SetPrecision", "[", 
+           RowBox[{
+            RowBox[{"N", "[", 
+             RowBox[{
+              RowBox[{"#", "[", 
+               RowBox[{"[", "2", "]"}], "]"}], "/.", "reps"}], "]"}], ",", 
+            "2"}], "]"}]}], "]"}], "&"}], "/@", "unitTable"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"Column", "[", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"Grid", "[", 
+         RowBox[{"unitTable", ",", 
+          RowBox[{"Frame", "->", "All"}]}], "]"}], ",", 
+        RowBox[{"TableForm", "[", "reps", "]"}]}], "}"}], "]"}]}], 
+    "\[IndentingNewLine]", ")"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"systemName", ",", 
+     RowBox[{"ReverseSort", "[", 
+      RowBox[{"Keys", "[", "systems", "]"}], "]"}]}], "}"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"TrackedSymbols", ":>", 
+    RowBox[{"{", "systemName", "}"}]}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.901719076333259*^9, 3.90171916046838*^9}, {
+  3.9017192596780567`*^9, 3.901719392955388*^9}, {3.901719559475506*^9, 
+  3.9017195614158373`*^9}, {3.9017197111563797`*^9, 3.901719713135228*^9}, {
+  3.9017199192659082`*^9, 3.901719921039089*^9}, {3.9017200263816547`*^9, 
+  3.901720030795627*^9}, {3.901720803641407*^9, 3.901720804679503*^9}},
+ TextAlignment->Center,
+ CellLabel->
+  "In[1594]:=",ExpressionUUID->"da5ad835-50fa-4c5e-81fc-e263dfb8ecea"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`systemName$$ = "dipole-energy", 
+    Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{
+      Hold[$CellContext`systemName$$], {
+      "length-energy", "length-Efield", "length-dipole", "length-charge", 
+       "energy-Efield", "dipole-energy"}}}, Typeset`size$$ = {
+    370., {218.134033203125, 223.865966796875}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = True}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     1, StandardForm, 
+      "Variables" :> {$CellContext`systemName$$ = "length-energy"}, 
+      "ControllerVariables" :> {}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, 
+      "Body" :> ({$CellContext`arg1, $CellContext`arg2} = \
+$CellContext`systems[$CellContext`systemName$$][
+         "units"]; $CellContext`reps = \
+$CellContext`systems[$CellContext`systemName$$][
+         "reps"]; $CellContext`unitTable = \
+$CellContext`EMUnits[$CellContext`arg1, $CellContext`arg2]; \
+$CellContext`unitTable = Map[Append[#, 
+           SetPrecision[
+            N[
+             ReplaceAll[
+              Part[#, 2], $CellContext`reps]], 2]]& , $CellContext`unitTable]; 
+       Column[{
+          Grid[$CellContext`unitTable, Frame -> All], 
+          TableForm[$CellContext`reps]}]), 
+      "Specifications" :> {{$CellContext`systemName$$, {
+         "length-energy", "length-Efield", "length-dipole", "length-charge", 
+          "energy-Efield", "dipole-energy"}}}, 
+      "Options" :> {TrackedSymbols :> {$CellContext`systemName$$}}, 
+      "DefaultOptions" :> {}],
+     ImageSizeCache->{414., {264., 270.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{
+  3.901719117916861*^9, {3.9017191495547113`*^9, 3.901719160764884*^9}, 
+   3.901719195981*^9, {3.901719299582013*^9, 3.901719393202258*^9}, 
+   3.901719481140698*^9, {3.901719549100327*^9, 3.90171956177496*^9}, 
+   3.90171960107862*^9, {3.9017196399981318`*^9, 3.901719648341448*^9}, {
+   3.901719706065576*^9, 3.901719756939431*^9}, {3.901719853257554*^9, 
+   3.901719860676317*^9}, 3.90171992143871*^9, 3.901720031119501*^9, {
+   3.901720099963627*^9, 3.901720104969223*^9}, 3.90172022996187*^9, 
+   3.9017202832490377`*^9, 3.901720698256653*^9, 3.901720754529957*^9, {
+   3.9017207971528254`*^9, 3.901720805259242*^9}, 3.9017208743710203`*^9, 
+   3.901720910138915*^9, {3.9017209495913973`*^9, 3.901720959720537*^9}, 
+   3.901721105117577*^9},
+ TextAlignment->Center,
+ CellLabel->
+  "Out[1594]=",ExpressionUUID->"b6e304f9-3044-4c79-9da1-c7f1a9ee6258"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Initialization", "Section",
+ InitializationCell->True,
+ InitializationGroup->True,
+ CellChangeTimes->{{3.9017207242550383`*^9, 
+  3.901720728125018*^9}},ExpressionUUID->"1efc4c42-36cc-4efb-a1f2-\
+0516aa276d86"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"quants", "=", 
+   RowBox[{"<|", 
+    RowBox[{
+     RowBox[{"\"\<E field / V/m\>\"", "->", 
+      RowBox[{"kg", " ", 
+       FractionBox["m", 
+        RowBox[{
+         SuperscriptBox["s", "2"], "C"}]]}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<B field / T\>\"", "->", 
+      RowBox[{"kg", " ", 
+       FractionBox["1", 
+        RowBox[{"s", " ", "C"}]]}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<mag moment / A \!\(\*SuperscriptBox[\(m\), \(2\)]\)\>\"", "->", 
+      RowBox[{
+       FractionBox["C", "s"], 
+       SuperscriptBox["m", "2"]}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<time / s\>\"", "->", "s"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<length / m\>\"", "->", "m"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<mass / kg\>\"", "->", "kg"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<charge/C\>\"", "->", "C"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<energy / J\>\"", "->", 
+      RowBox[{"kg", " ", 
+       FractionBox[
+        SuperscriptBox["m", "2"], 
+        SuperscriptBox["s", "2"]]}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<linear momentum / kg m/s\>\"", "->", 
+      RowBox[{"kg", " ", 
+       FractionBox["m", "s"]}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<force / N\>\"", "->", 
+      RowBox[{"kg", " ", 
+       FractionBox["m", 
+        SuperscriptBox["s", "2"]]}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<pressure/Pa\>\"", "->", 
+      RowBox[{"kg", " ", 
+       FractionBox["1", 
+        RowBox[{"m", " ", 
+         SuperscriptBox["s", "2"]}]]}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<angular momentum / N m\>\"", "->", 
+      RowBox[{"kg", " ", 
+       FractionBox[
+        SuperscriptBox["m", "2"], "s"]}]}]}], "|>"}]}], ";"}]], "Input",
+ InitializationCell->True,
+ InitializationGroup->True,
+ CellChangeTimes->{{3.901706082337861*^9, 3.9017062458573227`*^9}, {
+   3.901706297540105*^9, 3.901706317245509*^9}, 3.901706414256381*^9, {
+   3.9017067091157227`*^9, 3.9017067094525213`*^9}, {3.901717489868945*^9, 
+   3.901717505229649*^9}, {3.9017175550910254`*^9, 3.901717560745783*^9}, {
+   3.9017175937863073`*^9, 3.901717645488864*^9}, {3.901717687224041*^9, 
+   3.901717708508428*^9}, {3.901718879945833*^9, 3.901718886661626*^9}, {
+   3.901719584364913*^9, 3.90171959676962*^9}, {3.9017197300417347`*^9, 
+   3.901719734742559*^9}, {3.901720672646111*^9, 3.9017206906816893`*^9}, {
+   3.901720933355845*^9, 3.9017209573836823`*^9}},
+ CellLabel->
+  "In[1592]:=",ExpressionUUID->"cab80f7b-ddea-4dcc-96f5-13fe259192eb"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"EMUnits", "::", "usage"}], "=", 
+   "\"\<EMUnits[{unitASymbol,unitAInSI},{unitASymbol,unitAInSI}] determines \
+the expressions for the units of different electro-mechanical units onece the \
+choice of \[Epsilon]0=\[Mu]0=1 has been taken. unitASymbol is a symbol that \
+would be used to represent a unit, and unitAInSI would be the correspondence \
+that this unit has in MKSA system. Similarly for unitB.\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"EMUnits", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"a_", ",", "A_"}], "}"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"b_", ",", "B_"}], "}"}]}], "]"}], ":=", 
+  RowBox[{"(", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"unitTable", "=", 
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"(", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"\[Epsilon]0", "=", 
+          RowBox[{
+           SuperscriptBox["C", "2"], 
+           FractionBox[
+            SuperscriptBox["s", "2"], 
+            RowBox[{"kg", " ", 
+             SuperscriptBox["m", "3"]}]]}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"\[Mu]0", "=", 
+          RowBox[{"kg", " ", 
+           FractionBox["m", 
+            SuperscriptBox["C", "2"]]}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"baseUnits", "=", 
+          RowBox[{"{", 
+           RowBox[{"C", ",", "s", ",", "kg", ",", "m"}], "}"}]}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"lhs", "=", 
+          RowBox[{
+           SuperscriptBox["\[Epsilon]0", "n1"], 
+           SuperscriptBox["\[Mu]0", "n2"], 
+           SuperscriptBox["A", "n3"], 
+           SuperscriptBox[
+            RowBox[{"(", "B", ")"}], "n4"]}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"rhs", "=", 
+          RowBox[{"quants", "[", "quant", "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"eqns", "=", 
+          RowBox[{"Table", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Exponent", "[", 
+              RowBox[{"lhs", ",", "unit"}], "]"}], "==", 
+             RowBox[{"Exponent", "[", 
+              RowBox[{"rhs", ",", "unit"}], "]"}]}], ",", 
+            RowBox[{"{", 
+             RowBox[{"unit", ",", "baseUnits"}], "}"}]}], "]"}]}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"sol", "=", 
+          RowBox[{"Solve", "[", 
+           RowBox[{"eqns", ",", 
+            RowBox[{"{", 
+             RowBox[{"n1", ",", "n2", ",", "n3", ",", "n4"}], "}"}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"ClearAll", "[", 
+          RowBox[{"\[Epsilon]0", ",", "\[Mu]0"}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"uSol", "=", 
+          RowBox[{
+           RowBox[{
+            SuperscriptBox["\[Epsilon]0", "n1"], 
+            SuperscriptBox["\[Mu]0", "n2"], 
+            SuperscriptBox["a", "n3"], 
+            SuperscriptBox["b", "n4"]}], "/.", 
+           RowBox[{"sol", "[", 
+            RowBox[{"[", "1", "]"}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"uSol", "=", 
+          RowBox[{"uSol", "/.", 
+           RowBox[{"{", 
+            RowBox[{"\[Mu]0", "->", 
+             FractionBox["1", 
+              RowBox[{
+               SuperscriptBox["c", "2"], "\[Epsilon]0"}]]}], "}"}]}]}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"uSol", "=", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{
+            RowBox[{"PowerExpand", "[", "uSol", "]"}], ",", 
+            RowBox[{"Assumptions", "->", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"c", ">", "0"}], ",", 
+               RowBox[{"\[Epsilon]0", ">", "0"}]}], "}"}]}]}], "]"}]}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"{", 
+          RowBox[{"quant", ",", "uSol"}], "}"}]}], ")"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{"quant", ",", 
+         RowBox[{"Keys", "[", "quants", "]"}]}], "}"}]}], 
+      "\[IndentingNewLine]", "]"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"Return", "[", "unitTable", "]"}], ";"}], ")"}]}]}], "Input",
+ InitializationCell->True,
+ InitializationGroup->True,
+ CellChangeTimes->{{3.901718015951812*^9, 3.901718036817918*^9}, {
+  3.901718067947711*^9, 3.9017180847250023`*^9}, {3.9017182074498672`*^9, 
+  3.901718236419181*^9}, {3.90171835149438*^9, 3.901718357149261*^9}, {
+  3.901721126080678*^9, 3.9017212324024363`*^9}},
+ CellLabel->
+  "In[1595]:=",ExpressionUUID->"76264b3f-9ac9-41cf-aa82-faae7ca638ab"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"systems", "=", 
+   RowBox[{"<|", 
+    RowBox[{
+     RowBox[{"\"\<length-energy\>\"", "->", 
+      RowBox[{"<|", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"\"\<units\>\"", "->", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"l", ",", "m"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"\[CapitalEpsilon]", ",", 
+             RowBox[{"kg", " ", 
+              FractionBox[
+               SuperscriptBox["m", "2"], 
+               SuperscriptBox["s", "2"]]}]}], "}"}]}], "}"}]}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"\"\<reps\>\"", "->", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"\[Epsilon]0", "->", 
+            RowBox[{"8.85", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "12"}]]}]}], ",", 
+           RowBox[{"\[CapitalEpsilon]", "->", 
+            RowBox[{"1.602", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "19"}]]}]}], ",", 
+           RowBox[{"l", "->", 
+            RowBox[{"1.", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "6"}]]}]}], ",", 
+           RowBox[{"c", "->", 
+            RowBox[{"3.", "*", 
+             SuperscriptBox["10", "8"]}]}]}], "}"}]}]}], 
+       "\[IndentingNewLine]", "|>"}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<length-charge\>\"", "->", 
+      RowBox[{"<|", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"\"\<units\>\"", "->", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"l", ",", "m"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"q", ",", "C"}], "}"}]}], "}"}]}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"\"\<reps\>\"", "->", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"\[Epsilon]0", "->", 
+            RowBox[{"8.85", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "12"}]]}]}], ",", 
+           RowBox[{"q", "->", 
+            RowBox[{"1.602", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "19"}]]}]}], ",", 
+           RowBox[{"l", "->", 
+            RowBox[{"1.", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "6"}]]}]}], ",", 
+           RowBox[{"c", "->", 
+            RowBox[{"3.", "*", 
+             SuperscriptBox["10", "8"]}]}]}], "}"}]}]}], 
+       "\[IndentingNewLine]", "|>"}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<dipole-energy\>\"", "->", 
+      RowBox[{"<|", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"\"\<units\>\"", "->", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\[CapitalEpsilon]", ",", 
+             RowBox[{"kg", " ", 
+              FractionBox[
+               SuperscriptBox["m", "2"], 
+               SuperscriptBox["s", "2"]]}]}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"p", ",", 
+             RowBox[{"C", " ", "m"}]}], "}"}]}], "}"}]}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"\"\<reps\>\"", "->", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"\[Epsilon]0", "->", 
+            RowBox[{"8.85", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "12"}]]}]}], ",", 
+           RowBox[{"\[CapitalEpsilon]", "->", 
+            RowBox[{"1.602", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "19"}]]}]}], ",", 
+           RowBox[{"l", "->", 
+            RowBox[{"1.", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "6"}]]}]}], ",", 
+           RowBox[{"c", "->", 
+            RowBox[{"3.", "*", 
+             SuperscriptBox["10", "8"]}]}], ",", 
+           RowBox[{"p", "->", 
+            RowBox[{"3.335", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "30"}]]}]}]}], "}"}]}]}], "\[IndentingNewLine]", 
+       "|>"}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<length-dipole\>\"", "->", 
+      RowBox[{"<|", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"\"\<units\>\"", "->", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"l", ",", " ", "m"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"\[CapitalEpsilon]", ",", 
+             RowBox[{"kg", " ", 
+              FractionBox[
+               SuperscriptBox["m", "2"], 
+               SuperscriptBox["s", "2"]]}]}], "}"}]}], "}"}]}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"\"\<reps\>\"", "->", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"\[Epsilon]0", "->", 
+            RowBox[{"8.85", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "12"}]]}]}], ",", 
+           RowBox[{"\[CapitalEpsilon]", "->", 
+            RowBox[{"1.602", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "19"}]]}]}], ",", 
+           RowBox[{"l", "->", 
+            RowBox[{"1.", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "6"}]]}]}], ",", 
+           RowBox[{"c", "->", 
+            RowBox[{"3.", "*", 
+             SuperscriptBox["10", "8"]}]}], ",", 
+           RowBox[{"p", "->", 
+            RowBox[{"3.335", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "30"}]]}]}]}], "}"}]}]}], "\[IndentingNewLine]", 
+       "|>"}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<length-Efield\>\"", "->", 
+      RowBox[{"<|", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"\"\<units\>\"", "->", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"Efield", ",", 
+             FractionBox[
+              RowBox[{"kg", " ", "m"}], 
+              RowBox[{"C", " ", 
+               SuperscriptBox["s", "2"]}]]}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"l", ",", " ", "m"}], "}"}]}], "}"}]}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"\"\<reps\>\"", "->", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"\[Epsilon]0", "->", 
+            RowBox[{"8.85", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "12"}]]}]}], ",", 
+           RowBox[{"Efield", "->", "1."}], ",", 
+           RowBox[{"l", "->", 
+            RowBox[{"1.", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "6"}]]}]}], ",", 
+           RowBox[{"c", "->", 
+            RowBox[{"3.", "*", 
+             SuperscriptBox["10", "8"]}]}], ",", 
+           RowBox[{"p", "->", 
+            RowBox[{"3.335", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "30"}]]}]}]}], "}"}]}]}], "\[IndentingNewLine]", 
+       "|>"}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\"\<energy-Efield\>\"", "->", 
+      RowBox[{"<|", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"\"\<units\>\"", "->", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"Efield", ",", 
+             FractionBox[
+              RowBox[{"kg", " ", "m"}], 
+              RowBox[{"C", " ", 
+               SuperscriptBox["s", "2"]}]]}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"\[CapitalEpsilon]", ",", " ", 
+             RowBox[{"kg", " ", 
+              FractionBox[
+               SuperscriptBox["m", "2"], 
+               SuperscriptBox["s", "2"]]}]}], "}"}]}], "}"}]}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"\"\<reps\>\"", "->", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"\[Epsilon]0", "->", 
+            RowBox[{"8.85", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "12"}]]}]}], ",", 
+           RowBox[{"Efield", "->", "1."}], ",", 
+           RowBox[{"\[CapitalEpsilon]", "->", 
+            RowBox[{"1.602", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "19"}]]}]}], ",", 
+           RowBox[{"l", "->", 
+            RowBox[{"1.", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "6"}]]}]}], ",", 
+           RowBox[{"c", "->", 
+            RowBox[{"3.", "*", 
+             SuperscriptBox["10", "8"]}]}], ",", 
+           RowBox[{"p", "->", 
+            RowBox[{"3.335", "*", 
+             SuperscriptBox["10", 
+              RowBox[{"-", "30"}]]}]}]}], "}"}]}]}], "\[IndentingNewLine]", 
+       "|>"}]}]}], "\[IndentingNewLine]", "|>"}]}], ";"}]], "Input",
+ InitializationCell->True,
+ InitializationGroup->True,
+ CellChangeTimes->{{3.9017189869666767`*^9, 3.901719075386345*^9}, {
+  3.901719188704049*^9, 3.9017191943337317`*^9}, {3.9017194264514303`*^9, 
+  3.901719478677429*^9}, {3.901719519055936*^9, 3.9017195463954372`*^9}, {
+  3.9017196345460787`*^9, 3.90171970361234*^9}, {3.9017198051569347`*^9, 
+  3.901719859160615*^9}, {3.9017200683746023`*^9, 3.9017200975391006`*^9}, {
+  3.9017202777160063`*^9, 3.901720281416931*^9}, {3.901720903291416*^9, 
+  3.901720908241035*^9}},
+ CellLabel->
+  "In[1588]:=",ExpressionUUID->"7f491445-4c02-4b5b-b87f-9922097a16ca"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1100, 1057},
+WindowMargins->{{Automatic, 0}, {Automatic, 0}},
+TaggingRules-><|"TryRealOnly" -> False|>,
+FrontEndVersion->"13.2 for Mac OS X ARM (64-bit) (January 30, 2023)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"1d931546-00c0-49f3-aa0d-c4016246119a"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 203, 2, 98, "Title",ExpressionUUID->"add7a0f4-a7ee-4d68-8429-45949279d0b8"],
+Cell[786, 26, 1316, 21, 219, "Text",ExpressionUUID->"d1be2537-f071-4b0b-a9e8-4e0be81efebb"],
+Cell[CellGroupData[{
+Cell[2127, 51, 2110, 53, 178, "Input",ExpressionUUID->"da5ad835-50fa-4c5e-81fc-e263dfb8ecea"],
+Cell[4240, 106, 3248, 65, 553, "Output",ExpressionUUID->"b6e304f9-3044-4c79-9da1-c7f1a9ee6258"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7525, 176, 216, 5, 67, "Section",ExpressionUUID->"1efc4c42-36cc-4efb-a1f2-0516aa276d86",
+ InitializationCell->True,
+ InitializationGroup->True],
+Cell[7744, 183, 2570, 55, 449, "Input",ExpressionUUID->"cab80f7b-ddea-4dcc-96f5-13fe259192eb",
+ InitializationCell->True,
+ InitializationGroup->True],
+Cell[10317, 240, 4482, 110, 671, "Input",ExpressionUUID->"76264b3f-9ac9-41cf-aa82-faae7ca638ab",
+ InitializationCell->True,
+ InitializationGroup->True],
+Cell[14802, 352, 8868, 234, 696, "Input",ExpressionUUID->"7f491445-4c02-4b5b-b87f-9922097a16ca",
+ InitializationCell->True,
+ InitializationGroup->True]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
