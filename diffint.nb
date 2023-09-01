@@ -1,0 +1,671 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 13.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     27452,        663]
+NotebookOptionsPosition[     25512,        620]
+NotebookOutlinePosition[     25909,        636]
+CellTagsIndexPosition[     25866,        633]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Diffraction Integrals", "Section",
+ CellChangeTimes->{{3.90251337675904*^9, 3.902513382551268*^9}},
+ CellLabel->"In[3]:=",ExpressionUUID->"f0256df0-1986-4eaf-9cd0-3dc4ab732a22"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SetDirectory", "[", 
+   RowBox[{"NotebookDirectory", "[", "]"}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"PythonForm", "[", "expr_", "]"}], ":=", 
+   RowBox[{"(", "\[IndentingNewLine]", 
+    RowBox[{"(*", 
+     RowBox[{"convert", " ", "to", " ", "string"}], "*)"}], 
+    "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"stringExpr", "=", 
+      RowBox[{"ToString", "[", 
+       RowBox[{"FortranForm", "[", "expr", "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"(*", 
+      RowBox[{
+      "replace", " ", "a", " ", "bunch", " ", "of", " ", "things", " ", "to", 
+       " ", "np"}], "*)"}], "\[IndentingNewLine]", 
+     RowBox[{"pythonStr", "=", 
+      RowBox[{"StringReplace", "[", 
+       RowBox[{"stringExpr", ",", "\[IndentingNewLine]", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"\"\<Pi\>\"", "->", "\"\<np.pi\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<Sqrt\>\"", "->", "\"\<np.sqrt\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<Sin\>\"", "->", "\"\<np.sin\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<Cos\>\"", "->", "\"\<np.cos\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<Tan\>\"", "->", "\"\<np.tan\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<Log\>\"", "->", "\"\<np.log\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<Cot\>\"", "->", "\"\<np.cot\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<BesselJ\>\"", "->", "\"\<special.jv\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<BesselK\>\"", "->", "\"\<special.kn\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<E**\>\"", "->", "\"\<np.exp\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<I\>\"", "->", "\"\<1j\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<(0,1)\>\"", "->", "\"\<1j\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<(0,-1)\>\"", "->", "\"\<(-1j)\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<(0,2)\>\"", "->", "\"\<2j\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<(0,3)\>\"", "->", "\"\<3j\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<(0,4)\>\"", "->", "\"\<4j\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<(0,-0.5)\>\"", "->", "\"\<-0.5j\>\""}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\"\<(0,0.5)\>\"", "->", "\"\<0.5j\>\""}]}], "}"}]}], 
+       "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"If", "[", 
+      RowBox[{
+       RowBox[{"StringContainsQ", "[", 
+        RowBox[{"pythonStr", ",", "\"\<List\>\""}], "]"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"pythonStr", "=", 
+          RowBox[{"StringReplace", "[", 
+           RowBox[{"pythonStr", ",", 
+            RowBox[{"{", 
+             RowBox[{"\"\<List(\>\"", "->", "\"\<np.array([\>\""}], "}"}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"pythonStr", "=", 
+          RowBox[{
+           RowBox[{"StringTake", "[", 
+            RowBox[{"pythonStr", ",", 
+             RowBox[{"{", 
+              RowBox[{"1", ",", 
+               RowBox[{"-", "2"}]}], "}"}]}], "]"}], "<>", "\"\<])\>\""}]}], 
+         ";"}], ")"}]}], "\[IndentingNewLine]", "]"}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"Return", "[", "pythonStr", "]"}]}], "\[IndentingNewLine]", 
+    ")"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"SimpleConjugate", "[", "expr_", "]"}], ":=", 
+  RowBox[{"(", 
+   RowBox[{"Return", "[", 
+    RowBox[{"expr", "/.", 
+     RowBox[{"{", 
+      RowBox[{"I", "->", 
+       RowBox[{"-", "I"}]}], "}"}]}], "]"}], ")"}]}]}], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.9012772833668737`*^9, 3.9012772906343193`*^9}, {
+  3.901380692854786*^9, 3.9013806930580597`*^9}, {3.901578402824038*^9, 
+  3.901578404600417*^9}, {3.902514101543438*^9, 3.902514110348502*^9}},
+ CellLabel->
+  "In[135]:=",ExpressionUUID->"19cbcdcb-418a-4cb1-b54e-ee0aa953c12c"],
+
+Cell[CellGroupData[{
+
+Cell["ElectricField", "Subsection",
+ CellChangeTimes->{{3.902513393594984*^9, 
+  3.90251339932819*^9}},ExpressionUUID->"8c4cd24d-2724-44bd-ae0b-\
+c1839d681aee"],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.902511925343254*^9, 3.902511988350913*^9}, {
+   3.902512117132704*^9, 3.9025121408011503`*^9}, {3.9025127737395563`*^9, 
+   3.902512891022442*^9}, 3.9025131155184383`*^9, {3.9025134429411793`*^9, 
+   3.9025135695521793`*^9}, {3.902513781745201*^9, 3.902513907209599*^9}, {
+   3.902513939689248*^9, 3.902513980633596*^9}, {3.902514021001751*^9, 
+   3.902514040255539*^9}, 
+   3.902514243247438*^9},ExpressionUUID->"24cd8788-247a-4419-b94d-\
+6ad6e27f8e6c"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{
+   "sriptHeader", "=", 
+    "\"\<#!/usr/bin/env python3\n# This   script   contains  some  necessary  \
+functions  to  compute  the\n# diffracted  electric  and  magnetic fields \
+within the Smythe-Kirchhoff\n# approximation.\n# It was generated by the \
+Mathematica notebook diffint.nb.\n\nimport numpy as np\nfrom numba import jit\
+\n\n\>\""}], ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"r", "=", 
+   SqrtBox[
+    RowBox[{
+     SuperscriptBox["x", "2"], "+", 
+     SuperscriptBox["y", "2"], "+", 
+     SuperscriptBox["z", "2"]}]]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"f", "=", 
+   RowBox[{
+    FractionBox["1", 
+     RowBox[{"2", " ", "\[Pi]"}]], 
+    FractionBox[
+     RowBox[{"Exp", "[", 
+      RowBox[{"I", " ", "k", " ", "r"}], "]"}], "r"]}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"A", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "Ey"}], ",", " ", "Ex", ",", "0"}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"integrand", "=", 
+   RowBox[{"Simplify", "[", 
+    RowBox[{"Curl", "[", 
+     RowBox[{
+      RowBox[{"f", " ", "A"}], ",", " ", 
+      RowBox[{"{", 
+       RowBox[{"x", ",", "y", ",", "z"}], "}"}]}], "]"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"kernels", "=", "\[IndentingNewLine]", 
+   RowBox[{"FullSimplify", "[", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"Coefficient", "[", 
+        RowBox[{"#", ",", 
+         RowBox[{"{", 
+          RowBox[{"Ex", ",", "Ey"}], "}"}]}], "]"}], "&"}], "/@", 
+      "integrand"}], ")"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"kernelNameTemplate", "=", 
+   RowBox[{"StringTemplate", "[", "\"\<kern`component`_`link`\>\"", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"functionTemplate", "=", 
+   RowBox[{
+   "StringTemplate", "[", 
+    "\"\<\n    @jit(nopython=True)\n    def kern`component`_`link`(x,y):\n    \
+    return `funcExpr`\n    \>\"", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"returnTemplate", "=", 
+   RowBox[{"StringTemplate", "[", "\"\<(`ret1`, `ret2`)\>\"", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"nullTemplate", "=", 
+   RowBox[{
+   "StringTemplate", "[", "\"\<kern`component`_`link`.null = True\\n\>\"", 
+    "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"funcBag", "=", 
+   RowBox[{"{", 
+    RowBox[{
+    "sriptHeader", ",", 
+     "\"\<def electricKernels(z,k):\n    '''\n    This function returns the \
+necessary kernels for computing the diffracted electric field\n    obtained \
+from the Smythe-Kirchhoff diffraction integrals.\n    Parameters\n    \
+----------\n    z (float): the propagation distance\n    k (float): 2\[Pi] n/\
+\[Lambda]\n    Returns\n    -------\n    (kernEx_Ex, kernEx_Ey), (kernEy_Ex, \
+kernEy_Ey), (kernEz_Ex, kernEz_Ey) (tuple):\n        all elements being \
+2-tuples of functions of (x,y)\n    '''\>\""}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"returns", "=", 
+   RowBox[{"{", "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Do", "[", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"Exk", ",", "Eyk"}], "}"}], "=", 
+      RowBox[{"kernels", "[", 
+       RowBox[{"[", "idx", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"component", "=", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"\"\<Ex\>\"", ",", "\"\<Ey\>\"", ",", "\"\<Ez\>\""}], "}"}], 
+       "[", 
+       RowBox[{"[", "idx", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"ExkNumpy", "=", 
+      RowBox[{"PythonForm", "[", "Exk", "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"EykNumpy", "=", 
+      RowBox[{"PythonForm", "[", "Eyk", "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"ExkFun", "=", 
+      RowBox[{"functionTemplate", "[", 
+       RowBox[{"<|", 
+        RowBox[{
+         RowBox[{"\"\<component\>\"", "->", "component"}], ",", 
+         RowBox[{"\"\<link\>\"", "->", "\"\<Ex\>\""}], ",", 
+         RowBox[{"\"\<funcExpr\>\"", "->", "ExkNumpy"}]}], "|>"}], "]"}]}], 
+     ";", "\[IndentingNewLine]", 
+     RowBox[{"EykFun", "=", 
+      RowBox[{"functionTemplate", "[", 
+       RowBox[{"<|", 
+        RowBox[{
+         RowBox[{"\"\<component\>\"", "->", "component"}], ",", 
+         RowBox[{"\"\<link\>\"", "->", "\"\<Ey\>\""}], ",", 
+         RowBox[{"\"\<funcExpr\>\"", "->", "EykNumpy"}]}], "|>"}], "]"}]}], 
+     ";", "\[IndentingNewLine]", 
+     RowBox[{"funcBag", "=", 
+      RowBox[{"Append", "[", 
+       RowBox[{"funcBag", ",", "ExkFun"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"If", "[", 
+      RowBox[{
+       RowBox[{"Exk", "===", "0"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"funcBag", "=", 
+        RowBox[{"Append", "[", 
+         RowBox[{"funcBag", ",", 
+          RowBox[{"nullTemplate", "[", 
+           RowBox[{"<|", 
+            RowBox[{
+             RowBox[{"\"\<component\>\"", "->", "component"}], ",", 
+             RowBox[{"\"\<link\>\"", "->", "\"\<Ex\>\""}]}], "|>"}], "]"}]}], 
+         "]"}]}]}], "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+     
+     RowBox[{"funcBag", "=", 
+      RowBox[{"Append", "[", 
+       RowBox[{"funcBag", ",", "EykFun"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"If", "[", 
+      RowBox[{
+       RowBox[{"Eyk", "===", "0"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"funcBag", "=", 
+        RowBox[{"Append", "[", 
+         RowBox[{"funcBag", ",", 
+          RowBox[{"nullTemplate", "[", 
+           RowBox[{"<|", 
+            RowBox[{
+             RowBox[{"\"\<component\>\"", "->", "component"}], ",", 
+             RowBox[{"\"\<link\>\"", "->", "\"\<Ey\>\""}]}], "|>"}], "]"}]}], 
+         "]"}]}]}], "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+     
+     RowBox[{"returnX", "=", 
+      RowBox[{"kernelNameTemplate", "[", 
+       RowBox[{"<|", 
+        RowBox[{
+         RowBox[{"\"\<component\>\"", "->", "component"}], ",", 
+         RowBox[{"\"\<link\>\"", "->", "\"\<Ex\>\""}]}], "|>"}], "]"}]}], ";",
+      "\[IndentingNewLine]", 
+     RowBox[{"returnY", "=", 
+      RowBox[{"kernelNameTemplate", "[", 
+       RowBox[{"<|", 
+        RowBox[{
+         RowBox[{"\"\<component\>\"", "->", "component"}], ",", 
+         RowBox[{"\"\<link\>\"", "->", "\"\<Ey\>\""}]}], "|>"}], "]"}]}], ";",
+      "\[IndentingNewLine]", 
+     RowBox[{"returnPair", "=", 
+      RowBox[{"returnTemplate", "[", 
+       RowBox[{"<|", 
+        RowBox[{
+         RowBox[{"\"\<ret1\>\"", "->", "returnX"}], ",", 
+         RowBox[{"\"\<ret2\>\"", "->", "returnY"}]}], "|>"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"returns", "=", 
+      RowBox[{"Append", "[", 
+       RowBox[{"returns", ",", "returnPair"}], "]"}]}], ";"}], 
+    "\[IndentingNewLine]", ")"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"idx", ",", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", "2", ",", "3"}], "}"}]}], "}"}]}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"funcBag", "=", 
+   RowBox[{"Append", "[", 
+    RowBox[{"funcBag", ",", 
+     RowBox[{"\"\<\\n    return \>\"", "<>", 
+      RowBox[{"StringJoin", "[", 
+       RowBox[{"StringRiffle", "[", 
+        RowBox[{"returns", ",", "\"\<, \>\""}], "]"}], "]"}]}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"funcBag", "=", 
+    RowBox[{"Append", "[", 
+     RowBox[{
+     "funcBag", ",", 
+      "\"\<\\n\\ndef magneticKernels(z,k):\n    '''\n    This function \
+returns the necessary kernels for computing the diffracted magnetic field\n   \
+ obtained from the Smythe-Kirchhoff diffraction integrals.\n    Parameters\n  \
+  ----------\n    z (float): the propagation distance\n    k (float): 2\[Pi] \
+n/\[Lambda]\n    Returns\n    -------\n    (kernHx_Ex, kernHx_Ey), \
+(kernHy_Ex, kernHy_Ey), (kernHz_Ex, kernHz_Ey) (tuple):\n        all elements \
+being 2-tuples of functions of (x,y)\n    '''\>\""}], "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Hintegrand", "=", 
+   RowBox[{"Simplify", "[", 
+    RowBox[{"Curl", "[", 
+     RowBox[{
+      RowBox[{"Curl", "[", 
+       RowBox[{
+        RowBox[{"f", " ", "A"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"x", ",", "y", ",", "z"}], "}"}]}], "]"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"x", ",", "y", ",", "z"}], "}"}]}], "]"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"kernels", "=", "\[IndentingNewLine]", 
+   RowBox[{"FullSimplify", "[", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"Coefficient", "[", 
+        RowBox[{"#", ",", 
+         RowBox[{"{", 
+          RowBox[{"Ex", ",", "Ey"}], "}"}]}], "]"}], "&"}], "/@", 
+      "Hintegrand"}], ")"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"returns", "=", 
+   RowBox[{"{", "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Do", "[", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"Exk", ",", "Eyk"}], "}"}], "=", 
+       RowBox[{"kernels", "[", 
+        RowBox[{"[", "idx", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"component", "=", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"\"\<Hx\>\"", ",", "\"\<Hy\>\"", ",", "\"\<Hz\>\""}], "}"}], 
+        "[", 
+        RowBox[{"[", "idx", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"ExkNumpy", "=", 
+       RowBox[{"PythonForm", "[", "Exk", "]"}]}], ";", "\[IndentingNewLine]", 
+      
+      RowBox[{"EykNumpy", "=", 
+       RowBox[{"PythonForm", "[", "Eyk", "]"}]}], ";", "\[IndentingNewLine]", 
+      
+      RowBox[{"ExkFun", "=", 
+       RowBox[{"functionTemplate", "[", 
+        RowBox[{"<|", 
+         RowBox[{
+          RowBox[{"\"\<component\>\"", "->", "component"}], ",", 
+          RowBox[{"\"\<link\>\"", "->", "\"\<Ex\>\""}], ",", 
+          RowBox[{"\"\<funcExpr\>\"", "->", "ExkNumpy"}]}], "|>"}], "]"}]}], 
+      ";", "\[IndentingNewLine]", 
+      RowBox[{"EykFun", "=", 
+       RowBox[{"functionTemplate", "[", 
+        RowBox[{"<|", 
+         RowBox[{
+          RowBox[{"\"\<component\>\"", "->", "component"}], ",", 
+          RowBox[{"\"\<link\>\"", "->", "\"\<Ey\>\""}], ",", 
+          RowBox[{"\"\<funcExpr\>\"", "->", "EykNumpy"}]}], "|>"}], "]"}]}], 
+      ";", "\[IndentingNewLine]", 
+      RowBox[{"funcBag", "=", 
+       RowBox[{"Append", "[", 
+        RowBox[{"funcBag", ",", "ExkFun"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"funcBag", "=", 
+       RowBox[{"Append", "[", 
+        RowBox[{"funcBag", ",", "EykFun"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"returnX", "=", 
+       RowBox[{"kernelNameTemplate", "[", 
+        RowBox[{"<|", 
+         RowBox[{
+          RowBox[{"\"\<component\>\"", "->", "component"}], ",", 
+          RowBox[{"\"\<link\>\"", "->", "\"\<Ex\>\""}]}], "|>"}], "]"}]}], 
+      ";", "\[IndentingNewLine]", 
+      RowBox[{"returnY", "=", 
+       RowBox[{"kernelNameTemplate", "[", 
+        RowBox[{"<|", 
+         RowBox[{
+          RowBox[{"\"\<component\>\"", "->", "component"}], ",", 
+          RowBox[{"\"\<link\>\"", "->", "\"\<Ey\>\""}]}], "|>"}], "]"}]}], 
+      ";", "\[IndentingNewLine]", 
+      RowBox[{"returnPair", "=", 
+       RowBox[{"returnTemplate", "[", 
+        RowBox[{"<|", 
+         RowBox[{
+          RowBox[{"\"\<ret1\>\"", "->", "returnX"}], ",", 
+          RowBox[{"\"\<ret2\>\"", "->", "returnY"}]}], "|>"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"returns", "=", 
+       RowBox[{"Append", "[", 
+        RowBox[{"returns", ",", "returnPair"}], "]"}]}], ";"}], 
+     "\[IndentingNewLine]", ")"}], ",", "\[IndentingNewLine]", 
+    RowBox[{"{", 
+     RowBox[{"idx", ",", 
+      RowBox[{"{", 
+       RowBox[{"1", ",", "2", ",", "3"}], "}"}]}], "}"}]}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"funcBag", "=", 
+   RowBox[{"Append", "[", 
+    RowBox[{"funcBag", ",", 
+     RowBox[{"\"\<\\n    return \>\"", "<>", 
+      RowBox[{"StringJoin", "[", 
+       RowBox[{"StringRiffle", "[", 
+        RowBox[{"returns", ",", "\"\<, \>\""}], "]"}], "]"}]}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"scriptText", "=", 
+   RowBox[{
+    RowBox[{"StringJoin", "[", "funcBag", "]"}], "<>", "\"\<\\n\>\""}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Export", "[", 
+  RowBox[{"\"\<diffkernels.py\>\"", ",", "scriptText", ",", "\"\<Text\>\""}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{
+  3.902511935907041*^9, {3.902514150556278*^9, 3.9025141690483522`*^9}, {
+   3.902514230627269*^9, 3.902514266553301*^9}, {3.902514388586207*^9, 
+   3.902514742570737*^9}, {3.9025149151341543`*^9, 3.9025150726431913`*^9}, {
+   3.902515177176447*^9, 3.902515232670374*^9}, {3.902515425887834*^9, 
+   3.9025155521709623`*^9}, 3.9025156520059147`*^9, {3.9025158641036377`*^9, 
+   3.902515907686679*^9}, {3.902515943886512*^9, 3.902515945762021*^9}, {
+   3.902572145974475*^9, 3.902572338010416*^9}, {3.902582497731798*^9, 
+   3.9025825204974337`*^9}, {3.902583235684106*^9, 3.9025833012862253`*^9}, {
+   3.9025833747936983`*^9, 3.9025835309523487`*^9}},
+ CellLabel->
+  "In[817]:=",ExpressionUUID->"b569b489-0b23-43ad-950b-953bb8a9a7a2"],
+
+Cell[BoxData["\<\"diffkernels.py\"\>"], "Output",
+ CellChangeTimes->{{3.902515902073601*^9, 3.9025159080194397`*^9}, 
+   3.902515946591164*^9, {3.902572294075974*^9, 3.9025723394858828`*^9}, {
+   3.902582502495615*^9, 3.9025825213132963`*^9}, 3.9025833019392347`*^9, {
+   3.902583462816412*^9, 3.9025834825683517`*^9}, 3.902583531665012*^9},
+ CellLabel->
+  "Out[838]=",ExpressionUUID->"e9100e9b-9a01-4653-9cce-cf149f9ca961"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{"Partition", "[", "returns", "]"}]], "Input",
+ CellChangeTimes->{{3.902583211546136*^9, 
+  3.902583215607381*^9}},ExpressionUUID->"20da6b5f-720d-4623-a866-\
+ed1f4c6567a0"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"StringJoin", "[", 
+  RowBox[{"StringRiffle", "[", 
+   RowBox[{"returns", ",", "\"\<, \>\""}], "]"}], "]"}]], "Input",
+ CellChangeTimes->{3.9025831970193787`*^9},
+ CellLabel->
+  "In[751]:=",ExpressionUUID->"9692e6ec-5cf5-4a3f-a084-d3e45e7cc871"],
+
+Cell[BoxData["\<\"kernHx_Ex, kernHx_Ey, kernHy_Ex, kernHy_Ey, kernHz_Ex, \
+kernHz_Ey\"\>"], "Output",
+ CellChangeTimes->{3.902583197270722*^9},
+ CellLabel->
+  "Out[751]=",ExpressionUUID->"551d118c-7fc5-4f04-aef8-b16bd2d51322"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["scriptText"], "Input",
+ CellLabel->
+  "In[708]:=",ExpressionUUID->"dc2e3fdb-d995-4c21-9ea2-985efaa0971a"],
+
+Cell[BoxData["\<\"#!/usr/bin/env python3\\n# This   script   contains  some  \
+necessary  functions  to  compute  the\\n# diffracted  electric  and  \
+magnetic fields within the Smythe-Kirchhoff\\n# approximation.\\n# It was \
+generated by the Mathematica notebook diffint.nb.\\n\\nimport numpy as \
+np\\n\\ndef electricKernels(z,k):\\n    '''\\n    This function returns the \
+necessary kernels for computing the diffracted electric field\\n    obtained \
+from the Smythe-Kirchhoff diffraction integrals.\\n    Parameters\\n    \
+----------\\n    z (float): the propagation distance\\n    k (float): 2\[Pi] \
+n/\[Lambda]\\n    Returns\\n    -------\\n    (kernEx_Ex, kernEx_Ey, \
+kernEy_Ex, kernEy_Ey, kernEz_Ex, kernEz_Ey) (tuple):\\n        all elements \
+being functions of (x,y)\\n    '''\\n    def kernEx_Ex(x,y):\\n        return \
+(np.exp(1j*k*np.sqrt(x**2 + y**2 + z**2))*z*(1 - 1j*k*np.sqrt(x**2 + y**2 + \
+z**2)))/(2.*np.pi*(x**2 + y**2 + z**2)**1.5)\\n    \\n    def kernEx_Ey(x,y):\
+\\n        return 0\\n    kernEx_Ey.null = True\\n\\n    def \
+kernEy_Ex(x,y):\\n        return 0\\n    kernEy_Ex.null = True\\n\\n    def \
+kernEy_Ey(x,y):\\n        return (np.exp(1j*k*np.sqrt(x**2 + y**2 + \
+z**2))*z*(1 - 1j*k*np.sqrt(x**2 + y**2 + z**2)))/(2.*np.pi*(x**2 + y**2 + \
+z**2)**1.5)\\n    \\n    def kernEz_Ex(x,y):\\n        return \
+(0.5j*np.exp(1j*k*np.sqrt(x**2 + y**2 + z**2))*x*(1j + k*np.sqrt(x**2 + y**2 \
++ z**2)))/(np.pi*(x**2 + y**2 + z**2)**1.5)\\n    \\n    def \
+kernEz_Ey(x,y):\\n        return (0.5j*np.exp(1j*k*np.sqrt(x**2 + y**2 + \
+z**2))*y*(1j + k*np.sqrt(x**2 + y**2 + z**2)))/(np.pi*(x**2 + y**2 + \
+z**2)**1.5)\\n    \\n    return kernEx_Ex, kernEx_Ey, kernEy_Ex, kernEy_Ey, \
+kernEz_Ex, kernEz_Ey\\n\\ndef magneticKernels(z,k):\\n    '''\\n    This \
+function returns the necessary kernels for computing the diffracted magnetic \
+field\\n    obtained from the Smythe-Kirchhoff diffraction integrals.\\n    \
+Parameters\\n    ----------\\n    z (float): the propagation distance\\n    k \
+(float): 2\[Pi] n/\[Lambda]\\n    Returns\\n    -------\\n    (kernHx_Ex, \
+kernHx_Ey, kernHy_Ex, kernHy_Ey, kernHz_Ex, kernHz_Ey) (tuple):\\n        all \
+elements being functions of (x,y)\\n    '''\\n    def kernHx_Ex(x,y):\\n      \
+  return -0.5*(np.exp(1j*k*np.sqrt(x**2 + y**2 + z**2))*x*y*(-3 + \
+3j*k*np.sqrt(x**2 + y**2 + z**2) + k**2*(x**2 + y**2 + z**2)))/(np.pi*(x**2 + \
+y**2 + z**2)**2.5)\\n    \\n    def kernHx_Ey(x,y):\\n        return \
+-0.5*(np.exp(1j*k*np.sqrt(x**2 + y**2 + z**2))*((y**2 + z**2)*(-1 + \
+k**2*(y**2 + z**2) + 1j*k*np.sqrt(x**2 + y**2 + z**2)) + x**2*(2 + k**2*(y**2 \
++ z**2) - 2j*k*np.sqrt(x**2 + y**2 + z**2))))/(np.pi*(x**2 + y**2 + \
+z**2)**2.5)\\n    \\n    def kernHy_Ex(x,y):\\n        return \
+(np.exp(1j*k*np.sqrt(x**2 + y**2 + z**2))*(k**2*x**4 + 2*y**2 - z**2 + \
+k*(k*z**2*(y**2 + z**2) - 1j*(2*y**2 - z**2)*np.sqrt(x**2 + y**2 + z**2)) + \
+x**2*(-1 + 1j*k*np.sqrt(x**2 + y**2 + z**2) + k**2*(y**2 + \
+2*z**2))))/(2.*np.pi*(x**2 + y**2 + z**2)**2.5)\\n    \\n    def \
+kernHy_Ey(x,y):\\n        return (np.exp(1j*k*np.sqrt(x**2 + y**2 + \
+z**2))*x*y*(-3 + 3j*k*np.sqrt(x**2 + y**2 + z**2) + k**2*(x**2 + y**2 + \
+z**2)))/(2.*np.pi*(x**2 + y**2 + z**2)**2.5)\\n    \\n    def kernHz_Ex(x,y):\
+\\n        return -0.5*(np.exp(1j*k*np.sqrt(x**2 + y**2 + z**2))*y*z*(-3 + \
+3j*k*np.sqrt(x**2 + y**2 + z**2) + k**2*(x**2 + y**2 + z**2)))/(np.pi*(x**2 + \
+y**2 + z**2)**2.5)\\n    \\n    def kernHz_Ey(x,y):\\n        return \
+(np.exp(1j*k*np.sqrt(x**2 + y**2 + z**2))*x*z*(-3 + 3j*k*np.sqrt(x**2 + y**2 \
++ z**2) + k**2*(x**2 + y**2 + z**2)))/(2.*np.pi*(x**2 + y**2 + z**2)**2.5)\\n \
+   \\n    return kernHx_Ex, kernHx_Ey, kernHy_Ex, kernHy_Ey, kernHz_Ex, \
+kernHz_Ey\\n\"\>"], "Output",
+ CellChangeTimes->{{3.902572298323578*^9, 3.902572341008111*^9}},
+ CellLabel->
+  "Out[708]=",ExpressionUUID->"689f8e6a-5935-419b-bb33-d4499eef0530"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"funcBag", "[", 
+  RowBox[{"[", "3", "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.902515662911539*^9, 3.902515664527814*^9}, {
+  3.902515848886496*^9, 3.902515852454194*^9}},
+ CellLabel->
+  "In[544]:=",ExpressionUUID->"7d30492e-f916-43ba-8c81-3d1cbe69d577"],
+
+Cell[BoxData["\<\"\\n    def kernEx_Ex(x,y):\\n\\t    return \
+(np.exp(1j*k*np.sqrt(x**2 + y**2 + z**2))*z*(1 - 1j*k*np.sqrt(x**2 + y**2 + \
+z**2)))/(2.*np.pi*(x**2 + y**2 + z**2)**1.5)\\n\"\>"], "Output",
+ CellChangeTimes->{
+  3.902515664799038*^9, {3.9025158494786158`*^9, 3.9025158530941343`*^9}},
+ CellLabel->
+  "Out[544]=",ExpressionUUID->"d15bf07b-b642-4b99-88f9-0497c2db8819"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.902515247658225*^9, 3.902515254170649*^9}, {
+   3.9025153290218287`*^9, 3.90251534724265*^9}, {3.902515556656274*^9, 
+   3.902515561077039*^9}, 
+   3.902515900551262*^9},ExpressionUUID->"98e33f07-f15f-4e32-97db-\
+c180eefafe03"],
+
+Cell[BoxData["\<\"diffkernels.py\"\>"], "Output",
+ CellChangeTimes->{
+  3.902515254756557*^9, 3.902515347407053*^9, {3.902515535726959*^9, 
+   3.902515563101058*^9}, 3.902515673303397*^9, 3.902515874390099*^9},
+ CellLabel->
+  "Out[564]=",ExpressionUUID->"91628431-d7be-45e4-ab09-753d4a995088"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1624, 911},
+WindowMargins->{{32, Automatic}, {44, Automatic}},
+FrontEndVersion->"13.2 for Mac OS X ARM (64-bit) (January 30, 2023)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"4aeae1b3-fdc6-46de-8423-7de707836e9d"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 183, 2, 67, "Section",ExpressionUUID->"f0256df0-1986-4eaf-9cd0-3dc4ab732a22"],
+Cell[766, 26, 4211, 99, 677, "Input",ExpressionUUID->"19cbcdcb-418a-4cb1-b54e-ee0aa953c12c",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[5002, 129, 160, 3, 54, "Subsection",ExpressionUUID->"8c4cd24d-2724-44bd-ae0b-c1839d681aee"],
+Cell[5165, 134, 503, 8, 30, "Input",ExpressionUUID->"24cd8788-247a-4419-b94d-6ad6e27f8e6c"],
+Cell[CellGroupData[{
+Cell[5693, 146, 13244, 340, 2033, "Input",ExpressionUUID->"b569b489-0b23-43ad-950b-953bb8a9a7a2"],
+Cell[18940, 488, 424, 6, 34, "Output",ExpressionUUID->"e9100e9b-9a01-4653-9cce-cf149f9ca961"]
+}, Open  ]],
+Cell[19379, 497, 194, 4, 30, "Input",ExpressionUUID->"20da6b5f-720d-4623-a866-ed1f4c6567a0"],
+Cell[CellGroupData[{
+Cell[19598, 505, 268, 6, 30, "Input",ExpressionUUID->"9692e6ec-5cf5-4a3f-a084-d3e45e7cc871"],
+Cell[19869, 513, 226, 4, 34, "Output",ExpressionUUID->"551d118c-7fc5-4f04-aef8-b16bd2d51322"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[20132, 522, 119, 2, 30, "Input",ExpressionUUID->"dc2e3fdb-d995-4c21-9ea2-985efaa0971a"],
+Cell[20254, 526, 3905, 53, 1652, "Output",ExpressionUUID->"689f8e6a-5935-419b-bb33-d4499eef0530"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[24196, 584, 281, 6, 30, "Input",ExpressionUUID->"7d30492e-f916-43ba-8c81-3d1cbe69d577"],
+Cell[24480, 592, 383, 6, 98, "Output",ExpressionUUID->"d15bf07b-b642-4b99-88f9-0497c2db8819"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[24900, 603, 276, 5, 30, "Input",ExpressionUUID->"98e33f07-f15f-4e32-97db-c180eefafe03"],
+Cell[25179, 610, 293, 5, 34, "Output",ExpressionUUID->"91628431-d7be-45e4-ab09-753d4a995088"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
