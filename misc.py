@@ -160,3 +160,33 @@ def num2tex(num, sig_figs):
     expo = int(expo)
     texForm = '%s \\times 10^{%s}' % (mant, expo)
     return texForm
+
+def var_collisions(varname, these_globals):
+    '''
+    Given a variable name, return a list of all variables in the
+    global namespace that contain that variable name.
+
+    This  is  useful  to  see  if  a possible variable name will
+    collide with an existing variable name.
+
+    A  variable  name  is  a  good  variable name if it is not a
+    substring  of any other variable name, and no other variable
+    name is a substring of it.
+    
+    Parameters
+    ----------
+    varname (str): variable name to check.
+    these_globals (dict): dictionary of global variables.
+
+    Returns
+    -------
+    commonvars (list): list of variable names that collide with
+    varname.
+    '''
+    globalvars = list(filter(lambda x: '_' != x[0], these_globals))
+    commonvars = [v for v in globalvars if (varname in v) or (v in varname)]
+    if len(commonvars) == 0:
+        print("No variable names collide with '%s'." % varname)
+    else:
+        print("The following variable names collide with '%s':" % varname)
+        print(commonvars)
