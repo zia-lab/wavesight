@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>misc &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavesight.html">wavesight.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fields.html">fields.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/diffkernels.html">diffkernels.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/misc.html">misc.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fieldgenesis.html">fieldgenesis.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fungenerators.html">fungenerators.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/convstore.html">convstore.py</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">misc</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for misc</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="latex_eqn_to_png">
+<a class="viewcode-back" href="../usage/misc.html#misc.latex_eqn_to_png">[docs]</a>
+<span class="k">def</span> <span class="nf">latex_eqn_to_png</span><span class="p">(</span><span class="n">tex_code</span><span class="p">,</span> <span class="n">figname</span><span class="p">,</span> <span class="n">timed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">outfolder</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Compile a given bit of LaTeX into png and pdf formats. Best for creating equations, since</span>
+<span class="sd">    it creates a tight bounding box around the given equation.</span>
+
+<span class="sd">    The pdf might have white space around the equation, but the png is very nicely trimmed.</span>
+<span class="sd">    </span>
+<span class="sd">    Requires a local installation of pdflatex and convert.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tex_code : str</span>
+<span class="sd">        An equation, including $$, \[\] or LaTeX equation environment.</span>
+<span class="sd">    time : bool</span>
+<span class="sd">        If True then the filename includes a timestamp.</span>
+<span class="sd">    figname : str</span>
+<span class="sd">        Filenames for png and pdf have that root.</span>
+<span class="sd">    outfolder : str</span>
+<span class="sd">        Directory name where the images will be stored.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    </span>
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    tex_code = r&quot;&quot;&quot;\begin{equation}</span>
+<span class="sd">    x+y</span>
+<span class="sd">    \end{equation}&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    latex_eqn_to_png(tex_code, True, &#39;simple_eqn&#39;, outfolder = &#39;/Users/juan/&#39;)</span>
+<span class="sd">    </span>
+<span class="sd">    --&gt; creates /Users/juan/simple_eqn.pdf and /Users/juan/simple_eqn.npg</span>
+<span class="sd">    </span>
+<span class="sd">    Nov-24 2021-11-24 14:39:28</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">())</span>
+    <span class="n">percentage_margin</span> <span class="o">=</span> <span class="mf">10.</span>
+    <span class="c1"># this header could be modify to add additional packages</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;&#39;&#39;\documentclass[border=2pt]</span><span class="si">{standalone}</span>
+<span class="s1">    \usepackage</span><span class="si">{amsmath}</span>
+<span class="s1">    \usepackage</span><span class="si">{mathtools}</span>
+<span class="s1">    \usepackage</span><span class="si">{amssymb}</span>
+<span class="s1">    \usepackage</span><span class="si">{varwidth}</span>
+<span class="s1">    \begin</span><span class="si">{document}</span>
+<span class="s1">    \begin</span><span class="si">{varwidth}</span><span class="s1">{\linewidth}&#39;&#39;&#39;</span>
+    <span class="n">footer</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;\end</span><span class="si">{varwidth}</span>
+<span class="s1">    \end</span><span class="si">{document}</span><span class="s1">&#39;&#39;&#39;</span>
+    <span class="n">texcode</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">tex_code</span><span class="p">,</span> <span class="n">footer</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_folder</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">outfolder</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">outfolder</span> <span class="o">=</span> <span class="n">temp_folder</span>
+        <span class="n">temp_latex</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">,</span><span class="s1">&#39;texeqn.tex&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">temp_latex</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">texcode</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;pdflatex&#39;</span><span class="p">,</span> <span class="s1">&#39;-halt-on-error&#39;</span><span class="p">,</span> <span class="n">temp_latex</span><span class="p">],</span>
+                           <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">,</span>
+                           <span class="n">cwd</span><span class="o">=</span><span class="n">temp_folder</span><span class="p">)</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;convert&#39;</span><span class="p">,</span> <span class="s1">&#39;-density&#39;</span><span class="p">,</span> <span class="s1">&#39;500&#39;</span><span class="p">,</span> <span class="s1">&#39;texeqn.pdf&#39;</span><span class="p">,</span> <span class="s1">&#39;-quality&#39;</span><span class="p">,</span> <span class="s1">&#39;100&#39;</span><span class="p">,</span> <span class="s1">&#39;texeqn.png&#39;</span><span class="p">],</span> 
+                           <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">,</span>
+                           <span class="n">cwd</span><span class="o">=</span><span class="n">temp_folder</span><span class="p">)</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;convert&#39;</span><span class="p">,</span> <span class="s1">&#39;texeqn.png&#39;</span><span class="p">,</span> <span class="s1">&#39;-fuzz&#39;</span><span class="p">,</span> <span class="s1">&#39;1%&#39;</span><span class="p">,</span> <span class="s1">&#39;-trim&#39;</span><span class="p">,</span> <span class="s1">&#39;+repage&#39;</span><span class="p">,</span> <span class="s1">&#39;texeqn.png&#39;</span><span class="p">],</span> 
+                           <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">,</span>
+                           <span class="n">cwd</span><span class="o">=</span><span class="n">temp_folder</span><span class="p">)</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;convert&#39;</span><span class="p">,</span> <span class="s1">&#39;texeqn.png&#39;</span><span class="p">,</span> <span class="s1">&#39;-fuzz&#39;</span><span class="p">,</span> <span class="s1">&#39;1%&#39;</span><span class="p">,</span> <span class="s1">&#39;-trim&#39;</span><span class="p">,</span> <span class="s1">&#39;+repage&#39;</span><span class="p">,</span> <span class="s1">&#39;texeqn.jpg&#39;</span><span class="p">],</span> 
+                           <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">,</span>
+                           <span class="n">cwd</span><span class="o">=</span><span class="n">temp_folder</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;An error occurred while converting latex to image: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">timed</span> <span class="ow">and</span> <span class="n">figname</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out_pdf_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outfolder</span><span class="p">,</span><span class="s2">&quot;texeqn-</span><span class="si">%d</span><span class="s2">.pdf&quot;</span> <span class="o">%</span> <span class="n">now</span><span class="p">)</span>
+            <span class="n">out_png_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outfolder</span><span class="p">,</span><span class="s2">&quot;texeqn-</span><span class="si">%d</span><span class="s2">.png&quot;</span> <span class="o">%</span> <span class="n">now</span><span class="p">)</span>
+            <span class="n">out_jpg_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outfolder</span><span class="p">,</span><span class="s2">&quot;texeqn-</span><span class="si">%d</span><span class="s2">.jpg&quot;</span> <span class="o">%</span> <span class="n">now</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">timed</span> <span class="ow">and</span> <span class="n">figname</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out_pdf_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outfolder</span><span class="p">,</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">-</span><span class="si">%d</span><span class="s2">.pdf&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">figname</span><span class="p">,</span><span class="n">now</span><span class="p">))</span>
+            <span class="n">out_png_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outfolder</span><span class="p">,</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">-</span><span class="si">%d</span><span class="s2">.png&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">figname</span><span class="p">,</span><span class="n">now</span><span class="p">))</span>
+            <span class="n">out_jpg_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outfolder</span><span class="p">,</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">-</span><span class="si">%d</span><span class="s2">.jpg&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">figname</span><span class="p">,</span><span class="n">now</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">timed</span> <span class="ow">and</span> <span class="n">figname</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out_pdf_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outfolder</span><span class="p">,</span><span class="s2">&quot;texeqn.pdf&quot;</span><span class="p">)</span>
+            <span class="n">out_png_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outfolder</span><span class="p">,</span><span class="s2">&quot;texeqn.png&quot;</span><span class="p">)</span>
+            <span class="n">out_jpg_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outfolder</span><span class="p">,</span><span class="s2">&quot;texeqn.jpg&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">timed</span> <span class="ow">and</span> <span class="n">figname</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out_pdf_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outfolder</span><span class="p">,</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.pdf&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">figname</span><span class="p">))</span>
+            <span class="n">out_png_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outfolder</span><span class="p">,</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.png&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">figname</span><span class="p">))</span>
+            <span class="n">out_jpg_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outfolder</span><span class="p">,</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.jpg&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">figname</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;cd &quot;</span><span class="si">%s</span><span class="s1">&quot;; mv texeqn.pdf &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">temp_folder</span><span class="p">,</span> <span class="n">out_pdf_fname</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;cd &quot;</span><span class="si">%s</span><span class="s1">&quot;; mv texeqn.png &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">temp_folder</span><span class="p">,</span> <span class="n">out_png_fname</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;cd &quot;</span><span class="si">%s</span><span class="s1">&quot;; mv texeqn.jpg &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">temp_folder</span><span class="p">,</span> <span class="n">out_jpg_fname</span><span class="p">))</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="sig_figs_in">
+<a class="viewcode-back" href="../usage/misc.html#misc.sig_figs_in">[docs]</a>
+<span class="k">def</span> <span class="nf">sig_figs_in</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Count how many significant figures are in a given number.</span>
+<span class="sd">    This might fail if the number has been calculated with.</span>
+<span class="sd">    Only good for numbers one has input oneself.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="rounder">
+<a class="viewcode-back" href="../usage/misc.html#misc.rounder">[docs]</a>
+<span class="k">def</span> <span class="nf">rounder</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given a number, round it to n significant figures.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    num : float</span>
+
+<span class="sd">    n : int</span>
+<span class="sd">        how many sig figs to return in the rounded num.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rounded : int</span>
+<span class="sd">        the rounded number.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">rounded</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">num</span><span class="p">)))</span> <span class="o">+</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">rounded</span></div>
+
+
+<div class="viewcode-block" id="num2tex">
+<a class="viewcode-back" href="../usage/misc.html#misc.num2tex">[docs]</a>
+<span class="k">def</span> <span class="nf">num2tex</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">sig_figs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given a number this function formats it in LaTeX scientific notation.</span>
+<span class="sd">    The output has the number of significant figures specified by the user, padding</span>
+<span class="sd">    with zeroes if necessary.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    num : float</span>
+<span class="sd">        A number.</span>
+<span class="sd">    sig_figs : int</span>
+<span class="sd">        Number of significant figures.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str: A string in LaTeX scientific notation.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">fstring</span> <span class="o">=</span> <span class="s1">&#39;%.&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sig_figs</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;g&#39;</span>
+    <span class="n">strNum</span> <span class="o">=</span> <span class="n">fstring</span> <span class="o">%</span> <span class="n">num</span>
+    <span class="k">if</span> <span class="s1">&#39;e&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">strNum</span><span class="p">:</span>
+        <span class="n">lennum</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">strNum</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">strNum</span><span class="p">:</span>
+            <span class="n">lennum</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">strNum</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span>
+            <span class="n">strNum</span> <span class="o">+=</span> <span class="s1">&#39;0&#39;</span><span class="o">*</span><span class="p">(</span><span class="n">sig_figs</span><span class="o">-</span><span class="n">lennum</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">strNum</span>
+        <span class="k">if</span> <span class="n">lennum</span> <span class="o">&lt;</span> <span class="n">sig_figs</span><span class="p">:</span>
+            <span class="n">strNum</span> <span class="o">+=</span> <span class="s1">&#39;0&#39;</span><span class="o">*</span><span class="p">(</span><span class="n">sig_figs</span><span class="o">-</span><span class="n">lennum</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">strNum</span>
+    <span class="n">mant</span><span class="p">,</span> <span class="n">expo</span> <span class="o">=</span> <span class="n">strNum</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">)</span>
+    <span class="n">lenmant</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mant</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">mant</span><span class="p">:</span>
+        <span class="n">lenmant</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mant</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span>
+    <span class="k">if</span> <span class="n">lenmant</span> <span class="o">&lt;</span> <span class="n">sig_figs</span><span class="p">:</span>
+        <span class="n">mant</span> <span class="o">+=</span> <span class="s1">&#39;0&#39;</span><span class="o">*</span><span class="p">(</span><span class="n">sig_figs</span><span class="o">-</span><span class="n">lenmant</span><span class="p">)</span>
+    <span class="n">expo</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">expo</span><span class="p">)</span>
+    <span class="n">texForm</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="se">\\</span><span class="s1">times 10^{</span><span class="si">%s</span><span class="s1">}&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mant</span><span class="p">,</span> <span class="n">expo</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">texForm</span></div>
+
+
+<div class="viewcode-block" id="var_collisions">
+<a class="viewcode-back" href="../usage/misc.html#misc.var_collisions">[docs]</a>
+<span class="k">def</span> <span class="nf">var_collisions</span><span class="p">(</span><span class="n">varname</span><span class="p">,</span> <span class="n">these_globals</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given a variable name, return a list of all variables in the</span>
+<span class="sd">    global namespace that contain that variable name.</span>
+
+<span class="sd">    This  is  useful  to  see  if  a possible variable name will</span>
+<span class="sd">    collide with an existing variable name.</span>
+
+<span class="sd">    A  variable  name  is  a  good  variable name if it is not a</span>
+<span class="sd">    substring  of any other variable name, and no other variable</span>
+<span class="sd">    name is a substring of it.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    varname : str</span>
+<span class="sd">        variable name to check.</span>
+<span class="sd">    these_globals : dict</span>
+<span class="sd">        dictionary of global variables.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    commonvars : list</span>
+<span class="sd">        list of variable names that collide with varname.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">globalvars</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39;_&#39;</span> <span class="o">!=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">these_globals</span><span class="p">))</span>
+    <span class="n">commonvars</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">globalvars</span> <span class="k">if</span> <span class="p">(</span><span class="n">varname</span> <span class="ow">in</span> <span class="n">v</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">v</span> <span class="ow">in</span> <span class="n">varname</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">commonvars</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No variable names collide with &#39;</span><span class="si">%s</span><span class="s2">&#39;.&quot;</span> <span class="o">%</span> <span class="n">varname</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The following variable names collide with &#39;</span><span class="si">%s</span><span class="s2">&#39;:&quot;</span> <span class="o">%</span> <span class="n">varname</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">commonvars</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
