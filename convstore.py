@@ -5,29 +5,6 @@ from scipy import special
 from scipy.optimize import root_scalar
 from subprocess import Popen
 
-def sendtome(message):
-    '''
-    Given a message, send it to my phone via iMessage.
-    Parameters
-    ----------
-    message : str
-        The message to send.
-    Returns
-    -------
-    None
-    '''
-    cmd = f'''
-    tell application "Messages"
-        set targetBuddy to "(401) 338-9488"
-        set targetService to id of 1st account whose service type = iMessage
-        set textMessage to "{message}"
-        set theBuddy to participant targetBuddy of account id targetService
-        send textMessage to theBuddy
-    end tell
-    '''
-    _ = Popen(['osascript', '-e', cmd])
-    return None
-
 def zerocrossings(numarray):
     '''
     Return the indices of the zero crossings in the given numpy array.

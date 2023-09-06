@@ -11,13 +11,17 @@ def electricKernels(z,k):
     '''
     This function returns the necessary kernels for computing the diffracted electric field
     obtained from the Smythe-Kirchhoff diffraction integrals.
+
     Parameters
     ----------
-    z (float): the propagation distance
-    k (float): 2π n/λ
+    z : float
+        the propagation distance
+    k : float
+        2π n/λ
+
     Returns
     -------
-    (kernEx_Ex, kernEx_Ey), (kernEy_Ex, kernEy_Ey), (kernEz_Ex, kernEz_Ey) (tuple):
+    (kernEx_Ex, kernEx_Ey), (kernEy_Ex, kernEy_Ey), (kernEz_Ex, kernEz_Ey) : tuple
         all elements being 2-tuples of functions of (x,y)
     '''
     @jit(nopython=True)
@@ -52,13 +56,17 @@ def magneticKernels(z,k):
     '''
     This function returns the necessary kernels for computing the diffracted magnetic field
     obtained from the Smythe-Kirchhoff diffraction integrals.
+
     Parameters
     ----------
-    z (float): the propagation distance
-    k (float): 2π n/λ
+    z : float
+        the propagation distance
+    k : float
+        2π n/λ
+    
     Returns
     -------
-    (kernHx_Ex, kernHx_Ey), (kernHy_Ex, kernHy_Ey), (kernHz_Ex, kernHz_Ey) (tuple):
+    (kernHx_Ex, kernHx_Ey), (kernHy_Ex, kernHy_Ey), (kernHz_Ex, kernHz_Ey) : tuple
         all elements being 2-tuples of functions of (x,y)
     '''
     @jit(nopython=True)

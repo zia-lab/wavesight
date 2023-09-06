@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    675683,      11859]
-NotebookOptionsPosition[    674230,      11824]
-NotebookOutlinePosition[    674668,      11841]
-CellTagsIndexPosition[    674625,      11838]
+NotebookDataLength[    675902,      11861]
+NotebookOptionsPosition[    674449,      11826]
+NotebookOutlinePosition[    674887,      11843]
+CellTagsIndexPosition[    674844,      11840]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -11570,7 +11570,7 @@ nJ6/ddL333+PaXDx66+/phIKyJffjxw5ItuW/sunTz75hGpj/AzH/wO5/Nke
    RowBox[{
    "StringTemplate", "[", 
     "\"\<def `fieldComponent`gen\[Rho](`fiberParams`):\n`paramExplain`\n    \
-`fieldComponent`\[Rho] (func)\n    '''\n    def \
+`fieldComponent`\[Rho] : func\n    '''\n    def \
 `fieldComponent`\[Rho](\[Rho]):\n        '''\n        Returns the radial \
 component of `fieldComponent` without the azimuthal dependence.\n        The \
 azimuthal dependence depends on the parity of the field:\n          even -> \
@@ -11579,7 +11579,7 @@ cos(m\[Phi])\n          odd  -> sin(m\[Phi])\n\n        Parameters\n        \
     Returns\n        -------\n        `fieldComponent`\[Rho] : real\n        \
 '''\n        return `fieldExpr\[Rho]`\n    return `fieldComponent`\[Rho]\n\n\
 def `fieldComponent`gen\[Phi](`fiberParams`):\n`paramExplain`\n    \
-`fieldComponent`\[Phi] (func)\n    '''\n    def \
+`fieldComponent`\[Phi] : func\n    '''\n    def \
 `fieldComponent`\[Phi](\[Rho]):\n        '''\n        Returns the azimuthal \
 component of `fieldComponent` without the azimuthal dependence.\n        The \
 azimuthal dependence depends on the parity of the field:\n          even -> \
@@ -11589,8 +11589,8 @@ azimuthal dependence depends on the parity of the field:\n          even -> \
  Reference\n        ---------\n        Snyder, Allan W, and John Love. \
 Optical Waveguide Theory, 1983.\n        '''\n        return \
 `fieldExpr\[Phi]`\n    return `fieldComponent`\[Phi]\n\ndef \
-`fieldComponent`genz(`fiberParams`):\n`paramExplain`\n    `fieldComponent`z \
-(func)\n    '''\n    def `fieldComponent`z(\[Rho]):\n        '''\n        \
+`fieldComponent`genz(`fiberParams`):\n`paramExplain`\n    `fieldComponent`z : \
+func\n    '''\n    def `fieldComponent`z(\[Rho]):\n        '''\n        \
 Returns the transverse component of `fieldComponent` without the azimuthal \
 dependence.\n        The azimuthal dependence depends on the parity of the \
 field:\n          even -> cos(m\[Phi])\n          odd  -> sin(m\[Phi])\n\n    \
@@ -11603,14 +11603,14 @@ Snyder, Allan W, and John Love. Optical Waveguide Theory, 1983.\n        '''\n\
  RowBox[{
   RowBox[{
   "paramExplain", "=", 
-   "\"\<\n    '''\n    Parameters\n    ----------\n    a      (float): radius \
-of the waveguide core.\n    kFree  (float): free space wavenumber.\n    kz    \
- (float): longitudinal propagation constant.\n    m        (int): mode order, \
-for HE modes m>=1, for TM and TE, m=0.\n    nCladding (float): refractive \
-index of cladding.\n    nCore     (float): refractive index of core.\n\n    \
-Reference\n    ---------\n    Snyder, Allan W, and John Love. Optical \
-Waveguide Theory, 1983.\n\n    Returns\n    -------\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
+   "\"\<\n    '''\n    Parameters\n    ----------\n    a : float\n        \
+radius of the waveguide core.\n    kFree : float)\n        free space \
+wavenumber.\n    kz : float\n        longitudinal propagation constant.\n    \
+m : int\n        mode order, for HE modes m>=1, for TM and TE, m=0.\n    \
+nCladding : float\n        refractive index of cladding.\n    nCore : float\n \
+       refractive index of core.\n\n    Reference\n    ---------\n    Snyder, \
+Allan W, and John Love. Optical Waveguide Theory, 1983.\n\n    Returns\n    \
+-------\>\""}], ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"fiberParams", "=", "\"\<a,kFree,kz,m,nCladding,nCore\>\""}], 
   ";"}], "\n", 
@@ -11806,18 +11806,20 @@ HCladdingz)\n    return Efuncs, Hfuncs\n\>\"", "]"}], "[",
    3.901579191350835*^9, 3.901579237246447*^9}, {3.9015792679107428`*^9, 
    3.901579381534747*^9}, {3.901579414723196*^9, 3.901579429969702*^9}, {
    3.901579475228924*^9, 3.9015794877983427`*^9}, {3.901579558935391*^9, 
-   3.9015795609514313`*^9}},
+   3.9015795609514313`*^9}, {3.903019950455146*^9, 3.903019996467803*^9}, {
+   3.9030201148014193`*^9, 3.903020156886231*^9}},
  CellLabel->
-  "In[896]:=",ExpressionUUID->"5c90b41a-feae-410e-bc78-008fea549967"],
+  "In[271]:=",ExpressionUUID->"5c90b41a-feae-410e-bc78-008fea549967"],
 
 Cell[BoxData["\<\"/Users/juan/ZiaLab/Codebase/wavesight/fieldgenesis.py\"\>"],\
  "Output",
  CellChangeTimes->{{3.901578576389056*^9, 3.9015785992001743`*^9}, {
    3.90157887922604*^9, 3.901578908999072*^9}, 3.901579117958701*^9, 
    3.901579304796887*^9, 3.90157938293648*^9, 3.901579432003927*^9, 
-   3.901579492460232*^9, 3.901579573708797*^9},
+   3.901579492460232*^9, 3.901579573708797*^9, 3.9030199382264853`*^9, 
+   3.903020016574768*^9, 3.903020119332712*^9, 3.903020166675346*^9},
  CellLabel->
-  "Out[984]=",ExpressionUUID->"3d7ecc5e-324f-4985-bb34-3eda565a9beb"]
+  "Out[359]=",ExpressionUUID->"0eb51557-6b9f-4208-bc8a-e425c7944803"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
@@ -11856,8 +11858,8 @@ Cell[20593, 542, 368, 6, 34, "Output",ExpressionUUID->"dd343098-9700-4d73-be02-e
 Cell[CellGroupData[{
 Cell[21010, 554, 286, 7, 53, "Section",ExpressionUUID->"76949f19-9715-4808-9256-a8da91bb80e5"],
 Cell[CellGroupData[{
-Cell[21321, 565, 652437, 11245, 8547, "Input",ExpressionUUID->"5c90b41a-feae-410e-bc78-008fea549967"],
-Cell[673761, 11812, 429, 7, 34, "Output",ExpressionUUID->"3d7ecc5e-324f-4985-bb34-3eda565a9beb"]
+Cell[21321, 565, 652562, 11246, 8673, "Input",ExpressionUUID->"5c90b41a-feae-410e-bc78-008fea549967"],
+Cell[673886, 11813, 523, 8, 34, "Output",ExpressionUUID->"0eb51557-6b9f-4208-bc8a-e425c7944803"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]

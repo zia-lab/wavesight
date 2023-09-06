@@ -17,10 +17,14 @@ def latex_eqn_to_png(tex_code, figname, timed=True, outfolder=os.getcwd()):
     
     Parameters
     ----------
-    tex_code  (str): An equation, including $$, \[\] or LaTeX equation environment.
-    time     (bool): If True then the filename includes a timestamp.
-    figname   (str): Filenames for png and pdf have that root.
-    outfolder (str): Directory name where the images will be stored.
+    tex_code : str
+        An equation, including $$, \[\] or LaTeX equation environment.
+    time : bool
+        If True then the filename includes a timestamp.
+    figname : str
+        Filenames for png and pdf have that root.
+    outfolder : str
+        Directory name where the images will be stored.
 
     Returns
     -------
@@ -103,20 +107,25 @@ def sig_figs_in(num):
     '''
     Count how many significant figures are in a given number.
     This might fail if the number has been calculated with.
-    Only good for number one has input oneself.
+    Only good for numbers one has input oneself.
     '''
     return len(str(num).replace('.',''))
 
 def rounder(num, n):
     '''
     Given a number, round it to n significant figures.
+
     Parameters
     ----------
-    num (float)
-    n     (int): how many sig figs to return in the rounded num.
+    num : float
+
+    n : int
+        how many sig figs to return in the rounded num.
+
     Returns
     -------
-    rounded: the rounded number.
+    rounded : int
+        the rounded number.
     '''
     rounded = round(num, -int(np.floor(np.log10(num))) + (n - 1))
     return rounded
@@ -129,8 +138,10 @@ def num2tex(num, sig_figs):
 
     Parameters
     ----------
-    num     (float): A number.
-    sig_figs  (int): Number of significant figures.
+    num : float
+        A number.
+    sig_figs : int
+        Number of significant figures.
 
     Returns
     -------
@@ -175,13 +186,15 @@ def var_collisions(varname, these_globals):
     
     Parameters
     ----------
-    varname (str): variable name to check.
-    these_globals (dict): dictionary of global variables.
+    varname : str
+        variable name to check.
+    these_globals : dict
+        dictionary of global variables.
 
     Returns
     -------
-    commonvars (list): list of variable names that collide with
-    varname.
+    commonvars : list
+        list of variable names that collide with varname.
     '''
     globalvars = list(filter(lambda x: '_' != x[0], these_globals))
     commonvars = [v for v in globalvars if (varname in v) or (v in varname)]

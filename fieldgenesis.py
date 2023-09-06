@@ -6,12 +6,18 @@ def TE_ECoregenρ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -19,7 +25,7 @@ def TE_ECoregenρ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TE_ECoreρ (func)
+    TE_ECoreρ : func
     '''
     def TE_ECoreρ(ρ):
         '''
@@ -45,12 +51,18 @@ def TE_ECoregenϕ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -58,7 +70,7 @@ def TE_ECoregenϕ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TE_ECoreϕ (func)
+    TE_ECoreϕ : func
     '''
     def TE_ECoreϕ(ρ):
         '''
@@ -88,12 +100,18 @@ def TE_ECoregenz(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -101,7 +119,7 @@ def TE_ECoregenz(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TE_ECorez (func)
+    TE_ECorez : func
     '''
     def TE_ECorez(ρ):
         '''
@@ -132,12 +150,18 @@ def TM_ECoregenρ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -145,7 +169,7 @@ def TM_ECoregenρ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TM_ECoreρ (func)
+    TM_ECoreρ : func
     '''
     def TM_ECoreρ(ρ):
         '''
@@ -171,12 +195,18 @@ def TM_ECoregenϕ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -184,7 +214,7 @@ def TM_ECoregenϕ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TM_ECoreϕ (func)
+    TM_ECoreϕ : func
     '''
     def TM_ECoreϕ(ρ):
         '''
@@ -214,12 +244,18 @@ def TM_ECoregenz(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -227,7 +263,7 @@ def TM_ECoregenz(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TM_ECorez (func)
+    TM_ECorez : func
     '''
     def TM_ECorez(ρ):
         '''
@@ -258,12 +294,18 @@ def HE_ECoregenρ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -271,7 +313,7 @@ def HE_ECoregenρ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    HE_ECoreρ (func)
+    HE_ECoreρ : func
     '''
     def HE_ECoreρ(ρ):
         '''
@@ -297,12 +339,18 @@ def HE_ECoregenϕ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -310,7 +358,7 @@ def HE_ECoregenϕ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    HE_ECoreϕ (func)
+    HE_ECoreϕ : func
     '''
     def HE_ECoreϕ(ρ):
         '''
@@ -340,12 +388,18 @@ def HE_ECoregenz(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -353,7 +407,7 @@ def HE_ECoregenz(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    HE_ECorez (func)
+    HE_ECorez : func
     '''
     def HE_ECorez(ρ):
         '''
@@ -384,12 +438,18 @@ def TE_ECladdinggenρ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -397,7 +457,7 @@ def TE_ECladdinggenρ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TE_ECladdingρ (func)
+    TE_ECladdingρ : func
     '''
     def TE_ECladdingρ(ρ):
         '''
@@ -423,12 +483,18 @@ def TE_ECladdinggenϕ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -436,7 +502,7 @@ def TE_ECladdinggenϕ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TE_ECladdingϕ (func)
+    TE_ECladdingϕ : func
     '''
     def TE_ECladdingϕ(ρ):
         '''
@@ -466,12 +532,18 @@ def TE_ECladdinggenz(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -479,7 +551,7 @@ def TE_ECladdinggenz(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TE_ECladdingz (func)
+    TE_ECladdingz : func
     '''
     def TE_ECladdingz(ρ):
         '''
@@ -510,12 +582,18 @@ def TM_ECladdinggenρ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -523,7 +601,7 @@ def TM_ECladdinggenρ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TM_ECladdingρ (func)
+    TM_ECladdingρ : func
     '''
     def TM_ECladdingρ(ρ):
         '''
@@ -549,12 +627,18 @@ def TM_ECladdinggenϕ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -562,7 +646,7 @@ def TM_ECladdinggenϕ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TM_ECladdingϕ (func)
+    TM_ECladdingϕ : func
     '''
     def TM_ECladdingϕ(ρ):
         '''
@@ -592,12 +676,18 @@ def TM_ECladdinggenz(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -605,7 +695,7 @@ def TM_ECladdinggenz(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TM_ECladdingz (func)
+    TM_ECladdingz : func
     '''
     def TM_ECladdingz(ρ):
         '''
@@ -636,12 +726,18 @@ def HE_ECladdinggenρ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -649,7 +745,7 @@ def HE_ECladdinggenρ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    HE_ECladdingρ (func)
+    HE_ECladdingρ : func
     '''
     def HE_ECladdingρ(ρ):
         '''
@@ -675,12 +771,18 @@ def HE_ECladdinggenϕ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -688,7 +790,7 @@ def HE_ECladdinggenϕ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    HE_ECladdingϕ (func)
+    HE_ECladdingϕ : func
     '''
     def HE_ECladdingϕ(ρ):
         '''
@@ -718,12 +820,18 @@ def HE_ECladdinggenz(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -731,7 +839,7 @@ def HE_ECladdinggenz(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    HE_ECladdingz (func)
+    HE_ECladdingz : func
     '''
     def HE_ECladdingz(ρ):
         '''
@@ -762,12 +870,18 @@ def TE_HCoregenρ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -775,7 +889,7 @@ def TE_HCoregenρ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TE_HCoreρ (func)
+    TE_HCoreρ : func
     '''
     def TE_HCoreρ(ρ):
         '''
@@ -801,12 +915,18 @@ def TE_HCoregenϕ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -814,7 +934,7 @@ def TE_HCoregenϕ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TE_HCoreϕ (func)
+    TE_HCoreϕ : func
     '''
     def TE_HCoreϕ(ρ):
         '''
@@ -844,12 +964,18 @@ def TE_HCoregenz(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -857,7 +983,7 @@ def TE_HCoregenz(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TE_HCorez (func)
+    TE_HCorez : func
     '''
     def TE_HCorez(ρ):
         '''
@@ -888,12 +1014,18 @@ def TM_HCoregenρ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -901,7 +1033,7 @@ def TM_HCoregenρ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TM_HCoreρ (func)
+    TM_HCoreρ : func
     '''
     def TM_HCoreρ(ρ):
         '''
@@ -927,12 +1059,18 @@ def TM_HCoregenϕ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -940,7 +1078,7 @@ def TM_HCoregenϕ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TM_HCoreϕ (func)
+    TM_HCoreϕ : func
     '''
     def TM_HCoreϕ(ρ):
         '''
@@ -970,12 +1108,18 @@ def TM_HCoregenz(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -983,7 +1127,7 @@ def TM_HCoregenz(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TM_HCorez (func)
+    TM_HCorez : func
     '''
     def TM_HCorez(ρ):
         '''
@@ -1014,12 +1158,18 @@ def HE_HCoregenρ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -1027,7 +1177,7 @@ def HE_HCoregenρ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    HE_HCoreρ (func)
+    HE_HCoreρ : func
     '''
     def HE_HCoreρ(ρ):
         '''
@@ -1053,12 +1203,18 @@ def HE_HCoregenϕ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -1066,7 +1222,7 @@ def HE_HCoregenϕ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    HE_HCoreϕ (func)
+    HE_HCoreϕ : func
     '''
     def HE_HCoreϕ(ρ):
         '''
@@ -1096,12 +1252,18 @@ def HE_HCoregenz(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -1109,7 +1271,7 @@ def HE_HCoregenz(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    HE_HCorez (func)
+    HE_HCorez : func
     '''
     def HE_HCorez(ρ):
         '''
@@ -1140,12 +1302,18 @@ def TE_HCladdinggenρ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -1153,7 +1321,7 @@ def TE_HCladdinggenρ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TE_HCladdingρ (func)
+    TE_HCladdingρ : func
     '''
     def TE_HCladdingρ(ρ):
         '''
@@ -1179,12 +1347,18 @@ def TE_HCladdinggenϕ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -1192,7 +1366,7 @@ def TE_HCladdinggenϕ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TE_HCladdingϕ (func)
+    TE_HCladdingϕ : func
     '''
     def TE_HCladdingϕ(ρ):
         '''
@@ -1222,12 +1396,18 @@ def TE_HCladdinggenz(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -1235,7 +1415,7 @@ def TE_HCladdinggenz(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TE_HCladdingz (func)
+    TE_HCladdingz : func
     '''
     def TE_HCladdingz(ρ):
         '''
@@ -1266,12 +1446,18 @@ def TM_HCladdinggenρ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -1279,7 +1465,7 @@ def TM_HCladdinggenρ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TM_HCladdingρ (func)
+    TM_HCladdingρ : func
     '''
     def TM_HCladdingρ(ρ):
         '''
@@ -1305,12 +1491,18 @@ def TM_HCladdinggenϕ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -1318,7 +1510,7 @@ def TM_HCladdinggenϕ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TM_HCladdingϕ (func)
+    TM_HCladdingϕ : func
     '''
     def TM_HCladdingϕ(ρ):
         '''
@@ -1348,12 +1540,18 @@ def TM_HCladdinggenz(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -1361,7 +1559,7 @@ def TM_HCladdinggenz(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    TM_HCladdingz (func)
+    TM_HCladdingz : func
     '''
     def TM_HCladdingz(ρ):
         '''
@@ -1392,12 +1590,18 @@ def HE_HCladdinggenρ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -1405,7 +1609,7 @@ def HE_HCladdinggenρ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    HE_HCladdingρ (func)
+    HE_HCladdingρ : func
     '''
     def HE_HCladdingρ(ρ):
         '''
@@ -1431,12 +1635,18 @@ def HE_HCladdinggenϕ(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -1444,7 +1654,7 @@ def HE_HCladdinggenϕ(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    HE_HCladdingϕ (func)
+    HE_HCladdingϕ : func
     '''
     def HE_HCladdingϕ(ρ):
         '''
@@ -1474,12 +1684,18 @@ def HE_HCladdinggenz(a,kFree,kz,m,nCladding,nCore):
     '''
     Parameters
     ----------
-    a      (float): radius of the waveguide core.
-    kFree  (float): free space wavenumber.
-    kz     (float): longitudinal propagation constant.
-    m        (int): mode order, for HE modes m>=1, for TM and TE, m=0.
-    nCladding (float): refractive index of cladding.
-    nCore     (float): refractive index of core.
+    a : float
+        radius of the waveguide core.
+    kFree : float)
+        free space wavenumber.
+    kz : float
+        longitudinal propagation constant.
+    m : int
+        mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        refractive index of cladding.
+    nCore : float
+        refractive index of core.
 
     Reference
     ---------
@@ -1487,7 +1703,7 @@ def HE_HCladdinggenz(a,kFree,kz,m,nCladding,nCore):
 
     Returns
     -------
-    HE_HCladdingz (func)
+    HE_HCladdingz : func
     '''
     def HE_HCladdingz(ρ):
         '''

@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 from convstore import * 
 from fungenerators import *
 from fieldgenesis import *
+from fields import *
 from misc import *
 from tqdm.notebook import tqdm
 from scipy.interpolate import RegularGridInterpolator
@@ -15,7 +16,6 @@ import cmasher as cmr
 import warnings
 from matplotlib.patches import Rectangle
 import diffkernels as dk
-
 from collections import OrderedDict
 
 real_dtype = np.float64
@@ -25,7 +25,7 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
     '''
     This function solves the propagation constants of a step-index fiber with the given specifications. This assuming that the cladding is so big that it is effectively infinite.
 
-    The propagation constants determine the z-dependence of the fields along the z-direction. The propagation constants are always bounded by what would be the plane wave wavenumbers in the cladding or in the core (assuming they were homogeneous).
+    The propagation constants determine the z-dependence of the fields along the z-direction. The propagation constants are always bounded by what would be the plane wave wavenumbers in the cladding or in the core.
 
     Parameters
     ----------
@@ -44,7 +44,8 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
             used in the layout generator, this is used to determine
             the fineness of the grid by making it equal to
             λfree / max(nCore, nCladding, nFree) / grid_divider
-    solve_modes: str either 'all' or 'transvserse'
+    solve_modes: str
+        either 'all' or 'transvserse'
     drawPlots : bool, optional
         Whether to draw plots of the mode profiles. The default is False.
     verbose : bool, optional
@@ -54,7 +55,7 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
     
     Returns
     -------
-    sol : dict with all the keys included in fiber_spec plus these following others:
+    sol : dict with all the keys included in fiber_spec plus these others:
         kzmax : float
             2π/λfree * nCladding (no kz larger than this)
         kzmin : float
@@ -236,16 +237,22 @@ def field_dot(E_field, H_field, Δs, mask=None):
     '''
     Parameters
     ----------
-    E_field (np.array): an electric field sampled on a cartesian
-    grid of size Δs
-    H_field  (np.array): a magnetic field sampled on a cartesian
-    grid of size Δs
-    Δs (float): the grid spacing
-    mask (np.array): a mask to apply to the fields (same size as
-    E_field[0,:,:] and H_field[0,:,:])
+    E_field : np.array
+        an electric field sampled on a cartesian grid of size Δs
+
+    H_field : np.array
+        a magnetic field sampled on a cartesian grid of size Δs
+
+    Δs : float
+        the grid spacing
+
+    mask : np.array
+        a mask to apply to the fields (same size as E_field[0,:,:] and H_field[0,:,:])
+    
     Returns
     -------
-    dotp (float): the dot product of the fields
+    dotp : float
+        the dot product of the two given fields
     '''
     if mask is not None:
         E_field[0][~mask] = 0
@@ -270,25 +277,29 @@ def boundary_test(Efuncs, Hfuncs, fiber_spec, modeType, tolerance=1e-5):
 
     Parameters
     ----------
-    Efuncs  (tuple):  tuple  of six functions which describe the
-    three  components  of  the  electric  field  in the core and
-    cladding regions.
+    Efuncs : tuple
+        a  tuple  of  six  functions  which  describe  the three
+        components  of  the  H  field  in  the core and cladding
+        regions.
 
-    Hfuncs  (tuple):  tuple  of six functions which describe the
-    three  components  of  the  H field in the core and cladding
-    regions.
+    Hfuncs : tuple 
+        a  tuple  of  six  functions  which  describe  the three
+        components  of  the  H  field  in  the core and cladding
+        regions.
 
-    fiber_spec   (dict):   a  dictionary  containing  the  fiber
-    specifications.
+    fiber_spec : dict
+        a dictionary containing the fiber specifications.
 
-    modeType (str): must be one of 'HE', 'TE', or 'TM'.
+    modeType : str
+        must be one of 'HE', 'TE', or 'TM'.
 
-    tolerance  (float): the tolerance for the boundary condition
-    test.
+    tolerance :float
+        the tolerance for the boundary condition test.
 
     Returns
     -------
-    boundaryTest (bool): True if test OK, False otherwise.
+    boundaryTest : bool
+        True if test OK, False otherwise.
     '''
     (ECoreρ, ECoreϕ, ECorez, ECladdingρ, ECladdingϕ, ECladdingz) = Efuncs
     (HCoreρ, HCoreϕ, HCorez, HCladdingρ, HCladdingϕ, HCladdingz) = Hfuncs
@@ -385,13 +396,16 @@ def calculate_size_of_grid(fiber_sol):
     Given a solution for the modes of a multimode fiber, determine
     the half side of the computational domain that would capture
     most of the energy contained in the solved modes.
+
     Parameters
     ----------
-    fiber_sol (dict): a dictionary containing the solution for the
-    fiber.
+    fiber_sol : dict
+        a dictionary containing the solution for the fiber.
+    
     Returns
     -------
-    b (float)
+    b : float
+        the half side of the computational domain.
     '''
     goal_fraction = 0.99 
     a = fiber_sol['coreRadius']
@@ -430,43 +444,42 @@ def coordinate_layout(fiber_sol):
     '''
     Given a fiber solution, return the coordinate arrays for plotting
     and coordinating the numerical analysis.
+
     Parameters
     ----------
-    fiber_sol : dict
-        A dictionary containing the fiber solution. It needs to have
-        at least the following keys:
-        - 'coreRadius' : float
+    fiber_sol : dict  with at least the following keys:
+        'coreRadius' : float
             The radius of the core.
-        - 'claddingIndex' : float  
+        'claddingIndex' : float  
             The refractive index of the cladding.
-        - 'coreIndex' : float
+        'coreIndex' : float
             The refractive index of the core.
-        - 'free_space_wavelength' : float
+        'free_space_wavelength' : float
             The wavelength of the light in free space.
     
     Returns
     -------
     a, b, Δs, xrange, yrange, ρrange, φrange, Xg, Yg, ρg, φg, nxy, crossMask : tuple
-    a : float
-        The radius of the core.
-    b : float
-        The side of the computational domain.
-    Δs : float
-        The sampling resolution in the x-y direction. Assumed to be half the 
-        wavelength in the core.
-    xrange, yrange : 1D arrays
-        The coordinate arrays for the x-y directions.
-    ρrange, φrange : 1D arrays
-    `   The coordinate arrays for the ρ-φ directions in the cylindrical system.
-    Xg, Yg : 2D arrays
-        The coordinate arrays for x-y.
-    ρg, φg : 2D arrays
-        ρg has the values for the radial coordinate, φg has the values for the
-        azimuthal coordinate.
-    nxy : 2D array
-        The refractive index profile of the waveguide.
-    crossMask : 2D array
-        A mask that is True where the core is and False where the cladding is.
+        a : float
+            The radius of the core.
+        b : float
+            The side of the computational domain.
+        Δs : float
+            The sampling resolution in the x-y direction. Assumed to be half the 
+            wavelength in the core.
+        xrange, yrange : 1D arrays
+            The coordinate arrays for the x-y directions.
+        ρrange, φrange : 1D arrays
+            The coordinate arrays for the ρ-φ directions in the cylindrical system.
+        Xg, Yg : 2D arrays
+            The coordinate arrays for x-y.
+        ρg, φg : 2D arrays
+            ρg has the values for the radial coordinate, φg has the values for the
+            azimuthal coordinate.
+        nxy : 2D array
+            The refractive index profile of the waveguide.
+        crossMask : 2D array
+            A mask that is True where the core is and False where the cladding is.
     
     '''
     a = fiber_sol['coreRadius']
@@ -507,35 +520,32 @@ def calculate_numerical_basis(fiber_sol, verbose=True):
     
     Parameters
     ----------
-    fiber_sol : dict
-        A dictionary containing the fiber solution. It needs to have
-        the following keys:
-        - 'coreRadius' : float
+    fiber_sol : dict with at least the following keys:
+        'coreRadius' : float
             The radius of the core.
-        - 'nCladding' : float
+        'nCladding' : float
             The refractive index of the cladding.
-        - 'nCore' : float
+        'nCore' : float
             The refractive index of the core.
-        - 'free_space_wavelength' : float
+        'free_space_wavelength' : float
             The wavelength of the light in free space.
-        - 'totalModes' : int
+        'totalModes' : int
             The total number of calculated modes.
-        - 'TEkz' : 1D dict
+        'TEkz' : 1D dict
             A single key equal to m=0, the values are array with
             the TE modes propagation constants.
-        - 'TMkz' : 1D dict
+        'TMkz' : 1D dict
             A single key equal to m=0, the values are array with
             the TM modes propagation constants.
-        - 'HEkz' : 1D dict
+        'HEkz' : 1D dict
             Keys are m values, values are 1D arrays of kz values.
     
     Returns
     -------
-    fiber_sol : dict:
-        The same dictionary as the input, but with two new keys:
-        - 'coord_layout' : tuple
+    fiber_sol : dict the same dictionary as the input, but with two new keys:
+        'coord_layout' : tuple
             The tuple returned by the coordinate_layout function.
-        - 'eigenbasis' : 5D np.array
+        'eigenbasis' : 5D np.array
             The numerical basis. The first dimension is the mode number,
             the second dimension only has two values, 0 and 1, 0 for the
             E  field, and 1 for the H field. The third dimension is used
@@ -548,7 +558,7 @@ def calculate_numerical_basis(fiber_sol, verbose=True):
             enumerated  such that first all TE modes are given, then all
             TM modes, and finally all HE modes. This same enumeration is
             the one used for the 'eigenbasis_nums' key.
-        - 'eigenbasis_nums': list of tuples
+        'eigenbasis_nums' : list of tuples
             A  list  of tuples, each tuple has 7 values, the first value
             is  a  string indicating the type of mode, and can be either
             'TE', 'TM', or 'HE'. The second value is a string indicating
@@ -770,6 +780,20 @@ def poyntingrefractor(Efield, Hfield, nxy, nFree, verbose=False):
     EincP = Efield - EincS
     del ESdot
 
+    # #HincS-Calc
+    if verbose:
+        print("Calculating the S and P component of the incident H field...")
+    # decompose the field in P and S polarizations
+    # first find P-pol and then use the complement to determine S-pol
+    # the S-pol can be obtained by the dot product of H with ζ
+    HSdot = Hfield[0,:,:] * ζfield[0] + Hfield[1,:,:] * ζfield[1]
+    HincS = np.zeros(ζfield.shape)
+    HincS[0] = HSdot[0] * ζfield[0]
+    HincS[1] = HSdot[1] * ζfield[1]
+    # #HincP-Calc
+    HincP = Hfield - HincS
+    del HSdot
+
     # #ErefS-Calc
     if verbose:
         print("Calculating the S and P component of the refracted electric field...")
@@ -779,16 +803,38 @@ def poyntingrefractor(Efield, Hfield, nxy, nFree, verbose=False):
     ErefS[2] = fresnelS * EincS[2]
     ErefS[np.isnan(ErefS)] = 0
 
+    # #HrefS-Calc
+    if verbose:
+        print("Calculating the S and P component of the refracted H field...")
+    HrefS = np.zeros(Hfield.shape)
+    HrefS[0] = (nxy / nFree) * fresnelP * HincS[0]
+    HrefS[1] = (nxy / nFree) * fresnelP * HincS[1]
+    HrefS[2] = (nxy / nFree) * fresnelP * HincS[2]
+    HrefS[np.isnan(HrefS)] = 0
+
     # #ErefP-Calc
     ErefP = np.zeros(Efield.shape)
     ErefP[0] = fresnelP * EincP[0]
     ErefP[1] = fresnelP * EincP[1]
     ErefP[2] = fresnelP * EincP[2]
     ErefP[np.isnan(ErefP)] = 0
+
+    # #HrefP-Calc
+    HrefP = np.zeros(Hfield.shape)
+    HrefP[0] = (nxy / nFree) * fresnelS * HincP[0]
+    HrefP[1] = (nxy / nFree) * fresnelS * HincP[1]
+    HrefP[2] = (nxy / nFree) * fresnelS * HincP[2]
+    HrefP[np.isnan(HrefP)] = 0
+
     # #Eref-Calc
     if verbose:
         print("Calculating the total refracted electric field...")
     Eref  = ErefS + ErefP
+
+    # #Href-Calc
+    if verbose:
+        print("Calculating the total refracted H field...")
+    Href  = HrefS + HrefP
 
     # #kref-Calc
     if verbose:
@@ -800,11 +846,6 @@ def poyntingrefractor(Efield, Hfield, nxy, nFree, verbose=False):
     kref[0]   = np.sin(θfield) * ξfield[0]
     kref[1]   = np.sin(θfield) * ξfield[1]
     kref[2]   = np.cos(θfield)
-
-    # #Href-Calc
-    if verbose:
-        print("Calculating the refracted H field...")
-    Href = nFree * np.cross(kref, Eref, axis=0)
 
     return kref, Eref, Href
 
@@ -823,14 +864,14 @@ def from_cyl_cart_to_cart_cart(field):
 
     Parameters
     ----------
-    field : np.ndarray
+    field : np.array
         A  field  in  cylindrical  coordinates  with  shape  (3,
         numSamples,  numSamples) the indices being the ρ, φ, and
         z components respectively.
 
     Returns
     -------
-    ccfield : np.ndarray
+    ccfield : np.array
         A   field   in  cartesian  coordinates  with  shape  (3,
         numSamples,  numSamples) the indices being the x, y, and
         z components respectively of the given vector field.
@@ -873,14 +914,14 @@ def from_cart_cart_to_cyl_cart(field):
 
     Parameters
     ----------
-    field : np.ndarray
+    field : np.array
         A   field   in  cartesian  coordinates  with  shape  (3,
         numSamples,  numSamples) the indices being the x, y, and
         z components respectively of the given vector field.
 
     Returns
     -------
-    cylfield : np.ndarray
+    cylfield : np.array
         A  field  in  cylindrical  coordinates  with  shape  (3,
         numSamples,  numSamples) the indices being the ρ, φ, and
         z components respectively.
@@ -920,10 +961,9 @@ def angular_farfield_propagator(field, λFree, nMedium, Zf, Zi, si, sf, Δf = No
     the z-axis.
 
     The farfield is approximated by the following formula:
-        Efar = (2π 1j / kFree) * ((Zf-Zi)/Rfsq) * np.exp(1j*kFree*Rf) * S2
-         with
-        S2 equal to the Fourier transform extrapolated to the position
-        of the farfield.
+    Efar = (2π 1j / kFree) * ((Zf-Zi)/Rfsq) * np.exp(1j*kFree*Rf) * S2
+    with S2 equal to the Fourier transform extrapolated to the position
+    of the farfield.
 
     Parameters
     ----------
@@ -941,20 +981,18 @@ def angular_farfield_propagator(field, λFree, nMedium, Zf, Zi, si, sf, Δf = No
         The size of the farfield.
     Δf : float (optional)
         Spatial resolution of the farfield. If None, it is set to Δi.
-    options : dict (optional)
-        A dictionary of options for the function. The options are:
-            'return_fourier' : bool
-                If True, the function also returns the Fourier transform of the
-                nearfield.
-            'return_as_dict' : bool
-                If True, the function returns a dictionary with the following
-                keys:
-                    'Efar' : np.array (3, Nf, Nf)
-                        The farfield of the field.
-                    'Efourier' : np.array (3, Ni, Ni)
-                        The Fourier transform of the nearfield.
-                If False, the function returns the two arrays in the same order
-                as the keys in the dictionary.
+    options : dict (optional) A dictionary of options:
+        'return_fourier' : bool
+            If True, the function also returns the Fourier transform of the
+            nearfield.
+        'return_as_dict' : bool
+            If False, the function returns the two arrays in the same order
+            as the keys in the dictionary.
+            If True, the function returns a dictionary with the following
+            keys:
+            'Efar' : np.array (3, Nf, Nf) The farfield of the field.
+            'Efourier' : np.array (3, Ni, Ni) The Fourier transform of the nearfield.
+               
     
     Returns
     -------
@@ -1046,31 +1084,45 @@ def device_layout(device_design):
     
     Parameters
     ----------
-    device_design (dict): with at least the following keys:
-        coreRadius (float): the radius of the core in μm
-        mlRadius (float): the radius of the metalens in μm
-        Δ (float): the distance between the end face of the
-        fiber and the start of the metalens in μm
-        mlPitch (float): the pitch of the metalens in μm
-        emDepth  (float):  the  depth of the emitter in the
-        crystal  host  in μm, measured from the base of the
-        metalens pillars
-        emΔxy  (float):  the lateral uncertainty (in μm) in
-        the position of the emitter
-        emΔz (float): the uncertainty in the axial position
-        of the emitter in μm
-        mlHeight (float): the height of the metalens in μm
-        λFree  (float):  the  free-space  wavelength of the
-        emitter in μm
-        nCore (float): the refractive index of the core
-        nHost (float): the refractive index of the host
-        nClad (float): the refractive index of the cladding
-        NA (float): the numerical aperture of the fiber
+    device_design : dict with at least the following keys:
+        coreRadius : float
+            the radius of the core in μm
+        mlRadius : float
+            the radius of the metalens in μm
+        Δ : float
+            the distance between the end face of the
+            fiber and the start of the metalens in μm
+        mlPitch : float
+            the pitch of the metalens in μm
+        emDepth : float
+            the  depth of the emitter in the
+            crystal  host  in μm, measured from the base of the
+            metalens pillars
+        emΔxy : float
+            the lateral uncertainty (in μm) in
+            the position of the emitter
+        emΔz : float
+            the uncertainty in the axial position
+            of the emitter in μm
+        mlHeight : float
+            the height of the metalens in μm
+        λFree  : float
+            the  free-space  wavelength of the
+            emitter in μm
+        nCore : float
+            the refractive index of the core
+        nHost : float
+            the refractive index of the host
+        nClad : float
+            the refractive index of the cladding
+        NA : float
+            the numerical aperture of the fiber
 
     
     Returns
     -------
     fig, ax: the figure and axis objects
+
     '''
     def CenteredRectangle(xy, width, height, **opts):
         x, y = xy
@@ -1143,12 +1195,16 @@ def simpson_weights_1D(numSamples):
     used. If there's an odd number of intervals (which is the same as an
     even number of samples) then Simpson's 1/3 is used for the first n-3
     points and the 3/8 rule is used for the remaining tail.
+
     Parameters
     ----------
-    numSamples (int): how many evaluation points are avaiable for integration
+    numSamples : int
+        how many evaluation points are avaiable for integration
+
     Returns
     -------
-    BSimpson (np.array): array of weights for mixed Simpson's rule.
+    BSimpson : np.array
+        array of weights for the mixed Simpson's rule.
     '''
     if numSamples % 2 == 1:
         BSimpson = np.zeros((1,numSamples))
@@ -1174,15 +1230,16 @@ def FFT2D_convolution_integral(xCoords, yCoords, Usamples, kernelFun):
     U(x,y) on a square domain and computes the convolution integral with
     the  given kernel. The domain of integration is given by xCoords and
     yCoords,   where  it  is  assumed  that  the  elements  of  Usamples
-    correspond   to   xCorrds,   yCoords   such   that  Usamples[i,y]  =
-    U(yCoords[j], xCoords[i]).
+    correspond       to       xCorrds,       yCoords      such      that
+    :math:`\\text{Usamples}[i,j]         =         U(\\text{yCoords}[j],
+    \\text{xCoords}[i])`.
 
-    Usamples   is  intrinsically  numeric,  whereas  kernelFun  must  be
-    provided as a bivariate function.
+    Usamples  is  numeric,  whereas  kernelFun  must  be  provided  as a
+    bivariate function.
 
     The convolution has the same domain as the sample values for U.
 
-    I(x',y') = ∫∫ U(x,y) kernelFun(x-x', y-y') dxdy
+    .. math:: I(x',y') = \iint_\mathcal{A} U(x,y) \mathcal{K}(x-x', y-y') dxdy
 
     This   is  done  by  interpreting  the  discretized  integral  as  a
     convolution,  so  that the convolution may be performed with help of
@@ -1190,26 +1247,28 @@ def FFT2D_convolution_integral(xCoords, yCoords, Usamples, kernelFun):
 
     Parameters
     ----------
+    xCoords : np.array
+        x-coordinates on the source plane indexed to the given Usamples.
 
-    +  xCoords  (np.array): x coordinates on the source plane indexed to
-    the given Usamples.
+    yCoords : np.array
+        y-coordinates on the source plane indexed to the given Usamples.
 
-    +  yCoords  (np.array): y coordinates on the source plane indexed to
-    the given Usamples.
+    Usamples : np.array
+        complex  amplitude  of  the  field  in the source plane,
+        sampled according to the coordinates provided by xCoords
+        and yCoords. Must be a square array.
 
-    +  Usamples  (np.array):  complex amplitude of the field in the source
-    plane,  sampled according to the coordinates provided by xCoords and
-    yCoords. Must be a square array.
-
-    + kernelFun  (func):  a bivariate  function  of  the  cartesian  x,y
-    coordinates.
+    kernelFun : func
+        a bivariate function of the cartesian x,y coordinates.
 
     Returns
     -------
-    +  integral (np.array): resultant convolution integral. The top left
-    corner  of  the  array  corresponds  to the lower left corner of the
-    observation  plane.  The coordinates associated with each element in
-    the given array correspond to the original xCoords, yCoords.
+    integral : np.array
+        resultant  convolution  integral. The top left corner of
+        the  array  corresponds  to the lower left corner of the
+        observation  plane. The coordinates associated with each
+        element  in  the  given array correspond to the original
+        xCoords, yCoords.
     '''
 
     numSamples = len(xCoords)
@@ -1291,27 +1350,38 @@ def electric_vectorial_diffraction(zProp, incidentEfield, xCoords, yCoords, λfr
     This  assumes  that  the  field  is incident from below the aperture
     plane.
 
-    1/(2π)∇×∫∫eⁱᵏᴿ/R (n̂×E) dxdy with R=r-r'
+    .. math:: 
+        \\begin{align}
+            \\vec{E}(x,y) &= \\frac{1}{2\\pi} \\nabla \\times \\iint_\\mathcal{A} 
+            \\frac{e^{i k R}}{R} \\left(\\hat{z} \\times \\vec{E}(x',y',z=z_0) \\right)
+            \\,\\,\\text{dx}\\text{dy} \\\\
+            \\vec{R} &= \\vec{r} - \\vec{r}'
+        \\end{align}
 
     Parameters
     ----------
-    + zProp (float): the propagation distance along the z-axis.
+    zProp : float
+        the propagation distance along the z-axis.
 
-    + incidentEfield (np.array): either (3,N,N) or (2,N,N), the incident
-    electric field on the aperture plane. The values given in it so that
-    the  first index references the x, y, or z component of the incident
-    field.  Also the values are assumed to be anchored to the coordinate
-    system so that incidentEfield[k,i,j] gives the k-th component of the
-    electric field at position xCoords[j], yCoords[i].
+    incidentEfield : np.array
+        either  (3,N,N)  or (2,N,N), the incident electric field
+        on  the  aperture  plane. The values given in it so that
+        the  first  index references the x, y, or z component of
+        the  incident  field.  Also the values are assumed to be
+        anchored    to    the    coordinate   system   so   that
+        incidentEfield[k,i,j]  gives  the  k-th component of the
+        electric field at position xCoords[j], yCoords[i].
 
-    + xCoords (np.array): (N,) coordinate array for the x-axis.
+    xCoords : np.array (N,)
+        coordinate array for the x-axis.
 
-    + yCoords (np.array): (N,) coordinate array for the x-axis.
+    yCoords : np.array (N,)
+        coordinate array for the x-axis.
 
     Returns
     -------
-    diffractedEfield  (np.array):  (3,N,N)  the  diffracted field at the
-    observation plane.
+    diffractedEfield  : np.array (3,N,N)
+        the  diffracted field at the observation plane.
     '''
     k = 2*np.pi / λfree * nref
     # get the necessary kernels
@@ -1344,27 +1414,38 @@ def magnetic_vectorial_diffraction(zProp, incidentEfield, xCoords, yCoords, λfr
     This  assumes  that  the  field  is incident from below the aperture
     plane.
 
-    1/(i 2π ω) ∇×(∇×∫∫eⁱᵏᴿ/R (n̂×E) dxdy) with R=r-r'
+    .. math:: 
+        \\begin{align}
+        \\vec{H}(x,y) &= \\frac{1}{2\\pi i \\omega} \\nabla \\left(\\nabla \\times \\iint_\\mathcal{A} 
+        \\frac{e^{i k R}}{R} \\left(\\hat{z} \\times \\vec{E}(x',y',z=z_0) \\right)
+        \\,\\,\\text{dx}\\text{dy} \\right) \\\\
+        \\vec{R} &= \\vec{r} - \\vec{r}'
+        \\end{align}
 
     Parameters
     ----------
-    + zProp (float): the propagation distance along the z-axis.
+    zProp : float
+        the propagation distance along the z-axis.
 
-    + incidentEfield (np.array): either (3,N,N) or (2,N,N), the incident
-    electric field on the aperture plane. The values given in it so that
-    the  first index references the x, y, or z component of the incident
-    field.  Also the values are assumed to be anchored to the coordinate
-    system so that incidentEfield[k,i,j] gives the k-th component of the
-    electric field at position xCoords[j], yCoords[i].
+    incidentEfield : np.array
+        either  (3,N,N)  or (2,N,N), the incident electric field
+        on  the  aperture  plane. The values given in it so that
+        the  first  index references the x, y, or z component of
+        the  incident  field.  Also the values are assumed to be
+        anchored    to    the    coordinate   system   so   that
+        incidentEfield[k,i,j]  gives  the  k-th component of the
+        electric field at position xCoords[j], yCoords[i].
 
-    + xCoords (np.array): (N,) coordinate array for the x-axis.
+    xCoords : np.array
+        (N,) coordinate array for the x-axis.
 
-    + yCoords (np.array): (N,) coordinate array for the x-axis.
+    yCoords : np.array (N,)
+        coordinate array for the x-axis.
 
     Returns
     -------
-    diffractedHfield  (np.array):  (3,N,N)  the  diffracted field at the
-    observation plane.
+    diffractedHfield : np.array (3,N,N)
+        the  diffracted field at the observation plane.
     '''
     kFree = 2*np.pi / λfree
     k = kFree * nref
@@ -1394,28 +1475,34 @@ def scalar_diffraction(zProp, incidentField, xCoords, yCoords, λfree, nref):
     that  that  both the space below and above the plane z=z0 are filled
     with  a  homogeneous  medium  with  refractive index nref.
 
+    .. math:: 
+
+        E(x',y') = \\frac{1}{2\\pi} \\iint_\\mathcal{A} \\frac{e^{ikR}}{R} \\frac{z}{R} \\frac{(ikR-1)}{R} E(x',y') \\text{dxdy}
+
     This  assumes  that  the  field  is incident from below the aperture
     plane.
 
-    1/(2π)∫∫eⁱᵏᴿ/R^3 z (ikR-1) E dxdy with R=r-r'
-
     Parameters
     ----------
-    + zProp (float): the propagation distance along the z-axis.
+    zProp : float
+        the propagation distance along the z-axis.
 
-    +  incidentEfield  (np.array):  (N,N),  the  incident  field  on the
-    aperture  plane.  The  values  are  assumed  to  be  anchored to the
-    coordinate system so that incidentEfield[i,j] gives the value of the
-    field at position xCoords[j], yCoords[i].
+    incidentEfield : np.array (N,N)
+        the incident field on the aperture plane. The values are
+        assumed  to be anchored to the coordinate system so that
+        incidentEfield[i,j]  gives  the  value  of  the field at
+        position xCoords[j], yCoords[i].
 
-    + xCoords (np.array): (N,) coordinate array for the x-axis.
+    + xCoords : np.array (N,)
+        coordinate array for the x-axis.
 
-    + yCoords (np.array): (N,) coordinate array for the x-axis.
+    + yCoords : np.array  (N,)
+        coordinate array for the x-axis.
 
     Returns
     -------
-    diffractedEfield  (np.array):  (N,N)  the  diffracted field at the
-    observation plane.
+    diffractedEfield : np.array
+        (N,N)  the  diffracted field at the observation plane.
     '''
     k = 2 * np.pi / λfree * nref
     # get the necessary kernel
@@ -1424,246 +1511,3 @@ def scalar_diffraction(zProp, incidentField, xCoords, yCoords, λfree, nref):
     # create the array to hold the diffracte field
     diffractedEfield = FFT2D_convolution_integral(xCoords, yCoords, incidentField, kernel)
     return diffractedEfield
-
-def electric_dipole(kFree, nref, θdip, ϕdip, η, pmag, ζCoords, ηCoords, fields='EH'):
-    '''
-    This  function returns the electric and H fields produced by
-    an electric  dipole  radiator  at frequency ω = kFree c in a
-    given plane.
-
-    .. math::
-
-        \begin{align}
-            \vec{E} &= e^{ikr} \left(\frac{k^2}{r} (\hat{r}\times\vec{p})\times \hat{r} + \frac{\left(1-ikr\right)}{r^3}\left(3 \hat{r}(\hat{r}\cdot\vec{p}) - \vec{p}\right)\right)  \\
-            \vec{H} &= -Z_n k^2 \frac{e^{ikr}}{r} \left(1 + \frac{i}{kr}\right) \left( \hat{r} \times \vec{p} \right) \\
-            Z_n &= \frac{1}{n} \\
-            \hat{r} &= \frac{\vec{r}}{r} \\
-            c &= 1 \\
-            k &= k_{free} n
-        \end{align}
-
-    ┌───────────────────────────────────────────────────────┐
-    │                                                       │
-    │                               ηCoords                 │
-    │                          ┌─────────────┬─             │
-    │                        ┌.┘           ┌─┘              │
-    │                   ▲  ┌─┘│          ┌─┘                │
-    │                   │┌─┘           ┌─┘  ζCoords         │
-    │                  ┌┼┘    │      ┌─┘                    │
-    │                 ─┴┼────────────┘                      │
-    │                   │     │                             │
-    │                   │                                   │
-    │                   η                                   │
-    │                   │     │                             │
-    │                   │                                   │
-    │                   │     │  θdip   ┌▶                  │
-    │                   │             ┌─┘                   │
-    │                   │     │     ┌─┘  │p                 │
-    │                   │         ┌─┘                       │
-    │                   │     │ ┌─┘      │                  │
-    │                   │     ┌─┘                           │
-    │           ─ ─ ─ ─ ▼ ─ ──┼ ─ ─ ─ ─ ─│▶  y              │
-    │                     ┌ ┘  └ ┐                          │
-    │                    ─    │   ─      │                  │
-    │                 ┌ ┘          └ ┐                      │
-    │                ─       φdip     ─  │                  │
-    │           x ┌ ┘                  └ ─                  │
-    │            ◀            │                             │
-    │                                                       │
-    └───────────────────────────────────────────────────────┘
-
-    Parameters
-    ----------
-    + kFree (float): free-space wavenumber.
-
-    + nref (float): refractive index of the medium.
-
-    + θdip, ϕdip (float): dipole orientation angles.
-
-    + η (float): vertical distance between dipole and plane.
-
-    + pmag (float): dipole moment magnitude.
-
-    + ζCoords (np.array): (N,) x-coordinates of the target plane.
-
-    + ηCoords (np.array): (N,) y-coordinates of the target plane.
-
-    + field (str): 'E', 'H', or 'EH' for the field  components to 
-    return.
-
-    Returns
-    -------
-    (Depending on the value of field)
-    +  Efield  (np.array): (3, N, N) electric field at the given
-    plane,  with  the  first  dimension indexing the x, y, and z
-    components of the field.
-
-    +  Hfield  (np.array): (3, N, N) H-field at the given plane,
-    with the first dimension indexing the x, y, and z components
-    of the field.
-    
-    Reference
-    ---------
-    Jackson, David. Classical Electrodynamics, 1999, equation 9.18.
-    '''
-    assert fields in ['E','H','EH','HE'], "fields must be 'E', 'H', 'EH', or 'HE'"
-    assert nref >= 1
-    k      = kFree * nref
-    pdip   = pmag*np.array([np.sin(θdip)*np.cos(ϕdip),
-                            np.sin(θdip)*np.sin(ϕdip),
-                            np.cos(θdip)]) 
-    numSamples = len(ζCoords)
-    ζmesh, ηmesh = np.meshgrid(ζCoords, ηCoords)
-    rmesh = np.sqrt(ζmesh**2 + ηmesh**2 + η**2)
-    rmeshinverse = 1./rmesh
-    rhat  = np.array([ζmesh, ηmesh, η*np.ones((numSamples,numSamples))]) * rmeshinverse
-
-    pdipVec = np.zeros((3,numSamples,numSamples), dtype=np.complex128)
-    pdipVec[0] = pdip[0]
-    pdipVec[1] = pdip[1]
-    pdipVec[2] = pdip[2]
-    if 'E' in fields:
-        ncrossp = np.cross(rhat, pdip, axis=0)
-        Evec1  = (k**2 
-                * np.cross(ncrossp, rhat, axis=0)
-                * rmesh**2)
-        Evec2 = ((3 * rhat * np.sum(rhat * pdipVec, axis=0) - pdipVec) 
-                * (1. - 1.j * k * rmesh))
-        phaser  = np.exp(1j * k * rmesh)
-        Efield  = (Evec1 + Evec2) * phaser * rmeshinverse**3
-    if 'H' in fields:
-        if 'ncrossp' not in locals():
-            ncrossp = np.cross(rhat, pdip, axis=0)
-        if 'phaser' not in locals():
-            phaser  = np.exp(1j * k * rmesh)
-        Hfield = 1. / nref * k**2 * ncrossp * phaser * rmeshinverse * (1 + 1j * rmeshinverse / k)
-    if ('E' in fields) and ('H' in fields):
-        return Efield, Hfield
-    elif fields == 'E':
-        return Efield
-    elif fields == 'H':
-        return Hfield
-
-def magnetic_dipole(kFree, nref, θdip, ϕdip, η, mmag, ζCoords, ηCoords, fields='EH'):
-    '''
-    This  function returns the electric and H fields produced by
-    a  magnetic  dipole  radiator  at frequency ω = kFree c in a
-    given plane.
-
-    Assuming the  form of  Maxwell's  equations where factors of 
-    4 π are absorbed in the definition of the fields themselves.
-
-    .. math::
-
-        \begin{align}
-            \vec{H} &= e^{ikr} \left(\frac{k^2}{r} (\hat{r}\times\vec{m})\times \hat{r} + \frac{\left(1-ikr\right)}{r^3}\left(3 \hat{r}(\hat{r}\cdot\vec{m}) - \vec{m}\right)\right)  \\
-            \vec{E} &= -Z_n k^2 \frac{e^{ikr}}{r} \left(1 + \frac{i}{kr}\right) \left( \hat{r} \times \vec{m} \right) \\
-            Z_n &= \frac{1}{n} \\
-            \hat{r} &= \frac{\vec{r}}{r} \\
-            c &= 1 \\
-            k &= k_{free} n 
-        \end{align}
-
-    ┌───────────────────────────────────────────────────────┐
-    │                                                       │
-    │                               ηCoords                 │
-    │                          ┌─────────────┬─             │
-    │                        ┌.┘           ┌─┘              │
-    │                   ▲  ┌─┘│          ┌─┘                │
-    │                   │┌─┘           ┌─┘  ζCoords         │
-    │                  ┌┼┘    │      ┌─┘                    │
-    │                 ─┴┼────────────┘                      │
-    │                   │     │                             │
-    │                   │                                   │
-    │                   η                                   │
-    │                   │     │                             │
-    │                   │                                   │
-    │                   │     │  θdip   ┌▶                  │
-    │                   │             ┌─┘                   │
-    │                   │     │     ┌─┘  │p                 │
-    │                   │         ┌─┘                       │
-    │                   │     │ ┌─┘      │                  │
-    │                   │     ┌─┘                           │
-    │           ─ ─ ─ ─ ▼ ─ ──┼ ─ ─ ─ ─ ─│▶  y              │
-    │                     ┌ ┘  └ ┐                          │
-    │                    ─    │   ─      │                  │
-    │                 ┌ ┘          └ ┐                      │
-    │                ─       φdip     ─  │                  │
-    │           x ┌ ┘                  └ ─                  │
-    │            ◀            │                             │
-    │                                                       │
-    └───────────────────────────────────────────────────────┘
-
-    Parameters
-    ----------
-    + kFree (float): free-space wavenumber.
-
-    + nref (float): refractive index of the medium.
-
-    + θdip, ϕdip (float): dipole orientation angles.
-
-    + η (float): vertical distance between dipole and plane.
-
-    + mmag (float): dipole moment magnitude.
-
-    + ζCoords (np.array): (N,) x-coordinates of the target plane.
-
-    + ηCoords (np.array): (N,) y-coordinates of the target plane.
-
-    + field (str): 'E', 'H', or 'EH' for the field  components to 
-    return.
-
-    Returns
-    -------
-    (Depending on the value of field)
-    +  Efield  (np.array): (3, N, N) electric field at the given
-    plane,  with  the  first  dimension indexing the x, y, and z
-    components of the field.
-
-    +  Hfield  (np.array): (3, N, N) H-field at the given plane,
-    with the first dimension indexing the x, y, and z components
-    of the field.
-    
-    Reference
-    ---------
-    Jackson, David. Classical Electrodynamics, 1999, equation 9.35.
-    '''
-    assert fields in ['E','H','EH','HE'], "fields must be 'E', 'H', 'EH', or 'HE'"
-    assert nref >= 1
-    k      = kFree * nref
-    # impedance of medium assuming μ=1
-    Zn     = 1./nref 
-    mdip   = mmag*np.array([np.sin(θdip)*np.cos(ϕdip),
-                            np.sin(θdip)*np.sin(ϕdip),
-                            np.cos(θdip)]) 
-    numSamples = len(ζCoords)
-    ζmesh, ηmesh = np.meshgrid(ζCoords, ηCoords)
-    rmesh = np.sqrt(ζmesh**2 + ηmesh**2 + η**2)
-    rmeshinverse = 1./rmesh
-    rhat  = np.array([ζmesh, ηmesh, η*np.ones((numSamples,numSamples))]) * rmeshinverse
-
-    mdipVec = np.zeros((3,numSamples,numSamples), dtype=np.complex128)
-    mdipVec[0] = mdip[0]
-    mdipVec[1] = mdip[1]
-    mdipVec[2] = mdip[2]
-    if 'H' in fields:
-        ncrossp = np.cross(rhat, mdip, axis=0)
-        Hvec1  = (k**2 
-                * np.cross(ncrossp, rhat, axis=0)
-                * rmesh**2)
-        Hvec2 = ((3 * rhat * np.sum(rhat * mdipVec, axis=0) - mdipVec) 
-                * (1. - 1.j * k * rmesh))
-        phaser  = np.exp(1j * k * rmesh)
-        Hfield  = (Hvec1 + Hvec2) * phaser * rmeshinverse**3
-    if 'E' in fields:
-        if 'ncrossp' not in locals():
-            ncrossp = np.cross(rhat, mdip, axis=0)
-        if 'phaser' not in locals():
-            phaser  = np.exp(1j * k * rmesh)
-        Efield = -Zn * k**2 * ncrossp * phaser * rmeshinverse * (1 + 1j * rmeshinverse / k)
-    if ('E' in fields) and ('H' in fields):
-        return Efield, Hfield
-    elif fields == 'E':
-        return Efield
-    elif fields == 'H':
-        return Hfield
