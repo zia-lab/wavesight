@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>#Multisight &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/nbsphinx-code-cells.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="docs/wavesight.html">wavesight.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/fields.html">fields.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/diffkernels.html">diffkernels.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/misc.html">misc.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/fieldgenesis.html">fieldgenesis.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/fungenerators.html">fungenerators.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/convstore.html">convstore.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="farfield.html"># Farfield Propagators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multifiber.html"># Multifiber</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">#Multisight</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/multisight.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="#Multisight">
+<h1>#Multisight<a class="headerlink" href="##Multisight" title="Link to this heading">¶</a></h1>
+<p>The part that takes the most time is the final one in which I propagate the field into a volume inside the crystal medium. Let me package this function into an individual script that I might be able to run on CCV.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">codebase_dir</span> <span class="o">=</span> <span class="s1">&#39;/Users/juan/ZiaLab/Codebase&#39;</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">codebase_dir</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">wavesight</span> <span class="k">as</span> <span class="nn">ws</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">tqdm.notebook</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">fsolve</span><span class="p">,</span> <span class="n">root_scalar</span>
+<span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">LogNorm</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1.axes_divider</span> <span class="kn">import</span> <span class="n">make_axes_locatable</span>
+<span class="o">%</span><span class="k">config</span> InlineBackend.figure_format=&#39;retina&#39;
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning disabling RuntimeWarning often due to evalution of square roots with negative arguments.</span><span class="se">\n</span><span class="s2">Probably produced by scalar_root.&quot;</span><span class="p">)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">cmasher</span> <span class="k">as</span> <span class="nn">cmr</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1.axes_divider</span> <span class="kn">import</span> <span class="n">make_axes_locatable</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload
+Warning disabling RuntimeWarning often due to evalution of square roots with negative arguments.
+Probably produced by scalar_root.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dev_design</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;coreRadius&#39;</span><span class="p">:</span><span class="mf">25.</span><span class="p">,</span>
+              <span class="s1">&#39;mlRadius&#39;</span><span class="p">:</span><span class="mf">50.</span><span class="p">,</span>
+              <span class="s1">&#39;Δ&#39;</span><span class="p">:</span><span class="mf">15.</span><span class="p">,</span>
+              <span class="s1">&#39;mlPitch&#39;</span><span class="p">:</span><span class="mf">0.3</span><span class="p">,</span>
+              <span class="s1">&#39;NA&#39;</span><span class="p">:</span> <span class="mf">0.20</span><span class="p">,</span>
+              <span class="s1">&#39;emDepth&#39;</span><span class="p">:</span><span class="mf">50.</span><span class="p">,</span>
+              <span class="s1">&#39;emΔxy&#39;</span><span class="p">:</span><span class="mf">5.</span><span class="p">,</span>
+              <span class="s1">&#39;emΔz&#39;</span><span class="p">:</span><span class="mf">10.</span><span class="p">,</span>
+              <span class="s1">&#39;mlHeight&#39;</span><span class="p">:</span><span class="mf">0.7</span><span class="p">,</span>
+              <span class="s1">&#39;nCore&#39;</span><span class="p">:</span><span class="mf">1.45</span><span class="p">,</span>
+              <span class="s1">&#39;nHost&#39;</span><span class="p">:</span><span class="mf">2.41</span><span class="p">,</span>
+              <span class="s1">&#39;nCore&#39;</span><span class="p">:</span><span class="mf">1.45</span><span class="p">,</span>
+              <span class="s1">&#39;λFree&#39;</span><span class="p">:</span><span class="mf">0.6</span><span class="p">}</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">device_layout</span><span class="p">(</span><span class="n">dev_design</span><span class="p">)</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multisight_3_0.png" class="no-scaled-link" src="_images/multisight_3_0.png" style="width: 397px; height: 432px;" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># FG050LGA</span>
+<span class="n">fiber_spec</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;NA&#39;</span><span class="p">:</span> <span class="mf">0.22</span><span class="p">,</span>
+              <span class="s1">&#39;nCore&#39;</span><span class="p">:</span> <span class="mf">1.45</span><span class="p">,</span>
+              <span class="s1">&#39;coreRadius&#39;</span><span class="p">:</span><span class="mf">25.</span><span class="p">,</span>
+              <span class="s1">&#39;grid_divider&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+              <span class="s1">&#39;nFree&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span>
+              <span class="s1">&#39;λFree&#39;</span><span class="p">:</span> <span class="mf">0.600</span><span class="p">}</span>
+<span class="n">fiber_sol</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">multisolver</span><span class="p">(</span><span class="n">fiber_spec</span><span class="p">,</span> <span class="n">solve_modes</span> <span class="o">=</span> <span class="s1">&#39;transverse&#39;</span><span class="p">,</span> <span class="n">drawPlots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fiber_sol</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">calculate_numerical_basis</span><span class="p">(</span><span class="n">fiber_sol</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Estimating nCladding from nCore and NA ...
+========================================
+Approx number of complex HE modes:  800
+Approx number of TE modes:  28
+Approx number of TM modes:  28
+Approx number of total modes:  1658
+Approx Max n for HE modes:  40
+========================================
+Calculating TE(0,n) propagation constants ...
+Calculating TM(0,n) propagation constants ...
+
+========================================
+HE modes = 0
+TE modes = 36
+TM modes = 36
+TOTAL modes = 72
+FROM_Vnum = 1658
+========================================
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "97abcbd9dc0b4312a460d7316d336276", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "251796cd513b498388980b27a16ad025", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_slices</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># job_size = len(fiber_sol[&#39;eigenbasis_nums&#39;])</span>
+<span class="n">job_size</span> <span class="o">=</span> <span class="mi">36</span>
+<span class="k">for</span> <span class="n">eigen_index</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">job_size</span><span class="p">)):</span>
+    <span class="n">h5fname</span> <span class="o">=</span> <span class="s1">&#39;./slices/slice-</span><span class="si">%d</span><span class="s1">.h5&#39;</span> <span class="o">%</span> <span class="n">eigen_index</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">h5fname</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Already done idx=</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">eigen_index</span><span class="p">)</span>
+        <span class="k">continue</span>
+    <span class="c1"># grab the data for the mode of interest</span>
+    <span class="p">(</span><span class="n">modtype</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">kzidx</span><span class="p">,</span> <span class="n">γ</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">Ae</span><span class="p">,</span> <span class="n">Ah</span><span class="p">,</span> <span class="n">Be</span><span class="p">,</span> <span class="n">Bh</span><span class="p">)</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;eigenbasis_nums&#39;</span><span class="p">][</span><span class="n">eigen_index</span><span class="p">]</span>
+    <span class="n">kz</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;TEkz&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;coord_layout&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">coordinate_layout</span><span class="p">(</span><span class="n">fiber_sol</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">Δs</span><span class="p">,</span> <span class="n">xrange</span><span class="p">,</span> <span class="n">yrange</span><span class="p">,</span> <span class="n">ρrange</span><span class="p">,</span> <span class="n">φrange</span><span class="p">,</span> <span class="n">Xg</span><span class="p">,</span> <span class="n">Yg</span><span class="p">,</span> <span class="n">ρg</span><span class="p">,</span> <span class="n">φg</span><span class="p">,</span> <span class="n">nxy</span><span class="p">,</span> <span class="n">crossMask</span><span class="p">,</span> <span class="n">numSamples</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;coord_layout&#39;</span><span class="p">]</span>
+
+    <span class="n">totalModes</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;totalModes&#39;</span><span class="p">]</span>
+    <span class="n">λfree</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;λFree&#39;</span><span class="p">]</span>
+    <span class="n">eigenbasis</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;eigenbasis&#39;</span><span class="p">]</span>
+    <span class="n">nCore</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;nCore&#39;</span><span class="p">]</span>
+    <span class="n">nCladding</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;nCladding&#39;</span><span class="p">]</span>
+
+    <span class="n">nFree</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">Einc</span> <span class="o">=</span> <span class="n">eigenbasis</span><span class="p">[</span><span class="n">eigen_index</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">Hinc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">eigenbasis</span><span class="p">[</span><span class="n">eigen_index</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:])</span>
+    <span class="n">kref</span><span class="p">,</span> <span class="n">Eref</span><span class="p">,</span> <span class="n">Href</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">poyntingrefractor</span><span class="p">(</span><span class="n">Einc</span><span class="p">,</span> <span class="n">Hinc</span><span class="p">,</span> <span class="n">nFree</span><span class="p">,</span> <span class="n">nxy</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Converting cylindrical anchored to cartesian into cartesian anchored to cartesian...&quot;</span><span class="p">)</span>
+    <span class="n">Erefcc</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">from_cyl_cart_to_cart_cart</span><span class="p">(</span><span class="n">Eref</span><span class="p">)</span>
+    <span class="n">Hrefcc</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">from_cyl_cart_to_cart_cart</span><span class="p">(</span><span class="n">Href</span><span class="p">)</span>
+    <span class="n">ζCoords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">b</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">numSamples</span><span class="p">)</span>
+    <span class="n">ηCoords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">b</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">numSamples</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Propagating the field from across the gap...&quot;</span><span class="p">)</span>
+    <span class="n">nref</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="n">zProp</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;Δ&#39;</span><span class="p">]</span>
+    <span class="p">(</span><span class="n">xCoords</span><span class="p">,</span> <span class="n">yCoords</span><span class="p">,</span> <span class="n">E3</span><span class="p">)</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">vector_field_FFT_RS_prop_array</span><span class="p">(</span><span class="n">zProp</span><span class="p">,</span> <span class="n">Erefcc</span><span class="p">,</span> <span class="n">ζCoords</span><span class="p">,</span> <span class="n">ηCoords</span><span class="p">,</span> <span class="n">λfree</span><span class="p">,</span> <span class="n">nref</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">xCoords</span><span class="p">,</span> <span class="n">yCoords</span><span class="p">,</span> <span class="n">H3</span><span class="p">)</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">vector_field_FFT_RS_prop_array</span><span class="p">(</span><span class="n">zProp</span><span class="p">,</span> <span class="n">Hrefcc</span><span class="p">,</span> <span class="n">ζCoords</span><span class="p">,</span> <span class="n">ηCoords</span><span class="p">,</span> <span class="n">λfree</span><span class="p">,</span> <span class="n">nref</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calculating the ideal Fresnel phase profile...&quot;</span><span class="p">)</span>
+    <span class="n">λFree</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;λFree&#39;</span><span class="p">]</span>
+    <span class="n">nHost</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;nHost&#39;</span><span class="p">]</span>
+    <span class="n">λHost</span> <span class="o">=</span> <span class="n">λFree</span> <span class="o">/</span> <span class="n">nHost</span>
+    <span class="n">Rmax</span> <span class="o">=</span> <span class="mi">20</span> <span class="c1"># arbitrary</span>
+    <span class="n">emDepth</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;emDepth&#39;</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">fresnel_profile</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="n">phase_fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">f</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">phase_fun</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">fresnel_profile</span><span class="p">(</span><span class="n">emDepth</span><span class="p">)</span>
+    <span class="n">phase_map</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">λHost</span> <span class="o">*</span> <span class="n">fp</span><span class="p">(</span><span class="n">Xg</span><span class="p">,</span><span class="n">Yg</span><span class="p">)</span>
+    <span class="n">complex_phase_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">phase_map</span><span class="p">)</span>
+    <span class="n">complex_phase_map</span><span class="p">[</span><span class="n">Xg</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">Yg</span><span class="o">**</span><span class="mi">2</span> <span class="o">&gt;</span> <span class="n">Rmax</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Letting field through meta-optic...&quot;</span><span class="p">)</span>
+    <span class="n">E4</span> <span class="o">=</span> <span class="n">E3</span> <span class="o">*</span> <span class="n">complex_phase_map</span>
+    <span class="n">H4</span> <span class="o">=</span> <span class="n">H3</span> <span class="o">*</span> <span class="n">complex_phase_map</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Determining range of zProp values to use...&quot;</span><span class="p">)</span>
+    <span class="n">dl</span> <span class="o">=</span> <span class="n">xrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">xrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">emΔz</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;emΔz&#39;</span><span class="p">]</span>
+    <span class="n">emDepth</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;emDepth&#39;</span><span class="p">]</span>
+    <span class="n">zrange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">emDepth</span><span class="o">-</span><span class="n">emΔz</span><span class="p">,</span> <span class="n">emDepth</span><span class="o">+</span><span class="n">emΔz</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">emΔz</span><span class="o">/</span><span class="n">dl</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Filling an empty array for the final fields ...&quot;</span><span class="p">)</span>
+    <span class="n">E5</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="o">*</span><span class="n">E4</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">zrange</span><span class="p">)))</span>
+    <span class="n">H5</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="o">*</span><span class="n">H4</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">zrange</span><span class="p">)))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Propagating the field inside of the crystal host...&quot;</span><span class="p">)</span>
+    <span class="n">nref</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;nHost&#39;</span><span class="p">]</span>
+    <span class="n">λFree</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;λFree&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">field_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">field_index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">sourceField</span> <span class="o">=</span> <span class="n">E4</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sourceField</span> <span class="o">=</span> <span class="n">H4</span>
+        <span class="k">for</span> <span class="n">z_index</span><span class="p">,</span> <span class="n">zProp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tqdm</span><span class="p">(</span><span class="n">zrange</span><span class="p">)):</span>
+            <span class="p">(</span><span class="n">xCoords</span><span class="p">,</span> <span class="n">yCoords</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">vector_field_FFT_RS_prop_array</span><span class="p">(</span><span class="n">zProp</span><span class="p">,</span> <span class="n">sourceField</span><span class="p">,</span> <span class="n">ζCoords</span><span class="p">,</span> <span class="n">ηCoords</span><span class="p">,</span> <span class="n">λFree</span><span class="p">,</span> <span class="n">nref</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">field_index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">E5</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">z_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">fields</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">H5</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">z_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">fields</span>
+    <span class="k">if</span> <span class="n">plot_slices</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Grabbing the electric field energy density along the sagittal plane...&quot;</span><span class="p">)</span>
+        <span class="n">pField</span> <span class="o">=</span> <span class="n">H5</span>
+        <span class="n">fig_fname</span> <span class="o">=</span> <span class="s1">&#39;./slices/slice-</span><span class="si">%d</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="n">eigen_index</span>
+        <span class="n">midIndex</span> <span class="o">=</span> <span class="n">pField</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="nb">slice</span> <span class="o">=</span> <span class="n">pField</span><span class="p">[:,</span> <span class="n">midIndex</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+        <span class="nb">slice</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="nb">slice</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Plotting the slice&quot;</span><span class="p">)</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nb">slice</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="nb">slice</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+            <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="n">b</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">zrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">zrange</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="n">cmr</span><span class="o">.</span><span class="n">ember</span><span class="p">,</span>
+            <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmax</span><span class="o">*</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x/um&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;z/um&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;|E|^2&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig_fname</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">h5fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;E5&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">E5</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;H5&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">H5</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">jobSize</span> <span class="o">=</span> <span class="mi">36</span>
+<span class="k">for</span> <span class="n">eigen_index</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">jobSize</span><span class="p">)):</span>
+    <span class="n">h5_file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s1">&#39;./slices/slice-</span><span class="si">%d</span><span class="s1">.h5&#39;</span> <span class="o">%</span> <span class="n">eigen_index</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="nb">list</span><span class="p">(</span><span class="n">h5_file</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">E5</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">h5_file</span><span class="p">[</span><span class="s1">&#39;/E5&#39;</span><span class="p">])</span>
+    <span class="n">h5_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Grabbing the electric field energy density along the sagittal plane...&quot;</span><span class="p">)</span>
+    <span class="n">pField</span> <span class="o">=</span> <span class="n">E5</span>
+    <span class="n">fig_fname</span> <span class="o">=</span> <span class="s1">&#39;./slices/slice-</span><span class="si">%d</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="n">eigen_index</span>
+    <span class="n">midIndex</span> <span class="o">=</span> <span class="n">pField</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="nb">slice</span> <span class="o">=</span> <span class="n">pField</span><span class="p">[:,</span> <span class="n">midIndex</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="nb">slice</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="nb">slice</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Plotting the slice&quot;</span><span class="p">)</span>
+    <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nb">slice</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="nb">slice</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+        <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="n">b</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">zrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">zrange</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="n">cmr</span><span class="o">.</span><span class="n">ember</span><span class="p">,</span>
+        <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmax</span><span class="o">*</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x/um&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;z/um&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;|E|^2&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig_fname</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "eba368da4f2242b492ba33b30dddd33a", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+Grabbing the electric field energy density along the sagittal plane...
+Plotting the slice
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pField</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(3, 362, 362, 96)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sag_slices</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">med_slices</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">jobSize</span> <span class="o">=</span> <span class="mi">36</span>
+<span class="k">for</span> <span class="n">eigen_index</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">jobSize</span><span class="p">)):</span>
+    <span class="n">h5_file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s1">&#39;./slices/slice-</span><span class="si">%d</span><span class="s1">.h5&#39;</span> <span class="o">%</span> <span class="n">eigen_index</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="nb">list</span><span class="p">(</span><span class="n">h5_file</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">E5</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">h5_file</span><span class="p">[</span><span class="s1">&#39;/E5&#39;</span><span class="p">])</span>
+    <span class="n">h5_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1"># print(&quot;Grabbing the electric field energy density along the sagittal plane...&quot;)</span>
+    <span class="n">pField</span> <span class="o">=</span> <span class="n">E5</span>
+    <span class="n">fig_fname</span> <span class="o">=</span> <span class="s1">&#39;./slices/slice-</span><span class="si">%d</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="n">eigen_index</span>
+    <span class="n">midIndex</span> <span class="o">=</span> <span class="n">pField</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="nb">slice</span> <span class="o">=</span> <span class="n">pField</span><span class="p">[:,</span> <span class="n">midIndex</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="nb">slice</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="nb">slice</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">medIndex</span> <span class="o">=</span> <span class="n">pField</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="n">medial_field</span> <span class="o">=</span>  <span class="n">pField</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">medIndex</span><span class="p">]</span>
+    <span class="n">medial_field</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">medial_field</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">med_slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">medial_field</span><span class="p">)</span>
+    <span class="n">sag_slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "71342779a35d4d68afd93f8bc52cffb2", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[90]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sag_slices</span><span class="p">))</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">eigen_index</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">jobSize</span><span class="p">)):</span>
+    <span class="nb">slice</span> <span class="o">=</span> <span class="n">sag_slices</span><span class="p">[</span><span class="n">eigen_index</span><span class="p">]</span>
+    <span class="c1"># print(&quot;Plotting the slice&quot;)</span>
+    <span class="c1"># vmax = np.max(slice)</span>
+    <span class="n">nrow</span><span class="p">,</span> <span class="n">ncol</span> <span class="o">=</span> <span class="n">eigen_index</span><span class="o">//</span><span class="mi">6</span><span class="p">,</span> <span class="n">eigen_index</span><span class="o">%</span><span class="k">6</span>
+    <span class="n">axis</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">nrow</span><span class="p">,</span> <span class="n">ncol</span><span class="p">]</span>
+    <span class="n">ishow</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="nb">slice</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+        <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="n">b</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">zrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">zrange</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="n">cmr</span><span class="o">.</span><span class="n">ember</span><span class="p">,</span>
+        <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmax</span><span class="o">*</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ncol</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;z/um&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nrow</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x/um&#39;</span><span class="p">)</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;|E|^2&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;./slices/all_sag_slices.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;./slices/all_sag_slices.pdf&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ishow</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;./slices/all_sag_slices-colorbar.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;./slices/all_sag_slices-colorbar.pdf&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "c7e1f0465eb348b0b38c5e3a8542d480", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multisight_9_1.png" class="no-scaled-link" src="_images/multisight_9_1.png" style="width: 1996px; height: 1990px;" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[89]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
+<span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">med_slices</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">eigen_index</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">jobSize</span><span class="p">)):</span>
+    <span class="nb">slice</span> <span class="o">=</span> <span class="n">med_slices</span><span class="p">[</span><span class="n">eigen_index</span><span class="p">]</span>
+    <span class="c1"># print(&quot;Plotting the slice&quot;)</span>
+    <span class="c1"># vmax = np.max(slice)</span>
+    <span class="n">nrow</span><span class="p">,</span> <span class="n">ncol</span> <span class="o">=</span> <span class="n">eigen_index</span><span class="o">//</span><span class="mi">6</span><span class="p">,</span> <span class="n">eigen_index</span><span class="o">%</span><span class="k">6</span>
+    <span class="n">axis</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">nrow</span><span class="p">,</span> <span class="n">ncol</span><span class="p">]</span>
+    <span class="n">ishow</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="nb">slice</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+        <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="n">b</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="o">-</span><span class="n">b</span><span class="p">,</span><span class="n">b</span><span class="p">],</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="n">cmr</span><span class="o">.</span><span class="n">ember</span><span class="p">,</span>
+        <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmax</span><span class="o">*</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ncol</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;y/um&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nrow</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x/um&#39;</span><span class="p">)</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;|E|^2&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;./slices/all_median_slices.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;./slices/all_median_slices.pdf&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ishow</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;./slices/all_median_slices-colorbar.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;./slices/all_median_slices-colorbar.pdf&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "fdef6c21878642d38afbd086901cb44d", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multisight_10_1.png" class="no-scaled-link" src="_images/multisight_10_1.png" style="width: 2004px; height: 1986px;" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">LogNorm</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1.axes_divider</span> <span class="kn">import</span> <span class="n">make_axes_locatable</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">annotations</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">modtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;TE&#39;</span><span class="p">,</span><span class="s1">&#39;TM&#39;</span><span class="p">,</span><span class="s1">&#39;HE&#39;</span><span class="p">]:</span>
+    <span class="n">solkey</span> <span class="o">=</span> <span class="n">modtype</span> <span class="o">+</span> <span class="s1">&#39;kz&#39;</span>
+    <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">kzs</span> <span class="ow">in</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="n">solkey</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">kzidx</span><span class="p">,</span> <span class="n">kz</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">kzs</span><span class="p">):</span>
+            <span class="n">γ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nCore</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">λfree</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">kz</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">β</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">kz</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">nCladding</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">λfree</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">annotationTR</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">(</span><span class="si">%d</span><span class="s1">,</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">modtype</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">kzidx</span><span class="p">)</span>
+            <span class="n">annotationBR</span> <span class="o">=</span> <span class="s1">&#39;kz=</span><span class="si">%.3f</span><span class="s1"> µm⁻¹&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">kz</span><span class="p">)</span>
+            <span class="n">annotations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">annotationTR</span><span class="p">,</span> <span class="n">annotationBR</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[88]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot one</span>
+<span class="k">def</span> <span class="nf">fmt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;0&#39;</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:.1e}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">r</span><span class="s1">&#39;$</span><span class="si">{}</span><span class="s1"> E{{</span><span class="si">{}</span><span class="s1">}}$&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+<span class="n">eigenbasis</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;eigenbasis&#39;</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;dark_background&#39;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
+
+<span class="n">extent</span>  <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">b</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="o">-</span><span class="n">b</span><span class="p">,</span><span class="n">b</span><span class="p">]</span>
+<span class="n">fun_picker</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span>
+<span class="n">cmap</span> <span class="o">=</span> <span class="n">cmr</span><span class="o">.</span><span class="n">ember</span>
+<span class="n">title_format</span> <span class="o">=</span> <span class="s1">&#39;|</span><span class="si">%s</span><span class="s1">|&#39;</span>
+<span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">jobSize</span><span class="p">):</span>
+    <span class="n">field</span>   <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;eigenbasis&#39;</span><span class="p">][</span><span class="n">index</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">field</span>   <span class="o">=</span> <span class="n">fun_picker</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+    <span class="n">nrow</span><span class="p">,</span> <span class="n">ncol</span> <span class="o">=</span> <span class="n">index</span> <span class="o">//</span> <span class="mi">6</span><span class="p">,</span> <span class="n">index</span> <span class="o">%</span> <span class="mi">6</span>
+    <span class="n">axis</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">nrow</span><span class="p">,</span> <span class="n">ncol</span><span class="p">]</span>
+    <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+    <span class="n">vmin</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">vmax</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">vmin</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">iplot</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">field</span><span class="p">,</span>
+            <span class="c1"># vmin=vmin,</span>
+            <span class="c1"># vmax=vmax,</span>
+            <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmax</span><span class="o">*</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">),</span>
+            <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x/µm&#39;</span><span class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;y/µm&#39;</span><span class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title_format</span> <span class="o">%</span> <span class="s1">&#39;Et_ρ&#39;</span><span class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.99</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">,</span> <span class="n">annotations</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axis</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">annotations</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axis</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;./slices/all_TE_modes.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;./slices/all_TE_modes.pdf&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">iplot</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;./slices/all_TE_modes-colorbar.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;./slices/all_TE_modes-colorbar.pdf&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multisight_13_0.png" class="no-scaled-link" src="_images/multisight_13_0.png" style="width: 1982px; height: 1988px;" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">jobSize</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">numCols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">eigen_index</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">jobSize</span><span class="p">)):</span>
+    <span class="n">h5_file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s1">&#39;./slices/slice-</span><span class="si">%d</span><span class="s1">.h5&#39;</span> <span class="o">%</span> <span class="n">eigen_index</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="nb">list</span><span class="p">(</span><span class="n">h5_file</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">E5</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">h5_file</span><span class="p">[</span><span class="s1">&#39;/E5&#39;</span><span class="p">])</span>
+    <span class="n">h5_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Grabbing the electric field energy density along the sagittal plane...&quot;</span><span class="p">)</span>
+    <span class="n">pField</span> <span class="o">=</span> <span class="n">E5</span>
+    <span class="n">fig_fname</span> <span class="o">=</span> <span class="s1">&#39;./slices/slice-</span><span class="si">%d</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="n">eigen_index</span>
+    <span class="n">midIndex</span> <span class="o">=</span> <span class="n">pField</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="nb">slice</span> <span class="o">=</span> <span class="n">pField</span><span class="p">[:,</span> <span class="n">midIndex</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="nb">slice</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="nb">slice</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Plotting the slice&quot;</span><span class="p">)</span>
+    <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nb">slice</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="nb">slice</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+        <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="n">b</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">zrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">zrange</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="n">cmr</span><span class="o">.</span><span class="n">ember</span><span class="p">,</span>
+        <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmax</span><span class="o">*</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x/um&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;z/um&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;|E|^2&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig_fname</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[78]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mlHeight</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;mlHeight&#39;</span><span class="p">]</span>
+<span class="n">Δ</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;Δ&#39;</span><span class="p">]</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">device_layout</span><span class="p">(</span><span class="n">dev_design</span><span class="p">)</span>
+<span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nb">slice</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="nb">slice</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+        <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="n">b</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">zrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">Δ</span><span class="p">,</span><span class="n">zrange</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">Δ</span><span class="p">],</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="n">cmr</span><span class="o">.</span><span class="n">ember</span><span class="p">,</span>
+        <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmax</span><span class="o">*</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">),</span>
+        <span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x/um&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;z/um&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;|E|^2&#39;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;./slices/device_layout.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[78]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multisight_15_0.png" class="no-scaled-link" src="_images/multisight_15_0.png" style="width: 397px; height: 454px;" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">slicer_function</span><span class="p">(</span><span class="n">eigen_index</span><span class="p">):</span>
+    <span class="n">dev_design</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;coreRadius&#39;</span><span class="p">:</span><span class="mf">25.</span><span class="p">,</span>
+              <span class="s1">&#39;mlRadius&#39;</span><span class="p">:</span><span class="mf">50.</span><span class="p">,</span>
+              <span class="s1">&#39;Δ&#39;</span><span class="p">:</span><span class="mf">15.</span><span class="p">,</span>
+              <span class="s1">&#39;mlPitch&#39;</span><span class="p">:</span><span class="mf">0.3</span><span class="p">,</span>
+              <span class="s1">&#39;NA&#39;</span><span class="p">:</span> <span class="mf">0.22</span><span class="p">,</span>
+              <span class="s1">&#39;emDepth&#39;</span><span class="p">:</span><span class="mf">50.</span><span class="p">,</span>
+              <span class="s1">&#39;emΔxy&#39;</span><span class="p">:</span><span class="mf">5.</span><span class="p">,</span>
+              <span class="s1">&#39;emΔz&#39;</span><span class="p">:</span><span class="mf">10.</span><span class="p">,</span>
+              <span class="s1">&#39;mlHeight&#39;</span><span class="p">:</span><span class="mf">0.7</span><span class="p">,</span>
+              <span class="s1">&#39;nCore&#39;</span><span class="p">:</span><span class="mf">1.45</span><span class="p">,</span>
+              <span class="s1">&#39;nHost&#39;</span><span class="p">:</span><span class="mf">2.41</span><span class="p">,</span>
+              <span class="s1">&#39;nCore&#39;</span><span class="p">:</span><span class="mf">1.45</span><span class="p">,</span>
+              <span class="s1">&#39;λFree&#39;</span><span class="p">:</span><span class="mf">0.600</span><span class="p">}</span>
+    <span class="c1"># FG050LGA</span>
+    <span class="n">fiber_spec</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;NA&#39;</span><span class="p">:</span> <span class="mf">0.22</span><span class="p">,</span>
+                <span class="s1">&#39;nCore&#39;</span><span class="p">:</span> <span class="mf">1.45</span><span class="p">,</span>
+                <span class="s1">&#39;coreRadius&#39;</span><span class="p">:</span><span class="mf">25.</span><span class="p">,</span>
+                <span class="s1">&#39;grid_divider&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s1">&#39;nFree&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span>
+                <span class="s1">&#39;λFree&#39;</span><span class="p">:</span> <span class="mf">0.600</span><span class="p">}</span>
+    <span class="n">fiber_sol</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">multisolver</span><span class="p">(</span><span class="n">fiber_spec</span><span class="p">,</span> <span class="n">solve_modes</span> <span class="o">=</span> <span class="s1">&#39;transverse&#39;</span><span class="p">,</span> <span class="n">drawPlots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fiber_sol</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">calculate_numerical_basis</span><span class="p">(</span><span class="n">fiber_sol</span><span class="p">)</span>
+    <span class="c1"># grab the data for the mode of interest</span>
+    <span class="p">(</span><span class="n">modtype</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">kzidx</span><span class="p">,</span> <span class="n">γ</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">Ae</span><span class="p">,</span> <span class="n">Ah</span><span class="p">,</span> <span class="n">Be</span><span class="p">,</span> <span class="n">Bh</span><span class="p">)</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;eigenbasis_nums&#39;</span><span class="p">][</span><span class="n">eigen_index</span><span class="p">]</span>
+    <span class="n">kz</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;TEkz&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;coord_layout&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">coordinate_layout</span><span class="p">(</span><span class="n">fiber_sol</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">Δs</span><span class="p">,</span> <span class="n">xrange</span><span class="p">,</span> <span class="n">yrange</span><span class="p">,</span> <span class="n">ρrange</span><span class="p">,</span> <span class="n">φrange</span><span class="p">,</span> <span class="n">Xg</span><span class="p">,</span> <span class="n">Yg</span><span class="p">,</span> <span class="n">ρg</span><span class="p">,</span> <span class="n">φg</span><span class="p">,</span> <span class="n">nxy</span><span class="p">,</span> <span class="n">crossMask</span><span class="p">,</span> <span class="n">numSamples</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;coord_layout&#39;</span><span class="p">]</span>
+
+    <span class="n">totalModes</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;totalModes&#39;</span><span class="p">]</span>
+    <span class="n">λfree</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;λFree&#39;</span><span class="p">]</span>
+    <span class="n">eigenbasis</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;eigenbasis&#39;</span><span class="p">]</span>
+    <span class="n">nCore</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;nCore&#39;</span><span class="p">]</span>
+    <span class="n">nCladding</span> <span class="o">=</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;nCladding&#39;</span><span class="p">]</span>
+
+    <span class="n">nFree</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">Einc</span> <span class="o">=</span> <span class="n">eigenbasis</span><span class="p">[</span><span class="n">eigen_index</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">Hinc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">eigenbasis</span><span class="p">[</span><span class="n">eigen_index</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:])</span>
+    <span class="n">kref</span><span class="p">,</span> <span class="n">Eref</span><span class="p">,</span> <span class="n">Href</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">poyntingrefractor</span><span class="p">(</span><span class="n">Einc</span><span class="p">,</span> <span class="n">Hinc</span><span class="p">,</span> <span class="n">nFree</span><span class="p">,</span> <span class="n">nxy</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Converting cylindrical anchored to cartesian into cartesian anchored to cartesian...&quot;</span><span class="p">)</span>
+    <span class="n">Erefcc</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">from_cyl_cart_to_cart_cart</span><span class="p">(</span><span class="n">Eref</span><span class="p">)</span>
+    <span class="n">Hrefcc</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">from_cyl_cart_to_cart_cart</span><span class="p">(</span><span class="n">Href</span><span class="p">)</span>
+    <span class="n">ζCoords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">b</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">numSamples</span><span class="p">)</span>
+    <span class="n">ηCoords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">b</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">numSamples</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Propagating the field from across the gap...&quot;</span><span class="p">)</span>
+    <span class="n">nref</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="n">zProp</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;Δ&#39;</span><span class="p">]</span>
+    <span class="p">(</span><span class="n">xCoords</span><span class="p">,</span> <span class="n">yCoords</span><span class="p">,</span> <span class="n">E3</span><span class="p">)</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">vector_field_FFT_RS_prop_array</span><span class="p">(</span><span class="n">zProp</span><span class="p">,</span> <span class="n">Erefcc</span><span class="p">,</span> <span class="n">ζCoords</span><span class="p">,</span> <span class="n">ηCoords</span><span class="p">,</span> <span class="n">λfree</span><span class="p">,</span> <span class="n">nref</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">xCoords</span><span class="p">,</span> <span class="n">yCoords</span><span class="p">,</span> <span class="n">H3</span><span class="p">)</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">vector_field_FFT_RS_prop_array</span><span class="p">(</span><span class="n">zProp</span><span class="p">,</span> <span class="n">Hrefcc</span><span class="p">,</span> <span class="n">ζCoords</span><span class="p">,</span> <span class="n">ηCoords</span><span class="p">,</span> <span class="n">λfree</span><span class="p">,</span> <span class="n">nref</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calculating the ideal Fresnel phase profile...&quot;</span><span class="p">)</span>
+    <span class="n">λFree</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;λFree&#39;</span><span class="p">]</span>
+    <span class="n">nHost</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;nHost&#39;</span><span class="p">]</span>
+    <span class="n">λHost</span> <span class="o">=</span> <span class="n">λFree</span> <span class="o">/</span> <span class="n">nHost</span>
+    <span class="n">Rmax</span> <span class="o">=</span> <span class="mi">20</span> <span class="c1"># arbitrary</span>
+    <span class="n">emDepth</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;emDepth&#39;</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">fresnel_profile</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="n">phase_fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">f</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">phase_fun</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">fresnel_profile</span><span class="p">(</span><span class="n">emDepth</span><span class="p">)</span>
+    <span class="n">phase_map</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">λHost</span> <span class="o">*</span> <span class="n">fp</span><span class="p">(</span><span class="n">Xg</span><span class="p">,</span><span class="n">Yg</span><span class="p">)</span>
+    <span class="n">complex_phase_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">phase_map</span><span class="p">)</span>
+    <span class="n">complex_phase_map</span><span class="p">[</span><span class="n">Xg</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">Yg</span><span class="o">**</span><span class="mi">2</span> <span class="o">&gt;</span> <span class="n">Rmax</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Letting field through meta-optic...&quot;</span><span class="p">)</span>
+    <span class="n">E4</span> <span class="o">=</span> <span class="n">E3</span> <span class="o">*</span> <span class="n">complex_phase_map</span>
+    <span class="n">H4</span> <span class="o">=</span> <span class="n">H3</span> <span class="o">*</span> <span class="n">complex_phase_map</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Determining range of zProp values to use...&quot;</span><span class="p">)</span>
+    <span class="n">dl</span> <span class="o">=</span> <span class="n">xrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">xrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">emΔz</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;emΔz&#39;</span><span class="p">]</span>
+    <span class="n">emDepth</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;emDepth&#39;</span><span class="p">]</span>
+    <span class="n">zrange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">emDepth</span><span class="o">-</span><span class="n">emΔz</span><span class="p">,</span> <span class="n">emDepth</span><span class="o">+</span><span class="n">emΔz</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">emΔz</span><span class="o">/</span><span class="n">dl</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Filling an empty array for the final fields ...&quot;</span><span class="p">)</span>
+    <span class="n">E5</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="o">*</span><span class="n">E4</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">zrange</span><span class="p">)))</span>
+    <span class="n">H5</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="o">*</span><span class="n">H4</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">zrange</span><span class="p">)))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Propagating the field inside of the crystal host...&quot;</span><span class="p">)</span>
+    <span class="n">nref</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;nHost&#39;</span><span class="p">]</span>
+    <span class="n">λFree</span> <span class="o">=</span> <span class="n">dev_design</span><span class="p">[</span><span class="s1">&#39;λFree&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">field_index</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">field_index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">sourceField</span> <span class="o">=</span> <span class="n">E4</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sourceField</span> <span class="o">=</span> <span class="n">H4</span>
+        <span class="k">for</span> <span class="n">z_index</span><span class="p">,</span> <span class="n">zProp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tqdm</span><span class="p">(</span><span class="n">zrange</span><span class="p">)):</span>
+            <span class="p">(</span><span class="n">xCoords</span><span class="p">,</span> <span class="n">yCoords</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">vector_field_FFT_RS_prop_array</span><span class="p">(</span><span class="n">zProp</span><span class="p">,</span> <span class="n">sourceField</span><span class="p">,</span> <span class="n">ζCoords</span><span class="p">,</span> <span class="n">ηCoords</span><span class="p">,</span> <span class="n">λFree</span><span class="p">,</span> <span class="n">nref</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">field_index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">E5</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">z_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">fields</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">H5</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">z_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">fields</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Grabbing the field along the sagittal plane...&quot;</span><span class="p">)</span>
+    <span class="n">midIndex</span> <span class="o">=</span> <span class="n">E5</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="nb">slice</span> <span class="o">=</span> <span class="n">E5</span><span class="p">[:,</span> <span class="n">midIndex</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="nb">slice</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="nb">slice</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.h5&#39;</span> <span class="o">%</span> <span class="n">eigen_index</span>
+    <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">scratch_dir</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="nb">slice</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

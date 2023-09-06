@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>convstore &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../docs/wavesight.html">wavesight.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/fields.html">fields.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/diffkernels.html">diffkernels.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/misc.html">misc.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/fieldgenesis.html">fieldgenesis.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/fungenerators.html">fungenerators.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/convstore.html">convstore.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../farfield.html"># Farfield Propagators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multifiber.html"># Multifiber</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">convstore</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for convstore</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">special</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">root_scalar</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">Popen</span>
+
+<div class="viewcode-block" id="zerocrossings">
+<a class="viewcode-back" href="../docs/convstore.html#convstore.zerocrossings">[docs]</a>
+<span class="k">def</span> <span class="nf">zerocrossings</span><span class="p">(</span><span class="n">numarray</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Return the indices of the zero crossings in the given numpy array.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">numarray</span><span class="p">)))[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="count_shared_chars">
+<a class="viewcode-back" href="../docs/convstore.html#convstore.count_shared_chars">[docs]</a>
+<span class="k">def</span> <span class="nf">count_shared_chars</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Given two strings, count the number of characters that are the same</span>
+<span class="sd">    at the beginning of both strings.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    s1 : str</span>
+<span class="sd">    s2 : str</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    shared_count : int</span>
+<span class="sd">        How many characters are the same at the beginning of both strings</span>
+<span class="sd">        until the first character that is different.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">shared_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">c1</span> <span class="o">==</span> <span class="n">c2</span><span class="p">:</span>
+            <span class="n">shared_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">shared_count</span></div>
+
+
+<div class="viewcode-block" id="findallroots">
+<a class="viewcode-back" href="../docs/convstore.html#convstore.findallroots">[docs]</a>
+<span class="k">def</span> <span class="nf">findallroots</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span>
+                 <span class="n">xtol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span> 
+                 <span class="n">max_iter</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">num_sigfigs</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+                 <span class="n">razorsharp</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span>
+                 <span class="n">method</span><span class="o">=</span><span class="s1">&#39;secant&#39;</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Find  all  roots of a function in a given interval. To accomplish this</span>
+<span class="sd">    the  function  is  sampled  with  the  given  resolution dx within the</span>
+<span class="sd">    interval  (xmin,  xmax)  and  the  zero  crossings are found. The zero</span>
+<span class="sd">    crossings  are  then  used  as  initial  guesses  for the root finding</span>
+<span class="sd">    algorithm.</span>
+
+<span class="sd">    At  the  end of the search, the roots are disambiguated by rounding to</span>
+<span class="sd">    the  specified  number  of  significant figures. This is done to avoid</span>
+<span class="sd">    returning multiple roots that are very close to each other.</span>
+
+<span class="sd">    When  a  method  is  given  which  requires a bracket, this bracket is</span>
+<span class="sd">    estimated  by  slightly increasing the position for the zero crossing.</span>
+<span class="sd">    This  might  not  give  an  adequate  bracket  for  the  root  finding</span>
+<span class="sd">    algorithm,  so  it  it expanded until the function effectively changes</span>
+<span class="sd">    sign.  If the function does not change after max_fixes iterations, the</span>
+<span class="sd">    root is skipped.</span>
+
+<span class="sd">    The roots are returned in a sorted array.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fun : function</span>
+<span class="sd">        The function to find the roots of, must be univariate.</span>
+<span class="sd">    xmin : float</span>
+<span class="sd">        The lower bound of the interval to search for roots.</span>
+<span class="sd">    xmax : float</span>
+<span class="sd">        The upper bound of the interval to search for roots.</span>
+<span class="sd">    dx : float</span>
+<span class="sd">        The step size to use when searching for roots.</span>
+<span class="sd">    xtol : float, optional</span>
+<span class="sd">        The tolerance to use when searching for roots.</span>
+<span class="sd">    max_iter : int, optional</span>
+<span class="sd">        The maximum number of iterations to use when searching for roots.</span>
+<span class="sd">    num_sigfigs : int, optional</span>
+<span class="sd">        The number of significant figures to use when disambiguating similar roots.</span>
+<span class="sd">    razorsharp : float, optional</span>
+<span class="sd">        The amount to expand the bracket for the root finding algorithm.</span>
+<span class="sd">    method : str, optional</span>
+<span class="sd">        The method to use when searching for roots.  Must be one of the following:</span>
+<span class="sd">        &#39;bisect&#39;, &#39;brentq&#39;, &#39;brenth&#39;, &#39;ridder&#39;, &#39;toms748&#39;, &#39;secant&#39;.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        If True, print information about the roots as they are found.</span>
+<span class="sd">    reverse : bool, optional</span>
+<span class="sd">        If True, return the roots in reverse order.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    zeros : array</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">rightzor</span> <span class="o">=</span> <span class="mi">1</span><span class="o">+</span><span class="n">razorsharp</span>
+    <span class="n">leftzor</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">razorsharp</span>
+    <span class="n">numSamples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">xmax</span><span class="o">-</span><span class="n">xmin</span><span class="p">)</span><span class="o">/</span><span class="n">dx</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">numSamples</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">zcs</span> <span class="o">=</span> <span class="n">zerocrossings</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">zcs</span> <span class="o">=</span> <span class="n">zcs</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">zcs</span><span class="p">])]</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">zcs</span><span class="p">])</span>
+    <span class="n">zeros</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">zc</span> <span class="ow">in</span> <span class="n">zcs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Evaluating root at x = </span><span class="si">{:.6f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">zc</span><span class="p">]))</span>
+        <span class="n">bracket</span> <span class="o">=</span> <span class="p">(</span><span class="n">leftzor</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">zc</span><span class="p">],</span> <span class="n">rightzor</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">zc</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="s1">&#39;bisect brentq brenth ridder toms748&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">):</span>
+            <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">bracket</span>
+            <span class="n">fl</span><span class="p">,</span> <span class="n">fr</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="n">l</span><span class="p">),</span> <span class="n">fun</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+            <span class="n">max_fixes</span> <span class="o">=</span> <span class="mi">100</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">fl</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">fr</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">nfix</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">fun</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">*</span> <span class="n">fun</span><span class="p">(</span><span class="n">r</span><span class="p">))</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">l</span> <span class="o">=</span> <span class="n">l</span><span class="o">*</span><span class="n">leftzor</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">*</span><span class="n">rightzor</span>
+                <span class="n">nfix</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">nfix</span> <span class="o">&gt;</span> <span class="n">max_fixes</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">fun</span><span class="p">(</span><span class="n">l</span><span class="p">))</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">fun</span><span class="p">(</span><span class="n">r</span><span class="p">)):</span>
+                    <span class="k">break</span>
+            <span class="n">bracket</span> <span class="o">=</span> <span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;bracket&quot;</span><span class="p">,</span> <span class="n">bracket</span><span class="p">,</span> <span class="n">nfix</span><span class="p">)</span>
+            <span class="n">zerofind</span> <span class="o">=</span> <span class="n">root_scalar</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span>
+                                   <span class="n">bracket</span><span class="o">=</span><span class="n">bracket</span><span class="p">,</span>
+                                   <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+                                   <span class="n">xtol</span><span class="o">=</span><span class="n">xtol</span><span class="p">,</span>
+                                   <span class="n">maxiter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">zerofind</span> <span class="o">=</span> <span class="n">root_scalar</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span>
+                                <span class="n">x0</span><span class="o">=</span><span class="n">bracket</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                <span class="n">x1</span><span class="o">=</span><span class="n">bracket</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> 
+                                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;secant&#39;</span><span class="p">,</span>
+                                <span class="n">xtol</span><span class="o">=</span><span class="n">xtol</span><span class="p">,</span>
+                                <span class="n">maxiter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">)</span>
+        <span class="n">the_root</span> <span class="o">=</span> <span class="n">zerofind</span><span class="o">.</span><span class="n">root</span>
+        <span class="n">the_check</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="n">the_root</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">the_root</span><span class="p">,</span> <span class="n">the_check</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">zerofind</span><span class="o">.</span><span class="n">converged</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">the_root</span> <span class="o">&lt;=</span> <span class="n">xmax</span><span class="p">)</span> 
+            <span class="ow">and</span> <span class="p">(</span><span class="n">the_root</span> <span class="o">&gt;=</span> <span class="n">xmin</span><span class="p">)):</span>
+            <span class="n">zeros</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_root</span><span class="p">)</span>
+    <span class="n">zeros</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">zeros</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="c1"># remove zeros that are equal to the given number of digits</span>
+    <span class="n">zeros</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">round2sigfigs</span><span class="p">(</span><span class="n">zeros</span><span class="p">,</span> <span class="n">num_sigfigs</span><span class="p">))</span>
+    <span class="n">zeros</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">zeros</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">reverse</span><span class="p">:</span>
+        <span class="n">zeros</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">zeros</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">zeros</span></div>
+
+
+<span class="k">def</span> <span class="nf">find_layout_rectangle</span><span class="p">(</span><span class="n">ar</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+    <span class="n">w_est</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">N</span> <span class="o">/</span> <span class="n">ar</span><span class="p">)</span>
+    <span class="n">h_est</span> <span class="o">=</span> <span class="n">w_est</span> <span class="o">*</span> <span class="n">ar</span>
+
+    <span class="n">w_candidates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">w_est</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">w_est</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">h_candidates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">h_est</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">h_est</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="n">valid_pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">w_candidates</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">h_candidates</span> <span class="k">if</span> <span class="n">w</span> <span class="o">*</span> <span class="n">h</span> <span class="o">&gt;=</span> <span class="n">N</span><span class="p">])</span>
+
+    <span class="n">ar_diffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">valid_pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">valid_pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ar</span><span class="p">)</span>
+    <span class="n">best_pair</span> <span class="o">=</span> <span class="n">valid_pairs</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">ar_diffs</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="n">best_pair</span>
+
+<div class="viewcode-block" id="round2sigfigs">
+<a class="viewcode-back" href="../docs/convstore.html#convstore.round2sigfigs">[docs]</a>
+<span class="k">def</span> <span class="nf">round2sigfigs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span> 
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Round x to p significant figures.</span>
+
+<span class="sd">    REF: https://stackoverflow.com/questions/18915378/rounding-to-significant-figures-in-numpy</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x_positive</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">mags</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">x_positive</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">mags</span><span class="p">)</span> <span class="o">/</span> <span class="n">mags</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

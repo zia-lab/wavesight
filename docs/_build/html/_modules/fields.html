@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fields &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavesight.html">wavesight.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fields.html">fields.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/diffkernels.html">diffkernels.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/misc.html">misc.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fieldgenesis.html">fieldgenesis.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fungenerators.html">fungenerators.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/convstore.html">convstore.py</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">fields</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for fields</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="electric_dipole">
+<a class="viewcode-back" href="../usage/fields.html#fields.electric_dipole">[docs]</a>
+<span class="k">def</span> <span class="nf">electric_dipole</span><span class="p">(</span><span class="n">kFree</span><span class="p">,</span> <span class="n">nref</span><span class="p">,</span> <span class="n">θdip</span><span class="p">,</span> <span class="n">ϕdip</span><span class="p">,</span> <span class="n">η</span><span class="p">,</span> <span class="n">pmag</span><span class="p">,</span> <span class="n">ζCoords</span><span class="p">,</span> <span class="n">ηCoords</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="s1">&#39;EH&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This  function returns the E and H fields produced by</span>
+<span class="sd">    an electric  dipole  radiator  at frequency :math:`ω = k_\\text{Free} c` in a</span>
+<span class="sd">    given plane.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \\begin{align}</span>
+<span class="sd">            \\vec{E} &amp;= e^{ikr} \\left(\\frac{k^2}{r} (\\hat{r}\\times\\vec{p})\\times \\hat{r} + \\frac{\\left(1-ikr\\right)}{r^3}\\left(3 \\hat{r}(\\hat{r}\\cdot\\vec{p}) - \\vec{p}\\right)\\right)  \\\\</span>
+<span class="sd">            \\vec{H} &amp;= -Z_n k^2 \\frac{e^{ikr}}{r} \\left(1 + \\frac{i}{kr}\\right) \\left( \\hat{r} \\times \\vec{p} \\right) \\\\</span>
+<span class="sd">            Z_n &amp;= \\frac{1}{n} \\\\</span>
+<span class="sd">            \\hat{r} &amp;= \\frac{\\vec{r}}{r} \\\\</span>
+<span class="sd">            c &amp;= 1 \\\\</span>
+<span class="sd">            k &amp;= k_{free} n</span>
+<span class="sd">        \\end{align}</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        ┌───────────────────────────────────────────────────────┐</span>
+<span class="sd">        │                                                       │</span>
+<span class="sd">        │                               ηCoords                 │</span>
+<span class="sd">        │                          ┌─────────────┬─             │</span>
+<span class="sd">        │                        ┌.┘           ┌─┘              │</span>
+<span class="sd">        │                   ▲  ┌─┘│          ┌─┘                │</span>
+<span class="sd">        │                   │┌─┘           ┌─┘  ζCoords         │</span>
+<span class="sd">        │                  ┌┼┘    │      ┌─┘                    │</span>
+<span class="sd">        │                 ─┴┼────────────┘                      │</span>
+<span class="sd">        │                   │     │                             │</span>
+<span class="sd">        │                   │                                   │</span>
+<span class="sd">        │                   η                                   │</span>
+<span class="sd">        │                   │     │                             │</span>
+<span class="sd">        │                   │                                   │</span>
+<span class="sd">        │                   │     │  θdip   ┌▶                  │</span>
+<span class="sd">        │                   │             ┌─┘                   │</span>
+<span class="sd">        │                   │     │     ┌─┘  │p                 │</span>
+<span class="sd">        │                   │         ┌─┘                       │</span>
+<span class="sd">        │                   │     │ ┌─┘      │                  │</span>
+<span class="sd">        │                   │     ┌─┘                           │</span>
+<span class="sd">        │           ─ ─ ─ ─ ▼ ─ ──┼ ─ ─ ─ ─ ─│▶  y              │</span>
+<span class="sd">        │                     ┌ ┘  └ ┐                          │</span>
+<span class="sd">        │                    ─    │   ─      │                  │</span>
+<span class="sd">        │                 ┌ ┘          └ ┐                      │</span>
+<span class="sd">        │                ─       φdip     ─  │                  │</span>
+<span class="sd">        │           x ┌ ┘                  └ ─                  │</span>
+<span class="sd">        │            ◀            │                             │</span>
+<span class="sd">        │                                                       │</span>
+<span class="sd">        └───────────────────────────────────────────────────────┘</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    kFree : float</span>
+<span class="sd">        free-space wavenumber.</span>
+
+<span class="sd">    nref : float</span>
+<span class="sd">        refractive index of the medium.</span>
+
+<span class="sd">    θdip, ϕdip : float</span>
+<span class="sd">        dipole orientation angles.</span>
+
+<span class="sd">    η : float</span>
+<span class="sd">        vertical distance between dipole and plane.</span>
+
+<span class="sd">    pmag : float</span>
+<span class="sd">        dipole moment magnitude.</span>
+
+<span class="sd">    ζCoords : np.array (N,)</span>
+<span class="sd">        x-coordinates of the target plane.</span>
+
+<span class="sd">    ηCoords : np.array</span>
+<span class="sd">        (N,) y-coordinates of the target plane.</span>
+
+<span class="sd">    field : str</span>
+<span class="sd">        &#39;E&#39;, &#39;H&#39;, or &#39;EH&#39; for the field  components to return.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Efield : np.array (3, N, N)</span>
+<span class="sd">        electric field at the given</span>
+<span class="sd">        plane,  with  the  first  dimension indexing the x, y, and z</span>
+<span class="sd">        components of the field.</span>
+
+<span class="sd">    Hfield : np.array (3, N, N)</span>
+<span class="sd">        H-field at the given plane,</span>
+<span class="sd">        with the first dimension indexing the x, y, and z components</span>
+<span class="sd">        of the field.</span>
+<span class="sd">    </span>
+<span class="sd">    Reference</span>
+<span class="sd">    ---------</span>
+<span class="sd">    Jackson, David. Classical Electrodynamics, 1999, equation 9.18.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="n">fields</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">,</span><span class="s1">&#39;H&#39;</span><span class="p">,</span><span class="s1">&#39;EH&#39;</span><span class="p">,</span><span class="s1">&#39;HE&#39;</span><span class="p">],</span> <span class="s2">&quot;fields must be &#39;E&#39;, &#39;H&#39;, &#39;EH&#39;, or &#39;HE&#39;&quot;</span>
+    <span class="k">assert</span> <span class="n">nref</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+    <span class="n">k</span>      <span class="o">=</span> <span class="n">kFree</span> <span class="o">*</span> <span class="n">nref</span>
+    <span class="n">pdip</span>   <span class="o">=</span> <span class="n">pmag</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">θdip</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ϕdip</span><span class="p">),</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">θdip</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ϕdip</span><span class="p">),</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">θdip</span><span class="p">)])</span> 
+    <span class="n">numSamples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ζCoords</span><span class="p">)</span>
+    <span class="n">ζmesh</span><span class="p">,</span> <span class="n">ηmesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">ζCoords</span><span class="p">,</span> <span class="n">ηCoords</span><span class="p">)</span>
+    <span class="n">rmesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ζmesh</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">ηmesh</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">η</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">rmeshinverse</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">rmesh</span>
+    <span class="n">rhat</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ζmesh</span><span class="p">,</span> <span class="n">ηmesh</span><span class="p">,</span> <span class="n">η</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">numSamples</span><span class="p">,</span><span class="n">numSamples</span><span class="p">))])</span> <span class="o">*</span> <span class="n">rmeshinverse</span>
+
+    <span class="n">pdipVec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="n">numSamples</span><span class="p">,</span><span class="n">numSamples</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+    <span class="n">pdipVec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdip</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pdipVec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdip</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">pdipVec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdip</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;E&#39;</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="n">ncrossp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">rhat</span><span class="p">,</span> <span class="n">pdip</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">Evec1</span>  <span class="o">=</span> <span class="p">(</span><span class="n">k</span><span class="o">**</span><span class="mi">2</span> 
+                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">ncrossp</span><span class="p">,</span> <span class="n">rhat</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="o">*</span> <span class="n">rmesh</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">Evec2</span> <span class="o">=</span> <span class="p">((</span><span class="mi">3</span> <span class="o">*</span> <span class="n">rhat</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">rhat</span> <span class="o">*</span> <span class="n">pdipVec</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">pdipVec</span><span class="p">)</span> 
+                <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="mf">1.</span><span class="n">j</span> <span class="o">*</span> <span class="n">k</span> <span class="o">*</span> <span class="n">rmesh</span><span class="p">))</span>
+        <span class="n">phaser</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">k</span> <span class="o">*</span> <span class="n">rmesh</span><span class="p">)</span>
+        <span class="n">Efield</span>  <span class="o">=</span> <span class="p">(</span><span class="n">Evec1</span> <span class="o">+</span> <span class="n">Evec2</span><span class="p">)</span> <span class="o">*</span> <span class="n">phaser</span> <span class="o">*</span> <span class="n">rmeshinverse</span><span class="o">**</span><span class="mi">3</span>
+    <span class="k">if</span> <span class="s1">&#39;H&#39;</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;ncrossp&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
+            <span class="n">ncrossp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">rhat</span><span class="p">,</span> <span class="n">pdip</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;phaser&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
+            <span class="n">phaser</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">k</span> <span class="o">*</span> <span class="n">rmesh</span><span class="p">)</span>
+        <span class="n">Hfield</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">nref</span> <span class="o">*</span> <span class="n">k</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">ncrossp</span> <span class="o">*</span> <span class="n">phaser</span> <span class="o">*</span> <span class="n">rmeshinverse</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">rmeshinverse</span> <span class="o">/</span> <span class="n">k</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;H&#39;</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Efield</span><span class="p">,</span> <span class="n">Hfield</span>
+    <span class="k">elif</span> <span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;E&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Efield</span>
+    <span class="k">elif</span> <span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;H&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Hfield</span></div>
+
+
+<div class="viewcode-block" id="magnetic_dipole">
+<a class="viewcode-back" href="../usage/fields.html#fields.magnetic_dipole">[docs]</a>
+<span class="k">def</span> <span class="nf">magnetic_dipole</span><span class="p">(</span><span class="n">kFree</span><span class="p">,</span> <span class="n">nref</span><span class="p">,</span> <span class="n">θdip</span><span class="p">,</span> <span class="n">ϕdip</span><span class="p">,</span> <span class="n">η</span><span class="p">,</span> <span class="n">mmag</span><span class="p">,</span> <span class="n">ζCoords</span><span class="p">,</span> <span class="n">ηCoords</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="s1">&#39;EH&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This  function returns the E and H fields produced by</span>
+<span class="sd">    a  magnetic  dipole  radiator  at frequency :math:`ω = k_\\text{Free} c` in a</span>
+<span class="sd">    given plane.</span>
+
+<span class="sd">    Assuming this specific form of  :doc:`maxwell` the fields</span>
+<span class="sd">    for a magnetic dipole radiator are given by.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \\begin{align}</span>
+<span class="sd">            \\vec{H} &amp;= e^{ikr} \\left(\\frac{k^2}{r} (\\hat{r}\\times\\vec{m})\\times \\hat{r} + \\frac{\\left(1-ikr\\right)}{r^3}\\left(3 \\hat{r}(\\hat{r}\\cdot\\vec{m}) - \\vec{m}\\right)\\right) \\\\</span>
+<span class="sd">            \\vec{E} &amp;= -Z_n k^2 \\frac{e^{ikr}}{r} \\left(1 + \\frac{i}{kr}\\right) \\left( \\hat{r} \\times \\vec{m} \\right) \\\\</span>
+<span class="sd">            Z_n &amp;= \\frac{1}{n} \\\\</span>
+<span class="sd">            \\hat{r} &amp;= \\frac{\\vec{r}}{r} \\\\</span>
+<span class="sd">            c &amp;= 1 \\\\</span>
+<span class="sd">            k &amp;= k_{free} n </span>
+<span class="sd">        \\end{align}</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        ┌───────────────────────────────────────────────────────┐</span>
+<span class="sd">        │                                                       │</span>
+<span class="sd">        │                               ηCoords                 │</span>
+<span class="sd">        │                          ┌─────────────┬─             │</span>
+<span class="sd">        │                        ┌.┘           ┌─┘              │</span>
+<span class="sd">        │                   ▲  ┌─┘│          ┌─┘                │</span>
+<span class="sd">        │                   │┌─┘           ┌─┘  ζCoords         │</span>
+<span class="sd">        │                  ┌┼┘    │      ┌─┘                    │</span>
+<span class="sd">        │                 ─┴┼────────────┘                      │</span>
+<span class="sd">        │                   │     │                             │</span>
+<span class="sd">        │                   │                                   │</span>
+<span class="sd">        │                   η                                   │</span>
+<span class="sd">        │                   │     │                             │</span>
+<span class="sd">        │                   │                                   │</span>
+<span class="sd">        │                   │     │  θdip   ┌▶                  │</span>
+<span class="sd">        │                   │             ┌─┘                   │</span>
+<span class="sd">        │                   │     │     ┌─┘  │p                 │</span>
+<span class="sd">        │                   │         ┌─┘                       │</span>
+<span class="sd">        │                   │     │ ┌─┘      │                  │</span>
+<span class="sd">        │                   │     ┌─┘                           │</span>
+<span class="sd">        │           ─ ─ ─ ─ ▼ ─ ──┼ ─ ─ ─ ─ ─│▶  y              │</span>
+<span class="sd">        │                     ┌ ┘  └ ┐                          │</span>
+<span class="sd">        │                    ─    │   ─      │                  │</span>
+<span class="sd">        │                 ┌ ┘          └ ┐                      │</span>
+<span class="sd">        │                ─       φdip     ─  │                  │</span>
+<span class="sd">        │           x ┌ ┘                  └ ─                  │</span>
+<span class="sd">        │            ◀            │                             │</span>
+<span class="sd">        │                                                       │</span>
+<span class="sd">        └───────────────────────────────────────────────────────┘</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    kFree : (float)</span>
+<span class="sd">        free-space wavenumber.</span>
+
+<span class="sd">    nref : float</span>
+<span class="sd">        refractive index of the medium.</span>
+
+<span class="sd">    θdip, ϕdip : float</span>
+<span class="sd">        dipole orientation angles.</span>
+
+<span class="sd">    η : float</span>
+<span class="sd">        vertical distance between dipole and plane.</span>
+
+<span class="sd">    mmag : float</span>
+<span class="sd">        dipole moment magnitude.</span>
+
+<span class="sd">    ζCoords : np.array (N,)</span>
+<span class="sd">        x-coordinates of the target plane.</span>
+
+<span class="sd">    ηCoords : np.array (N,)</span>
+<span class="sd">        y-coordinates of the target plane.</span>
+
+<span class="sd">    field : str:</span>
+<span class="sd">        &#39;E&#39;, &#39;H&#39;, or &#39;EH&#39; for the field components to return.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    Efield  : np.array (3, N, N)</span>
+<span class="sd">        electric field at the given plane,  with  the  first  </span>
+<span class="sd">        dimension indexing the x, y, and z components of the field.</span>
+
+<span class="sd">    Hfield  : np.array (3, N, N)</span>
+<span class="sd">        H-field at the given plane, with the first dimension indexing</span>
+<span class="sd">        the x, y, and z components of the field.</span>
+<span class="sd">    </span>
+<span class="sd">    Reference</span>
+<span class="sd">    ---------</span>
+<span class="sd">    Jackson, David. Classical Electrodynamics, 1999, equation 9.35.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="n">fields</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">,</span><span class="s1">&#39;H&#39;</span><span class="p">,</span><span class="s1">&#39;EH&#39;</span><span class="p">,</span><span class="s1">&#39;HE&#39;</span><span class="p">],</span> <span class="s2">&quot;fields must be &#39;E&#39;, &#39;H&#39;, &#39;EH&#39;, or &#39;HE&#39;&quot;</span>
+    <span class="k">assert</span> <span class="n">nref</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+    <span class="n">k</span>      <span class="o">=</span> <span class="n">kFree</span> <span class="o">*</span> <span class="n">nref</span>
+    <span class="c1"># impedance of medium assuming μ=1</span>
+    <span class="n">Zn</span>     <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">nref</span> 
+    <span class="n">mdip</span>   <span class="o">=</span> <span class="n">mmag</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">θdip</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ϕdip</span><span class="p">),</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">θdip</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ϕdip</span><span class="p">),</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">θdip</span><span class="p">)])</span> 
+    <span class="n">numSamples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ζCoords</span><span class="p">)</span>
+    <span class="n">ζmesh</span><span class="p">,</span> <span class="n">ηmesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">ζCoords</span><span class="p">,</span> <span class="n">ηCoords</span><span class="p">)</span>
+    <span class="n">rmesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ζmesh</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">ηmesh</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">η</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">rmeshinverse</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">rmesh</span>
+    <span class="n">rhat</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ζmesh</span><span class="p">,</span> <span class="n">ηmesh</span><span class="p">,</span> <span class="n">η</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">numSamples</span><span class="p">,</span><span class="n">numSamples</span><span class="p">))])</span> <span class="o">*</span> <span class="n">rmeshinverse</span>
+
+    <span class="n">mdipVec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="n">numSamples</span><span class="p">,</span><span class="n">numSamples</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+    <span class="n">mdipVec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">mdip</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">mdipVec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">mdip</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">mdipVec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">mdip</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;H&#39;</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="n">ncrossp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">rhat</span><span class="p">,</span> <span class="n">mdip</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">Hvec1</span>  <span class="o">=</span> <span class="p">(</span><span class="n">k</span><span class="o">**</span><span class="mi">2</span> 
+                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">ncrossp</span><span class="p">,</span> <span class="n">rhat</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="o">*</span> <span class="n">rmesh</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">Hvec2</span> <span class="o">=</span> <span class="p">((</span><span class="mi">3</span> <span class="o">*</span> <span class="n">rhat</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">rhat</span> <span class="o">*</span> <span class="n">mdipVec</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">mdipVec</span><span class="p">)</span> 
+                <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="mf">1.</span><span class="n">j</span> <span class="o">*</span> <span class="n">k</span> <span class="o">*</span> <span class="n">rmesh</span><span class="p">))</span>
+        <span class="n">phaser</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">k</span> <span class="o">*</span> <span class="n">rmesh</span><span class="p">)</span>
+        <span class="n">Hfield</span>  <span class="o">=</span> <span class="p">(</span><span class="n">Hvec1</span> <span class="o">+</span> <span class="n">Hvec2</span><span class="p">)</span> <span class="o">*</span> <span class="n">phaser</span> <span class="o">*</span> <span class="n">rmeshinverse</span><span class="o">**</span><span class="mi">3</span>
+    <span class="k">if</span> <span class="s1">&#39;E&#39;</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;ncrossp&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
+            <span class="n">ncrossp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">rhat</span><span class="p">,</span> <span class="n">mdip</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;phaser&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
+            <span class="n">phaser</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">k</span> <span class="o">*</span> <span class="n">rmesh</span><span class="p">)</span>
+        <span class="n">Efield</span> <span class="o">=</span> <span class="o">-</span><span class="n">Zn</span> <span class="o">*</span> <span class="n">k</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">ncrossp</span> <span class="o">*</span> <span class="n">phaser</span> <span class="o">*</span> <span class="n">rmeshinverse</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">rmeshinverse</span> <span class="o">/</span> <span class="n">k</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;H&#39;</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Efield</span><span class="p">,</span> <span class="n">Hfield</span>
+    <span class="k">elif</span> <span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;E&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Efield</span>
+    <span class="k">elif</span> <span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;H&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Hfield</span></div>
+
+
+
+<div class="viewcode-block" id="plane_wave">
+<a class="viewcode-back" href="../usage/fields.html#fields.plane_wave">[docs]</a>
+<span class="k">def</span> <span class="nf">plane_wave</span><span class="p">(</span><span class="n">kFree</span><span class="p">,</span> <span class="n">nref</span><span class="p">,</span> <span class="n">θk</span><span class="p">,</span> <span class="n">ϕk</span><span class="p">,</span> <span class="n">η</span><span class="p">,</span> <span class="n">Eamp</span><span class="p">,</span> <span class="n">Eϕ</span><span class="p">,</span> <span class="n">xCoords</span><span class="p">,</span> <span class="n">yCoords</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="s1">&#39;EH&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function returns the E and H fields produced by a plane</span>
+<span class="sd">    wave  at a given plane. The direction of the polarization of</span>
+<span class="sd">    the  electric  field  is given by the angle Eϕ, which is the</span>
+<span class="sd">    counter-clockwise  angle  between  a  unit  vector  that  is</span>
+<span class="sd">    perpendicular  to  the direction of propagation and lying on</span>
+<span class="sd">    the  x-y plane. The direction of the propagation is given by</span>
+<span class="sd">    θk  and  ϕk.  The complex amplitude of the electric field is</span>
+<span class="sd">    given by Eamp.</span>
+
+<span class="sd">    .. image:: ../img/plane_wave_coords.png</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    kFree : float</span>
+<span class="sd">        free-space wavenumber.</span>
+<span class="sd">    nref : float</span>
+<span class="sd">        refractive index of the medium.</span>
+<span class="sd">    θk, ϕk : float</span>
+<span class="sd">        direction of propagation.</span>
+<span class="sd">    η : float</span>
+<span class="sd">        fields are returned at the plane z=η.</span>
+<span class="sd">    Eamp : float</span>
+<span class="sd">        amplitude of the electric field.</span>
+<span class="sd">    Eϕ : float</span>
+<span class="sd">        angle of the electric field polarization.</span>
+<span class="sd">    xCoords : np.array (N,)</span>
+<span class="sd">        x-coordinates of the target plane.</span>
+<span class="sd">    yCoords : np.array (N,)</span>
+<span class="sd">        y-coordinates of the target plane.</span>
+<span class="sd">    field : str</span>
+<span class="sd">        &#39;E&#39;, &#39;H&#39;, or &#39;EH&#39; for the field components to return.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Efield : np.array (3, N, N)</span>
+<span class="sd">        electric  field  at  the  given  plane,  with  the first</span>
+<span class="sd">        dimension  indexing  the  x,  y, and z components of the</span>
+<span class="sd">        field.</span>
+<span class="sd">    Hfield : np.array (3, N, N)</span>
+<span class="sd">        H-field  at  the  given  plane, with the first dimension</span>
+<span class="sd">        indexing the x, y, and z components of the field.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">μr</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># assume magnetic transparency</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">kFree</span> <span class="o">*</span> <span class="n">nref</span>
+    <span class="n">kVec</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">θk</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ϕk</span><span class="p">),</span>
+                         <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">θk</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ϕk</span><span class="p">),</span>
+                         <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">θk</span><span class="p">)])</span>
+    <span class="c1"># unit vector in direction of propagation</span>
+    <span class="n">kDir</span> <span class="o">=</span> <span class="n">kVec</span> <span class="o">/</span> <span class="n">k</span>
+    <span class="n">kdirx</span><span class="p">,</span> <span class="n">kdiry</span><span class="p">,</span> <span class="n">kdirz</span> <span class="o">=</span> <span class="n">kDir</span>
+    <span class="c1"># unit vector perpendicular to kDir and in the x-y plane</span>
+    <span class="n">northPole</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">kdirx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">kdiry</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">kdiry</span><span class="p">,</span> <span class="n">kdirx</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="c1"># complementary unit vector perpendicular to kDir and northPole</span>
+    <span class="n">westPole</span>  <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">kVec</span><span class="p">,</span> <span class="n">northPole</span><span class="p">)</span>
+    <span class="c1"># unit vector in the direction of polarization</span>
+    <span class="n">Epol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">Eϕ</span><span class="p">)</span> <span class="o">*</span> <span class="n">northPole</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">Eϕ</span><span class="p">)</span> <span class="o">*</span> <span class="n">westPole</span>
+    <span class="c1"># unit vector perpendicular to kDir and Epol</span>
+    <span class="n">Hpol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">kDir</span><span class="p">,</span> <span class="n">Epol</span><span class="p">)</span>
+    <span class="n">xMesh</span><span class="p">,</span> <span class="n">yMesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">xCoords</span><span class="p">,</span> <span class="n">yCoords</span><span class="p">)</span>
+    <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">kVec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">xMesh</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">kVec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">yMesh</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">kVec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">η</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;E&#39;</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="n">Efield</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">xCoords</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">yCoords</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+        <span class="n">Efield</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Epol</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">phase</span>
+        <span class="n">Efield</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Epol</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">phase</span>
+        <span class="n">Efield</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">Epol</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">phase</span>
+        <span class="n">Efield</span> <span class="o">*=</span> <span class="n">Eamp</span>
+    <span class="k">if</span> <span class="s1">&#39;H&#39;</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="n">kcrossEpol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">kVec</span><span class="p">,</span> <span class="n">Epol</span><span class="p">)</span>
+        <span class="n">Hfield</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">xCoords</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">yCoords</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+        <span class="n">Hfield</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">kcrossEpol</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">phase</span>
+        <span class="n">Hfield</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">kcrossEpol</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">phase</span>
+        <span class="n">Hfield</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">kcrossEpol</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">phase</span>
+        <span class="n">Hfield</span> <span class="o">*=</span> <span class="n">Eamp</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">k</span> <span class="o">*</span> <span class="n">μr</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;E&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Efield</span>
+    <span class="k">elif</span> <span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;H&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Hfield</span>
+    <span class="k">elif</span> <span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;EH&#39;</span> <span class="ow">or</span> <span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;HE&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Efield</span><span class="p">,</span> <span class="n">Hfield</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

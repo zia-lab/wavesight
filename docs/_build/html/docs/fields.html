@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fields.py &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Maxwell’s Equations" href="maxwell.html" />
+    <link rel="prev" title="wavesight.py" href="wavesight.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="wavesight.html">wavesight.py</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">fields.py</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fields.electric_dipole"><code class="docutils literal notranslate"><span class="pre">electric_dipole()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fields.magnetic_dipole"><code class="docutils literal notranslate"><span class="pre">magnetic_dipole()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fields.plane_wave"><code class="docutils literal notranslate"><span class="pre">plane_wave()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diffkernels.html">diffkernels.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">misc.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fieldgenesis.html">fieldgenesis.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fungenerators.html">fungenerators.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convstore.html">convstore.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../farfield.html"># Farfield Propagators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multifiber.html"># Multifiber</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">fields.py</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/fields.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-fields">
+<span id="fields-py"></span><h1>fields.py<a class="headerlink" href="#module-fields" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="fields.electric_dipole">
+<span class="sig-prename descclassname"><span class="pre">fields.</span></span><span class="sig-name descname"><span class="pre">electric_dipole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kFree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">θdip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">φdip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">η</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pmag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ζCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ηCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'EH'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fields.html#electric_dipole"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fields.electric_dipole" title="Link to this definition">¶</a></dt>
+<dd><p>This  function returns the E and H fields produced by
+an electric  dipole  radiator  at frequency <span class="math notranslate nohighlight">\(ω = k_\text{Free} c\)</span> in a
+given plane.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    \vec{E} &amp;= e^{ikr} \left(\frac{k^2}{r} (\hat{r}\times\vec{p})\times \hat{r} + \frac{\left(1-ikr\right)}{r^3}\left(3 \hat{r}(\hat{r}\cdot\vec{p}) - \vec{p}\right)\right)  \\
+    \vec{H} &amp;= -Z_n k^2 \frac{e^{ikr}}{r} \left(1 + \frac{i}{kr}\right) \left( \hat{r} \times \vec{p} \right) \\
+    Z_n &amp;= \frac{1}{n} \\
+    \hat{r} &amp;= \frac{\vec{r}}{r} \\
+    c &amp;= 1 \\
+    k &amp;= k_{free} n
+\end{align}\end{split}\]</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌───────────────────────────────────────────────────────┐
+│                                                       │
+│                               ηCoords                 │
+│                          ┌─────────────┬─             │
+│                        ┌.┘           ┌─┘              │
+│                   ▲  ┌─┘│          ┌─┘                │
+│                   │┌─┘           ┌─┘  ζCoords         │
+│                  ┌┼┘    │      ┌─┘                    │
+│                 ─┴┼────────────┘                      │
+│                   │     │                             │
+│                   │                                   │
+│                   η                                   │
+│                   │     │                             │
+│                   │                                   │
+│                   │     │  θdip   ┌▶                  │
+│                   │             ┌─┘                   │
+│                   │     │     ┌─┘  │p                 │
+│                   │         ┌─┘                       │
+│                   │     │ ┌─┘      │                  │
+│                   │     ┌─┘                           │
+│           ─ ─ ─ ─ ▼ ─ ──┼ ─ ─ ─ ─ ─│▶  y              │
+│                     ┌ ┘  └ ┐                          │
+│                    ─    │   ─      │                  │
+│                 ┌ ┘          └ ┐                      │
+│                ─       φdip     ─  │                  │
+│           x ┌ ┘                  └ ─                  │
+│            ◀            │                             │
+│                                                       │
+└───────────────────────────────────────────────────────┘
+</pre></div>
+</div>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>kFree<span class="classifier">float</span></dt><dd><p>free-space wavenumber.</p>
+</dd>
+<dt>nref<span class="classifier">float</span></dt><dd><p>refractive index of the medium.</p>
+</dd>
+<dt>θdip, ϕdip<span class="classifier">float</span></dt><dd><p>dipole orientation angles.</p>
+</dd>
+<dt>η<span class="classifier">float</span></dt><dd><p>vertical distance between dipole and plane.</p>
+</dd>
+<dt>pmag<span class="classifier">float</span></dt><dd><p>dipole moment magnitude.</p>
+</dd>
+<dt>ζCoords<span class="classifier">np.array (N,)</span></dt><dd><p>x-coordinates of the target plane.</p>
+</dd>
+<dt>ηCoords<span class="classifier">np.array</span></dt><dd><p>(N,) y-coordinates of the target plane.</p>
+</dd>
+<dt>field<span class="classifier">str</span></dt><dd><p>‘E’, ‘H’, or ‘EH’ for the field  components to return.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>Efield<span class="classifier">np.array (3, N, N)</span></dt><dd><p>electric field at the given
+plane,  with  the  first  dimension indexing the x, y, and z
+components of the field.</p>
+</dd>
+<dt>Hfield<span class="classifier">np.array (3, N, N)</span></dt><dd><p>H-field at the given plane,
+with the first dimension indexing the x, y, and z components
+of the field.</p>
+</dd>
+</dl>
+</section>
+<section id="reference">
+<h2>Reference<a class="headerlink" href="#reference" title="Link to this heading">¶</a></h2>
+<p>Jackson, David. Classical Electrodynamics, 1999, equation 9.18.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fields.magnetic_dipole">
+<span class="sig-prename descclassname"><span class="pre">fields.</span></span><span class="sig-name descname"><span class="pre">magnetic_dipole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kFree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">θdip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">φdip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">η</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mmag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ζCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ηCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'EH'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fields.html#magnetic_dipole"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fields.magnetic_dipole" title="Link to this definition">¶</a></dt>
+<dd><p>This  function returns the E and H fields produced by
+a  magnetic  dipole  radiator  at frequency <span class="math notranslate nohighlight">\(ω = k_\text{Free} c\)</span> in a
+given plane.</p>
+<p>Assuming this specific form of  <a class="reference internal" href="maxwell.html"><span class="doc">Maxwell’s Equations</span></a> the fields
+for a magnetic dipole radiator are given by.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    \vec{H} &amp;= e^{ikr} \left(\frac{k^2}{r} (\hat{r}\times\vec{m})\times \hat{r} + \frac{\left(1-ikr\right)}{r^3}\left(3 \hat{r}(\hat{r}\cdot\vec{m}) - \vec{m}\right)\right) \\
+    \vec{E} &amp;= -Z_n k^2 \frac{e^{ikr}}{r} \left(1 + \frac{i}{kr}\right) \left( \hat{r} \times \vec{m} \right) \\
+    Z_n &amp;= \frac{1}{n} \\
+    \hat{r} &amp;= \frac{\vec{r}}{r} \\
+    c &amp;= 1 \\
+    k &amp;= k_{free} n 
+\end{align}\end{split}\]</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌───────────────────────────────────────────────────────┐
+│                                                       │
+│                               ηCoords                 │
+│                          ┌─────────────┬─             │
+│                        ┌.┘           ┌─┘              │
+│                   ▲  ┌─┘│          ┌─┘                │
+│                   │┌─┘           ┌─┘  ζCoords         │
+│                  ┌┼┘    │      ┌─┘                    │
+│                 ─┴┼────────────┘                      │
+│                   │     │                             │
+│                   │                                   │
+│                   η                                   │
+│                   │     │                             │
+│                   │                                   │
+│                   │     │  θdip   ┌▶                  │
+│                   │             ┌─┘                   │
+│                   │     │     ┌─┘  │p                 │
+│                   │         ┌─┘                       │
+│                   │     │ ┌─┘      │                  │
+│                   │     ┌─┘                           │
+│           ─ ─ ─ ─ ▼ ─ ──┼ ─ ─ ─ ─ ─│▶  y              │
+│                     ┌ ┘  └ ┐                          │
+│                    ─    │   ─      │                  │
+│                 ┌ ┘          └ ┐                      │
+│                ─       φdip     ─  │                  │
+│           x ┌ ┘                  └ ─                  │
+│            ◀            │                             │
+│                                                       │
+└───────────────────────────────────────────────────────┘
+</pre></div>
+</div>
+<section id="id1">
+<h2>Parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>kFree<span class="classifier">(float)</span></dt><dd><p>free-space wavenumber.</p>
+</dd>
+<dt>nref<span class="classifier">float</span></dt><dd><p>refractive index of the medium.</p>
+</dd>
+<dt>θdip, ϕdip<span class="classifier">float</span></dt><dd><p>dipole orientation angles.</p>
+</dd>
+<dt>η<span class="classifier">float</span></dt><dd><p>vertical distance between dipole and plane.</p>
+</dd>
+<dt>mmag<span class="classifier">float</span></dt><dd><p>dipole moment magnitude.</p>
+</dd>
+<dt>ζCoords<span class="classifier">np.array (N,)</span></dt><dd><p>x-coordinates of the target plane.</p>
+</dd>
+<dt>ηCoords<span class="classifier">np.array (N,)</span></dt><dd><p>y-coordinates of the target plane.</p>
+</dd>
+<dt>field<span class="classifier">str:</span></dt><dd><p>‘E’, ‘H’, or ‘EH’ for the field components to return.</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h2>Returns<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>Efield<span class="classifier">np.array (3, N, N)</span></dt><dd><p>electric field at the given plane,  with  the  first  
+dimension indexing the x, y, and z components of the field.</p>
+</dd>
+<dt>Hfield<span class="classifier">np.array (3, N, N)</span></dt><dd><p>H-field at the given plane, with the first dimension indexing
+the x, y, and z components of the field.</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h2>Reference<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<p>Jackson, David. Classical Electrodynamics, 1999, equation 9.35.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fields.plane_wave">
+<span class="sig-prename descclassname"><span class="pre">fields.</span></span><span class="sig-name descname"><span class="pre">plane_wave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kFree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">θk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">φk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">η</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Eamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Eφ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'EH'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fields.html#plane_wave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fields.plane_wave" title="Link to this definition">¶</a></dt>
+<dd><p>This function returns the E and H fields produced by a plane
+wave  at a given plane. The direction of the polarization of
+the  electric  field  is given by the angle Eϕ, which is the
+counter-clockwise  angle  between  a  unit  vector  that  is
+perpendicular  to  the direction of propagation and lying on
+the  x-y plane. The direction of the propagation is given by
+θk  and  ϕk.  The complex amplitude of the electric field is
+given by Eamp.</p>
+<img alt="../_images/plane_wave_coords.png" src="../_images/plane_wave_coords.png" />
+<section id="id4">
+<h2>Parameters<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>kFree<span class="classifier">float</span></dt><dd><p>free-space wavenumber.</p>
+</dd>
+<dt>nref<span class="classifier">float</span></dt><dd><p>refractive index of the medium.</p>
+</dd>
+<dt>θk, ϕk<span class="classifier">float</span></dt><dd><p>direction of propagation.</p>
+</dd>
+<dt>η<span class="classifier">float</span></dt><dd><p>fields are returned at the plane z=η.</p>
+</dd>
+<dt>Eamp<span class="classifier">float</span></dt><dd><p>amplitude of the electric field.</p>
+</dd>
+<dt>Eϕ<span class="classifier">float</span></dt><dd><p>angle of the electric field polarization.</p>
+</dd>
+<dt>xCoords<span class="classifier">np.array (N,)</span></dt><dd><p>x-coordinates of the target plane.</p>
+</dd>
+<dt>yCoords<span class="classifier">np.array (N,)</span></dt><dd><p>y-coordinates of the target plane.</p>
+</dd>
+<dt>field<span class="classifier">str</span></dt><dd><p>‘E’, ‘H’, or ‘EH’ for the field components to return.</p>
+</dd>
+</dl>
+</section>
+<section id="id5">
+<h2>Returns<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>Efield<span class="classifier">np.array (3, N, N)</span></dt><dd><p>electric  field  at  the  given  plane,  with  the first
+dimension  indexing  the  x,  y, and z components of the
+field.</p>
+</dd>
+<dt>Hfield<span class="classifier">np.array (3, N, N)</span></dt><dd><p>H-field  at  the  given  plane, with the first dimension
+indexing the x, y, and z components of the field.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="wavesight.html" class="btn btn-neutral float-left" title="wavesight.py" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="maxwell.html" class="btn btn-neutral float-right" title="Maxwell’s Equations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

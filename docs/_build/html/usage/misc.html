@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>misc.py &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="fieldgenesis.py" href="fieldgenesis.html" />
+    <link rel="prev" title="diffkernels.py" href="diffkernels.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="wavesight.html">wavesight.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fields.html">fields.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diffkernels.html">diffkernels.py</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">misc.py</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#misc.latex_eqn_to_png"><code class="docutils literal notranslate"><span class="pre">latex_eqn_to_png()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.num2tex"><code class="docutils literal notranslate"><span class="pre">num2tex()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.rounder"><code class="docutils literal notranslate"><span class="pre">rounder()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.sig_figs_in"><code class="docutils literal notranslate"><span class="pre">sig_figs_in()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.var_collisions"><code class="docutils literal notranslate"><span class="pre">var_collisions()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fieldgenesis.html">fieldgenesis.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fungenerators.html">fungenerators.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convstore.html">convstore.py</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">misc.py</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/usage/misc.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-misc">
+<span id="misc-py"></span><h1>misc.py<a class="headerlink" href="#module-misc" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.latex_eqn_to_png">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">latex_eqn_to_png</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tex_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfolder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/Users/juan/ZiaLab/Codebase/wavesight/docs'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#latex_eqn_to_png"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.latex_eqn_to_png" title="Link to this definition">¶</a></dt>
+<dd><p>Compile a given bit of LaTeX into png and pdf formats. Best for creating equations, since
+it creates a tight bounding box around the given equation.</p>
+<p>The pdf might have white space around the equation, but the png is very nicely trimmed.</p>
+<p>Requires a local installation of pdflatex and convert.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>tex_code<span class="classifier">str</span></dt><dd><p>An equation, including $$, [] or LaTeX equation environment.</p>
+</dd>
+<dt>time<span class="classifier">bool</span></dt><dd><p>If True then the filename includes a timestamp.</p>
+</dd>
+<dt>figname<span class="classifier">str</span></dt><dd><p>Filenames for png and pdf have that root.</p>
+</dd>
+<dt>outfolder<span class="classifier">str</span></dt><dd><p>Directory name where the images will be stored.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
+<p>None</p>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Link to this heading">¶</a></h2>
+<p>tex_code = r”””egin{equation}
+x+y
+end{equation}”””</p>
+<p>latex_eqn_to_png(tex_code, True, ‘simple_eqn’, outfolder = ‘/Users/juan/’)</p>
+<p>–&gt; creates /Users/juan/simple_eqn.pdf and /Users/juan/simple_eqn.npg</p>
+<p>Nov-24 2021-11-24 14:39:28</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.num2tex">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">num2tex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig_figs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#num2tex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.num2tex" title="Link to this definition">¶</a></dt>
+<dd><p>Given a number this function formats it in LaTeX scientific notation.
+The output has the number of significant figures specified by the user, padding
+with zeroes if necessary.</p>
+<section id="id1">
+<h2>Parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>num<span class="classifier">float</span></dt><dd><p>A number.</p>
+</dd>
+<dt>sig_figs<span class="classifier">int</span></dt><dd><p>Number of significant figures.</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h2>Returns<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>str: A string in LaTeX scientific notation.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.rounder">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">rounder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#rounder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.rounder" title="Link to this definition">¶</a></dt>
+<dd><p>Given a number, round it to n significant figures.</p>
+<section id="id3">
+<h2>Parameters<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<p>num : float</p>
+<dl class="simple">
+<dt>n<span class="classifier">int</span></dt><dd><p>how many sig figs to return in the rounded num.</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h2>Returns<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>rounded<span class="classifier">int</span></dt><dd><p>the rounded number.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.sig_figs_in">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">sig_figs_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#sig_figs_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.sig_figs_in" title="Link to this definition">¶</a></dt>
+<dd><p>Count how many significant figures are in a given number.
+This might fail if the number has been calculated with.
+Only good for numbers one has input oneself.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.var_collisions">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">var_collisions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">varname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">these_globals</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#var_collisions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.var_collisions" title="Link to this definition">¶</a></dt>
+<dd><p>Given a variable name, return a list of all variables in the
+global namespace that contain that variable name.</p>
+<p>This  is  useful  to  see  if  a possible variable name will
+collide with an existing variable name.</p>
+<p>A  variable  name  is  a  good  variable name if it is not a
+substring  of any other variable name, and no other variable
+name is a substring of it.</p>
+<section id="id5">
+<h2>Parameters<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>varname<span class="classifier">str</span></dt><dd><p>variable name to check.</p>
+</dd>
+<dt>these_globals<span class="classifier">dict</span></dt><dd><p>dictionary of global variables.</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h2>Returns<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>commonvars<span class="classifier">list</span></dt><dd><p>list of variable names that collide with varname.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="diffkernels.html" class="btn btn-neutral float-left" title="diffkernels.py" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fieldgenesis.html" class="btn btn-neutral float-right" title="fieldgenesis.py" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

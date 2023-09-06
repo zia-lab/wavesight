@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>wavesight.py &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="fields.py" href="fields.html" />
+    <link rel="prev" title="Welcome to wavesight" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">wavesight.py</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.FFT2D_convolution_integral"><code class="docutils literal notranslate"><span class="pre">FFT2D_convolution_integral()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.angular_farfield_propagator"><code class="docutils literal notranslate"><span class="pre">angular_farfield_propagator()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.boundary_test"><code class="docutils literal notranslate"><span class="pre">boundary_test()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.calculate_numerical_basis"><code class="docutils literal notranslate"><span class="pre">calculate_numerical_basis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.calculate_size_of_grid"><code class="docutils literal notranslate"><span class="pre">calculate_size_of_grid()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.coordinate_layout"><code class="docutils literal notranslate"><span class="pre">coordinate_layout()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.device_layout"><code class="docutils literal notranslate"><span class="pre">device_layout()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.electric_vectorial_diffraction"><code class="docutils literal notranslate"><span class="pre">electric_vectorial_diffraction()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.field_dot"><code class="docutils literal notranslate"><span class="pre">field_dot()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.from_cart_cart_to_cyl_cart"><code class="docutils literal notranslate"><span class="pre">from_cart_cart_to_cyl_cart()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.from_cyl_cart_to_cart_cart"><code class="docutils literal notranslate"><span class="pre">from_cyl_cart_to_cart_cart()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.magnetic_vectorial_diffraction"><code class="docutils literal notranslate"><span class="pre">magnetic_vectorial_diffraction()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.multisolver"><code class="docutils literal notranslate"><span class="pre">multisolver()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.poyntingrefractor"><code class="docutils literal notranslate"><span class="pre">poyntingrefractor()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.scalar_diffraction"><code class="docutils literal notranslate"><span class="pre">scalar_diffraction()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wavesight.simpson_weights_1D"><code class="docutils literal notranslate"><span class="pre">simpson_weights_1D()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fields.html">fields.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diffkernels.html">diffkernels.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">misc.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fieldgenesis.html">fieldgenesis.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fungenerators.html">fungenerators.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convstore.html">convstore.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../farfield.html"># Farfield Propagators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multifiber.html"># Multifiber</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">wavesight.py</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/wavesight.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-wavesight">
+<span id="wavesight-py"></span><h1>wavesight.py<a class="headerlink" href="#module-wavesight" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.FFT2D_convolution_integral">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">FFT2D_convolution_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Usamples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernelFun</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#FFT2D_convolution_integral"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.FFT2D_convolution_integral" title="Link to this definition">¶</a></dt>
+<dd><p>FFT2D_convolution_integral  takes  the  sampled values of a function
+U(x,y) on a square domain and computes the convolution integral with
+the  given kernel. The domain of integration is given by xCoords and
+yCoords,   where  it  is  assumed  that  the  elements  of  Usamples
+correspond       to       xCorrds,       yCoords      such      that
+<span class="math notranslate nohighlight">\(\text{Usamples}[i,j]         =         U(\text{yCoords}[j],
+\text{xCoords}[i])\)</span>.</p>
+<p>Usamples  is  numeric,  whereas  kernelFun  must  be  provided  as a
+bivariate function.</p>
+<p>The convolution has the same domain as the sample values for U.</p>
+<div class="math notranslate nohighlight">
+\[I(x',y') = \iint_\mathcal{A} U(x,y) \mathcal{K}(x-x', y-y') dxdy\]</div>
+<p>This   is  done  by  interpreting  the  discretized  integral  as  a
+convolution,  so  that the convolution may be performed with help of
+the fast Fourier transform.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>xCoords<span class="classifier">np.array</span></dt><dd><p>x-coordinates on the source plane indexed to the given Usamples.</p>
+</dd>
+<dt>yCoords<span class="classifier">np.array</span></dt><dd><p>y-coordinates on the source plane indexed to the given Usamples.</p>
+</dd>
+<dt>Usamples<span class="classifier">np.array</span></dt><dd><p>complex  amplitude  of  the  field  in the source plane,
+sampled according to the coordinates provided by xCoords
+and yCoords. Must be a square array.</p>
+</dd>
+<dt>kernelFun<span class="classifier">func</span></dt><dd><p>a bivariate function of the cartesian x,y coordinates.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>integral<span class="classifier">np.array</span></dt><dd><p>resultant  convolution  integral. The top left corner of
+the  array  corresponds  to the lower left corner of the
+observation  plane. The coordinates associated with each
+element  in  the  given array correspond to the original
+xCoords, yCoords.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.angular_farfield_propagator">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">angular_farfield_propagator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">λFree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nMedium</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">si</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Δf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#angular_farfield_propagator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.angular_farfield_propagator" title="Link to this definition">¶</a></dt>
+<dd><p>This function approximates the farfield of a field given the nearfield
+and the propagation distance.</p>
+<p>This is done by using the angular spectrum method. In which the Fourier
+transform of the nearfield is understood to describe the coeffients that
+approximate the farfield as the superposition of plane waves.</p>
+<p>It assumes that the nearfield is given on a square grid perpendicular to
+the z-axis. The farfield is also given on a square grid perpendicular to
+the z-axis.</p>
+<p>The farfield is approximated by the following formula:
+Efar = (2π 1j / kFree) * ((Zf-Zi)/Rfsq) * np.exp(1j*kFree*Rf) * S2
+with S2 equal to the Fourier transform extrapolated to the position
+of the farfield.</p>
+<section id="id1">
+<h2>Parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>field<span class="classifier">np.array (3, Ni, Ni) or (Ni, Ni) or (1, Ni, Ni)</span></dt><dd><p>An array describing the nearfield of the field to be propagated.</p>
+</dd>
+<dt>nMedium<span class="classifier">float</span></dt><dd><p>Refractive index of the homogenous medium or propagation.</p>
+</dd>
+<dt>Zf<span class="classifier">float</span></dt><dd><p>The z-coordinate of the farfield.</p>
+</dd>
+<dt>Zi<span class="classifier">float</span></dt><dd><p>The z-coordinate of the nearfield.</p>
+</dd>
+<dt>si<span class="classifier">float</span></dt><dd><p>The size of the nearfield.</p>
+</dd>
+<dt>sf<span class="classifier">float</span></dt><dd><p>The size of the farfield.</p>
+</dd>
+<dt>Δf<span class="classifier">float (optional)</span></dt><dd><p>Spatial resolution of the farfield. If None, it is set to Δi.</p>
+</dd>
+<dt>options<span class="classifier">dict (optional) A dictionary of options:</span></dt><dd><dl class="simple">
+<dt>‘return_fourier’<span class="classifier">bool</span></dt><dd><p>If True, the function also returns the Fourier transform of the
+nearfield.</p>
+</dd>
+<dt>‘return_as_dict’<span class="classifier">bool</span></dt><dd><p>If False, the function returns the two arrays in the same order
+as the keys in the dictionary.
+If True, the function returns a dictionary with the following
+keys:
+‘Efar’ : np.array (3, Nf, Nf) The farfield of the field.
+‘Efourier’ : np.array (3, Ni, Ni) The Fourier transform of the nearfield.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h2>Returns<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>Return depends on the options dictionary, see above.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.boundary_test">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">boundary_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Efuncs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Hfuncs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fiber_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modeType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#boundary_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.boundary_test" title="Link to this definition">¶</a></dt>
+<dd><p>This  function  checks  that a given solution for the fields
+satisfies  the  boundary  conditions  at  the  core/cladding
+interface within tolerance. If the mode is HE the test is on
+the relative difference of all field components being within
+tolerance. If the mode is TM or TE then the test is that all
+the  components  that  should  be zero are exactly zero, and
+that  the relative difference for the non-zero components is
+within tolerance.</p>
+<section id="id3">
+<h2>Parameters<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>Efuncs<span class="classifier">tuple</span></dt><dd><p>a  tuple  of  six  functions  which  describe  the three
+components  of  the  H  field  in  the core and cladding
+regions.</p>
+</dd>
+<dt>Hfuncs<span class="classifier">tuple </span></dt><dd><p>a  tuple  of  six  functions  which  describe  the three
+components  of  the  H  field  in  the core and cladding
+regions.</p>
+</dd>
+<dt>fiber_spec<span class="classifier">dict</span></dt><dd><p>a dictionary containing the fiber specifications.</p>
+</dd>
+<dt>modeType<span class="classifier">str</span></dt><dd><p>must be one of ‘HE’, ‘TE’, or ‘TM’.</p>
+</dd>
+<dt>tolerance :float</dt><dd><p>the tolerance for the boundary condition test.</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h2>Returns<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>boundaryTest<span class="classifier">bool</span></dt><dd><p>True if test OK, False otherwise.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.calculate_numerical_basis">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">calculate_numerical_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fiber_sol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#calculate_numerical_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.calculate_numerical_basis" title="Link to this definition">¶</a></dt>
+<dd><p>Given a solution for the propagation modes of an optical waveguide, calculate a numerical basis.</p>
+<section id="id5">
+<h2>Parameters<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>fiber_sol<span class="classifier">dict with at least the following keys:</span></dt><dd><dl class="simple">
+<dt>‘coreRadius’<span class="classifier">float</span></dt><dd><p>The radius of the core.</p>
+</dd>
+<dt>‘nCladding’<span class="classifier">float</span></dt><dd><p>The refractive index of the cladding.</p>
+</dd>
+<dt>‘nCore’<span class="classifier">float</span></dt><dd><p>The refractive index of the core.</p>
+</dd>
+<dt>‘free_space_wavelength’<span class="classifier">float</span></dt><dd><p>The wavelength of the light in free space.</p>
+</dd>
+<dt>‘totalModes’<span class="classifier">int</span></dt><dd><p>The total number of calculated modes.</p>
+</dd>
+<dt>‘TEkz’<span class="classifier">1D dict</span></dt><dd><p>A single key equal to m=0, the values are array with
+the TE modes propagation constants.</p>
+</dd>
+<dt>‘TMkz’<span class="classifier">1D dict</span></dt><dd><p>A single key equal to m=0, the values are array with
+the TM modes propagation constants.</p>
+</dd>
+<dt>‘HEkz’<span class="classifier">1D dict</span></dt><dd><p>Keys are m values, values are 1D arrays of kz values.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h2>Returns<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>fiber_sol<span class="classifier">dict the same dictionary as the input, but with two new keys:</span></dt><dd><dl class="simple">
+<dt>‘coord_layout’<span class="classifier">tuple</span></dt><dd><p>The tuple returned by the coordinate_layout function.</p>
+</dd>
+<dt>‘eigenbasis’<span class="classifier">5D np.array</span></dt><dd><p>The numerical basis. The first dimension is the mode number,
+the second dimension only has two values, 0 and 1, 0 for the
+E  field, and 1 for the H field. The third dimension is used
+for  the  different components of the corresponding field in
+cylindrical  coordinates.  The  first index being the radial
+component,  the  second index being the azimuthal component,
+and  the  third  index  being  the  z component. Finally the
+fourth  and fifth dimensions are arrays that hold the values
+of   the  corresponding  field  components.  The  modes  are
+enumerated  such that first all TE modes are given, then all
+TM modes, and finally all HE modes. This same enumeration is
+the one used for the ‘eigenbasis_nums’ key.</p>
+</dd>
+<dt>‘eigenbasis_nums’<span class="classifier">list of tuples</span></dt><dd><p>A  list  of tuples, each tuple has 7 values, the first value
+is  a  string indicating the type of mode, and can be either
+‘TE’, ‘TM’, or ‘HE’. The second value is a string indicating
+the  parity  of the mode. The third value is the value of m.
+The  fourth  value  corresponds  to  the  value  of  kz, the
+propagation  constant along the z-direction. The fifth value
+is   the   index  that  the  value  of  kz  has  within  the
+corresponding  array  listing the propagation constants. The
+sixth  value  is  the transverse propagation constant inside
+the  core.  The seventh value is the propagation constant in
+the cladding. (modType, parity, m, kzidx, kz, γ, β)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.calculate_size_of_grid">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">calculate_size_of_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fiber_sol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#calculate_size_of_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.calculate_size_of_grid" title="Link to this definition">¶</a></dt>
+<dd><p>Given a solution for the modes of a multimode fiber, determine
+the half side of the computational domain that would capture
+most of the energy contained in the solved modes.</p>
+<section id="id7">
+<h2>Parameters<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>fiber_sol<span class="classifier">dict</span></dt><dd><p>a dictionary containing the solution for the fiber.</p>
+</dd>
+</dl>
+</section>
+<section id="id8">
+<h2>Returns<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>b<span class="classifier">float</span></dt><dd><p>the half side of the computational domain.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.coordinate_layout">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">coordinate_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fiber_sol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#coordinate_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.coordinate_layout" title="Link to this definition">¶</a></dt>
+<dd><p>Given a fiber solution, return the coordinate arrays for plotting
+and coordinating the numerical analysis.</p>
+<section id="id9">
+<h2>Parameters<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>fiber_sol<span class="classifier">dict  with at least the following keys:</span></dt><dd><dl class="simple">
+<dt>‘coreRadius’<span class="classifier">float</span></dt><dd><p>The radius of the core.</p>
+</dd>
+<dt>‘claddingIndex’<span class="classifier">float  </span></dt><dd><p>The refractive index of the cladding.</p>
+</dd>
+<dt>‘coreIndex’<span class="classifier">float</span></dt><dd><p>The refractive index of the core.</p>
+</dd>
+<dt>‘free_space_wavelength’<span class="classifier">float</span></dt><dd><p>The wavelength of the light in free space.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h2>Returns<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>a, b, Δs, xrange, yrange, ρrange, φrange, Xg, Yg, ρg, φg, nxy, crossMask<span class="classifier">tuple</span></dt><dd><dl class="simple">
+<dt>a<span class="classifier">float</span></dt><dd><p>The radius of the core.</p>
+</dd>
+<dt>b<span class="classifier">float</span></dt><dd><p>The side of the computational domain.</p>
+</dd>
+<dt>Δs<span class="classifier">float</span></dt><dd><p>The sampling resolution in the x-y direction. Assumed to be half the 
+wavelength in the core.</p>
+</dd>
+<dt>xrange, yrange<span class="classifier">1D arrays</span></dt><dd><p>The coordinate arrays for the x-y directions.</p>
+</dd>
+<dt>ρrange, φrange<span class="classifier">1D arrays</span></dt><dd><p>The coordinate arrays for the ρ-φ directions in the cylindrical system.</p>
+</dd>
+<dt>Xg, Yg<span class="classifier">2D arrays</span></dt><dd><p>The coordinate arrays for x-y.</p>
+</dd>
+<dt>ρg, φg<span class="classifier">2D arrays</span></dt><dd><p>ρg has the values for the radial coordinate, φg has the values for the
+azimuthal coordinate.</p>
+</dd>
+<dt>nxy<span class="classifier">2D array</span></dt><dd><p>The refractive index profile of the waveguide.</p>
+</dd>
+<dt>crossMask<span class="classifier">2D array</span></dt><dd><p>A mask that is True where the core is and False where the cladding is.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.device_layout">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">device_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_design</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#device_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.device_layout" title="Link to this definition">¶</a></dt>
+<dd><p>This function creates a figure representing the device layout.</p>
+<section id="id11">
+<h2>Parameters<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>device_design<span class="classifier">dict with at least the following keys:</span></dt><dd><dl class="simple">
+<dt>coreRadius<span class="classifier">float</span></dt><dd><p>the radius of the core in μm</p>
+</dd>
+<dt>mlRadius<span class="classifier">float</span></dt><dd><p>the radius of the metalens in μm</p>
+</dd>
+<dt>Δ<span class="classifier">float</span></dt><dd><p>the distance between the end face of the
+fiber and the start of the metalens in μm</p>
+</dd>
+<dt>mlPitch<span class="classifier">float</span></dt><dd><p>the pitch of the metalens in μm</p>
+</dd>
+<dt>emDepth<span class="classifier">float</span></dt><dd><p>the  depth of the emitter in the
+crystal  host  in μm, measured from the base of the
+metalens pillars</p>
+</dd>
+<dt>emΔxy<span class="classifier">float</span></dt><dd><p>the lateral uncertainty (in μm) in
+the position of the emitter</p>
+</dd>
+<dt>emΔz<span class="classifier">float</span></dt><dd><p>the uncertainty in the axial position
+of the emitter in μm</p>
+</dd>
+<dt>mlHeight<span class="classifier">float</span></dt><dd><p>the height of the metalens in μm</p>
+</dd>
+<dt>λFree<span class="classifier">float</span></dt><dd><p>the  free-space  wavelength of the
+emitter in μm</p>
+</dd>
+<dt>nCore<span class="classifier">float</span></dt><dd><p>the refractive index of the core</p>
+</dd>
+<dt>nHost<span class="classifier">float</span></dt><dd><p>the refractive index of the host</p>
+</dd>
+<dt>nClad<span class="classifier">float</span></dt><dd><p>the refractive index of the cladding</p>
+</dd>
+<dt>NA<span class="classifier">float</span></dt><dd><p>the numerical aperture of the fiber</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="id12">
+<h2>Returns<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
+<p>fig, ax: the figure and axis objects</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.electric_vectorial_diffraction">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">electric_vectorial_diffraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zProp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incidentEfield</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">λfree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nref</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#electric_vectorial_diffraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.electric_vectorial_diffraction" title="Link to this definition">¶</a></dt>
+<dd><p>Given  samples  of  the  electric  field  of an electromagnetic wave
+incident  on  the  aperture  plane z=z0, this function estimates the
+electric  field at the observation plane z = z0+zProp.  This is done
+using   the  vectorial  Smythe-Kirchhoff  diffraction  integral.  It
+assumes  that  both  the  space  below  and above the plane z=z0 are
+filled  with  a homogeneous medium with refractive index nref. Since
+the  diffraction integral only requires the transverse components of
+the  electric field, the input can include or not the z-component of
+the field in the source plane.</p>
+<p>This  assumes  that  the  field  is incident from below the aperture
+plane.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    \vec{E}(x,y) &amp;= \frac{1}{2\pi} \nabla \times \iint_\mathcal{A} 
+    \frac{e^{i k R}}{R} \left(\hat{z} \times \vec{E}(x',y',z=z_0) \right)
+    \,\,\text{dx}\text{dy} \\
+    \vec{R} &amp;= \vec{r} - \vec{r}'
+\end{align}\end{split}\]</div>
+<section id="id13">
+<h2>Parameters<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>zProp<span class="classifier">float</span></dt><dd><p>the propagation distance along the z-axis.</p>
+</dd>
+<dt>incidentEfield<span class="classifier">np.array</span></dt><dd><p>either  (3,N,N)  or (2,N,N), the incident electric field
+on  the  aperture  plane. The values given in it so that
+the  first  index references the x, y, or z component of
+the  incident  field.  Also the values are assumed to be
+anchored    to    the    coordinate   system   so   that
+incidentEfield[k,i,j]  gives  the  k-th component of the
+electric field at position xCoords[j], yCoords[i].</p>
+</dd>
+<dt>xCoords<span class="classifier">np.array (N,)</span></dt><dd><p>coordinate array for the x-axis.</p>
+</dd>
+<dt>yCoords<span class="classifier">np.array (N,)</span></dt><dd><p>coordinate array for the x-axis.</p>
+</dd>
+</dl>
+</section>
+<section id="id14">
+<h2>Returns<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>diffractedEfield<span class="classifier">np.array (3,N,N)</span></dt><dd><p>the  diffracted field at the observation plane.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.field_dot">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">field_dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E_field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H_field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Δs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#field_dot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.field_dot" title="Link to this definition">¶</a></dt>
+<dd><section id="id15">
+<h2>Parameters<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>E_field<span class="classifier">np.array</span></dt><dd><p>an electric field sampled on a cartesian grid of size Δs</p>
+</dd>
+<dt>H_field<span class="classifier">np.array</span></dt><dd><p>a magnetic field sampled on a cartesian grid of size Δs</p>
+</dd>
+<dt>Δs<span class="classifier">float</span></dt><dd><p>the grid spacing</p>
+</dd>
+<dt>mask<span class="classifier">np.array</span></dt><dd><p>a mask to apply to the fields (same size as E_field[0,:,:] and H_field[0,:,:])</p>
+</dd>
+</dl>
+</section>
+<section id="id16">
+<h2>Returns<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>dotp<span class="classifier">float</span></dt><dd><p>the dot product of the two given fields</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.from_cart_cart_to_cyl_cart">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">from_cart_cart_to_cyl_cart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#from_cart_cart_to_cyl_cart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.from_cart_cart_to_cyl_cart" title="Link to this definition">¶</a></dt>
+<dd><p>Given  a  field  in  cartesian  coordinates,  convert  it to
+cylindrical  coordinates.  This assumes that the given field
+represents   the   vector  field  in  cartesian  coordinates
+anchored  in  a  centered  cartesian grid. The function then
+returns  a  field that would be sampled in the same centered
+cartesian  grid,  but  the field values are now given in the
+associated cylindrical coordinate system.</p>
+<p>ATTENTION:  This  function assumes that the region described
+by  the  cartesian  coordinates  is a square centered on the
+axis.</p>
+<section id="id17">
+<h2>Parameters<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>field<span class="classifier">np.array</span></dt><dd><p>A   field   in  cartesian  coordinates  with  shape  (3,
+numSamples,  numSamples) the indices being the x, y, and
+z components respectively of the given vector field.</p>
+</dd>
+</dl>
+</section>
+<section id="id18">
+<h2>Returns<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>cylfield<span class="classifier">np.array</span></dt><dd><p>A  field  in  cylindrical  coordinates  with  shape  (3,
+numSamples,  numSamples) the indices being the ρ, φ, and
+z components respectively.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.from_cyl_cart_to_cart_cart">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">from_cyl_cart_to_cart_cart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#from_cyl_cart_to_cart_cart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.from_cyl_cart_to_cart_cart" title="Link to this definition">¶</a></dt>
+<dd><p>Given  a  field  in  cylindrical  coordinates, convert it to
+cartesian  coordinates.  The  given  field  is assumed to be
+anchored  to a cartesian coordinate system in the sense that
+each  of the indices in its array corresponds to a cartesian
+grid  in the usual sense but the value of the vector at that
+position is given in terms of cylindrical coordinates.</p>
+<p>This  function  assumes  that  the  region  described by the
+cartesian coordinates is a square centered on the axis.</p>
+<section id="id19">
+<h2>Parameters<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>field<span class="classifier">np.array</span></dt><dd><p>A  field  in  cylindrical  coordinates  with  shape  (3,
+numSamples,  numSamples) the indices being the ρ, φ, and
+z components respectively.</p>
+</dd>
+</dl>
+</section>
+<section id="id20">
+<h2>Returns<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>ccfield<span class="classifier">np.array</span></dt><dd><p>A   field   in  cartesian  coordinates  with  shape  (3,
+numSamples,  numSamples) the indices being the x, y, and
+z components respectively of the given vector field.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.magnetic_vectorial_diffraction">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">magnetic_vectorial_diffraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zProp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incidentEfield</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">λfree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nref</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#magnetic_vectorial_diffraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.magnetic_vectorial_diffraction" title="Link to this definition">¶</a></dt>
+<dd><p>Given  samples  of  the  electric  field  of an electromagnetic wave
+incident  on  the  aperture  plane z=z0, this function estimates the
+magnecic H-field at the observation plane z = z0+zProp. This is done
+using   the  vectorial  Smythe-Kirchhoff  diffraction  integral.  It
+assumes  that  both  the  space  below  and above the plane z=z0 are
+filled  with  a homogeneous medium with refractive index nref. Since
+the  diffraction integral only requires the transverse components of
+the  electric field, the input can include or not the z-component of
+the field in the source plane.</p>
+<p>This  assumes  that  the  field  is incident from below the aperture
+plane.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+\vec{H}(x,y) &amp;= \frac{1}{2\pi i \omega} \nabla \left(\nabla \times \iint_\mathcal{A} 
+\frac{e^{i k R}}{R} \left(\hat{z} \times \vec{E}(x',y',z=z_0) \right)
+\,\,\text{dx}\text{dy} \right) \\
+\vec{R} &amp;= \vec{r} - \vec{r}'
+\end{align}\end{split}\]</div>
+<section id="id21">
+<h2>Parameters<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>zProp<span class="classifier">float</span></dt><dd><p>the propagation distance along the z-axis.</p>
+</dd>
+<dt>incidentEfield<span class="classifier">np.array</span></dt><dd><p>either  (3,N,N)  or (2,N,N), the incident electric field
+on  the  aperture  plane. The values given in it so that
+the  first  index references the x, y, or z component of
+the  incident  field.  Also the values are assumed to be
+anchored    to    the    coordinate   system   so   that
+incidentEfield[k,i,j]  gives  the  k-th component of the
+electric field at position xCoords[j], yCoords[i].</p>
+</dd>
+<dt>xCoords<span class="classifier">np.array</span></dt><dd><p>(N,) coordinate array for the x-axis.</p>
+</dd>
+<dt>yCoords<span class="classifier">np.array (N,)</span></dt><dd><p>coordinate array for the x-axis.</p>
+</dd>
+</dl>
+</section>
+<section id="id22">
+<h2>Returns<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>diffractedHfield<span class="classifier">np.array (3,N,N)</span></dt><dd><p>the  diffracted field at the observation plane.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.multisolver">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">multisolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fiber_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solve_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drawPlots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tm_te_funcs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#multisolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.multisolver" title="Link to this definition">¶</a></dt>
+<dd><p>This function solves the propagation constants of a step-index fiber with the given specifications. This assuming that the cladding is so big that it is effectively infinite.</p>
+<p>The propagation constants determine the z-dependence of the fields along the z-direction. The propagation constants are always bounded by what would be the plane wave wavenumbers in the cladding or in the core.</p>
+<section id="id23">
+<h2>Parameters<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>fiber_spec<span class="classifier">dict with the following keys:</span></dt><dd><dl class="simple">
+<dt>nCore<span class="classifier">float</span></dt><dd><p>The refractive index of the core.</p>
+</dd>
+<dt>nCladding<span class="classifier">float</span></dt><dd><p>The refractive index of the cladding. If NA is given then
+nCladding is computed to be consistent with the given nCore
+and given NA.</p>
+</dd>
+<dt>coreRadius<span class="classifier">float</span></dt><dd><p>The radius of the core in μm.</p>
+</dd>
+<dt>λFree<span class="classifier">float</span></dt><dd><p>The wavelength of the light in free space in μm.</p>
+</dd>
+<dt>grid_divider: int, not necessary here but when later</dt><dd><p>used in the layout generator, this is used to determine
+the fineness of the grid by making it equal to
+λfree / max(nCore, nCladding, nFree) / grid_divider</p>
+</dd>
+</dl>
+</dd>
+<dt>solve_modes: str</dt><dd><p>either ‘all’ or ‘transvserse’</p>
+</dd>
+<dt>drawPlots<span class="classifier">bool, optional</span></dt><dd><p>Whether to draw plots of the mode profiles. The default is False.</p>
+</dd>
+<dt>verbose<span class="classifier">bool, optional</span></dt><dd><p>Whether to print out extra information. The default is False.</p>
+</dd>
+<dt>tm_te_funcs<span class="classifier">bool, optional</span></dt><dd><p>If True then the return dictionary includes the keys tmfun and tefun. The default is False.</p>
+</dd>
+</dl>
+</section>
+<section id="id24">
+<h2>Returns<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>sol<span class="classifier">dict with all the keys included in fiber_spec plus these others:</span></dt><dd><dl class="simple">
+<dt>kzmax<span class="classifier">float</span></dt><dd><p>2π/λfree * nCladding (no kz larger than this)</p>
+</dd>
+<dt>kzmin<span class="classifier">float</span></dt><dd><p>2π/λfree * nCore (no kz smaller than this)</p>
+</dd>
+<dt>Vnum<span class="classifier">float</span></dt><dd><p>The V number of the fiber.</p>
+</dd>
+<dt>numModesFromVnum: float</dt><dd><p>The number of modes according to the V number.</p>
+</dd>
+<dt>totalNumModesTE<span class="classifier">int</span></dt><dd><p>The total number of TE modes that were found.</p>
+</dd>
+<dt>totalNumModesTM<span class="classifier">int</span></dt><dd><p>The total number of TM modes that were found.</p>
+</dd>
+<dt>totalNumModesHE<span class="classifier">int</span></dt><dd><p>The total number of HE modes that were found, excluding parity.</p>
+</dd>
+<dt>totalNumModes<span class="classifier">int</span></dt><dd><p>The total number of modes that were found, including parity.</p>
+</dd>
+<dt>tmfun<span class="classifier">function</span></dt><dd><p>The eigenvalue function for the TM modes.</p>
+</dd>
+<dt>tefun<span class="classifier">function</span></dt><dd><p>The eigenvalue function for the TE modes.</p>
+</dd>
+<dt>hefuns<span class="classifier">dict</span></dt><dd><p>The eigenvalue functions for the HE modes. The keys are values of m (m ≥ 1).</p>
+</dd>
+<dt>TMkz<span class="classifier">array</span></dt><dd><p>The propagation constants of the TM(0,n) modes.</p>
+</dd>
+<dt>TEkz<span class="classifier">array</span></dt><dd><p>The propagation constants of the TE(0,n) modes.</p>
+</dd>
+<dt>HEkz<span class="classifier">dict</span></dt><dd><p>The propagation constants of the HE(m,n) modes. The keys are values of m (m ≥ 1). The values are arrays with the kz(m,n) propagation constants.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.poyntingrefractor">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">poyntingrefractor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Efield</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Hfield</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nFree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#poyntingrefractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.poyntingrefractor" title="Link to this definition">¶</a></dt>
+<dd><p>Approximate  the  refracted  field across a planar interface
+using  the Poynting vector as an analog to the wavevector of
+a plane-wave.</p>
+<p>Any  evanescent  fields  are  ignored. All cases where there
+would  be  total  internal reflection the refracted field is
+set to zero.</p>
+<section id="id25">
+<h2>Parameters<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>Efield<span class="classifier">np.array (3, N, M)</span></dt><dd><p>The electric field incident on the interface.</p>
+</dd>
+<dt>Hfield<span class="classifier">np.array (3, N, M)</span></dt><dd><p>The H-field incident on the interface.</p>
+</dd>
+<dt>nxy<span class="classifier">np.array    (N, M)</span></dt><dd><p>The refractive index transverse to the interface inside the incident medium.</p>
+</dd>
+<dt>nFree<span class="classifier">float</span></dt><dd><p>The refractive index of the homogeneous refractive medium.</p>
+</dd>
+<dt>verbose<span class="classifier">bool, optional</span></dt><dd><p>Whether to print or not progress messages, by default False.</p>
+</dd>
+</dl>
+</section>
+<section id="id26">
+<h2>Returns<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>Eref, Href<span class="classifier">tuple of np.array (3, N, M)</span></dt><dd><p>The refracted electric and magnetic fields.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.scalar_diffraction">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">scalar_diffraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zProp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incidentField</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">λfree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nref</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#scalar_diffraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.scalar_diffraction" title="Link to this definition">¶</a></dt>
+<dd><p>Given  samples  of  the  electric  field  of an electromagnetic wave
+incident  on  the  aperture  plane z=z0, this function estimates the
+electric  field  at the observation plane z = z0+zProp. This is done
+using  the  Rayleigh-Sommerfeld  diffraction integral. This assuming
+that  that  both the space below and above the plane z=z0 are filled
+with  a  homogeneous  medium  with  refractive index nref.</p>
+<div class="math notranslate nohighlight">
+\[E(x',y') = \frac{1}{2\pi} \iint_\mathcal{A} \frac{e^{ikR}}{R} \frac{z}{R} \frac{(ikR-1)}{R} E(x',y') \text{dxdy}\]</div>
+<p>This  assumes  that  the  field  is incident from below the aperture
+plane.</p>
+<section id="id27">
+<h2>Parameters<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>zProp<span class="classifier">float</span></dt><dd><p>the propagation distance along the z-axis.</p>
+</dd>
+<dt>incidentEfield<span class="classifier">np.array (N,N)</span></dt><dd><p>the incident field on the aperture plane. The values are
+assumed  to be anchored to the coordinate system so that
+incidentEfield[i,j]  gives  the  value  of  the field at
+position xCoords[j], yCoords[i].</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><dl class="simple">
+<dt>xCoords<span class="classifier">np.array (N,)</span></dt><dd><p>coordinate array for the x-axis.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>yCoords<span class="classifier">np.array  (N,)</span></dt><dd><p>coordinate array for the x-axis.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="id28">
+<h2>Returns<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>diffractedEfield<span class="classifier">np.array</span></dt><dd><p>(N,N)  the  diffracted field at the observation plane.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wavesight.simpson_weights_1D">
+<span class="sig-prename descclassname"><span class="pre">wavesight.</span></span><span class="sig-name descname"><span class="pre">simpson_weights_1D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numSamples</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/wavesight.html#simpson_weights_1D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wavesight.simpson_weights_1D" title="Link to this definition">¶</a></dt>
+<dd><p>simpson_weights_1D  returns  the  weights  for Simpson’s rule for 1D
+numerical integration. Ff there’s an even number of intervals (which
+is  the  same  as  an odd number of samples) the 1/3 Simpson rule is
+used. If there’s an odd number of intervals (which is the same as an
+even number of samples) then Simpson’s 1/3 is used for the first n-3
+points and the 3/8 rule is used for the remaining tail.</p>
+<section id="id29">
+<h2>Parameters<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>numSamples<span class="classifier">int</span></dt><dd><p>how many evaluation points are avaiable for integration</p>
+</dd>
+</dl>
+</section>
+<section id="id30">
+<h2>Returns<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>BSimpson<span class="classifier">np.array</span></dt><dd><p>array of weights for the mixed Simpson’s rule.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to wavesight" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fields.html" class="btn btn-neutral float-right" title="fields.py" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

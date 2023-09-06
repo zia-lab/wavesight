@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title># Validator &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/nbsphinx-code-cells.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="docs/wavesight.html">wavesight.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/fields.html">fields.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/diffkernels.html">diffkernels.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/misc.html">misc.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/fieldgenesis.html">fieldgenesis.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/fungenerators.html">fungenerators.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/convstore.html">convstore.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="farfield.html"># Farfield Propagators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multifiber.html"># Multifiber</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"># Validator</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/validator.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="#-Validator">
+<h1># Validator<a class="headerlink" href="##-Validator" title="Link to this heading">¶</a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
+<span class="kn">import</span> <span class="nn">wavesight</span> <span class="k">as</span> <span class="nn">ws</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">special</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload
+</pre></div></div>
+</div>
+<section id="##-Step-index-modes">
+<h2>## Step-index modes<a class="headerlink" href="###-Step-index-modes" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[101]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">nCore</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">nCladding</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">nCore</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[101]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.011510107015457788
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fiber_spec</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;NA&#39;</span><span class="p">:</span> <span class="mf">0.22</span><span class="p">,</span>
+              <span class="s1">&#39;nCore&#39;</span><span class="p">:</span> <span class="mf">1.45</span><span class="p">,</span>
+              <span class="s1">&#39;coreRadius&#39;</span><span class="p">:</span><span class="mf">25.</span><span class="p">,</span>
+              <span class="s1">&#39;grid_divider&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+              <span class="s1">&#39;nFree&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span>
+              <span class="s1">&#39;λFree&#39;</span><span class="p">:</span> <span class="mf">0.600</span><span class="p">}</span>
+<span class="n">nCore</span> <span class="o">=</span> <span class="n">fiber_spec</span><span class="p">[</span><span class="s1">&#39;nCore&#39;</span><span class="p">]</span>
+<span class="k">if</span> <span class="s1">&#39;NA&#39;</span> <span class="ow">in</span> <span class="n">fiber_spec</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Estimating nCladding from nCore and NA ...&quot;</span><span class="p">)</span>
+    <span class="n">NA</span>        <span class="o">=</span> <span class="n">fiber_spec</span><span class="p">[</span><span class="s1">&#39;NA&#39;</span><span class="p">]</span>
+    <span class="n">nCladding</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nCore</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">NA</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">nCladding</span> <span class="o">=</span> <span class="n">fiber_spec</span><span class="p">[</span><span class="s1">&#39;nCladding&#39;</span><span class="p">]</span>
+    <span class="n">NA</span>        <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nCore</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">nCladding</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># nCladding = 1.01</span>
+<span class="n">coreRadius</span>    <span class="o">=</span> <span class="n">fiber_spec</span><span class="p">[</span><span class="s1">&#39;coreRadius&#39;</span><span class="p">]</span>
+<span class="n">wavelength</span>    <span class="o">=</span> <span class="n">fiber_spec</span><span class="p">[</span><span class="s1">&#39;λFree&#39;</span><span class="p">]</span>
+<span class="n">λFree</span>         <span class="o">=</span> <span class="n">wavelength</span>
+<span class="n">kzmax</span>         <span class="o">=</span> <span class="n">nCore</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">wavelength</span>
+<span class="n">kzmin</span>         <span class="o">=</span> <span class="n">nCladding</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">wavelength</span>
+<span class="n">kzspan</span>        <span class="o">=</span> <span class="n">kzmax</span> <span class="o">-</span> <span class="n">kzmin</span>
+<span class="n">kzmax</span>         <span class="o">=</span> <span class="n">kzmax</span> <span class="o">-</span> <span class="mf">0.001</span> <span class="o">*</span> <span class="n">kzspan</span>
+<span class="n">kzmin</span>         <span class="o">=</span> <span class="n">kzmin</span> <span class="o">+</span> <span class="mf">0.001</span> <span class="o">*</span> <span class="n">kzspan</span>
+<span class="c1"># split the solution domain in at least 300 parts</span>
+<span class="n">dkz</span>           <span class="o">=</span> <span class="p">(</span><span class="n">kzmax</span> <span class="o">-</span> <span class="n">kzmin</span><span class="p">)</span> <span class="o">/</span> <span class="mi">300</span>
+<span class="n">sol</span>           <span class="o">=</span> <span class="n">fiber_spec</span>
+<span class="n">Vnum</span>          <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">coreRadius</span> <span class="o">*</span> <span class="n">NA</span> <span class="o">/</span> <span class="n">wavelength</span>
+<span class="n">sol</span><span class="p">[</span><span class="s1">&#39;Vnum&#39;</span><span class="p">]</span>   <span class="o">=</span> <span class="n">Vnum</span>
+<span class="n">numModes</span>      <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Vnum</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">numModesTE</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Vnum</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">numModesTM</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Vnum</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">numModesHE</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Vnum</span><span class="o">*</span><span class="p">(</span><span class="n">Vnum</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">ω</span>             <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">λFree</span>
+<span class="n">m</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">tmfun</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">tmfungen</span><span class="p">(</span><span class="n">λfree</span> <span class="o">=</span> <span class="n">wavelength</span><span class="p">,</span>
+                    <span class="n">n2</span> <span class="o">=</span> <span class="n">nCladding</span><span class="p">,</span>
+                    <span class="n">n1</span> <span class="o">=</span> <span class="n">nCore</span><span class="p">,</span>
+                        <span class="n">a</span> <span class="o">=</span> <span class="n">coreRadius</span><span class="p">)</span>
+<span class="n">tefun</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">tefungen</span><span class="p">(</span><span class="n">λfree</span> <span class="o">=</span> <span class="n">wavelength</span><span class="p">,</span>
+                    <span class="n">n2</span> <span class="o">=</span> <span class="n">nCladding</span><span class="p">,</span>
+                    <span class="n">n1</span> <span class="o">=</span> <span class="n">nCore</span><span class="p">,</span>
+                        <span class="n">a</span> <span class="o">=</span> <span class="n">coreRadius</span><span class="p">)</span>
+<span class="n">hefun</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">hefungen</span><span class="p">(</span><span class="n">λfree</span> <span class="o">=</span> <span class="n">wavelength</span><span class="p">,</span>
+                    <span class="n">m</span> <span class="o">=</span> <span class="n">m</span><span class="p">,</span>
+                    <span class="n">n2</span> <span class="o">=</span> <span class="n">nCladding</span><span class="p">,</span>
+                    <span class="n">n1</span> <span class="o">=</span> <span class="n">nCore</span><span class="p">,</span>
+                        <span class="n">a</span> <span class="o">=</span> <span class="n">coreRadius</span><span class="p">)</span>
+<span class="n">dkzprime</span> <span class="o">=</span> <span class="n">dkz</span><span class="o">/</span><span class="n">numModesTE</span><span class="o">/</span><span class="mi">100</span>
+<span class="n">real_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+<span class="n">tmmodes</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">findallroots</span><span class="p">(</span><span class="n">tmfun</span><span class="p">,</span> <span class="n">kzmin</span><span class="p">,</span> <span class="n">kzmax</span><span class="p">,</span> <span class="n">dkzprime</span><span class="p">,</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="n">real_dtype</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;brentq&#39;</span><span class="p">,</span> <span class="n">num_sigfigs</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">kzrange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">kzmin</span><span class="p">,</span> <span class="n">kzmax</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">real_dtype</span><span class="p">)</span>
+
+<span class="n">thebessel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">special</span><span class="o">.</span><span class="n">jv</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">coreRadius</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nCore</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">ω</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">thebessel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">thebessel</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kzrange</span><span class="p">,</span> <span class="n">tmfun</span><span class="p">(</span><span class="n">kzrange</span><span class="p">),</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;TM&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">kzrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">kzrange</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;w:&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tmmodes</span><span class="p">,</span> <span class="n">tmfun</span><span class="p">(</span><span class="n">tmmodes</span><span class="p">),</span> <span class="s1">&#39;ro&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;TM roots&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Estimating nCladding from nCore and NA ...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_4_1.png" src="_images/validator_4_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[98]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fiber_sol</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">multisolver</span><span class="p">(</span><span class="n">fiber_spec</span><span class="p">,</span> <span class="n">solve_modes</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">drawPlots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Estimating nCladding from nCore and NA ...
+========================================
+Approx number of complex HE modes:  800
+Approx number of TE modes:  28
+Approx number of TM modes:  28
+Approx number of total modes:  1658
+Approx Max n for HE modes:  40
+========================================
+Calculating TM(0,n) propagation constants ...
+Calculating TE(0,n) propagation constants ...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_1.png" src="_images/validator_5_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_2.png" src="_images/validator_5_2.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Calculating HE(m,n) propagation constants ...
+m=1
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_4.png" src="_images/validator_5_4.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=2
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_6.png" src="_images/validator_5_6.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=3
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_8.png" src="_images/validator_5_8.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=4
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_10.png" src="_images/validator_5_10.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=5
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_12.png" src="_images/validator_5_12.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=6
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_14.png" src="_images/validator_5_14.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=7
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_16.png" src="_images/validator_5_16.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=8
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_18.png" src="_images/validator_5_18.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=9
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_20.png" src="_images/validator_5_20.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=10
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_22.png" src="_images/validator_5_22.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=11
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_24.png" src="_images/validator_5_24.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=12
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_26.png" src="_images/validator_5_26.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=13
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_28.png" src="_images/validator_5_28.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=14
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_30.png" src="_images/validator_5_30.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=15
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_32.png" src="_images/validator_5_32.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=16
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_34.png" src="_images/validator_5_34.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=17
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_36.png" src="_images/validator_5_36.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=18
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_38.png" src="_images/validator_5_38.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=19
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_40.png" src="_images/validator_5_40.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=20
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_42.png" src="_images/validator_5_42.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=21
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_44.png" src="_images/validator_5_44.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=22
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_46.png" src="_images/validator_5_46.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=23
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_48.png" src="_images/validator_5_48.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=24
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_50.png" src="_images/validator_5_50.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=25
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_52.png" src="_images/validator_5_52.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=26
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_54.png" src="_images/validator_5_54.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=27
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_56.png" src="_images/validator_5_56.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=28
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_58.png" src="_images/validator_5_58.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=29
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_60.png" src="_images/validator_5_60.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=30
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_62.png" src="_images/validator_5_62.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=31
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_64.png" src="_images/validator_5_64.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=32
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_66.png" src="_images/validator_5_66.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=33
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_68.png" src="_images/validator_5_68.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=34
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_70.png" src="_images/validator_5_70.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=35
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_72.png" src="_images/validator_5_72.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=36
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_74.png" src="_images/validator_5_74.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=37
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_76.png" src="_images/validator_5_76.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=38
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_78.png" src="_images/validator_5_78.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=39
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_80.png" src="_images/validator_5_80.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=40
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_82.png" src="_images/validator_5_82.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=41
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_84.png" src="_images/validator_5_84.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=42
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_86.png" src="_images/validator_5_86.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=43
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_88.png" src="_images/validator_5_88.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=44
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_90.png" src="_images/validator_5_90.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=45
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_92.png" src="_images/validator_5_92.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=46
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_94.png" src="_images/validator_5_94.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=47
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_96.png" src="_images/validator_5_96.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=48
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_98.png" src="_images/validator_5_98.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=49
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_100.png" src="_images/validator_5_100.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=50
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_102.png" src="_images/validator_5_102.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=51
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_104.png" src="_images/validator_5_104.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=52
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/validator_5_106.png" src="_images/validator_5_106.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+m=53
+========================================
+HE modes = 1588
+TE modes = 18
+TM modes = 18
+TOTAL modes = 1624
+FROM_Vnum = 1658
+========================================
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[96]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">v</span><span class="p">[]</span> <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;HEkz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()],</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">IndexError</span>                                Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[96], line 2</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> plt.figure()
+<span class="ansi-green-fg">----&gt; 2</span> plt.plot([v[-2] for l, v in fiber_sol[&#39;HEkz&#39;].items()], &#39;s&#39;)
+<span class="ansi-green-intense-fg ansi-bold">      3</span> plt.show()
+
+Cell <span class="ansi-green-fg">In[96], line 2</span>, in <span class="ansi-cyan-fg">&lt;listcomp&gt;</span><span class="ansi-blue-fg">(.0)</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> plt.figure()
+<span class="ansi-green-fg">----&gt; 2</span> plt.plot([v[-2] for l, v in fiber_sol[&#39;HEkz&#39;].items()], &#39;s&#39;)
+<span class="ansi-green-intense-fg ansi-bold">      3</span> plt.show()
+
+<span class="ansi-red-fg">IndexError</span>: index -2 is out of bounds for axis 0 with size 1
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Figure size 640x480 with 0 Axes&gt;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[88]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;HEkz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[88], line 1</span>
+<span class="ansi-green-fg">----&gt; 1</span> np.array(list(fiber_sol[&#39;HEkz&#39;].values()))
+
+<span class="ansi-red-fg">ValueError</span>: setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (52,) + inhomogeneous part.
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[83]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">fiber_sol</span><span class="p">[</span><span class="s1">&#39;HEkz&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[83]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{1: array([15.00967615, 15.00982371, 15.02690535, 15.04385951, 15.0599867 ,
+        15.07519365, 15.07540262, 15.08944301, 15.10271579, 15.10292444,
+        15.11500115, 15.12629248, 15.12649962, 15.13658563, 15.13679199,
+        15.14587791, 15.1460836 , 15.15416762, 15.15437276, 15.16145365,
+        15.16773532, 15.17301224, 15.17321678, 15.17728417, 15.18055103,
+        15.1828128 , 15.18407   ]),
+ 2: array([15.01825492, 15.01863047, 15.03552388, 15.03592096, 15.05208474,
+        15.05248888, 15.06775907, 15.0681665 , 15.08249067, 15.08289971,
+        15.09625356, 15.09666333, 15.10903365, 15.10944366, 15.12082256,
+        15.12123258, 15.13161512, 15.13202506, 15.14140801, 15.14181789,
+        15.1501991 , 15.15060902, 15.15798701, 15.15839716, 15.16477089,
+        15.16518158, 15.1705502 , 15.17096197, 15.17532462, 15.17573854,
+        15.17909397, 15.17951273, 15.18185812, 15.18229161, 15.18361684]),
+ 3: array([15.00981936, 15.01029127, 15.02709614, 15.0276809 , 15.0440566 ,
+        15.04465713, 15.06018666, 15.06079393, 15.07539518, 15.07600598,
+        15.08964542, 15.09025822, 15.10291869, 15.1035327 , 15.11520433,
+        15.11581912, 15.12649581, 15.12711123, 15.13678905, 15.13740512,
+        15.14608142, 15.14669831, 15.15437121, 15.15498934, 15.16165735,
+        15.16227742, 15.1679392 , 15.16856249, 15.17321637, 15.17384552,
+        15.17748874, 15.17813015, 15.18075653, 15.1814322 , 15.18302139]),
+ 4: array([15.01862301, 15.01937935, 15.03591299, 15.03670678, 15.05248105,
+        15.05328756, 15.06815917, 15.06897209, 15.0828931 , 15.0837098 ,
+        15.09665757, 15.09747674, 15.10943879, 15.11025979, 15.12122857,
+        15.12205117, 15.13202185, 15.13284611, 15.14181538, 15.14264169,
+        15.15060713, 15.1514362 , 15.15839579, 15.15922896, 15.16518062,
+        15.16602031, 15.17096133, 15.17181237, 15.17573815, 15.17661193,
+        15.17951252, 15.18044651, 15.18229153]),
+ 5: array([15.01028253, 15.01112933, 15.02767137, 15.02865142, 15.04464791,
+        15.04565192, 15.06078536, 15.06180027, 15.07599825, 15.07701945,
+        15.09025143, 15.09127685, 15.10352687, 15.10455554, 15.11581424,
+        15.11684582, 15.12710723, 15.12814189, 15.13740192, 15.13844027,
+        15.14669582, 15.14773908, 15.15498746, 15.15603775, 15.16227605,
+        15.16333725, 15.16856155, 15.16964122, 15.17384491, 15.17496052,
+        15.1781298 , 15.17933697, 15.18143204]),
+ 6: array([15.01936783, 15.02051724, 15.03669565, 15.03789369, 15.05327724,
+        15.05449341, 15.06896277, 15.07018888, 15.08370157, 15.08493426,
+        15.09746962, 15.09870743, 15.11025374, 15.11149621, 15.12204614,
+        15.12329351, 15.13284202, 15.13409521, 15.14263844, 15.14389924,
+        15.1514337 , 15.15270524, 15.15922709, 15.16051495, 15.16601898,
+        15.16733395, 15.17181147, 15.173178  , 15.17661139, 15.17810548,
+        15.18044624]),
+ 7: array([15.01111592, 15.01237175, 15.02863807, 15.03002328, 15.04563952,
+        15.04705537, 15.06178904, 15.06322013, 15.07700949, 15.07845037,
+        15.09126817, 15.0927166 , 15.10454811, 15.10600338, 15.11683958,
+        15.11830202, 15.12813675, 15.12960762, 15.13843612, 15.1399179 ,
+        15.14773582, 15.14923277, 15.15603528, 15.15755494, 15.16333544,
+        15.16489223, 15.16963997, 15.1712661 , 15.17495974, 15.17675354,
+        15.17933656]),
+ 8: array([15.02050146, 15.02205879, 15.03787895, 15.03949136, 15.05448002,
+        15.05611569, 15.07017694, 15.07182675, 15.0849238 , 15.08658426,
+        15.09869842, 15.10036842, 15.11148857, 15.11316847, 15.12328715,
+        15.1249786 , 15.13409003, 15.13579623, 15.14389512, 15.14562161,
+        15.15270205, 15.15445856, 15.16051259, 15.16231753, 15.16733228,
+        15.1692263 , 15.17317692, 15.1752824 , 15.17810488]),
+ 9: array([15.01235362, 15.0140392 , 15.03000597, 15.031809  , 15.04703957,
+        15.04887864, 15.063206  , 15.06506518, 15.07843793, 15.08031171,
+        15.09270581, 15.09459242, 15.10599418, 15.10789392, 15.1182943 ,
+        15.12020919, 15.12960127, 15.13153533, 15.13991279, 15.14187293,
+        15.14922877, 15.15122708, 15.15755191, 15.15961113, 15.16489006,
+        15.1670599 , 15.17126465, 15.17369309, 15.17675271]),
+ 10: array([15.02203876, 15.02402036, 15.03947296, 15.04151296, 15.05609915,
+        15.05816769, 15.07181212, 15.07390031, 15.08657151, 15.0886765 ,
+        15.10035747, 15.10247938, 15.11315923, 15.11530041, 15.12497093,
+        15.12713623, 15.13579   , 15.13798781, 15.14561668, 15.14786164,
+        15.15445479, 15.15677423, 15.16231477, 15.16476802, 15.16922442,
+        15.17198651, 15.17528128]),
+ 11: array([15.01401644, 15.01614765, 15.03178778, 15.03402406, 15.04885948,
+        15.05113673, 15.06504815, 15.06735159, 15.0802968 , 15.08262183,
+        15.09457955, 15.09692587, 15.10788298, 15.11025323, 15.12020006,
+        15.12259991, 15.13152785, 15.13396727, 15.14186695, 15.14436326,
+        15.15122246, 15.15380787, 15.1596077 , 15.16235168, 15.16705752,
+        15.17016341, 15.17369163]),
+ 12: array([15.02399616, 15.02641982, 15.04149097, 15.04397527, 15.05814808,
+        15.06066722, 15.07388306, 15.0764296 , 15.08866154, 15.09123442,
+        15.10246659, 15.1050686 , 15.11528966, 15.11792732, 15.12712736,
+        15.12981225, 15.13798067, 15.14073292, 15.14785604, 15.15071299,
+        15.15677003, 15.15981175, 15.16476506, 15.16822446, 15.17198465]),
+ 13: array([15.0161204 , 15.01871295, 15.03399905, 15.0366871 , 15.05111432,
+        15.05384908, 15.06733179, 15.07010109, 15.08260458, 15.08540603,
+        15.09691105, 15.09974743, 15.1102407 , 15.11311933, 15.12258951,
+        15.12552364, 15.13395882, 15.1369715 , 15.14435659, 15.14749048,
+        15.1538028 , 15.15714904, 15.16234805, 15.16617025, 15.17016108]),
+ 14: array([15.02639162, 15.02927734, 15.04394985, 15.04689939, 15.06064467,
+        15.06363763, 15.07640988, 15.07944174, 15.09121739, 15.09429064,
+        15.10505413, 15.10817681, 15.11791523, 15.12110225, 15.12980237,
+        15.13307981, 15.14072505, 15.14414112, 15.15070696, 15.15436426,
+        15.15980737, 15.16400129, 15.1682216 ]),
+ 15: array([15.01868142, 15.02175337, 15.03665849, 15.03982081, 15.05382359,
+        15.05704072, 15.07007869, 15.07334261, 15.08538662, 15.08869911,
+        15.09973085, 15.10310055, 15.11310541, 15.11654888, 15.12551218,
+        15.12905862, 15.13696231, 15.14066564, 15.14748337, 15.15145805,
+        15.15714381, 15.16171804, 15.16616678]),
+ 16: array([15.01089271, 15.01412697, 15.02924534, 15.03261666, 15.04687075,
+        15.05031199, 15.06361237, 15.06710973, 15.07941976, 15.08297371,
+        15.09427178, 15.09789135, 15.10816089, 15.11186427, 15.12108907,
+        15.12490863, 15.13306916, 15.13706471, 15.14413281, 15.14843101,
+        15.15435809, 15.15932091, 15.16399713]),
+ 17: array([15.02171781, 15.02529135, 15.03978882, 15.04345332, 15.05701239,
+        15.06074426, 15.07331786, 15.07711532, 15.08867779, 15.09254995,
+        15.10308247, 15.10704911, 15.11653383, 15.1206305 , 15.12904638,
+        15.13333894, 15.14065602, 15.14528368, 15.15145083, 15.15681027,
+        15.1617131 ]),
+ 18: array([15.01408774, 15.01785104, 15.03258113, 15.03646691, 15.05028039,
+        15.05424743, 15.06708203, 15.07112483, 15.08294974, 15.08707711,
+        15.09787093, 15.10210406, 15.11184719, 15.11622486, 15.12489467,
+        15.1294889 , 15.13705365, 15.14201655, 15.14842264, 15.15418646,
+        15.15931511]),
+ 19: array([15.02525208, 15.02935547, 15.04341825, 15.04762057, 15.06071339,
+        15.06500314, 15.07708852, 15.08147355, 15.09252703, 15.09702977,
+        15.10702984, 15.11169229, 15.12061467, 15.12551513, 15.13332631,
+        15.13863006, 15.14527404, 15.15144977, 15.15680351]),
+ 20: array([15.01780786, 15.02212242, 15.03642816, 15.04086519, 15.05421319,
+        15.05875118, 15.071095  , 15.07573997, 15.0870515 , 15.09182685,
+        15.10208244, 15.10703333, 15.116207  , 15.12141812, 15.12947457,
+        15.13512464, 15.14200552, 15.14860047, 15.15417864]),
+ 21: array([15.01025799, 15.01477235, 15.02931284, 15.033983  , 15.04758277,
+        15.05236994, 15.06497008, 15.06987709, 15.08144506, 15.08649589,
+        15.09700563, 15.10224851, 15.11167225, 15.11719832, 15.12549895,
+        15.13150066, 15.13861753, 15.14563882, 15.15144079]),
+ 22: array([15.02207571, 15.02697601, 15.04082361, 15.04586045, 15.0587147 ,
+        15.06388562, 15.07570841, 15.08103746, 15.09180001, 15.09733833,
+        15.10701095, 15.11285617, 15.12139995, 15.12775849, 15.13511047,
+        15.14256503, 15.14859022]),
+ 23: array([15.01472139, 15.01984668, 15.03393743, 15.03922385, 15.05232982,
+        15.0577663 , 15.06984227, 15.07545212, 15.08646616, 15.09230324,
+        15.10222362, 15.10839207, 15.11717801, 15.12389844, 15.13148473,
+        15.13937931, 15.14562719]),
+ 24: array([15.02692625, 15.03246138, 15.04581649, 15.05151986, 15.06384735,
+        15.06974041, 15.08100465, 15.0871437 , 15.09731075, 15.1038064 ,
+        15.11283356, 15.11992082, 15.12774065, 15.13608185, 15.14255191]),
+ 25: array([15.01979252, 15.02557446, 15.03917583, 15.04514707, 15.05772435,
+        15.06390288, 15.07541605, 15.08186014, 15.0922728 , 15.09909951,
+        15.10836701, 15.11582591, 15.12387855, 15.13267281, 15.13936457]),
+ 26: array([15.01253936, 15.01856473, 15.03240909, 15.03864875, 15.05147404,
+        15.05794007, 15.06970088, 15.07645298, 15.08711022, 15.09427176,
+        15.10377872, 15.11161398, 15.11989874, 15.12915235, 15.13606537]),
+ 27: array([15.02551768, 15.03202577, 15.04509716, 15.05185252, 15.06385969,
+        15.07092262, 15.08182343, 15.08932344, 15.09906905, 15.10728526,
+        15.11580149, 15.12552061, 15.13265446]),
+ 28: array([15.01850324, 15.02527907, 15.03859453, 15.04564077, 15.05789301,
+        15.06526944, 15.07641285, 15.08425487, 15.09423832, 15.10283998,
+        15.11158706, 15.12177771, 15.129132  ]),
+ 29: array([15.01136774, 15.01840969, 15.03196702, 15.03930539, 15.05180137,
+        15.05949384, 15.07087887, 15.07906633, 15.08928686, 15.09827836,
+        15.10725567, 15.11792376, 15.12549811]),
+ 30: array([15.02521557, 15.03284696, 15.04558533, 15.05359618, 15.06522187,
+        15.07375809, 15.08421496, 15.09360059, 15.10280757, 15.11395887,
+        15.12175291]),
+ 31: array([15.01834121, 15.02626609, 15.03924543, 15.04757683, 15.05944224,
+        15.06833042, 15.07902289, 15.08880684, 15.09824295, 15.10988314,
+        15.11789653]),
+ 32: array([15.01134514, 15.01956341, 15.03278226, 15.04143618, 15.05354034,
+        15.06278357, 15.07371094, 15.0838973 , 15.09356199, 15.10569663,
+        15.11392904]),
+ 33: array([15.02619641, 15.03517458, 15.04751655, 15.05711777, 15.06827936,
+        15.07887212, 15.08876489, 15.10139942, 15.10985055]),
+ 34: array([15.01948854, 15.02879241, 15.04137121, 15.05133327, 15.06272838,
+        15.07373145, 15.08385181, 15.09699158, 15.10566113]),
+ 35: array([15.01265931, 15.02229005, 15.03510471, 15.04543028, 15.05705825,
+        15.06847542, 15.07882289, 15.09247317, 15.10136084]),
+ 36: array([15.02871741, 15.03940902, 15.0512692 , 15.06310417, 15.07367829,
+        15.08784422, 15.09694974]),
+ 37: array([15.02220968, 15.03326972, 15.04536144, 15.05761782, 15.06841813,
+        15.08310479, 15.0924279 ]),
+ 38: array([15.01558193, 15.03933519, 15.05201647, 15.06304254, 15.0782549 ,
+        15.08779533]),
+ 39: array([15.02063779, 15.03319066, 15.04630024, 15.05755164, 15.07329458,
+        15.0830521 ]),
+ 40: array([15.02692806, 15.04046922, 15.05194553, 15.06822384, 15.07819821]),
+ 41: array([15.02054758, 15.0345235 , 15.04622432, 15.06304272, 15.0732337 ]),
+ 42: array([15.01404943, 15.02846317, 15.04038808, 15.0577512 , 15.06815858]),
+ 43: array([15.03443693, 15.05234931, 15.06297285]),
+ 44: array([15.02837092, 15.04683702, 15.05767653]),
+ 45: array([15.02219015, 15.04121433, 15.05226961]),
+ 46: array([15.01589467, 15.03548124, 15.04675208]),
+ 47: array([15.00948456, 15.04112392]),
+ 48: array([15.02368374, 15.03538513]),
+ 49: array([15.02953567]),
+ 50: array([15.02357552]),
+ 51: array([15.01750465]),
+ 52: array([15.01132301])}
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Figure size 640x480 with 0 Axes&gt;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
