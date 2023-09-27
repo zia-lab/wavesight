@@ -278,6 +278,9 @@ def plane_wave(kFree, nref, θk, ϕk, η, Eamp, Eϕ, xCoords, yCoords, fields='E
 
     .. image:: ../img/plane_wave_coords.png
 
+    In   the   case   of   normal   incidence  the  unit  vector
+    :math:`\hat{u}` is :math:`-\hat{x}`.
+
     Parameters
     ----------
     kFree : float
@@ -318,15 +321,17 @@ def plane_wave(kFree, nref, θk, ϕk, η, Eamp, Eϕ, xCoords, yCoords, fields='E
     kDir = kVec / k
     kdirx, kdiry, kdirz = kDir
     # unit vector perpendicular to kDir and in the x-y plane
-    northPole = 1/np.sqrt(kdirx**2 + kdiry**2) * np.array([-kdiry, kdirx, 0])
+    if θk == 0:
+        northPole = np.array([-1., 00., 0.])
+    else:
+        northPole = 1/np.sqrt(kdirx**2 + kdiry**2) * np.array([-kdiry, kdirx, 0])
     # complementary unit vector perpendicular to kDir and northPole
     westPole  =  np.cross(kVec, northPole)
     # unit vector in the direction of polarization
     Epol = np.cos(Eϕ) * northPole + np.sin(Eϕ) * westPole
-    # unit vector perpendicular to kDir and Epol
-    Hpol = np.cross(kDir, Epol)
     xMesh, yMesh = np.meshgrid(xCoords, yCoords)
-    phase = np.exp(1j * kVec[0] * xMesh + 1j * kVec[1] * yMesh) * np.exp(1j * kVec[2] * η)
+    phase =  np.exp(1j * kVec[0] * xMesh + 1j * kVec[1] * yMesh)
+    phase *= np.exp(1j * kVec[2] * η)
     if 'E' in fields:
         Efield = np.zeros((3, len(xCoords), len(yCoords)), dtype=np.complex128)
         Efield[0] = Epol[0] * phase
@@ -339,10 +344,11 @@ def plane_wave(kFree, nref, θk, ϕk, η, Eamp, Eϕ, xCoords, yCoords, fields='E
         Hfield[0] = kcrossEpol[0] * phase
         Hfield[1] = kcrossEpol[1] * phase
         Hfield[2] = kcrossEpol[2] * phase
-        Hfield *= Eamp / (1j * k * μr)
+        Hfield *= nref * Eamp / (k * np.sqrt(μr))
     if fields == 'E':
         return Efield
     elif fields == 'H':
         return Hfield
-    elif fields == 'EH' or fields == 'HE':
+    elif fields in ['EH','HE']:
         return Efield, Hfield
+

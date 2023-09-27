@@ -5,6 +5,193 @@ from time import time
 import tempfile
 import subprocess
 import numpy as np
+import http.client, urllib
+import requests
+import json
+import io
+
+try:
+    from dave import secrets
+    pushover_user = secrets['pushover_user']
+    pushover_token = secrets['pushover_token']
+    slack_token = secrets['slack_token']
+except:
+    print("Ask David about secrets.")
+    pass
+
+def send_message(message):
+    conn = http.client.HTTPSConnection("api.pushover.net",443)
+    conn.request("POST", "/1/messages.json",
+        urllib.parse.urlencode({
+        "token": pushover_token,
+        "user": pushover_user,
+        "message": message,
+        }), { "Content-type": "application/x-www-form-urlencoded" })
+    conn.getresponse()
+    return None
+
+def send_count(count):
+    conn = http.client.HTTPSConnection("api.pushover.net",443)
+    conn.request("POST", "/1/glances.json",
+        urllib.parse.urlencode({
+        "token": pushover_token,
+        "user": pushover_user,
+        "count": count,
+        }), { "Content-type": "application/x-www-form-urlencoded" })
+    conn.getresponse()
+    return None
+
+def send_image(image_fname,message=''):
+    if '.jpg' in image_fname.lower():
+        mime = 'image/jpeg'
+    elif '.png' in image_fname.lower():
+        mime = 'image/png'
+    elif '.jpeg' in image_fname.lower():
+        mime = 'image/jpeg'
+    else:
+        return "send jpg of jpeg only"
+    r = requests.post("https://api.pushover.net/1/messages.json", data = {
+        "token": pushover_token,
+        "user": pushover_user,
+        "message": message
+    },
+    files = {
+        "attachment": ("image.jpg",
+                        open(image_fname, "rb"), "image/jpeg")
+    })
+    return None
+
+default_slack_channel = '#datahose'
+slack_icon_emoji = ':see_no_evil:'
+slack_user_name = 'labbot'
+
+def post_message_to_slack(text, blocks = None, thread_ts = None, slack_channel = default_slack_channel):
+    if thread_ts == None:
+        return requests.post('https://slack.com/api/chat.postMessage', {
+            'token': slack_token,
+            'channel': slack_channel,
+            'text': text,
+            'icon_emoji': slack_icon_emoji,
+            'username': slack_user_name,
+            'blocks': json.dumps(blocks) if blocks else None
+        }).json()
+    else:
+        return requests.post('https://slack.com/api/chat.postMessage', {
+            'token': slack_token,
+            'channel': slack_channel,
+            'text': text,
+            'icon_emoji': slack_icon_emoji,
+            'username': slack_user_name,
+            'thread_ts': thread_ts,
+            'blocks': json.dumps(blocks) if blocks else None
+        }).json()
+
+def post_file_to_slack(text, file_name, file_bytes, file_type=None, title=None, thread_ts = None, slack_channel=default_slack_channel):
+    if thread_ts == None:
+        return requests.post(
+        'https://slack.com/api/files.upload',
+        {
+            'token': slack_token,
+            'filename': file_name,
+            'channels': slack_channel,
+            'filetype': file_type,
+            'initial_comment': text,
+            'title': title
+        },
+        files = { 'file': file_bytes }).json()
+    else:
+        return requests.post(
+        'https://slack.com/api/files.upload',
+        {
+            'token': slack_token,
+            'filename': file_name,
+            'channels': slack_channel,
+            'filetype': file_type,
+            'initial_comment': text,
+            'thread_ts': thread_ts,
+            'title': title
+        },
+        files = { 'file': file_bytes }).json()
+
+def send_fig_to_slack(fig, slack_channel, info_msg, shortfname, thread_ts = None):
+    '''
+    Use to send a matplotlib figure to Slack.
+
+    Parameters
+    ----------
+    fig : matplotlib.figure.Figure
+        A figure object from matplotlib.
+    slack_channel : str
+        Name of Slack channel to send to.
+    info_msg : str
+        A string message to be send together with the figure.
+    shortfname : str
+        The string that is used in Slack to refer to the image, with no extension.
+    thread_ts : str, optional
+        The timestamp of the thread to which to post to inside of given channel. The default is None,
+        which means that the message will be posted to the channel directly.
+    
+    Returns
+    -------
+    None.
+    '''
+    buf = io.BytesIO()
+    fig.savefig(buf, format='jpg')
+    buf.seek(0)
+    post_file_to_slack(info_msg, shortfname, buf.read(), slack_channel=slack_channel, thread_ts = thread_ts)
+
+def dict_summary(adict, header, prekey='', aslist=False):
+    '''
+    This function takes a dictionary and returns a summary of all the keys
+    and values in the dictionary for which the values are either strings or
+    numbers. If the value is a dictionary, then the function calls itself
+    recursively.
+
+    Parameters
+    ----------
+    adict : dict
+        Dictionary.
+    header : str
+        something to append to the top of the summary
+    prekey : str, optional
+        What to prepend to the key in the final format, by default ''
+    aslist : bool, optional
+        Whether to return as a string of a list with the rows, by default False
+
+    Returns
+    -------
+    txt_summary : str or list
+        A string or list summarizing the contents of the dictionary.
+    '''
+    if header:
+        txt_summary = [header]
+        txt_summary.append('-'*len(header))
+    else:
+        txt_summary = []
+    for key, val in adict.items():
+        if type(val) == str:
+            if prekey:
+                txt_summary.append(prekey+'-'+key+' : '+val)
+            else:
+                txt_summary.append(key+' : '+val)
+        elif type(val) in [int]:
+            if prekey:
+                txt_summary.append(prekey+'-'+key+' : ' + str(val))
+            else:
+                txt_summary.append(key+' : '+str(val))
+        elif type(val) in [float]:
+            if prekey:
+                txt_summary.append('%s-%s : %.3f' % (prekey, key, val))
+            else:
+                txt_summary.append('%s-%s : %.3f' % (prekey, key, val))
+        elif type(val) == dict:
+            nested_dict = dict_summary(val, header='', prekey= prekey + '-' + key, aslist = True)
+            txt_summary.extend(nested_dict)
+    if aslist:
+        return txt_summary
+    else:
+        return '\n'.join(txt_summary)
+
 
 def latex_eqn_to_png(tex_code, figname, timed=True, outfolder=os.getcwd()):
     '''
@@ -203,3 +390,21 @@ def var_collisions(varname, these_globals):
     else:
         print("The following variable names collide with '%s':" % varname)
         print(commonvars)
+
+def random_in_range(xmin, xmax, shape):
+    '''
+    Parameters
+    ----------
+    xmin : float
+        lower bound of random numbers
+    xmax : float
+        upper bound of random numbers
+    shape : tuple or int
+        shape of array of random numbers
+    Returns
+    -------
+    rando_array : np.array (shape)
+        pseudo-random real numbers in given range
+    '''
+    rando_array = np.random.random(shape)*(xmax-xmin) + xmin
+    return rando_array

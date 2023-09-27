@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
 import numpy as np
-from scipy import special 
-from scipy.optimize import root_scalar
 from matplotlib import pyplot as plt
 from convstore import * 
 from fungenerators import *
@@ -12,7 +10,6 @@ from misc import *
 from tqdm.notebook import tqdm
 from scipy.interpolate import RegularGridInterpolator
 from scipy.fftpack import fft2, ifft2
-import cmasher as cmr
 import warnings
 from matplotlib.patches import Rectangle
 import diffkernels as dk
@@ -405,7 +402,7 @@ def calculate_size_of_grid(fiber_sol):
     Returns
     -------
     b : float
-        the half side of the computational domain.
+        the width of the computational domain.
     '''
     goal_fraction = 0.99 
     a = fiber_sol['coreRadius']
@@ -435,7 +432,7 @@ def calculate_size_of_grid(fiber_sol):
     integrand = flux * ρrange
     total = np.sum(integrand)
     insideEnergy =  np.cumsum(integrand)/total
-    b = np.interp(goal_fraction, insideEnergy, ρrange) + λfree
+    b = 2*np.interp(goal_fraction, insideEnergy, ρrange) + λfree
     numSigFigsina = sig_figs_in(a)
     b = rounder(b, numSigFigsina)
     return b
@@ -671,7 +668,7 @@ def calculate_numerical_basis(fiber_sol, verbose=True):
     fiber_sol['eigenbasis_nums'] = eigenbasis_nums
     return fiber_sol
 
-def poyntingrefractor(Efield, Hfield, nxy, nFree, verbose=False):
+def poynting_refractor(Efield, Hfield, nxy, nFree, verbose=False):
     '''
     Approximate  the  refracted  field across a planar interface
     using  the Poynting vector as an analog to the wavevector of
@@ -703,7 +700,7 @@ def poyntingrefractor(Efield, Hfield, nxy, nFree, verbose=False):
     # calculate the Poynting vector
     if verbose:
         print("Calculating the Poynting vector field...")
-    Sfield = 0.5*np.real(np.cross(Efield, Hfield, axis=0))
+    Sfield = 0.5*np.real(np.cross(Efield, np.conjugate(Hfield), axis=0))
 
     # #normIncidentk-Calc
     # calculate the magnitude of the Poynting field
@@ -754,13 +751,13 @@ def poyntingrefractor(Efield, Hfield, nxy, nFree, verbose=False):
         print("Calculating the ζ of the local coord system...")
     # calculate the unit vector field perpendicular to the plane of incidence
     # which is basically k X z
-    ζfield = np.zeros(kfield.shape)
+    ζfield = np.zeros(kfield.shape, dtype=complex_dtype)
     ζfield[0] = kfield[1]
     ζfield[1] = -kfield[0]
     # normalize it
     ζfield /= np.sqrt(np.sum(np.abs(ζfield)**2, axis=0))
 
-    # in the case of normal incidence, the ζ is not defined
+    # in the case of normal incidence, ζ is arbitrary
     # so it can be set to the unit vector in the first direction
     normalIncidence = (βfield == 0)
     ζfield[0][normalIncidence] = 1
@@ -772,10 +769,10 @@ def poyntingrefractor(Efield, Hfield, nxy, nFree, verbose=False):
     # decompose the field in P and S polarizations
     # first find P-pol and then use the complement to determine S-pol
     # the S-pol can be obtained by the dot product of E with ζ
-    ESdot = Efield[0,:,:] * ζfield[0] + Efield[1,:,:] * ζfield[1]
-    EincS = np.zeros(ζfield.shape)
-    EincS[0] = ESdot[0] * ζfield[0]
-    EincS[1] = ESdot[1] * ζfield[1]
+    ESdot = Efield[0] * ζfield[0] + Efield[1] * ζfield[1]
+    EincS = np.zeros(ζfield.shape, dtype=complex_dtype)
+    EincS[0] = ESdot * ζfield[0]
+    EincS[1] = ESdot * ζfield[1]
     # #EincP-Calc
     EincP = Efield - EincS
     del ESdot
@@ -786,10 +783,10 @@ def poyntingrefractor(Efield, Hfield, nxy, nFree, verbose=False):
     # decompose the field in P and S polarizations
     # first find P-pol and then use the complement to determine S-pol
     # the S-pol can be obtained by the dot product of H with ζ
-    HSdot = Hfield[0,:,:] * ζfield[0] + Hfield[1,:,:] * ζfield[1]
-    HincS = np.zeros(ζfield.shape)
-    HincS[0] = HSdot[0] * ζfield[0]
-    HincS[1] = HSdot[1] * ζfield[1]
+    HSdot = Hfield[0] * ζfield[0] + Hfield[1] * ζfield[1]
+    HincS = np.zeros(ζfield.shape, dtype=complex_dtype)
+    HincS[0] = HSdot * ζfield[0]
+    HincS[1] = HSdot * ζfield[1]
     # #HincP-Calc
     HincP = Hfield - HincS
     del HSdot
@@ -797,7 +794,7 @@ def poyntingrefractor(Efield, Hfield, nxy, nFree, verbose=False):
     # #ErefS-Calc
     if verbose:
         print("Calculating the S and P component of the refracted electric field...")
-    ErefS = np.zeros(Efield.shape)
+    ErefS = np.zeros(Efield.shape, dtype=complex_dtype)
     ErefS[0] = fresnelS * EincS[0]
     ErefS[1] = fresnelS * EincS[1]
     ErefS[2] = fresnelS * EincS[2]
@@ -806,24 +803,24 @@ def poyntingrefractor(Efield, Hfield, nxy, nFree, verbose=False):
     # #HrefS-Calc
     if verbose:
         print("Calculating the S and P component of the refracted H field...")
-    HrefS = np.zeros(Hfield.shape)
-    HrefS[0] = (nxy / nFree) * fresnelP * HincS[0]
-    HrefS[1] = (nxy / nFree) * fresnelP * HincS[1]
-    HrefS[2] = (nxy / nFree) * fresnelP * HincS[2]
+    HrefS = np.zeros(Hfield.shape, dtype=complex_dtype)
+    HrefS[0] = (nFree / nxy) * fresnelP * HincS[0]
+    HrefS[1] = (nFree / nxy) * fresnelP * HincS[1]
+    HrefS[2] = (nFree / nxy) * fresnelP * HincS[2]
     HrefS[np.isnan(HrefS)] = 0
 
     # #ErefP-Calc
-    ErefP = np.zeros(Efield.shape)
+    ErefP = np.zeros(Efield.shape, dtype=complex_dtype)
     ErefP[0] = fresnelP * EincP[0]
     ErefP[1] = fresnelP * EincP[1]
     ErefP[2] = fresnelP * EincP[2]
     ErefP[np.isnan(ErefP)] = 0
 
     # #HrefP-Calc
-    HrefP = np.zeros(Hfield.shape)
-    HrefP[0] = (nxy / nFree) * fresnelS * HincP[0]
-    HrefP[1] = (nxy / nFree) * fresnelS * HincP[1]
-    HrefP[2] = (nxy / nFree) * fresnelS * HincP[2]
+    HrefP = np.zeros(Hfield.shape, dtype=complex_dtype)
+    HrefP[0] = (nFree / nxy) * fresnelS * HincP[0]
+    HrefP[1] = (nFree / nxy) * fresnelS * HincP[1]
+    HrefP[2] = (nFree / nxy) * fresnelS * HincP[2]
     HrefP[np.isnan(HrefP)] = 0
 
     # #Eref-Calc
@@ -847,7 +844,7 @@ def poyntingrefractor(Efield, Hfield, nxy, nFree, verbose=False):
     kref[1]   = np.sin(θfield) * ξfield[1]
     kref[2]   = np.cos(θfield)
 
-    return kref, Eref, Href
+    return kref, Sfield, Stransverse, βfield, Eref, Href
 
 
 def from_cyl_cart_to_cart_cart(field):
@@ -881,7 +878,8 @@ def from_cyl_cart_to_cart_cart(field):
     Xg, Yg = np.meshgrid(xrange, yrange)
     φg     = np.arctan2(Yg, Xg)
     ccfield = np.zeros(field.shape, dtype=field.dtype)
-    ccfield[2] = field[2]
+    if field.shape[0] == 3:
+        ccfield[2] = field[2]
     # create the cartesian coordinates of the cylindrical unit vector fields
     # first for the ρ component
     uρ = np.zeros((2,field.shape[1],field.shape[2]))
@@ -1511,3 +1509,484 @@ def scalar_diffraction(zProp, incidentField, xCoords, yCoords, λfree, nref):
     # create the array to hold the diffracte field
     diffractedEfield = FFT2D_convolution_integral(xCoords, yCoords, incidentField, kernel)
     return diffractedEfield
+
+def fresnel_t_θ1θ2(n1, n2, θ1, θ2):
+    '''
+    This function returns the electric field transmission
+    coefficients for S and P polarization.
+    Use if both angles are known beforehand.
+
+    ::
+    
+        ┌───────────────────────────────────────────────┐
+        │                       │                 ┌─    │
+        │                       │               ┌─┘     │
+        │                       │             ┌─┘       │
+        │                       ├──┐        ┌─┘         │
+        │                       │  └θ2─┐  ┌─┘           │
+        │                       │      └┬─┘             │
+        │                       │     ┌─┘               │
+        │                       │   ┌─┘                 │
+        │                       │ ┌─┘             n2    │
+        │ ______________________├─┘____________________ │
+        │ |||||||||||||||||||||╱│|||||||||||||||||||||| │
+        │ ||||||||||||||||||||╱|│|||||||||||||||| n1 || │
+        │ |||||||||||||||||||╱||│|||||||||||||||||||||| │
+        │ ||||||||||||||||||╱|||│|||||||||||||||||||||| │
+        │ |||||||||||||||||╱||||│|||||||||||||||||||||| │
+        │ ||||||||||||||||╱|||||│|||||||||||||||||||||| │
+        │ |||||||||||||||╱─┐||||│|||||||||||||||||||||| │
+        │ ||||||||||||||╱||└θ1┐|│|||||||||||||||||||||| │
+        │ |||||||||||||╱||||||└─┤|||||||||||||||||||||| │
+        │ ||||||||||||╱|||||||||│|||||||||||||||||||||| │
+        └───────────────────────────────────────────────┘
+
+    Parameters
+    ----------
+    n1 : float or np.array((N,M))
+        refractive index of medium 1
+    n2 : float or np.array((N,M))
+        refractive index of medium 2
+    θ1 : float or np.array((N,M))
+        angle in medium 1
+    θ2 : float or np.array((N,M))
+        angle in medium 2
+    
+    Returns
+    -------
+    np.array([ts,tp]) : np.array
+    '''
+    cosθ1 = np.cos(θ1)
+    cosθ2 = np.cos(θ2)
+    ts    = (2*n1*cosθ1
+             / (n1*cosθ1 + n2*cosθ2))
+    tp    = (2*n1*cosθ1
+             / (n2*cosθ1 + n1*cosθ2))
+    return np.array([ts, tp])
+
+def fresnel_ts_θ1θ2(n1, n2, θ1, θ2):
+    '''
+    This function returns the electric field transmission
+    and reflection coefficients for S and P polarization.
+    Use if both angles are known beforehand.
+
+    ::
+    
+        ┌───────────────────────────────────────────────┐
+        │                       │                 ┌─    │
+        │                       │               ┌─┘     │
+        │                       │             ┌─┘       │
+        │                       ├──┐        ┌─┘         │
+        │                       │  └θ2─┐  ┌─┘           │
+        │                       │      └┬─┘             │
+        │                       │     ┌─┘               │
+        │                       │   ┌─┘                 │
+        │                       │ ┌─┘             n2    │
+        │ ______________________├─┘____________________ │
+        │ |||||||||||||||||||||╱│|||||||||||||||||||||| │
+        │ ||||||||||||||||||||╱|│|||||||||||||||| n1 || │
+        │ |||||||||||||||||||╱||│|||||||||||||||||||||| │
+        │ ||||||||||||||||||╱|||│|||||||||||||||||||||| │
+        │ |||||||||||||||||╱||||│|||||||||||||||||||||| │
+        │ ||||||||||||||||╱|||||│|||||||||||||||||||||| │
+        │ |||||||||||||||╱─┐||||│|||||||||||||||||||||| │
+        │ ||||||||||||||╱||└θ1┐|│|||||||||||||||||||||| │
+        │ |||||||||||||╱||||||└─┤|||||||||||||||||||||| │
+        │ ||||||||||||╱|||||||||│|||||||||||||||||||||| │
+        └───────────────────────────────────────────────┘
+
+    Parameters
+    ----------
+    n1 : float or np.array((N,M))
+        refractive index of medium 1
+    n2 : float or np.array((N,M))
+        refractive index of medium 2
+    θ1 : float or np.array((N,M))
+        angle in medium 1
+    
+    Returns
+    -------
+    np.array([ts,tp]) : np.array
+    '''
+    sinθ2 = n1 * np.sin(θ1) / n2
+    θ2    = np.arcsin(sinθ2)
+    ts, tp  = fresnel_t_θ1θ2(n1, n2, θ1, θ2)
+    rs    = ts - 1
+    rp    = n2/n1*tp-1
+    return np.array([ts, tp, rs, rp])
+
+def fresnel_t_θ1(n1, n2, θ1):
+    '''
+    This function returns the electric field transmission
+    coefficients for S and P polarization.
+    Use if only one angle is known beforehand.
+
+    ::
+    
+        ┌───────────────────────────────────────────────┐
+        │                       │                 ┌─    │
+        │                       │               ┌─┘     │
+        │                       │             ┌─┘       │
+        │                       ├──┐        ┌─┘         │
+        │                       │  └θ2─┐  ┌─┘           │
+        │                       │      └┬─┘             │
+        │                       │     ┌─┘               │
+        │                       │   ┌─┘                 │
+        │                       │ ┌─┘             n2    │
+        │ ______________________├─┘____________________ │
+        │ |||||||||||||||||||||╱│|||||||||||||||||||||| │
+        │ ||||||||||||||||||||╱|│|||||||||||||||| n1 || │
+        │ |||||||||||||||||||╱||│|||||||||||||||||||||| │
+        │ ||||||||||||||||||╱|||│|||||||||||||||||||||| │
+        │ |||||||||||||||||╱||||│|||||||||||||||||||||| │
+        │ ||||||||||||||||╱|||||│|||||||||||||||||||||| │
+        │ |||||||||||||||╱─┐||||│|||||||||||||||||||||| │
+        │ ||||||||||||||╱||└θ1┐|│|||||||||||||||||||||| │
+        │ |||||||||||||╱||||||└─┤|||||||||||||||||||||| │
+        │ ||||||||||||╱|||||||||│|||||||||||||||||||||| │
+        └───────────────────────────────────────────────┘
+
+    Parameters
+    ----------
+    n1 : float or np.array((N,M))
+        refractive index of medium 1
+    n2 : float or np.array((N,M))
+        refractive index of medium 2
+    θ1 : float or np.array((N,M))
+        angle in medium 1
+    θ2 : float or np.array((N,M))
+        angle in medium 2
+    
+    Returns
+    -------
+    np.array([ts,tp]) : np.array
+    '''
+    cosθ1 = np.cos(θ1)
+    cosθ2 = np.sqrt(1 - ((n1/n2) * np.sin(θ1))**2)
+    ts    = (2*n1*cosθ1
+             / (n1*cosθ1 + n2*cosθ2))
+    tp    = (2*n1*cosθ1
+             / (n2*cosθ1 + n1*cosθ2))
+    return np.array([ts, tp])
+
+def fresnel_ts_θ1(n1, n2, θ1):
+    '''
+    This function returns the electric field transmission
+    and reflection coefficients for S and P polarization.
+    Use if only one angle is known beforehand.
+
+    ::
+    
+        ┌───────────────────────────────────────────────┐
+        │                       │                 ┌─    │
+        │                       │               ┌─┘     │
+        │                       │             ┌─┘       │
+        │                       ├──┐        ┌─┘         │
+        │                       │  └θ2─┐  ┌─┘           │
+        │                       │      └┬─┘             │
+        │                       │     ┌─┘               │
+        │                       │   ┌─┘                 │
+        │                       │ ┌─┘             n2    │
+        │ ______________________├─┘____________________ │
+        │ |||||||||||||||||||||╱│|||||||||||||||||||||| │
+        │ ||||||||||||||||||||╱|│|||||||||||||||| n1 || │
+        │ |||||||||||||||||||╱||│|||||||||||||||||||||| │
+        │ ||||||||||||||||||╱|||│|||||||||||||||||||||| │
+        │ |||||||||||||||||╱||||│|||||||||||||||||||||| │
+        │ ||||||||||||||||╱|||||│|||||||||||||||||||||| │
+        │ |||||||||||||||╱─┐||||│|||||||||||||||||||||| │
+        │ ||||||||||||||╱||└θ1┐|│|||||||||||||||||||||| │
+        │ |||||||||||||╱||||||└─┤|||||||||||||||||||||| │
+        │ ||||||||||||╱|||||||||│|||||||||||||||||||||| │
+        └───────────────────────────────────────────────┘
+
+    Parameters
+    ----------
+    n1 : float or np.array((N,M))
+        refractive index of medium 1
+    n2 : float or np.array((N,M))
+        refractive index of medium 2
+    θ1 : float or np.array((N,M))
+        angle in medium 1
+    
+    Returns
+    -------
+    np.array([ts,tp]) : np.array
+    '''
+    sinθ2 = n1 * np.sin(θ1) / n2
+    θ2    = np.arcsin(sinθ2)
+    ts, tp  = fresnel_t_θ1θ2(n1, n2, θ1, θ2)
+    rs    = ts - 1
+    rp    = n2/n1*tp-1
+    return np.array([ts, tp, rs, rp])
+
+def field_sampler(funPairs, cross_width, resolution, m, parity,
+                  coreRadius, coord_sys = 'cartesian-cylindrical',
+                  equiv_currents = False):
+    '''
+    Given  the  functions that describe the H and E fields in the core and
+    cladding, this function can be used to sample either the fields or the
+    equivalent  currents  on the centered computational grid of given size
+    and resolution.
+
+    Parameters
+    ----------
+    funPairs : 3-tuple of 2-tuples of 2-tuples of functions
+        The  functions  that  describe the field in the core and cladding.
+        Having the following structure:
+            (
+            ((ECoreρ, ECladdingρ), (HCoreρ, HCladdingρ)),
+            ((ECoreϕ, ECladdingϕ), (HCoreϕ, HCladdingϕ)),
+            ((ECorez, ECladdingz), (HCorez, HCladdingz))
+            )
+    cross_width : float
+        The width of the cross-section of the computational grid.
+    resolution : float
+        How many pixels per unit length.
+    m : int
+        The azimuthal mode number.
+    parity : str
+        The parity of the mode. Can be 'TETM', 'EVEN', or 'ODD'.
+    coreRadius : float
+        The radius of the core.
+    coord_sys : str, optional
+        The coordinate system of the field. Can be 'cartesian-cylindrical'
+        or  'cartesian-cartesian'. The default is 'cartesian-cylindrical'.
+        The  first  word  determines  the coordinate system of the grid in
+        which the field is being described; the second word determines the
+        coordinate system of the field itself in those points.
+    equiv_currents : bool, optional
+        Whether  to  return the equivalent electric and magnetic currents.
+        The  default  is False. This is assuming that the normal is in the
+        z-direction. Furthermore, it assumes that the only necessary sheet
+        of  current  is a single plane, whereas in rigor one would need to
+        envelop the simulation volume with these currents.
+    
+    Returns
+    -------
+    Xg, Yg, E_field, H_field : tuple of ndarrays
+        Returned if equiv_currents is False. The first two are the meshgrid
+        of  the  computational  grid.
+    '''
+    cross_height = cross_width
+    max_ρ       = np.sqrt(2)*cross_width/2
+    numSamples = int(cross_width*resolution)
+    numρSamples = int(np.sqrt(2)*numSamples)
+    E_field    = np.zeros((3, numSamples, numSamples), dtype=np.complex_)
+    H_field   = np.zeros((3, numSamples, numSamples), dtype=np.complex_)
+    xrange   = np.linspace(-cross_width/2, cross_width/2, numSamples)
+    yrange  = np.linspace(-cross_height/2, cross_height/2, numSamples)
+    Xg, Yg = np.meshgrid(xrange, yrange)
+    ρg    = np.sqrt(Xg**2 + Yg**2)
+    ρrange = np.linspace(0, max_ρ, numρSamples)
+    φg    = np.arctan2(Yg, Xg)
+    cosMesh = np.cos(m*φg)
+    sinMesh = np.sin(m*φg)
+    coreMask = (ρg <= coreRadius)
+    for idx, ((EfunCore, EfunCladding), (HfunCore, HfunCladding)) in enumerate(funPairs):
+        ECorevals                 = np.vectorize(EfunCore)(ρrange)
+        ECorevals                 = np.interp(ρg, ρrange, ECorevals)
+        ECorevals[~coreMask]      = 0
+        ECladdingvals             = np.vectorize(EfunCladding)(ρrange)
+        ECladdingvals             = np.interp(ρg, ρrange, ECladdingvals)
+        ECladdingvals[coreMask]   = 0
+        E_all                     = ECorevals + ECladdingvals
+        HCorevals                 = np.vectorize(HfunCore)(ρrange)
+        HCorevals                 = np.interp(ρg, ρrange, HCorevals)
+        HCorevals[~coreMask]      = 0
+        HCladdingvals             = np.vectorize(HfunCladding)(ρrange)
+        HCladdingvals             = np.interp(ρg, ρrange, HCladdingvals)
+        HCladdingvals[coreMask]   = 0
+        H_all                     = HCorevals + HCladdingvals
+        E_all[np.isnan(E_all)]    = 0.
+        H_all[np.isnan(H_all)]    = 0.
+        E_field[idx, :, :] = E_all
+        H_field[idx, :, :] = H_all
+    if parity == 'TETM':
+        pass
+    elif parity == 'EVEN':
+        for idx in range(3):
+            ϕPhaseE = {0: cosMesh,  
+                       1: -sinMesh,
+                       2: cosMesh}[idx]
+            ϕPhaseH = {0: -sinMesh,  
+                       1: cosMesh,
+                       2: -sinMesh}[idx]
+            E_field[idx, :, :] *= ϕPhaseE
+            H_field[idx, :, :] *= ϕPhaseH
+    elif parity == 'ODD':
+        for idx in range(3):
+            ϕPhaseE = {0: sinMesh,
+                       1: cosMesh, 
+                       2: sinMesh}[idx]
+            ϕPhaseH = {0: cosMesh,
+                       1: sinMesh, 
+                       2: cosMesh}[idx]
+            E_field[idx, :, :] *= ϕPhaseE
+            H_field[idx, :, :] *= ϕPhaseH
+    if equiv_currents:
+        electric_J = np.zeros((2,) + H_field.shape[1:], dtype=np.complex_)
+        magnetic_K = np.zeros((2,) + E_field.shape[1:], dtype=np.complex_)
+        electric_J[0] = -H_field[1]
+        electric_J[1] = H_field[0]
+        magnetic_K[0] = E_field[1]
+        magnetic_K[1] = -E_field[0]
+        if coord_sys == 'cartesian-cartesian':
+            electric_J = from_cyl_cart_to_cart_cart(electric_J)
+            magnetic_K = from_cyl_cart_to_cart_cart(magnetic_K)
+        return Xg, Yg, electric_J, magnetic_K
+    if coord_sys == 'cartesian-cartesian':
+        E_field = from_cyl_cart_to_cart_cart(E_field)
+        H_field = from_cyl_cart_to_cart_cart(H_field)
+    return Xg, Yg, E_field, H_field
+
+def equivCurrents(Efuncs, Hfuncs, coreRadius, m, parity):
+    '''
+    This  function  returns  the necessary magnetic and electric
+    currents  corresponding  to  the  given field functions. The
+    currents  are  calculated  in  a  plane  perpedicular to the
+    z-axis,  and  are  returned  so  that  they are functions of
+    cartesian   x,y  coordinates  and  represent  the  different
+    cartesian components of the currents.
+
+    Parameters
+    ----------
+    Efuncs : 6-tuple of functions
+        Having    the   structure   (ECoreρ,   ECoreϕ,   Ecorez,
+        ECladdingρ,  ECladdingϕ, Ecladdingz). The z-component is
+        not needed, if it is included, then it is neglected. The
+        first  three  functions  describing  the  electric field
+        inside  of the core and the following three the electric
+        field in the cladding.
+    Hfuncs : 6-tuple of functions
+        Having    the   structure   (HCoreρ,   HCoreϕ,   HCorez,
+        HCladdingρ,  HCladdingϕ, HCladdingz). The z-component is
+        not needed, if it is included, then it is neglected. The
+        first  three  functions describing the H-field inside of
+        the  core  and  the  following  three the H-field in the
+        cladding.
+    coreRadius : float
+        The radius of the core.
+    m : int
+        The azimuthal mode number.
+    parity : str
+        The parity of the mode. Can be 'TETM', 'EVEN', or 'ODD'.
+
+    Returns
+    -------
+    JKfuns : tuple of functions
+        Provided  as  (Jx, Jy, Kx, Ky). With Jx and Jy being the
+        functions  for  the  x-y  components  of  the equivalent
+        electric  current, and Kx and Ky being the functions for
+        the  x-y  components of the equivalent magnetic current.
+        Each  of the functions is a function of vec, which needs
+        to be an iterable with *three* elements corresponding to
+        the  x,y,z  cartesian components; this is to account for
+        the  fact  that  MEEP requires these functions to take a
+        single Vector3 argument.
+        
+    '''
+    (ECoreρ, ECoreϕ, _, ECladdingρ, ECladdingϕ, _) = Efuncs
+    (HCoreρ, HCoreϕ, _, HCladdingρ, HCladdingϕ, _) = Hfuncs
+    if parity == 'TETM':
+        def Jx(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return -HCoreϕ(ρ)*np.cos(ϕ) - HCoreρ(ρ)*np.sin(ϕ)
+            else:
+                return -HCladdingϕ(ρ)*np.cos(ϕ) - HCladdingρ(ρ)*np.sin(ϕ)
+        def Jy(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return -HCoreϕ(ρ)*np.sin(ϕ) + HCoreρ(ρ)*np.cos(ϕ)
+            else:
+                return -HCladdingϕ(ρ)*np.sin(ϕ) + HCladdingρ(ρ)*np.cos(ϕ)
+        def Kx(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return ECoreϕ(ρ)*np.cos(ϕ) + ECoreρ(ρ)*np.sin(ϕ)
+            else:
+                return ECladdingϕ(ρ)*np.cos(ϕ) + ECladdingρ(ρ)*np.sin(ϕ)
+        def Ky(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return ECoreϕ(ρ)*np.sin(ϕ) - ECoreρ(ρ)*np.cos(ϕ)
+            else:
+                return ECladdingϕ(ρ)*np.sin(ϕ) - ECladdingρ(ρ)*np.cos(ϕ)
+    elif parity == 'EVEN':
+        def Jx(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return -HCoreϕ(ρ)*np.cos(m*ϕ)*np.cos(ϕ) - HCoreρ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ)
+            else:
+                return -HCladdingϕ(ρ)*np.cos(m*φ)*np.cos(ϕ) - HCladdingρ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ)
+        def Jy(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return -HCoreϕ(ρ)*np.cos(m*ϕ)*np.sin(ϕ) + HCoreρ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ)
+            else:
+                return -HCladdingϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) + HCladdingρ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ)
+        def Kx(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return ECoreϕ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ) + ECoreρ(ρ)*np.cos(m*φ)*np.sin(ϕ)
+            else:
+                return ECladdingϕ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ) + ECladdingρ(ρ)*np.cos(m*φ)*np.sin(ϕ)
+        def Ky(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return ECoreϕ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ) - ECoreρ(ρ)*np.cos(m*φ)*np.cos(ϕ)
+            else:
+                return ECladdingϕ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ) - ECladdingρ(ρ)*np.cos(m*φ)*np.cos(ϕ)
+    elif parity == 'ODD':
+        def Jx(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return -HCoreϕ(ρ)*np.sin(m*φ)*np.cos(ϕ) - HCoreρ(ρ)*np.cos(m*φ)*np.sin(ϕ)
+            else:
+                return -HCladdingϕ(ρ)*np.sin(m*φ)*np.cos(ϕ) - HCladdingρ(ρ)*np.cos(m*φ)*np.sin(ϕ)
+        def Jy(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return -HCoreϕ(ρ)*np.sin(m*φ)*np.sin(ϕ) + HCoreρ(ρ)*np.cos(m*φ)*np.cos(ϕ)
+            else:
+                return -HCladdingϕ(ρ)*np.sin(m*φ)*np.sin(ϕ) + HCladdingρ(ρ)*np.cos(m*φ)*np.cos(ϕ)
+        def Kx(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return ECoreϕ(ρ)*np.cos(m*φ)*np.cos(ϕ) + ECoreρ(ρ)*np.sin(m*φ)*np.sin(ϕ)
+            else:
+                return ECladdingϕ(ρ)*np.cos(m*φ)*np.cos(ϕ) + ECladdingρ(ρ)*np.sin(m*φ)*np.sin(ϕ)
+        def Ky(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return ECoreϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) - ECoreρ(ρ)*np.sin(m*φ)*np.cos(ϕ)
+            else:
+                return ECladdingϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) - ECladdingρ(ρ)*np.sin(m*φ)*np.cos(ϕ)
+    JKfuns = (Jx, Jy, Kx, Ky)
+    return JKfuns
+
