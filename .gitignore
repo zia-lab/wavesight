@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Calculations
+*.h5
+*.pkl
+
 # C extensions
 *.so
 

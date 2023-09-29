@@ -66,52 +66,58 @@ slack_icon_emoji = ':see_no_evil:'
 slack_user_name = 'labbot'
 
 def post_message_to_slack(text, blocks = None, thread_ts = None, slack_channel = default_slack_channel):
-    if thread_ts == None:
-        return requests.post('https://slack.com/api/chat.postMessage', {
-            'token': slack_token,
-            'channel': slack_channel,
-            'text': text,
-            'icon_emoji': slack_icon_emoji,
-            'username': slack_user_name,
-            'blocks': json.dumps(blocks) if blocks else None
-        }).json()
-    else:
-        return requests.post('https://slack.com/api/chat.postMessage', {
-            'token': slack_token,
-            'channel': slack_channel,
-            'text': text,
-            'icon_emoji': slack_icon_emoji,
-            'username': slack_user_name,
-            'thread_ts': thread_ts,
-            'blocks': json.dumps(blocks) if blocks else None
-        }).json()
+    try:
+        if thread_ts == None:
+            return requests.post('https://slack.com/api/chat.postMessage', {
+                'token': slack_token,
+                'channel': slack_channel,
+                'text': text,
+                'icon_emoji': slack_icon_emoji,
+                'username': slack_user_name,
+                'blocks': json.dumps(blocks) if blocks else None
+            }).json()
+        else:
+            return requests.post('https://slack.com/api/chat.postMessage', {
+                'token': slack_token,
+                'channel': slack_channel,
+                'text': text,
+                'icon_emoji': slack_icon_emoji,
+                'username': slack_user_name,
+                'thread_ts': thread_ts,
+                'blocks': json.dumps(blocks) if blocks else None
+            }).json()
+    except:
+        pass
 
 def post_file_to_slack(text, file_name, file_bytes, file_type=None, title=None, thread_ts = None, slack_channel=default_slack_channel):
-    if thread_ts == None:
-        return requests.post(
-        'https://slack.com/api/files.upload',
-        {
-            'token': slack_token,
-            'filename': file_name,
-            'channels': slack_channel,
-            'filetype': file_type,
-            'initial_comment': text,
-            'title': title
-        },
-        files = { 'file': file_bytes }).json()
-    else:
-        return requests.post(
-        'https://slack.com/api/files.upload',
-        {
-            'token': slack_token,
-            'filename': file_name,
-            'channels': slack_channel,
-            'filetype': file_type,
-            'initial_comment': text,
-            'thread_ts': thread_ts,
-            'title': title
-        },
-        files = { 'file': file_bytes }).json()
+    try:
+        if thread_ts == None:
+            return requests.post(
+            'https://slack.com/api/files.upload',
+            {
+                'token': slack_token,
+                'filename': file_name,
+                'channels': slack_channel,
+                'filetype': file_type,
+                'initial_comment': text,
+                'title': title
+            },
+            files = { 'file': file_bytes }).json()
+        else:
+            return requests.post(
+            'https://slack.com/api/files.upload',
+            {
+                'token': slack_token,
+                'filename': file_name,
+                'channels': slack_channel,
+                'filetype': file_type,
+                'initial_comment': text,
+                'thread_ts': thread_ts,
+                'title': title
+            },
+            files = { 'file': file_bytes }).json()
+    except:
+        pass
 
 def send_fig_to_slack(fig, slack_channel, info_msg, shortfname, thread_ts = None):
     '''
@@ -135,10 +141,42 @@ def send_fig_to_slack(fig, slack_channel, info_msg, shortfname, thread_ts = None
     -------
     None.
     '''
-    buf = io.BytesIO()
-    fig.savefig(buf, format='jpg')
-    buf.seek(0)
-    post_file_to_slack(info_msg, shortfname, buf.read(), slack_channel=slack_channel, thread_ts = thread_ts)
+    try:
+        buf = io.BytesIO()
+        fig.savefig(buf, format='jpg')
+        buf.seek(0)
+        post_file_to_slack(info_msg, shortfname, buf.read(), slack_channel=slack_channel, thread_ts = thread_ts)
+    except:
+        pass
+
+def insert_string_at_nth_position(str_list, to_insert, n):
+    '''
+    Given a list of strings, return the same list where
+    in the original n-th positions of the list the to_insert
+    string has been inserted.
+
+    Parameters
+    ----------
+    str_list : list of str
+    to_insert : str
+    n         : int
+
+    Returns
+    -------
+
+    '''
+    # Check if n is valid
+    if n < 1:
+        raise ValueError("n should be a positive integer")
+    riffled_strings = []  # Initialize a new list
+    count = 1  # Initialize a counter
+    for s in str_list:
+        riffled_strings.append(s)  # Append the current string from the original list
+        if count % n == 0 and count != len(str_list):  # Avoid inserting after the last element
+            riffled_strings.append(to_insert)  # Insert to_insert after every n-th position
+        count += 1  # Increment the counter
+    return riffled_strings
+
 
 def dict_summary(adict, header, prekey='', aslist=False):
     '''
@@ -173,12 +211,12 @@ def dict_summary(adict, header, prekey='', aslist=False):
             if prekey:
                 txt_summary.append(prekey+'-'+key+' : '+val)
             else:
-                txt_summary.append(key+' : '+val)
+                txt_summary.append('-'+key+' : '+val)
         elif type(val) in [int]:
             if prekey:
                 txt_summary.append(prekey+'-'+key+' : ' + str(val))
             else:
-                txt_summary.append(key+' : '+str(val))
+                txt_summary.append('-'+key+' : '+str(val))
         elif type(val) in [float]:
             if prekey:
                 txt_summary.append('%s-%s : %.3f' % (prekey, key, val))
@@ -190,6 +228,7 @@ def dict_summary(adict, header, prekey='', aslist=False):
     if aslist:
         return txt_summary
     else:
+        txt_summary = insert_string_at_nth_position(txt_summary, '\n', 5)
         return '\n'.join(txt_summary)
 
 

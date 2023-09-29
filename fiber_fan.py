@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-import sys
 import meep as mp
 import numpy as np
-import h5py
+import h5py as h5pie
 import cmasher as cm
+import os
 from matplotlib import pyplot as plt
 import wavesight as ws
 import time
@@ -12,18 +12,23 @@ import cmasher as cm
 from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
 import pickle
 import argparse
+from matplotlib import style
+style.use('dark_background')
 
-def approx_time(sim_cell, spatial_resolution, run_time, kappa=2.2e-6):
+show_plot = False
+send_to_slack = True
+
+def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
     rtime = (kappa * sim_cell.x * sim_cell.y * sim_cell.z
              * run_time * spatial_resolution**3)
     return rtime
 
-def main(nCladding, nCore, coreRadius, λFree):
+def fan_out(nCladding, nCore, coreRadius, λFree, nUpper):
     fiber_spec = {'nCladding': nCladding,
                 'nCore': nCore,
                 'coreRadius': coreRadius,
                 'grid_divider': 4,
-                'nUpper': 1.,
+                'nUpper': nUpper,
                 'λFree': λFree}
     fiber_sol = ws.multisolver(fiber_spec,
                             solve_modes = 'all',
@@ -31,20 +36,22 @@ def main(nCladding, nCore, coreRadius, λFree):
                             verbose=True)
     numModes = fiber_sol['totalModes']
     fiber_sol = ws.calculate_numerical_basis(fiber_sol, verbose=False)
-    eigenbasis = fiber_sol['eigenbasis']
     a, b, Δs, xrange, yrange, ρrange, φrange, Xg, Yg, ρg, φg, nxy, crossMask, numSamples = fiber_sol['coord_layout']
-    show_plot = False
-    send_to_slack = True
-    for mode_idx in range(numModes):
-        sample_resolution = 10
-        MEEP_resolution  = 20
-        min_cycles      = 12
-        sim_height_fun = lambda λFree, pml_thickness: (10 * λFree + 2 * pml_thickness)
-        sim_id        = str(int(time.time()))
-        grab_fields  = True # whether to import the h5 files that contain the monotired fields
-        slack_channel = 'nvs_and_metalenses'
-        num_time_slices = 150 # how many time samples of fields
+    nUpper = fiber_sol['nUpper']
+    λUpper = λFree / nUpper
+    sample_resolution = 10
+    MEEP_resolution  = 20
+    min_cycles      = 12
+    sim_height_fun = lambda λFree, pml_thickness: (10 * λFree + 2 * pml_thickness)
+    grab_fields  = True # whether to import the h5 files that contain the monotired fields
+    slack_channel = 'nvs_and_metalenses'
+    num_time_slices = 150 # how many time samples of fields
+    distance_to_monitor = 1.5 * λUpper
+    fiber_alpha = np.arcsin(np.sqrt(nCore**2-nCladding**2))
 
+    for mode_idx in range(numModes):
+        sim_id        = str(int(time.time()))
+        output_dir    = './calcs/' + sim_id
         if send_to_slack:
             slack_thread = ws.post_message_to_slack("%s - MEEP simulation - %s" % (mode_idx, sim_id), slack_channel=slack_channel)
             thread_ts = slack_thread['ts']
@@ -56,7 +63,8 @@ def main(nCladding, nCore, coreRadius, λFree):
         e_xy_slices_fname = 'e-field-xy-slices-' + sim_id
         h_xz_slices_fname = 'h-field-xz-slices-' + sim_id
         e_xz_slices_fname = 'e-field-xz-slices-' + sim_id
-
+        h_yz_slices_fname = 'h-field-yz-slices-' + sim_id
+        e_yz_slices_fname = 'e-field-yz-slices-' + sim_id
         mode_sol = {'fiber_sol': fiber_sol,
                     'mode_idx': mode_idx,
                     'nCore': fiber_sol['nCore'],
@@ -67,23 +75,31 @@ def main(nCladding, nCore, coreRadius, λFree):
                     'MEEP_resolution': MEEP_resolution,
                     'num_time_slices': num_time_slices
                     }
-        
+        if send_to_slack:
+            mode_sol['thread_ts'] = thread_ts    
         mode_sol['h_xy_slices_fname_h5'] = h_xy_slices_fname + '.h5'
         mode_sol['e_xy_slices_fname_h5'] = e_xy_slices_fname + '.h5'
         mode_sol['h_xz_slices_fname_h5'] = h_xz_slices_fname + '.h5'
         mode_sol['e_xz_slices_fname_h5'] = e_xz_slices_fname + '.h5'
+        mode_sol['h_yz_slices_fname_h5'] = h_yz_slices_fname + '.h5'
+        mode_sol['e_yz_slices_fname_h5'] = e_yz_slices_fname + '.h5'
 
         coord_layout = fiber_sol['coord_layout']
         (coreRadius, simWidth, Δs, xrange, yrange, 
-        ρrange, φrange, Xg, Yg, ρg, φg, nxy, 
-        crossMask, numSamples) = coord_layout
+            ρrange, φrange, Xg, Yg, ρg, φg, nxy, 
+            crossMask, numSamples) = coord_layout
         mode_sol['simWidth'] = simWidth
-        eigenbasis = fiber_sol['eigenbasis']
         eigennums  = fiber_sol['eigenbasis_nums']
         mode_idx = mode_sol['mode_idx']
-        amode = eigenbasis[mode_idx]
         mode_params = eigennums[mode_idx]
         (modType, parity, m, kzidx, kz, γ, β) = mode_params
+
+        mode_sol['kz'] = float(kz)
+        mode_sol['m']  = m
+        mode_sol['parity'] = parity
+        mode_sol['modeType'] = modType
+        mode_sol['γ'] = float(γ)
+        mode_sol['β'] = float(β)
 
         nCore = mode_sol['nCore']
         nCladding = mode_sol['nCladding']
@@ -156,6 +172,7 @@ def main(nCladding, nCore, coreRadius, λFree):
         plt.legend()
         ax.set_xlabel('x/μm')
         ax.set_ylabel('field')
+        plt.tight_layout()
         if send_to_slack:
             ws.send_fig_to_slack(fig, slack_channel, "Field profiles", 'field-profiles-%s.png' % sim_id, thread_ts = thread_ts)
         if show_plot:
@@ -191,12 +208,14 @@ def main(nCladding, nCore, coreRadius, λFree):
         print("Setting up the MEEP simulation ...")
         λFree           = fiber_sol['λFree'] 
         kFree           = 2*np.pi/λFree
-        pml_thickness   = 2 * coreRadius
-        cladding_width  = simWidth/2 - coreRadius
+        pml_thickness   = 2 * λFree
+        cladding_width    = (simWidth/2 - coreRadius) + distance_to_monitor * np.tan(fiber_alpha)
+        simWidth          = 2*(coreRadius + cladding_width)
+        mode_sol['simWidth'] = float(simWidth)
         fiber_height    = sim_height_fun(λFree, pml_thickness)
-        mode_sol['fiber_height'] = fiber_height
-        mode_sol['pml_thickness'] = pml_thickness
-        mode_sol['cladding_width'] = cladding_width
+        mode_sol['fiber_height'] = float(fiber_height)
+        mode_sol['pml_thickness'] = float(pml_thickness)
+        mode_sol['cladding_width'] = float(cladding_width)
         # from top edge of bottom pml to loc of source
         # also equal, from bottom edge of top pml to loc of monitor
         source_loc      = 2*λFree
@@ -205,11 +224,11 @@ def main(nCladding, nCore, coreRadius, λFree):
 
         # how long the source and simulation run
         run_time    = run_time_fun(fiber_height, nCore, min_cycles, base_period)
-        mode_sol['run_time'] = run_time
+        mode_sol['run_time'] = float(run_time)
         field_sampling_interval = run_time/num_time_slices
         source_time = run_time
         # the width of the simulation vol in the x and y directions adding the PML thickness
-        sxy         = simWidth + 2 * pml_thickness
+        sxy         = 2*(coreRadius + cladding_width) + 2 * pml_thickness
         # the PML layers evenly spread on each side of the simulation vol
         pml_layers  = [mp.PML(pml_thickness)]
         # the vol of the simulation
@@ -219,8 +238,9 @@ def main(nCladding, nCore, coreRadius, λFree):
 
         # plot of the cross section
         print("Making a design draft from the fiber geometry ...")
+        
         fig, axes = plt.subplots(ncols=2, nrows=1, figsize=(12,6))
-        axes[0].add_patch(plt.Circle((0,0), coreRadius, color='w', fill=False))
+        axes[0].add_patch(plt.Circle((0,0), coreRadius, color='b', fill=True))
         axes[0].add_patch(plt.Rectangle((-sxy/2 + pml_thickness, -sxy/2 + pml_thickness),
                                 sxy - 2*pml_thickness, sxy - 2*pml_thickness, color='w', fill=False))
         axes[0].set_xlim(-sxy/2, sxy/2)
@@ -228,7 +248,7 @@ def main(nCladding, nCore, coreRadius, λFree):
         axes[0].set_xlabel('x/μm')
         axes[0].set_ylabel('y/μm')
         axes[0].set_aspect('equal')
-        axes[0].set_title('Cross section of fiber')
+        axes[0].set_title('Cross section of simulation vol')
 
         # plot of the sagittal cross section
         axes[1].add_patch(plt.Rectangle((-coreRadius,-fiber_height/2),
@@ -255,34 +275,44 @@ def main(nCladding, nCore, coreRadius, λFree):
 
         clear_aperture = simWidth
         print("Setting up the basic geometry of the FDTD simulation ...")
-        cladding_medium = mp.Medium(index=nCladding)
-        core_medium     = mp.Medium(index=nCore)
+        cladding_medium = mp.Medium(index = nCladding)
+        core_medium     = mp.Medium(index = nCore)
+        upper_medium    = mp.Medium(index = nUpper)
         # set up the basic simulation geometry
-        # cladding_cell = sim_cell
-        cladding_cell = mp.Vector3(sxy, sxy, fiber_height)
+        cladding_cell   = mp.Vector3(sxy, sxy, fiber_height)
         cladding_center = mp.Vector3(0,0,0)
         geometry = [
-            mp.Block(size=cladding_cell,
-                    center=cladding_center,
-                    material=cladding_medium),
-            mp.Cylinder(radius=coreRadius,
-                        axis  = mp.Vector3(0,0,1),
-                        material=core_medium),
-            
+            mp.Block(size    = cladding_cell,
+                    center   = cladding_center,
+                    material = cladding_medium),
+            mp.Cylinder(radius   = coreRadius,
+                        height   = fiber_height/2,
+                        axis     = mp.Vector3(0,0,1),
+                        center   = mp.Vector3(0,0,-fiber_height/4),
+                        material = core_medium),
+            mp.Block(size    = mp.Vector3(sxy, sxy, fiber_height/2),
+                    center   = mp.Vector3(0, 0, fiber_height/4),
+                    material = upper_medium),  
         ]
 
         print("Setting up the time-function for the sources ...")
         source_fun = mp.ContinuousSource(frequency=kFree/2/np.pi,
-                                        end_time=run_time)
+                                        end_time=source_time)
 
         print("Setting up the monitor planes ...")
-        xy_monitor_plane_center = mp.Vector3(0,0,fiber_height/2 - pml_thickness - source_loc)
+        xy_monitor_plane_center = mp.Vector3(0,0,distance_to_monitor)
         xy_monitor_plane_size   = mp.Vector3(clear_aperture, clear_aperture, 0)
         xy_monitor_vol          = mp.Volume(center=xy_monitor_plane_center, size=xy_monitor_plane_size)
 
         xz_monitor_plane_center = mp.Vector3(0,0,0)
         xz_monitor_plane_size   = mp.Vector3(clear_aperture, 0, fiber_height)
-        xz_monitor_vol          = mp.Volume(center=xz_monitor_plane_center, size=xz_monitor_plane_size)
+        xz_monitor_vol          = mp.Volume(center=xz_monitor_plane_center,
+                                            size=xz_monitor_plane_size)
+        
+        yz_monitor_plane_center = mp.Vector3(0,0,0)
+        yz_monitor_plane_size   = mp.Vector3(0, clear_aperture, fiber_height)
+        yz_monitor_vol          = mp.Volume(center=yz_monitor_plane_center,
+                                            size=yz_monitor_plane_size)
 
         print("Setting up the effective current sources for the modal fields ...")
         source_center = mp.Vector3(0,0, -fiber_height/2 + pml_thickness + source_loc)
@@ -309,9 +339,10 @@ def main(nCladding, nCore, coreRadius, λFree):
             sources    = srcs,
             resolution = MEEP_resolution,
             boundary_layers      = pml_layers,
-            force_complex_fields = True
+            force_complex_fields = True,
+            filename_prefix = ''
         )
-
+        sim.use_output_directory(output_dir)
 
         msg = "Simulation is estimated to take %0.2f minutes ..." % (approx_runtime/60)
         print(msg)
@@ -323,7 +354,7 @@ def main(nCladding, nCore, coreRadius, λFree):
         xz_monitor_vol          = mp.Volume(center=xz_monitor_plane_center, size=xz_monitor_plane_size)
 
         start_time = time.time()
-        sim.run(mp.at_beginning(mp.output_epsilon),
+        sim.run(
                 mp.during_sources(mp.in_volume(xy_monitor_vol,
                                 mp.to_appended(h_xy_slices_fname, 
                                     mp.at_every(field_sampling_interval, mp.output_hfield)))),
@@ -336,7 +367,14 @@ def main(nCladding, nCore, coreRadius, λFree):
                 mp.during_sources(mp.in_volume(xz_monitor_vol,
                                 mp.to_appended(e_xz_slices_fname, 
                                     mp.at_every(field_sampling_interval, mp.output_efield)))),
+                mp.during_sources(mp.in_volume(yz_monitor_vol,
+                                mp.to_appended(h_yz_slices_fname, 
+                                    mp.at_every(field_sampling_interval, mp.output_hfield)))),
+                mp.during_sources(mp.in_volume(yz_monitor_vol,
+                                mp.to_appended(e_yz_slices_fname, 
+                                    mp.at_every(field_sampling_interval, mp.output_efield)))),
                 until=run_time)
+        print("ahoy")
         end_time = time.time()
         time_taken = end_time - start_time
 
@@ -344,6 +382,7 @@ def main(nCladding, nCore, coreRadius, λFree):
         (xCoords, yCoords, zCoords, _) = sim.get_array_metadata()
         (xCoordsMonxy, yCoordsMonxy, zCoordsMonxy, _) = sim.get_array_metadata(xy_monitor_vol)
         (xCoordsMonxz, yCoordsMonxz, zCoordsMonxz, _) = sim.get_array_metadata(xz_monitor_vol)
+        (xCoordsMonyz, yCoordsMonyz, zCoordsMonyz, _) = sim.get_array_metadata(yz_monitor_vol)
         coords['xCoords'] = xCoords
         coords['yCoords'] = yCoords
         coords['zCoords'] = zCoords
@@ -353,8 +392,18 @@ def main(nCladding, nCore, coreRadius, λFree):
         coords['xCoordsMonxz'] = xCoordsMonxz
         coords['yCoordsMonxz'] = yCoordsMonxz
         coords['zCoordsMonxz'] = zCoordsMonxz
+        coords['xCoordsMonyz'] = xCoordsMonyz
+        coords['yCoordsMonyz'] = yCoordsMonyz
+        coords['zCoordsMonyz'] = zCoordsMonyz
         mode_sol['coords']     = coords
-        
+
+        on_axis_eps = sim.get_array(mp.Dielectric,
+                    mp.Volume(
+                        center=mp.Vector3(0,0,0),
+                    size=mp.Vector3(0,0,fiber_height))
+        )
+
+        mode_sol['on_axis_eps'] = on_axis_eps 
         mode_sol['time_taken'] = time_taken
         mode_sol['field_sampling_interval'] = field_sampling_interval
         mode_sol['full_simulation_width_with_PML'] = sxy
@@ -366,11 +415,12 @@ def main(nCladding, nCore, coreRadius, λFree):
         if grab_fields == True:
             print("Getting the field data from the h5 files ...")
             monitor_fields = {}
-            for plane in ['xy','xz']:
+            for plane in ['xy','xz','yz']:
                 field_arrays = []
                 for idx, field_name in enumerate(['e','h']):
                     field_data = {}
-                    with h5py.File('fiber_launcher-'+mode_sol[f'{field_name}_{plane}_slices_fname_h5'],'r') as h5_file:
+                    h5_full_name = os.path.join(output_dir, 'fiber_fan-' + mode_sol[f'{field_name}_{plane}_slices_fname_h5'])
+                    with h5pie.File(h5_full_name,'r') as h5_file:
                         h5_keys = list(h5_file.keys())
                         for h5_key in h5_keys:
                             datum = np.array(h5_file[h5_key])
@@ -391,26 +441,28 @@ def main(nCladding, nCore, coreRadius, λFree):
         print("MEEP-adjusted resolution: %.2f px/μm" % effective_resolution)
 
         print("Calculating basic plots for the end time ...")
-        Ey_final_sag = monitor_fields['xz'][0,1,:,:,-1]
-        extent = [-simWidth/2, simWidth/2, -fiber_height/2, fiber_height/2]
-        plotField = np.real(Ey_final_sag)
-        fig, ax = plt.subplots(figsize=(3, 3*fiber_height/simWidth))
-        ax.imshow(plotField, 
-                cmap=cm.watermelon, 
-                origin='lower',
-                extent=extent,
-                interpolation='none')
-        ax.plot([-coreRadius,-coreRadius],[-fiber_height/2,fiber_height/2],'r:',alpha=0.3)
-        ax.plot([coreRadius,coreRadius],[-fiber_height/2,fiber_height/2],'r:',alpha=0.3)
-        ax.set_xlabel('x/μm')
-        ax.set_ylabel('z/μm')
-        ax.set_title('Re(Ey)')
-        if send_to_slack:
-            ws.send_fig_to_slack(fig, slack_channel, 'sagittal-final-Ey','sagittal-final-Ey',thread_ts)
-        if show_plot:
-            plt.show()
-        else:
-            plt.close()
+        for sagplane in ['xz','yz']:
+            Ey_final_sag = monitor_fields[sagplane][0,1,:,:,-1]
+            extent = [-simWidth/2, simWidth/2, -fiber_height/2, fiber_height/2]
+            plotField = np.real(Ey_final_sag)
+            fig, ax   = plt.subplots(figsize=(3, 3 * fiber_height / simWidth))
+            ax.imshow(plotField, 
+                    cmap=cm.watermelon, 
+                    origin='lower',
+                    extent=extent,
+                    interpolation='none')
+            ax.plot([-coreRadius,-coreRadius],[-fiber_height/2,fiber_height/2],'r:',alpha=0.3)
+            ax.plot([coreRadius,coreRadius],[-fiber_height/2,fiber_height/2],'r:',alpha=0.3)
+            ax.set_xlabel('%s/μm' % sagplane[0])
+            ax.set_ylabel('z/μm')
+            ax.set_title('Re(Ey)')
+            plt.tight_layout()
+            if send_to_slack:
+                ws.send_fig_to_slack(fig, slack_channel, 'sagittal-%s-final-Ey' % sagplane,'sagittal-%s-final-Ey' % sagplane, thread_ts)
+            if show_plot:
+                plt.show()
+            else:
+                plt.close()
 
         print("Picking a notable point at z=0 for sampling Ey at different times and z-values ...")
         numZsamples = Ey_final_sag.shape[0]
@@ -429,6 +481,7 @@ def main(nCladding, nCore, coreRadius, λFree):
         ax.set_ylabel('z/μm')
         ax.set_aspect(run_time/fiber_height)
         ax.set_title('Re(Ey) at fixed x,y')
+        plt.tight_layout()
         if send_to_slack:
             ws.send_fig_to_slack(fig, slack_channel, 'Re(Ey) at fixed x,y','Re(Ey)-at-fixed-x,y',thread_ts)
         if show_plot:
@@ -437,7 +490,7 @@ def main(nCladding, nCore, coreRadius, λFree):
             plt.close()
 
         print("Sampling the ground-truth modal profile ...")
-        Xg, Yg, E_field_GT, H_field_GT = ws.field_sampler(funPairs, 
+        Xg, Yg, _, H_field_GT = ws.field_sampler(funPairs, 
                                                     clear_aperture, 
                                                     effective_resolution, 
                                                     m, 
@@ -468,6 +521,7 @@ def main(nCladding, nCore, coreRadius, λFree):
         ax.set_xlabel('t/(μm/c)')
         ax.set_ylabel('cos(GT, ME)')
         ax.set_ylim(0,1.)
+        plt.tight_layout()
         if send_to_slack:
             ws.send_fig_to_slack(fig, slack_channel, 'cos(GT, ME)','cos(GT, ME)',thread_ts)
         if show_plot:
@@ -522,8 +576,8 @@ def main(nCladding, nCore, coreRadius, λFree):
         if send_to_slack:
             ws.post_message_to_slack(summary, slack_channel=slack_channel,thread_ts=thread_ts)
             ws.post_message_to_slack('CS(GT, ME) = %.3f' % final_cos, slack_channel=slack_channel,thread_ts=thread_ts)
-        mem_usage = sim.get_estimated_memory_usage()
-        mode_sol['mem_usage_in_MB'] = mem_usage/1024/1024
+        # mem_usage = sim.get_estimated_memory_usage()
+        # mode_sol['mem_usage_in_MB'] = mem_usage/1024/1024
         mode_sol['monitor_field_slices'] = monitor_fields
         pkl_fname = 'sim-%s.pkl' % sim_id
         with open(pkl_fname, 'wb') as file:
@@ -531,12 +585,10 @@ def main(nCladding, nCore, coreRadius, λFree):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='A simple CLI that accepts four parameters.')
-    
     parser.add_argument('nCladding', type=float, help='The refractive index of the cladding.')
     parser.add_argument('nCore', type=float, help='The refractive index of the core.')
     parser.add_argument('coreRadius', type=float, help='The radius of the core.')
     parser.add_argument('free_space_wavelength', type=float, help='The free space wavelength.')
-    
+    parser.add_argument('nUpper', type=float, help='The refrective index of the upper medium.')
     args = parser.parse_args()
-    
-    main(args.nCladding, args.nCore, args.coreRadius, args.free_space_wavelength)
+    fan_out(args.nCladding, args.nCore, args.coreRadius, args.free_space_wavelength, args.nUpper)
