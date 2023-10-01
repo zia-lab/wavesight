@@ -6,6 +6,7 @@ __pycache__/
 # Calculations
 *.h5
 *.pkl
+*.out
 
 # C extensions
 *.so

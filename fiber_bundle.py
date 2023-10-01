@@ -1,25 +1,47 @@
 #!/usr/bin/env python3
+# fiber_bundle.py
 
-import meep as mp
 import numpy as np
-import h5py as h5pie
-import cmasher as cm
-import os
 from matplotlib import pyplot as plt
 import wavesight as ws
-import time
-import cmasher as cm
 from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
 import pickle
 import argparse
+import warnings
 from matplotlib import style
 style.use('dark_background')
+
+warnings.filterwarnings('ignore', 'invalid value encountered in scalar add')
+warnings.filterwarnings('ignore', 'invalid value encountered in add')
+warnings.filterwarnings('ignore', 'invalid value encountered in scalar subtract')
+warnings.filterwarnings('ignore', 'invalid value encountered in subtract')
 
 show_plot = False
 send_to_slack = True
 make_streamplots =  False
 grab_fields  = True # whether to import the h5 files that contain the monotired fields
+wavesight_dir = '/users/jlizaraz/CEM/wavesight'
+num_time_slices = 100 # how many time samples of fields
 
+batch_template = '''#!/bin/bash
+#SBATCH -n 1 
+#SBATCH --mem=8GB
+#SBATCH -t 1:00:00
+#SBATCH --array=0-{num_modes}
+
+#SBATCH -o {config_root}-%a.out
+#SBATCH -e {config_root}-%a.out
+
+#nCladding       : {nCladding}
+#nCore           : {nCore}
+#coreRadius      : {coreRadius}
+#free_wavelength : {wavelength} um
+#nUpper          : {nUpper}
+#numModes        : {numModes}
+
+cd {wavesight_dir}
+~/anaconda/meep/bin/python /users/jlizaraz/CEM/wavesight/fiber_platform.py {config_fname} {num_time_slices} $SLURM_ARRAY_TASK_ID
+'''
 
 def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
     rtime = (kappa * sim_cell.x * sim_cell.y * sim_cell.z
@@ -45,7 +67,6 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nUpper):
     sample_resolution = 10
     MEEP_resolution  = 20
     slack_channel = 'nvs_and_metalenses'
-    num_time_slices = 150 # how many time samples of fields
     distance_to_monitor = 1.5 * λUpper
     fiber_alpha = np.arcsin(np.sqrt(nCore**2-nCladding**2))
     config_dict = {}
@@ -55,8 +76,6 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nUpper):
     config_dict['λUpper'] = λUpper
     config_dict['sample_resolution'] = sample_resolution
     config_dict['MEEP_resolution'] = MEEP_resolution
-    # fiber_sol['run_time_fun']    = run_time_fun
-    # fiber_sol['sim_height_fun']  = sim_height_fun
     config_dict['slack_channel']   = slack_channel
     config_dict['num_time_slices'] = num_time_slices
     config_dict['distance_to_monitor'] = distance_to_monitor
@@ -64,9 +83,28 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nUpper):
     config_dict['eigennums']   = fiber_sol['eigenbasis_nums']
     config_dict['fiber_sol'] = fiber_sol
     config_dict['nUpper'] = nUpper
-
-    with open('config_dict.pkl','wb') as file:
+    config_dict['numModes'] = numModes
+    print("There are %d modes to solve." % numModes)
+    batch_rid = ws.rando_id()
+    config_fname = 'config_dict-'+batch_rid+'.pkl'
+    with open(config_fname,'wb') as file:
+        print("Saving parameters to %s" % config_fname)
         pickle.dump(config_dict, file)
+    batch_fname = 'sbatch-'+batch_rid+'.sh'
+    batch_cont = batch_template.format(wavesight_dir=wavesight_dir,
+                    config_fname = config_fname,
+                    config_root  = batch_rid,
+                    coreRadius   = coreRadius,
+                    nCladding    = nCladding,
+                    nCore        = nCore,
+                    nUpper       = nUpper,
+                    wavelength   = λFree,
+                    numModes     = numModes,
+                    num_time_slices = num_time_slices,
+                    num_modes=(numModes-1))
+    with open(batch_fname, 'w') as file:
+        print("Saving sbatch file to %s" % batch_fname)
+        file.write(batch_cont+'\n')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='A simple CLI that accepts four parameters.')

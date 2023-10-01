@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os
-from time import time
+from time import time, sleep
 import tempfile
 import subprocess
 import numpy as np
@@ -9,6 +9,7 @@ import http.client, urllib
 import requests
 import json
 import io
+import random
 
 try:
     from dave import secrets
@@ -65,57 +66,131 @@ default_slack_channel = '#datahose'
 slack_icon_emoji = ':see_no_evil:'
 slack_user_name = 'labbot'
 
-def post_message_to_slack(text, blocks = None, thread_ts = None, slack_channel = default_slack_channel):
+def post_message_to_slack(text, blocks = None, thread_ts = None, slack_channel = default_slack_channel, max_retries = 20):
+    dt = 1
+    ok = False
+    num_tries = 0
+    max_wait_time = 60
     try:
         if thread_ts == None:
-            return requests.post('https://slack.com/api/chat.postMessage', {
-                'token': slack_token,
-                'channel': slack_channel,
-                'text': text,
-                'icon_emoji': slack_icon_emoji,
-                'username': slack_user_name,
-                'blocks': json.dumps(blocks) if blocks else None
-            }).json()
+            while (not ok) and (num_tries <= max_retries):
+                req = requests.post('https://slack.com/api/chat.postMessage', {
+                    'token': slack_token,
+                    'channel': slack_channel,
+                    'text': text,
+                    'icon_emoji': slack_icon_emoji,
+                    'username': slack_user_name,
+                    'blocks': json.dumps(blocks) if blocks else None
+                }).json()
+                ok = 'error' not in req
+                if not ok:
+                    if req['error'] == 'ratelimited':
+                        print("rate limited, waiting")
+                        sleep(dt)
+                        dt = dt*2
+                        if dt >= max_wait_time:
+                            dt = max_wait_time
+                        num_tries += 1
+                    else:
+                        print("Error in request")
+                        return req
+                if num_tries >= max_retries:
+                    print("Max retries reached.")
+                    return req
+            return req
         else:
-            return requests.post('https://slack.com/api/chat.postMessage', {
-                'token': slack_token,
-                'channel': slack_channel,
-                'text': text,
-                'icon_emoji': slack_icon_emoji,
-                'username': slack_user_name,
-                'thread_ts': thread_ts,
-                'blocks': json.dumps(blocks) if blocks else None
-            }).json()
+            while (not ok) and (num_tries <= max_retries):
+                req = requests.post('https://slack.com/api/chat.postMessage', {
+                    'token': slack_token,
+                    'channel': slack_channel,
+                    'text': text,
+                    'icon_emoji': slack_icon_emoji,
+                    'username': slack_user_name,
+                    'thread_ts': thread_ts,
+                    'blocks': json.dumps(blocks) if blocks else None
+                }).json()
+                ok = 'error' not in req
+                if not ok:
+                    if req['error'] == 'ratelimited':
+                        print("rate limited, waiting")
+                        sleep(dt)
+                        dt = dt*2
+                        if dt >= max_wait_time:
+                            dt = max_wait_time
+                        num_tries += 1
+                    else:
+                        print("Error in request")
+                        return req
+                if num_tries >= max_retries:
+                    print("Max retries reached.")
+                    return req
+            return req
     except:
         pass
 
-def post_file_to_slack(text, file_name, file_bytes, file_type=None, title=None, thread_ts = None, slack_channel=default_slack_channel):
+def post_file_to_slack(text, file_name, file_bytes, file_type=None, title=None, thread_ts = None, slack_channel=default_slack_channel, max_retries=20):
+    dt = 1
+    ok = False
+    num_tries = 0
+    max_wait_time = 60
     try:
         if thread_ts == None:
-            return requests.post(
-            'https://slack.com/api/files.upload',
-            {
-                'token': slack_token,
-                'filename': file_name,
-                'channels': slack_channel,
-                'filetype': file_type,
-                'initial_comment': text,
-                'title': title
-            },
-            files = { 'file': file_bytes }).json()
+            while (not ok) and (num_tries <= max_retries):
+                req = requests.post(
+                'https://slack.com/api/files.upload',
+                {
+                    'token': slack_token,
+                    'filename': file_name,
+                    'channels': slack_channel,
+                    'filetype': file_type,
+                    'initial_comment': text,
+                    'title': title
+                },files = { 'file': file_bytes }).json()
+                ok = 'error' not in req
+                if not ok:
+                    if req['error'] == 'ratelimited':
+                        print("rate limited, waiting")
+                        sleep(dt)
+                        dt = dt*2
+                        if dt >= max_wait_time:
+                            dt = max_wait_time
+                        num_tries += 1
+                    else:
+                        print("Error in request")
+                        return req
+                if num_tries >= max_retries:
+                    print("Max retries reached.")
+                    return req
+            return req
         else:
-            return requests.post(
-            'https://slack.com/api/files.upload',
-            {
-                'token': slack_token,
-                'filename': file_name,
-                'channels': slack_channel,
-                'filetype': file_type,
-                'initial_comment': text,
-                'thread_ts': thread_ts,
-                'title': title
-            },
-            files = { 'file': file_bytes }).json()
+            while (not ok) and (num_tries <= max_retries):
+                req = requests.post(
+                'https://slack.com/api/files.upload',
+                {
+                    'token': slack_token,
+                    'filename': file_name,
+                    'channels': slack_channel,
+                    'filetype': file_type,
+                    'initial_comment': text,
+                    'thread_ts': thread_ts,
+                    'title': title
+                },files = { 'file': file_bytes }).json()
+                ok = 'error' not in req
+                if not ok:
+                    if req['error'] == 'ratelimited':
+                        print("rate limited, waiting")
+                        sleep(dt)
+                        dt = dt*2
+                        if dt >= max_wait_time:
+                            dt = max_wait_time
+                        num_tries += 1
+                    else:
+                        print("Error in request")
+                        return req
+                if num_tries >= max_retries:
+                    print("Max retries reached.")
+                    return req
+            return req
     except:
         pass
 
@@ -228,9 +303,39 @@ def dict_summary(adict, header, prekey='', aslist=False):
     if aslist:
         return txt_summary
     else:
-        txt_summary = insert_string_at_nth_position(txt_summary, '\n', 5)
+        txt_summary = insert_string_at_nth_position(txt_summary, '', 5)
         return '\n'.join(txt_summary)
 
+def rando_id(num_groups=2, sep='-', verbose=False):
+    '''
+    Returns a random string formed from pairs of vowels
+    and consonants. By default the string returned  has
+    27-bit entropy, which makes each string to be about
+    10^-8 likely to be chosen.
+    Parameters
+    ----------
+    num_groups: int
+        How many 4-char groups the random string has.
+    sep: str
+        The string that separates the 4-char groups.
+    verbose: bool
+        Whether to print the entropy of the generated strings.
+    Returns
+    -------
+    rid : str
+        A random string in a somewhat readable format.
+    '''
+    vowels = list('AEIOU')
+    consonants = list('BCDFGHJKLMNPQRSTVWXYZ')
+    rid = [(random.choice(vowels) + random.choice(consonants)
+            + random.choice(vowels) + random.choice(consonants)) 
+                 for i in range(num_groups)]
+    if verbose:
+        ent = round((num_groups*2)*np.log2(len(vowels))
+                    +(num_groups*2)*np.log2(len(consonants)))
+        print('Generated string has %d-bit entropy.' % ent)
+    rid = sep.join(rid)
+    return rid
 
 def latex_eqn_to_png(tex_code, figname, timed=True, outfolder=os.getcwd()):
     '''

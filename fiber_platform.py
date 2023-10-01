@@ -20,8 +20,17 @@ def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
              * run_time * spatial_resolution**3)
     return rtime
 
+parser = argparse.ArgumentParser(description='Mode launcher.')
+parser.add_argument('config_dict_fname', type=str, help='Configuration file for modes.')
+parser.add_argument('num_time_slices', type=int, help='Determines sampling interval of fields.')
+parser.add_argument('modeidx', type=int, help='The index for the launch mode.')
+args = parser.parse_args()
+
+data_dir = '/users/jlizaraz/data/jlizaraz/CEM/wavesight/'
 show_plot = False
-config_dict = pickle.load(open('config_dict.pkl','rb'))
+config_dict = pickle.load(open(args.config_dict_fname,'rb'))
+big_job_id  = args.config_dict_fname.split('config_dict-')[-1].split('.')[0]
+data_dir = os.path.join(data_dir, big_job_id)
 grab_fields = True
 
 for k,v in config_dict.items():
@@ -31,13 +40,12 @@ def run_time_fun(fiber_height, nCore):
     return 0.75 * fiber_height * nCore
 sim_height_fun = lambda λFree, pml_thickness: (10 * λFree + 2 * pml_thickness)
 
-def mode_solver(mode_idx):
-    sim_id        = str(int(time.time()))
-    output_dir    = './calcs/' + sim_id
+def mode_solver(num_time_slices, mode_idx):
+    sim_id        = ws.rando_id()
+    output_dir    = data_dir + '-' + sim_id
     send_to_slack = mp.am_master()
-    print("##########", send_to_slack)
     if mp.am_master():
-        slack_thread = ws.post_message_to_slack("%s - MEEP simulation - %s" % (mode_idx, sim_id), slack_channel=slack_channel)
+        slack_thread = ws.post_message_to_slack("%s - %s - %s" % (mode_idx, big_job_id, sim_id), slack_channel=slack_channel)
         thread_ts = slack_thread['ts']
 
     h_xy_slices_fname = 'h-field-xy-slices-' + sim_id
@@ -228,7 +236,7 @@ def mode_solver(mode_idx):
     axes[0].set_xlabel('x/μm')
     axes[0].set_ylabel('y/μm')
     axes[0].set_aspect('equal')
-    axes[0].set_title('Cross section of simulation vol')
+    axes[0].set_title('xy cross section of simulation vol')
 
     # plot of the sagittal cross section
     axes[1].add_patch(plt.Rectangle((-coreRadius,-fiber_height/2),
@@ -244,7 +252,7 @@ def mode_solver(mode_idx):
     axes[1].set_ylim(-fiber_height/2, fiber_height/2)
     axes[1].set_xlabel('x/μm')
     axes[1].set_ylabel('z/μm')
-    axes[1].set_title('Sagital cross section of simulation vol')
+    axes[1].set_title('Sagittal cross section of simulation vol')
     axes[1].set_aspect('equal')
     if send_to_slack:
         ws.send_fig_to_slack(fig, slack_channel, "Device layout", 'device-layout-%s.png' % sim_id, thread_ts = thread_ts)
@@ -326,6 +334,8 @@ def mode_solver(mode_idx):
 
     msg = "Simulation is estimated to take %0.2f minutes ..." % (approx_runtime/60)
     print(msg)
+    mem_usage = sim.get_estimated_memory_usage()/1024/1024
+    print(">> Estimated memory usage %.2f Mb ..." % mem_usage)
     if send_to_slack:
         ws.post_message_to_slack(msg, slack_channel=slack_channel, thread_ts = thread_ts) 
 
@@ -387,6 +397,7 @@ def mode_solver(mode_idx):
     mode_sol['time_taken'] = time_taken
     mode_sol['field_sampling_interval'] = field_sampling_interval
     mode_sol['full_simulation_width_with_PML'] = sxy
+    mode_sol['numModes'] = numModes
     msg = "Simulation took %0.2f minutes to run." % (time_taken/60)
     print(msg)
     if send_to_slack:
@@ -479,38 +490,11 @@ def mode_solver(mode_idx):
                                                 coord_sys = 'cartesian-cartesian',
                                                 equiv_currents=False)
 
-    print("Calculating the correlation of the monitored field against the ground truth ...")
     field_array = monitor_fields['xy'][1]
+ 
+    print("Making a comparison plot of the last measured field against mode ...")
     component_name = 'hx'
     component_index = {'hx':0, 'hy':1, 'hz':2}[component_name]
-    cosims = (field_array[component_index] * np.conjugate(H_field_GT[component_index][:,:,np.newaxis]))
-    cosims = np.sum(cosims, axis=0)
-    cosims = np.sum(cosims, axis=0)
-    cosims = np.abs(cosims)
-    n0s   = (field_array[component_index] * np.conjugate(field_array[component_index]))
-    n0s   = np.sum(n0s, axis=0)
-    n0s   = np.sum(n0s, axis=0)
-    n0s   = np.real(np.sqrt(n0s))
-    n1    = np.sqrt(np.sum(H_field_GT[component_index] * np.conjugate(H_field_GT[component_index])))
-    n1    = np.real(n1)
-    cosims = cosims/n1
-    cosims = cosims/n0s
-    cosims  = np.real(cosims)
-    fig, ax = plt.subplots(figsize=(10,3))
-    ax.plot(sampling_times, cosims)
-    ax.set_xlabel('t/(μm/c)')
-    ax.set_ylabel('cos(GT, ME)')
-    ax.set_ylim(0,1.)
-    plt.tight_layout()
-    if send_to_slack:
-        ws.send_fig_to_slack(fig, slack_channel, 'cos(GT, ME)','cos(GT, ME)',thread_ts)
-    if show_plot:
-        plt.show()
-    else:
-        plt.close()
-    final_cos = cosims[-1]
-
-    print("Making a comparison plot for the last measured field ...")
     time_index = -1
     extent    = [-clear_aperture/2, clear_aperture/2, -clear_aperture/2, clear_aperture/2]
     fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10,10))
@@ -551,20 +535,16 @@ def mode_solver(mode_idx):
         plt.show()
     else:
         plt.close()
-
+    mode_sol['approx_mem_usage_in_MB'] = mem_usage
     summary = ws.dict_summary(mode_sol, 'SIM-'+sim_id)
     if send_to_slack:
         ws.post_message_to_slack(summary, slack_channel=slack_channel,thread_ts=thread_ts)
-        ws.post_message_to_slack('CS(GT, ME) = %.3f' % final_cos, slack_channel=slack_channel,thread_ts=thread_ts)
-    # mem_usage = sim.get_estimated_memory_usage()
-    # mode_sol['mem_usage_in_MB'] = mem_usage/1024/1024
     mode_sol['monitor_field_slices'] = monitor_fields
     pkl_fname = 'sim-%s.pkl' % sim_id
+    pkl_fname = os.path.join(output_dir, pkl_fname)
     with open(pkl_fname, 'wb') as file:
+        print("Saving solution to %s ..." % pkl_fname)
         pickle.dump(mode_sol, file)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Mode launcher.')
-    parser.add_argument('modeidx', type=int, help='The index for the launch mode.')
-    args = parser.parse_args()
-    mode_solver(args.modeidx)
+    mode_solver(args.num_time_slices, args.modeidx)

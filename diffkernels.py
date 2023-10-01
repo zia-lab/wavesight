@@ -8,7 +8,11 @@ import numpy as np
 try:
     from numba import jit
 except:
-    pass
+    print("Numba not available, defining a dummy jit decorator.")
+    def jit(nopython):
+        def decorator(func):
+            return func 
+        return decorator
 
 def electricKernels(z,k):
     '''
