@@ -21,16 +21,9 @@ send_to_slack = True
 make_streamplots =  False
 grab_fields  = True # whether to import the h5 files that contain the monotired fields
 wavesight_dir = '/users/jlizaraz/CEM/wavesight'
-num_time_slices = 100 # how many time samples of fields
+num_time_slices = 30 # how many time samples of fields
 
-batch_template = '''#!/bin/bash
-#SBATCH -n 1 
-#SBATCH --mem=8GB
-#SBATCH -t 1:00:00
-#SBATCH --array=0-{num_modes}
-
-#SBATCH -o {config_root}-%a.out
-#SBATCH -e {config_root}-%a.out
+bash_template = '''#!/bin/bash
 
 #nCladding       : {nCladding}
 #nCore           : {nCore}
@@ -40,7 +33,66 @@ batch_template = '''#!/bin/bash
 #numModes        : {numModes}
 
 cd {wavesight_dir}
-~/anaconda/meep/bin/python /users/jlizaraz/CEM/wavesight/fiber_platform.py {config_fname} {num_time_slices} $SLURM_ARRAY_TASK_ID
+# Check if the memory and time requirements have been already calculated
+if [[ -f "{config_root}req" ]]; then
+    echo "Reading resource requirements ..."
+    IFS=',' read -r memreq timereq < {config_root}.req
+else
+    echo "Requirments have not been determined, running a single mode for this purpose."
+    ~/anaconda/meep/bin/python /users/jlizaraz/CEM/wavesight/fiber_platform.py config_dict-{config_root}.pkl {num_time_slices} 0
+    sleep 1
+    IFS=',' read -r memreq timereq < {config_root}.req
+fi
+
+echo "sbatch resources: ${{memreq}}GB,${{timereq}}"
+
+# Submit the first array job
+sbatch_output=$(sbatch <<EOL
+#!/bin/bash
+#SBATCH -n 1
+#SBATCH --job-name=light_array
+#SBATCH --mem=${{memreq}}GB
+#SBATCH -t ${{timereq}}
+#SBATCH --array=1-{num_modes}
+
+#SBATCH -o {config_root}-%a.out
+#SBATCH -e {config_root}-%a.out
+
+cd {wavesight_dir}
+~/anaconda/meep/bin/python /users/jlizaraz/CEM/wavesight/fiber_platform.py config_dict-{config_root}.pkl {num_time_slices} \$SLURM_ARRAY_TASK_ID
+EOL
+)
+# get the job id
+array_job_id=$(echo "$sbatch_output" | awk '{{print $NF}}')
+
+#submit the analysis job
+sbatch_output_plotter=$(sbatch --dependency=afterany:$array_job_id <<EOL
+#!/bin/bash
+#SBATCH -n 1 
+#SBATCH --job-name=light_plot
+#SBATCH --mem=${{memreq}}GB
+#SBATCH -t ${{timereq}}
+#SBATCH -o {config_root}-plotter.out
+#SBATCH -e {config_root}-plotter.out
+
+cd {wavesight_dir}
+~/anaconda/meep/bin/python /users/jlizaraz/CEM/wavesight/fiber_plotter.py {config_root}
+EOL
+)
+# get the job id
+plotter_job_id=$(echo "$sbatch_output_plotter" | awk '{{print $NF}}')
+
+# submit the guardian job
+sbatch --dependency=afterany:$plotter_job_id <<EOL
+#!/bin/bash
+#SBATCH --job-name=calling_home
+#SBATCH --output=calling_home.out
+#SBATCH --error=calling_home.err
+#SBATCH --time=00:01:00
+
+cd {wavesight_dir}
+~/anaconda/meep/bin/python /users/jlizaraz/CEM/wavesight/hail_david.py "Finished {config_root}."
+EOL
 '''
 
 def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
@@ -88,10 +140,10 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nUpper):
     batch_rid = ws.rando_id()
     config_fname = 'config_dict-'+batch_rid+'.pkl'
     with open(config_fname,'wb') as file:
-        print("Saving parameters to %s" % config_fname)
+        print("Saving configuration parameters to %s" % config_fname)
         pickle.dump(config_dict, file)
-    batch_fname = 'sbatch-'+batch_rid+'.sh'
-    batch_cont = batch_template.format(wavesight_dir=wavesight_dir,
+    bash_script_fname = batch_rid+'.sh'
+    batch_cont = bash_template.format(wavesight_dir=wavesight_dir,
                     config_fname = config_fname,
                     config_root  = batch_rid,
                     coreRadius   = coreRadius,
@@ -102,8 +154,8 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nUpper):
                     numModes     = numModes,
                     num_time_slices = num_time_slices,
                     num_modes=(numModes-1))
-    with open(batch_fname, 'w') as file:
-        print("Saving sbatch file to %s" % batch_fname)
+    with open(bash_script_fname, 'w') as file:
+        print("Saving bash script to %s" % bash_script_fname)
         file.write(batch_cont+'\n')
 
 if __name__ == "__main__":

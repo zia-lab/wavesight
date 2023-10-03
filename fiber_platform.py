@@ -2,23 +2,34 @@
 
 import meep as mp
 import numpy as np
-import h5py as h5pie
+import h5py
 import cmasher as cm
 import os
 from matplotlib import pyplot as plt
 import wavesight as ws
 import time
 import cmasher as cm
-from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
 import pickle
 import argparse
+import psutil
 from matplotlib import style
 style.use('dark_background')
+from memory_profiler import profile
+from math import ceil
+import psutil
 
 def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
     rtime = (kappa * sim_cell.x * sim_cell.y * sim_cell.z
              * run_time * spatial_resolution**3)
     return rtime
+
+def format_time(seconds):
+    hours, remainder = divmod(seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
+
+def ceil_to_multiple(number, multiple):
+    return ceil(number / multiple) * multiple
 
 parser = argparse.ArgumentParser(description='Mode launcher.')
 parser.add_argument('config_dict_fname', type=str, help='Configuration file for modes.')
@@ -26,12 +37,15 @@ parser.add_argument('num_time_slices', type=int, help='Determines sampling inter
 parser.add_argument('modeidx', type=int, help='The index for the launch mode.')
 args = parser.parse_args()
 
+run_time_scaler = 1 # scales the run time, keeping same memory usage
 data_dir = '/users/jlizaraz/data/jlizaraz/CEM/wavesight/'
-show_plot = False
+show_plots = False
 config_dict = pickle.load(open(args.config_dict_fname,'rb'))
 big_job_id  = args.config_dict_fname.split('config_dict-')[-1].split('.')[0]
+reqs_fname = '%s.req' % big_job_id
 data_dir = os.path.join(data_dir, big_job_id)
 grab_fields = True
+save_fields_to_pkl = False
 
 for k,v in config_dict.items():
     globals()[k] = v
@@ -40,9 +54,11 @@ def run_time_fun(fiber_height, nCore):
     return 0.75 * fiber_height * nCore
 sim_height_fun = lambda λFree, pml_thickness: (10 * λFree + 2 * pml_thickness)
 
+# @profile
 def mode_solver(num_time_slices, mode_idx):
+    initial_time = time.time()
     sim_id        = ws.rando_id()
-    output_dir    = data_dir + '-' + sim_id
+    output_dir    = '%s-%s-%s' % (data_dir, sim_id, mode_idx)
     send_to_slack = mp.am_master()
     if mp.am_master():
         slack_thread = ws.post_message_to_slack("%s - %s - %s" % (mode_idx, big_job_id, sim_id), slack_channel=slack_channel)
@@ -76,7 +92,6 @@ def mode_solver(num_time_slices, mode_idx):
     (coreRadius, simWidth, Δs, xrange, yrange, 
         ρrange, φrange, Xg, Yg, ρg, φg, nxy, 
         crossMask, numSamples) = coord_layout
-    mode_sol['simWidth'] = simWidth
     eigennums  = fiber_sol['eigenbasis_nums']
     mode_idx = mode_sol['mode_idx']
     mode_params = eigennums[mode_idx]
@@ -163,7 +178,7 @@ def mode_solver(num_time_slices, mode_idx):
     plt.tight_layout()
     if send_to_slack:
         ws.send_fig_to_slack(fig, slack_channel, "Field profiles", 'field-profiles-%s.png' % sim_id, thread_ts = thread_ts)
-    if show_plot:
+    if show_plots:
         plt.show()
     else:
         plt.close()
@@ -182,11 +197,12 @@ def mode_solver(num_time_slices, mode_idx):
     ax.set_title('Equivalent currents.')
     if send_to_slack:
         ws.send_fig_to_slack(fig, slack_channel, "Current lines", 'current-lines-%s.png' % sim_id, thread_ts = thread_ts)
-    if show_plot:
+    if show_plots:
         plt.show()
     else:
         plt.close()
-
+    del streamArrayK
+    del streamArrayJ
     (ECoreρ, ECoreϕ, ECorez, ECladdingρ, ECladdingϕ, ECladdingz) = Efuncs
     (HCoreρ, HCoreϕ, HCorez, HCladdingρ, HCladdingϕ, HCladdingz) = Hfuncs
 
@@ -211,7 +227,7 @@ def mode_solver(num_time_slices, mode_idx):
     base_period     = 1./kFree
 
     # how long the source and simulation run
-    run_time    = run_time_fun(fiber_height, nCore)
+    run_time    = run_time_scaler * run_time_fun(fiber_height, nCore)
     mode_sol['run_time'] = float(run_time)
     field_sampling_interval = run_time/num_time_slices
     source_time = run_time
@@ -256,7 +272,7 @@ def mode_solver(num_time_slices, mode_idx):
     axes[1].set_aspect('equal')
     if send_to_slack:
         ws.send_fig_to_slack(fig, slack_channel, "Device layout", 'device-layout-%s.png' % sim_id, thread_ts = thread_ts)
-    if show_plot:
+    if show_plots:
         plt.show()
     else:
         plt.close()
@@ -364,7 +380,6 @@ def mode_solver(num_time_slices, mode_idx):
                             mp.to_appended(e_yz_slices_fname, 
                                 mp.at_every(field_sampling_interval, mp.output_efield)))),
             until=run_time)
-    print("ahoy")
     end_time = time.time()
     time_taken = end_time - start_time
 
@@ -411,11 +426,11 @@ def mode_solver(num_time_slices, mode_idx):
             for idx, field_name in enumerate(['e','h']):
                 field_data = {}
                 h5_full_name = os.path.join(output_dir, 'fiber_platform-' + mode_sol[f'{field_name}_{plane}_slices_fname_h5'])
-                with h5pie.File(h5_full_name,'r') as h5_file:
+                with h5py.File(h5_full_name,'r') as h5_file:
                     h5_keys = list(h5_file.keys())
                     for h5_key in h5_keys:
-                        datum = np.array(h5_file[h5_key])
-                        datum = np.transpose(datum,(1,0,2))
+                        datum = np.array(h5_file[h5_key][:,:,-1]).T
+                        # datum = np.transpose(datum,(1,0,2))
                         field_data[h5_key] = datum
                 field_array = np.zeros((3,)+datum.shape, dtype=np.complex_)
                 field_parts  = f'{field_name}x {field_name}y {field_name}z'.split(' ')
@@ -433,7 +448,7 @@ def mode_solver(num_time_slices, mode_idx):
 
     print("Calculating basic plots for the end time ...")
     for sagplane in ['xz','yz']:
-        Ey_final_sag = monitor_fields[sagplane][0,1,:,:,-1]
+        Ey_final_sag = monitor_fields[sagplane][0,1,:,:]
         extent = [-simWidth/2, simWidth/2, -fiber_height/2, fiber_height/2]
         plotField = np.real(Ey_final_sag)
         fig, ax   = plt.subplots(figsize=(3, 3 * fiber_height / simWidth))
@@ -450,35 +465,35 @@ def mode_solver(num_time_slices, mode_idx):
         plt.tight_layout()
         if send_to_slack:
             ws.send_fig_to_slack(fig, slack_channel, 'sagittal-%s-final-Ey' % sagplane,'sagittal-%s-final-Ey' % sagplane, thread_ts)
-        if show_plot:
+        if show_plots:
             plt.show()
         else:
             plt.close()
 
-    print("Picking a notable point at z=0 for sampling Ey at different times and z-values ...")
-    numZsamples = Ey_final_sag.shape[0]
-    midZsample = numZsamples // 2
-    midCut     = Ey_final_sag[midZsample, :]
-    goodIndex = np.argmax(np.real(midCut))
-    columnChange = monitor_fields['xz'][0,1,:,goodIndex,:]
-    plotField = np.real(columnChange)
-    extent = [0, run_time, -fiber_height/2, fiber_height/2]
-    fig, ax = plt.subplots(figsize=(6, 6))
-    ax.imshow(plotField, 
-            origin='lower', 
-            extent=extent,
-            cmap=cm.watermelon)
-    ax.set_xlabel('t/ν')
-    ax.set_ylabel('z/μm')
-    ax.set_aspect(run_time/fiber_height)
-    ax.set_title('Re(Ey) at fixed x,y')
-    plt.tight_layout()
-    if send_to_slack:
-        ws.send_fig_to_slack(fig, slack_channel, 'Re(Ey) at fixed x,y','Re(Ey)-at-fixed-x,y',thread_ts)
-    if show_plot:
-        plt.show()
-    else:
-        plt.close()
+    # print("Picking a notable point at z=0 for sampling Ey at different times and z-values ...")
+    # numZsamples = Ey_final_sag.shape[0]
+    # midZsample = numZsamples // 2
+    # midCut     = Ey_final_sag[midZsample, :]
+    # goodIndex = np.argmax(np.real(midCut))
+    # columnChange = monitor_fields['xz'][0,1,:,goodIndex]
+    # plotField = np.real(columnChange)
+    # extent = [0, run_time, -fiber_height/2, fiber_height/2]
+    # fig, ax = plt.subplots(figsize=(6, 6))
+    # ax.imshow(plotField, 
+    #         origin='lower', 
+    #         extent=extent,
+    #         cmap=cm.watermelon)
+    # ax.set_xlabel('t/ν')
+    # ax.set_ylabel('z/μm')
+    # ax.set_aspect(run_time/fiber_height)
+    # ax.set_title('Re(Ey) at fixed x,y')
+    # plt.tight_layout()
+    # if send_to_slack:
+    #     ws.send_fig_to_slack(fig, slack_channel, 'Re(Ey) at fixed x,y','Re(Ey)-at-fixed-x,y',thread_ts)
+    # if show_plots:
+    #     plt.show()
+    # else:
+    #     plt.close()
 
     print("Sampling the ground-truth modal profile ...")
     Xg, Yg, E_field_GT, H_field_GT = ws.field_sampler(funPairs, 
@@ -501,7 +516,7 @@ def mode_solver(num_time_slices, mode_idx):
     mask   = (Xg**2 + Yg**2) < coreRadius**2
     for idx, plotFun in enumerate([np.real, np.imag]):
         ax = axes[0,idx]
-        plotField = field_array[component_index][:,:,time_index]
+        plotField = field_array[component_index]
         plotField = plotFun(plotField)
         title = ['re','im'][idx]
         title = component_name + '.' + title
@@ -531,20 +546,37 @@ def mode_solver(num_time_slices, mode_idx):
     plt.tight_layout()
     if send_to_slack:
         ws.send_fig_to_slack(fig, slack_channel, 'Comparison of last measured field','comparison-of-last-measured-field',thread_ts)
-    if show_plot:
+    if show_plots:
         plt.show()
     else:
         plt.close()
-    mode_sol['approx_mem_usage_in_MB'] = mem_usage
+    mode_sol['approx_MEEP_mem_usage_in_MB'] = mem_usage
     summary = ws.dict_summary(mode_sol, 'SIM-'+sim_id)
     if send_to_slack:
         ws.post_message_to_slack(summary, slack_channel=slack_channel,thread_ts=thread_ts)
-    mode_sol['monitor_field_slices'] = monitor_fields
+    if save_fields_to_pkl:
+        mode_sol['monitor_field_slices'] = monitor_fields
     pkl_fname = 'sim-%s.pkl' % sim_id
     pkl_fname = os.path.join(output_dir, pkl_fname)
     with open(pkl_fname, 'wb') as file:
         print("Saving solution to %s ..." % pkl_fname)
         pickle.dump(mode_sol, file)
+    process = psutil.Process(os.getpid())
+    mem_used_in_bytes = process.memory_info().rss
+    mem_used_in_Mbytes = mem_used_in_bytes/1024/1024
+    mode_sol['overall_mem_usage_in_MB'] = mem_used_in_Mbytes
+    mem_used_in_Gbytes = mem_used_in_Mbytes/1024
+    final_final_time = time.time()
+    time_taken_in_s = final_final_time - initial_time
+    time_req_in_s   = ceil_to_multiple(1.1*time_taken_in_s, 60*15)
+    mem_req_in_GB   = int(ceil_to_multiple(1.1*mem_used_in_Gbytes, 1.0))
+    time_req_fmt  = format_time(time_req_in_s)
+    mem_req_fmt   = '%d' % mem_req_in_GB
+    print("Took %s s to run, and spent %.1f MB of RAM." % (time_taken_in_s,mem_used_in_Mbytes ))
+    if not os.path.exists(reqs_fname):
+        print("Creting resources requirement file...")
+        with open(reqs_fname,'w') as file:
+            file.write('%s,%s' % (mem_req_fmt, time_req_fmt)) 
 
 if __name__ == "__main__":
     mode_solver(args.num_time_slices, args.modeidx)
