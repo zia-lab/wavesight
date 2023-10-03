@@ -25,7 +25,7 @@ data_dir     = '/users/jlizaraz/data/jlizaraz/CEM/wavesight'
 alt_indexing = False
 post_to_slack = True
 
-def wave_plotter(big_job_id):
+def wave_plotter(big_job_id, max_plots=np.inf):
     data_dir_contents = os.listdir(data_dir)
     job_dirs = [os.path.join(data_dir, dir) for dir in data_dir_contents if (dir.startswith(big_job_id) 
                                                                             and os.path.isdir(os.path.join(data_dir,dir)))]
@@ -47,10 +47,19 @@ def wave_plotter(big_job_id):
         job_dirs = job_dirs[sorter]
         job_dirs = list(map(str, job_dirs))
     else:
-        job_dirs = list(sorted(job_dirs))
+        def wave_sorter(x):
+            idx = int(x.split('-')[-1])
+            return idx
+        job_dirs = list(sorted(job_dirs, key = wave_sorter))
 
-    pdf_sink = PdfPages('%s-sagittal.pdf' % big_job_id)
+    saggital_pdf_fname = '%s-sagittal.pdf' % big_job_id
+    xy_pdf_fname = '%s-xy.pdf' % big_job_id
+    pdf_sink_xy_plots = PdfPages(xy_pdf_fname)
+    pdf_sink_sag_plots = PdfPages(saggital_pdf_fname)
+    
     for job_idx, job_dir in enumerate(job_dirs):
+        if job_idx >= max_plots:
+            continue
         print('%d/%d' % (job_idx, len(job_dirs)))
         # grab the pickle
         job_dir_files = os.listdir(str(job_dir))
@@ -112,7 +121,6 @@ def wave_plotter(big_job_id):
         coreRadius = mode_sol['coreRadius']
 
         for sagplane in ['xz','yz']:
-            sagdir = sagplane[0]
             fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(3*3, 2*3 * fiber_height / simWidth))
             for field_idx, field in enumerate(['E','H']):
                 for cartesian_idx, cartesian_component in enumerate('xyz'):
@@ -132,19 +140,54 @@ def wave_plotter(big_job_id):
                             interpolation='none')
                     ax.set_xlabel('%s/μm' % sagplane[0])
                     ax.set_ylabel('z/μm')
-                    title = 'Re($%s_%s$)' % (field, cartesian_component)
+                    pretty_range = '$%s$' % ws.num2tex(cmrange, 2)
+                    title = 'Re($%s_%s$) | [%s]' % (field, cartesian_component, pretty_range)
                     ax.set_title(title)
             fig.suptitle("%s | %s plane" % (suptitle, sagplane))
             plt.tight_layout()
-            pdf_sink.savefig()
+            pdf_sink_sag_plots.savefig()
             plt.close()
-    pdf_sink.close()
+        for plane in ['xy']:
+            fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(3*3, 2*3 * fiber_height / simWidth))
+            for field_idx, field in enumerate(['E','H']):
+                for cartesian_idx, cartesian_component in enumerate('xyz'):
+                    final_field = monitor_fields[plane][field_idx,cartesian_idx,:,:]
+                    extent = [-simWidth/2, simWidth/2, -simWidth/2, simWidth/2]
+                    plotField = np.real(final_field)
+                    cmrange = max(np.max(plotField), np.max(-plotField))
+                    ax = axes[field_idx, cartesian_idx]
+                    ax.add_patch(plt.Circle((0,0), radius=coreRadius, fill=False))
+                    ax.imshow(plotField, 
+                            cmap=cmap, 
+                            origin='lower',
+                            vmin=-cmrange,
+                            vmax=cmrange,
+                            extent=extent,
+                            interpolation='none')
+                    ax.set_xlabel('x/μm')
+                    ax.set_ylabel('y/μm')
+                    pretty_range = '$%s$' % ws.num2tex(cmrange, 2)
+                    title = 'Re($%s_%s$) | [%s]' % (field, cartesian_component, pretty_range)
+                    ax.set_title(title)
+            fig.suptitle("%s | %s plane" % (suptitle, plane))
+            plt.tight_layout()
+            pdf_sink_xy_plots.savefig()
+            plt.close()
+    pdf_sink_sag_plots.close()
+    pdf_sink_xy_plots.close()
+
     if post_to_slack:
         msg = ws.post_file_to_slack(big_job_id,
-                                    'OXUX-ADUM-sagittal.pdf',
-                                    open('OXUX-ADUM-sagittal.pdf','rb'),
+                                    saggital_pdf_fname,
+                                    open(saggital_pdf_fname,'rb'),
                                     'pdf',
-                                    big_job_id+'.pdf',
+                                    saggital_pdf_fname,
+                                    slack_channel='nvs_and_metalenses')
+        msg = ws.post_file_to_slack(big_job_id,
+                                    xy_pdf_fname,
+                                    open(xy_pdf_fname,'rb'),
+                                    'pdf',
+                                    xy_pdf_fname,
                                     slack_channel='nvs_and_metalenses')
 
 if __name__ == '__main__':

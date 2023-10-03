@@ -46,7 +46,12 @@ reqs_fname = '%s.req' % big_job_id
 data_dir = os.path.join(data_dir, big_job_id)
 grab_fields = True
 save_fields_to_pkl = False
+sample_posts = 10 # sample about this amount and post to Slack as sims progress
+plot_field_profiles = False
+plot_current_streams = False
+sag_plot_planes = ['xz']
 
+# load all the config values to session
 for k,v in config_dict.items():
     globals()[k] = v
 
@@ -59,8 +64,8 @@ def mode_solver(num_time_slices, mode_idx):
     initial_time = time.time()
     sim_id        = ws.rando_id()
     output_dir    = '%s-%s-%s' % (data_dir, sim_id, mode_idx)
-    send_to_slack = mp.am_master()
-    if mp.am_master():
+    send_to_slack = ((mode_idx % ceil(numModes/sample_posts)) == 0)
+    if send_to_slack:
         slack_thread = ws.post_message_to_slack("%s - %s - %s" % (mode_idx, big_job_id, sim_id), slack_channel=slack_channel)
         thread_ts = slack_thread['ts']
 
@@ -160,49 +165,52 @@ def mode_solver(num_time_slices, mode_idx):
     mode_sol['sampled_Xg'] = Xg
     mode_sol['sampled_Yg'] = Yg
 
-    print("Making a plot of the field profiles ...")
-    # make a plot of the field profiles
-    vrange = 0
-    fig, ax = plt.subplots(figsize=(6,3))
-    for componentName in field_profiles:
-        E_all = field_profiles[componentName]
-        if (E_all.dtype) == np.complex128:
-            E_all = np.imag(E_all)
-            componentName = 'Im(%s)' % componentName
-        ax.plot(ρrange, E_all, label=componentName)
-        vrange = max(vrange, np.max(np.abs(E_all)))
-    ax.plot([coreRadius]*2,[-vrange,vrange],'o--',color='w',ms=2,lw=0.5)
-    plt.legend()
-    ax.set_xlabel('x/μm')
-    ax.set_ylabel('field')
-    plt.tight_layout()
-    if send_to_slack:
-        ws.send_fig_to_slack(fig, slack_channel, "Field profiles", 'field-profiles-%s.png' % sim_id, thread_ts = thread_ts)
-    if show_plots:
-        plt.show()
-    else:
-        plt.close()
+    if plot_field_profiles:
+        print("Making a plot of the field profiles ...")
+        # make a plot of the field profiles
+        vrange = 0
+        fig, ax = plt.subplots(figsize=(6,3))
+        for componentName in field_profiles:
+            E_all = field_profiles[componentName]
+            if (E_all.dtype) == np.complex128:
+                E_all = np.imag(E_all)
+                componentName = 'Im(%s)' % componentName
+            ax.plot(ρrange, E_all, label=componentName)
+            vrange = max(vrange, np.max(np.abs(E_all)))
+        ax.plot([coreRadius]*2,[-vrange,vrange],'o--',color='w',ms=2,lw=0.5)
+        plt.legend()
+        ax.set_xlabel('x/μm')
+        ax.set_ylabel('field')
+        plt.tight_layout()
+        if send_to_slack:
+            ws.send_fig_to_slack(fig, slack_channel, "Field profiles", 'field-profiles-%s.png' % sim_id, thread_ts = thread_ts)
+        if show_plots:
+            plt.show()
+        else:
+            plt.close()
 
-    print("Making a streamplot of the generating currents ...")
-    streamArrayK = np.real(magnetic_K)
-    streamArrayJ = np.real(electric_J)
-    fig, ax = plt.subplots(figsize=(6,6))
-    ax.streamplot(Xg, Yg, streamArrayK[0],streamArrayK[1], density=1., color='b')
-    ax.streamplot(Xg, Yg, streamArrayJ[0],streamArrayJ[1], density=1., color='r')
-    coreBoundary = plt.Circle((0,0), coreRadius, color='w', fill=False)
-    ax.add_patch(coreBoundary)
-    ax.set_aspect('equal')
-    ax.set_xlabel('x/μm')
-    ax.set_ylabel('y/μm')
-    ax.set_title('Equivalent currents.')
-    if send_to_slack:
-        ws.send_fig_to_slack(fig, slack_channel, "Current lines", 'current-lines-%s.png' % sim_id, thread_ts = thread_ts)
-    if show_plots:
-        plt.show()
-    else:
-        plt.close()
-    del streamArrayK
-    del streamArrayJ
+    if plot_current_streams:
+        print("Making a streamplot of the generating currents ...")
+        streamArrayK = np.real(magnetic_K)
+        streamArrayJ = np.real(electric_J)
+        fig, ax = plt.subplots(figsize=(6,6))
+        ax.streamplot(Xg, Yg, streamArrayK[0],streamArrayK[1], density=1., color='b')
+        ax.streamplot(Xg, Yg, streamArrayJ[0],streamArrayJ[1], density=1., color='r')
+        coreBoundary = plt.Circle((0,0), coreRadius, color='w', fill=False)
+        ax.add_patch(coreBoundary)
+        ax.set_aspect('equal')
+        ax.set_xlabel('x/μm')
+        ax.set_ylabel('y/μm')
+        ax.set_title('Equivalent currents.')
+        if send_to_slack:
+            ws.send_fig_to_slack(fig, slack_channel, "Current lines", 'current-lines-%s.png' % sim_id, thread_ts = thread_ts)
+        if show_plots:
+            plt.show()
+        else:
+            plt.close()
+        del streamArrayK
+        del streamArrayJ
+
     (ECoreρ, ECoreϕ, ECorez, ECladdingρ, ECladdingϕ, ECladdingz) = Efuncs
     (HCoreρ, HCoreϕ, HCorez, HCladdingρ, HCladdingϕ, HCladdingz) = Hfuncs
 
@@ -270,7 +278,7 @@ def mode_solver(num_time_slices, mode_idx):
     axes[1].set_ylabel('z/μm')
     axes[1].set_title('Sagittal cross section of simulation vol')
     axes[1].set_aspect('equal')
-    if send_to_slack:
+    if send_to_slack and (mode_idx == 0):
         ws.send_fig_to_slack(fig, slack_channel, "Device layout", 'device-layout-%s.png' % sim_id, thread_ts = thread_ts)
     if show_plots:
         plt.show()
@@ -447,7 +455,7 @@ def mode_solver(num_time_slices, mode_idx):
     print("MEEP-adjusted resolution: %.2f px/μm" % effective_resolution)
 
     print("Calculating basic plots for the end time ...")
-    for sagplane in ['xz','yz']:
+    for sagplane in sag_plot_planes:
         Ey_final_sag = monitor_fields[sagplane][0,1,:,:]
         extent = [-simWidth/2, simWidth/2, -fiber_height/2, fiber_height/2]
         plotField = np.real(Ey_final_sag)
@@ -551,6 +559,10 @@ def mode_solver(num_time_slices, mode_idx):
     else:
         plt.close()
     mode_sol['approx_MEEP_mem_usage_in_MB'] = mem_usage
+    process = psutil.Process(os.getpid())
+    mem_used_in_bytes = process.memory_info().rss
+    mem_used_in_Mbytes = mem_used_in_bytes/1024/1024
+    mode_sol['overall_mem_usage_in_MB'] = str(mem_used_in_Mbytes)
     summary = ws.dict_summary(mode_sol, 'SIM-'+sim_id)
     if send_to_slack:
         ws.post_message_to_slack(summary, slack_channel=slack_channel,thread_ts=thread_ts)
@@ -561,10 +573,7 @@ def mode_solver(num_time_slices, mode_idx):
     with open(pkl_fname, 'wb') as file:
         print("Saving solution to %s ..." % pkl_fname)
         pickle.dump(mode_sol, file)
-    process = psutil.Process(os.getpid())
-    mem_used_in_bytes = process.memory_info().rss
-    mem_used_in_Mbytes = mem_used_in_bytes/1024/1024
-    mode_sol['overall_mem_usage_in_MB'] = mem_used_in_Mbytes
+
     mem_used_in_Gbytes = mem_used_in_Mbytes/1024
     final_final_time = time.time()
     time_taken_in_s = final_final_time - initial_time
@@ -574,7 +583,7 @@ def mode_solver(num_time_slices, mode_idx):
     mem_req_fmt   = '%d' % mem_req_in_GB
     print("Took %s s to run, and spent %.1f MB of RAM." % (time_taken_in_s,mem_used_in_Mbytes ))
     if not os.path.exists(reqs_fname):
-        print("Creting resources requirement file...")
+        print("Creting resource requirement file...")
         with open(reqs_fname,'w') as file:
             file.write('%s,%s' % (mem_req_fmt, time_req_fmt)) 
 
