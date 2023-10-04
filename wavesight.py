@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
 
-import numpy as np
-from matplotlib import pyplot as plt
-from convstore import * 
-from fungenerators import *
-from fieldgenesis import *
-from fields import *
-from misc import *
-from tqdm.notebook import tqdm
-from scipy.interpolate import RegularGridInterpolator
-from scipy.fftpack import fft2, ifft2
 import warnings
-from matplotlib.patches import Rectangle
+import numpy as np
+from misc import *
+import cmasher as cm
+from fields import *
+from convstore import * 
 import diffkernels as dk
+from fieldgenesis import *
+from fungenerators import *
+from tqdm.notebook import tqdm
 from collections import OrderedDict
+from matplotlib import pyplot as plt
+from scipy.interpolate import griddata
+from matplotlib.patches import Rectangle
+from scipy.interpolate import RegularGridInterpolator
 
 real_dtype = np.float64
 complex_dtype = np.complex128  
@@ -951,8 +952,8 @@ def angular_farfield_propagator(field, λFree, nMedium, Zf, Zi, si, sf, Δf = No
     and the propagation distance.
 
     This is done by using the angular spectrum method. In which the Fourier
-    transform of the nearfield is understood to describe the coeffients that
-    approximate the farfield as the superposition of plane waves.
+    transform of the nearfield is understood to describe the coefficients that
+    approximate the farfield as a superposition of plane waves.
 
     It assumes that the nearfield is given on a square grid perpendicular to
     the z-axis. The farfield is also given on a square grid perpendicular to
@@ -1989,4 +1990,116 @@ def equivCurrents(Efuncs, Hfuncs, coreRadius, m, parity):
                 return ECladdingϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) - ECladdingρ(ρ)*np.sin(m*φ)*np.cos(ϕ)
     JKfuns = (Jx, Jy, Kx, Ky)
     return JKfuns
+
+def from_near_to_far_angular(field, xy_span,
+                             kMedium, plotFun = np.real,
+                             angular_resolution = np.pi/50, make_plots=False):
+    '''
+    Parameters
+    ----------
+    field : np.array (N, N)
+        Values, possibly complex, of the given field.
+    xy_span : float
+        The spatial extent in both the x and y axes that corresponds to the given field array.
+    kMedium : float
+        The magnitude of the homogeneous-medium wavevector
+    plotFun : func
+        In case plots are presented, this function is applied to the given array before plotting.
+    angular_resolution: float, optional
+        To what angular resolution the angular representation of the field is calculated.
+    make_plots: bool
+        Whether to show plots as the calculation is carried out.
+    Returns
+    -------
+    (angular_rep, theta_range, phi_range, phi_sum, θmax) : tuple
+        angular_rep : np.array (M, M)
+            The field values in angular coordinates (θ, ϕ).
+        theta_range : np.array
+            With the values of θ that match the provided angular_rep.
+        phi_range : np.array
+            With the values of ϕ that match the provided angular_rep.
+        phi_sum   : np.array
+            angular_rep summed along the ϕ axis
+        θmax      : float
+            The angle, in degrees, at which phi_sum is max.
+    '''
+    x_span = xy_span
+    y_span = xy_span
+    num_theta_samples = int(np.pi / angular_resolution)
+    num_phi_samples = num_theta_samples
+
+    x = np.linspace(-x_span/2,x_span/2, field.shape[0])
+    y = np.linspace(-y_span/2,y_span/2, field.shape[1])
+
+    fourier_Field = np.fft.fft2(field)
+    fourier_Field = np.fft.fftshift(fourier_Field)
+    # Infer the sampling rate of the given field
+    dx = x[1]-x[0]
+    dy = y[1]-y[0]
+    # Calculate and shift the corresponding frequencies
+    # converted to angular components of wavevector
+    freq_x = 2*np.pi*np.fft.fftfreq(fourier_Field.shape[0], dx)
+    freq_y = 2*np.pi*np.fft.fftfreq(fourier_Field.shape[1], dy)
+    freq_x_shifted = np.fft.fftshift(freq_x)
+    freq_y_shifted = np.fft.fftshift(freq_y)
+
+    if make_plots:
+        cmap_range = max(np.max(plotFun(fourier_Field)), np.max(-plotFun(fourier_Field)))
+        extent = np.array([freq_x_shifted[0],freq_x_shifted[-1],
+                        freq_y_shifted[0],freq_y_shifted[-1]])
+        extent = extent/kMedium
+        fig, ax = plt.subplots()
+        ax.imshow(plotFun(fourier_Field),
+                cmap=cm.ember,
+                vmin=0,
+                vmax=cmap_range,
+                extent=extent
+                )
+        ax.add_patch(plt.Circle((0,0),
+                                1,
+                                fill=False,
+                                color='r',
+                                linestyle='--',
+                                alpha=0.5))
+        ax.set_xlabel('kx/k')
+        ax.set_ylabel('ky/k')
+        ax.set_xlim(-1.1, 1.1)
+        ax.set_ylim(-1.1, 1.1)
+        plt.show()
+
+    # Convert the Fourier transform to angular variables
+    theta_range  = np.linspace(-np.pi/2, np.pi/2, num_theta_samples+1)
+    phi_range    = np.linspace(0, np.pi, num_phi_samples+1)
+    phi_grid, theta_grid   = np.meshgrid(phi_range, theta_range)
+    sx_grid = np.sin(theta_grid) * np.cos(phi_grid)
+    sy_grid = np.sin(theta_grid) * np.sin(phi_grid)
+    sx_grid_old, sy_grid_old = np.meshgrid(freq_x_shifted/kMedium, freq_y_shifted/kMedium)
+    jacobian = np.abs(np.sin(theta_grid))
+
+    angular_rep = griddata((sx_grid_old.ravel(), 
+                            sy_grid_old.ravel()), fourier_Field.ravel(), 
+                        (sx_grid, sy_grid),
+                        method='cubic')
+    angular_rep = np.abs(angular_rep**2)
+
+    if make_plots:
+        extent = np.array([0, 180, -90,  90])
+        fig, ax = plt.subplots(figsize=(10,5))
+        ax.imshow(angular_rep, cmap=cm.ember, extent=extent)
+        ax.set_xlabel('$\phi /deg$')
+        ax.set_ylabel(r'$\theta / deg$')
+        ax.set_xticks(np.arange(0, 181, 45))
+        ax.set_yticks(np.arange(-90, 91, 45))
+        plt.show()
+
+    phi_sum = np.sum(angular_rep, axis=1)
+    phi_sum /= np.max(phi_sum)
+    θmax = np.abs(theta_range[np.argmax(phi_sum)]/np.pi*180)
+    if make_plots:
+        fig, ax = plt.subplots(figsize=(10,3))
+        ax.plot(theta_range / np.pi * 180, phi_sum)
+        ax.set_xlabel('θ/∘')
+        plt.show()
+    
+    return (angular_rep, theta_range, phi_range, phi_sum, θmax)
 
