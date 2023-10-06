@@ -1,29 +1,21 @@
 #!/usr/bin/env python3
 # fiber_bundle.py
 
-import numpy as np
-from matplotlib import pyplot as plt
-import wavesight as ws
-from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
 import pickle
 import argparse
 import warnings
-from matplotlib import style
-style.use('dark_background')
+import numpy as np
+import wavesight as ws
 
 warnings.filterwarnings('ignore', 'invalid value encountered in scalar add')
 warnings.filterwarnings('ignore', 'invalid value encountered in add')
 warnings.filterwarnings('ignore', 'invalid value encountered in scalar subtract')
 warnings.filterwarnings('ignore', 'invalid value encountered in subtract')
 
-show_plot = False
-send_to_slack = True
-make_streamplots =  False
-grab_fields  = True # whether to import the h5 files that contain the monotired fields
 wavesight_dir = '/users/jlizaraz/CEM/wavesight'
-num_time_slices = 30 # how many time samples of fields
+num_time_slices = 30 # approx how many time samples of fields
 
-bash_template = '''#!/bin/bash
+bash_template_1 = '''#!/bin/bash
 
 #nCladding       : {nCladding}
 #nCore           : {nCore}
@@ -34,17 +26,82 @@ bash_template = '''#!/bin/bash
 
 cd {wavesight_dir}
 # Check if the memory and time requirements have been already calculated
-if [[ -f "{config_root}req" ]]; then
-    echo "Reading resource requirements ..."
-    IFS=',' read -r memreq timereq < {config_root}.req
+if [[ -f "{config_root}.req" ]]; then
+echo "Requirements have already been estimated ..."
+config_job_id=1
 else
-    echo "Requirments have not been determined, running a single mode for this purpose."
-    ~/anaconda/meep/bin/python /users/jlizaraz/CEM/wavesight/fiber_platform.py config_dict-{config_root}.pkl {num_time_slices} 0
-    sleep 1
-    IFS=',' read -r memreq timereq < {config_root}.req
+echo "Requirements have not been determined, running a single mode for this purpose."
+# Submit the first array job
+sbatch_output=$(sbatch <<EOL
+#!/bin/bash
+#SBATCH -n 1
+#SBATCH --job-name=req_run
+#SBATCH --mem=64GB
+#SBATCH -t 2:00:00
+
+#SBATCH -o {config_root}-req.out
+#SBATCH -e {config_root}-req.out
+
+cd {wavesight_dir}
+~/anaconda/meep/bin/python /users/jlizaraz/CEM/wavesight/fiber_platform.py config_dict-{config_root}.pkl {num_time_slices} 0
+EOL
+)
+# get the job id
+config_job_id=$(echo "$sbatch_output" | awk '{{print $NF}}')
 fi
 
-echo "sbatch resources: ${{memreq}}GB,${{timereq}}"
+if [ "$config_job_id" -eq 1 ]
+then
+#submit the axiliary job with no dependency
+sbatch <<EOL
+#!/bin/bash
+#SBATCH -n 1 
+#SBATCH --job-name=buddy_job
+#SBATCH --mem=1GB
+#SBATCH -t 00:10:00
+#SBATCH -o {config_root}-buddy.out
+#SBATCH -e {config_root}-buddy.out
+
+cd {wavesight_dir}
+bash {config_root}-2.sh
+EOL
+else
+#submit the axiliary job with dependency
+sbatch --dependency=afterany:$config_job_id <<EOL
+#!/bin/bash
+#SBATCH -n 1 
+#SBATCH --job-name=buddy_job
+#SBATCH --mem=1GB
+#SBATCH -t 00:10:00
+#SBATCH -o {config_root}-buddy.out
+#SBATCH -e {config_root}-buddy.out
+
+cd {wavesight_dir}
+bash {config_root}-2.sh
+EOL
+fi
+'''
+
+bash_template_2 = '''#!/bin/bash
+
+#nCladding       : {nCladding}
+#nCore           : {nCore}
+#coreRadius      : {coreRadius}
+#free_wavelength : {wavelength} um
+#nUpper          : {nUpper}
+#numModes        : {numModes}
+
+cd {wavesight_dir}
+# Check if the memory and time requirements have been already calculated
+if [[ -f "{config_root}.req" ]]; then
+echo "Reading resource requirements ..."
+IFS=',' read -r memreq timereq diskreq < {config_root}.req
+else
+echo "Requirements have not been determined."
+exit 1
+fi
+
+echo "sbatch resources: ${{memreq}}GB,${{timereq}},${{diskreq}}MB"
 
 # Submit the first array job
 sbatch_output=$(sbatch <<EOL
@@ -62,6 +119,7 @@ cd {wavesight_dir}
 ~/anaconda/meep/bin/python /users/jlizaraz/CEM/wavesight/fiber_platform.py config_dict-{config_root}.pkl {num_time_slices} \$SLURM_ARRAY_TASK_ID
 EOL
 )
+
 # get the job id
 array_job_id=$(echo "$sbatch_output" | awk '{{print $NF}}')
 
@@ -142,8 +200,9 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nUpper):
     with open(config_fname,'wb') as file:
         print("Saving configuration parameters to %s" % config_fname)
         pickle.dump(config_dict, file)
-    bash_script_fname = batch_rid+'.sh'
-    batch_cont = bash_template.format(wavesight_dir=wavesight_dir,
+    bash_script_fname_1 = batch_rid+'-1.sh'
+    bash_script_fname_2 = batch_rid+'-2.sh'
+    batch_script_1 = bash_template_1.format(wavesight_dir=wavesight_dir,
                     config_fname = config_fname,
                     config_root  = batch_rid,
                     coreRadius   = coreRadius,
@@ -154,9 +213,23 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nUpper):
                     numModes     = numModes,
                     num_time_slices = num_time_slices,
                     num_modes=(numModes-1))
-    with open(bash_script_fname, 'w') as file:
-        print("Saving bash script to %s" % bash_script_fname)
-        file.write(batch_cont+'\n')
+    batch_script_2 = bash_template_2.format(wavesight_dir=wavesight_dir,
+                    config_fname = config_fname,
+                    config_root  = batch_rid,
+                    coreRadius   = coreRadius,
+                    nCladding    = nCladding,
+                    nCore        = nCore,
+                    nUpper       = nUpper,
+                    wavelength   = λFree,
+                    numModes     = numModes,
+                    num_time_slices = num_time_slices,
+                    num_modes=(numModes-1))
+    with open(bash_script_fname_1, 'w') as file:
+        print("Saving bash script to %s" % bash_script_fname_1)
+        file.write(batch_script_1+'\n')
+    with open(bash_script_fname_2, 'w') as file:
+        print("Saving bash script to %s" % bash_script_fname_2)
+        file.write(batch_script_2+'\n')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='A simple CLI that accepts four parameters.')

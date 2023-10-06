@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
 import os
-from time import time, sleep
+import io
+import json
+import random
 import tempfile
+import requests
 import subprocess
 import numpy as np
 import http.client, urllib
-import requests
-import json
-import io
-import random
+from time import time, sleep
 
 try:
     from dave import secrets
@@ -218,7 +218,7 @@ def send_fig_to_slack(fig, slack_channel, info_msg, shortfname, thread_ts = None
     '''
     try:
         buf = io.BytesIO()
-        fig.savefig(buf, format='jpg')
+        fig.savefig(buf, format='jpg', dpi=200)
         buf.seek(0)
         post_file_to_slack(info_msg, shortfname, buf.read(), slack_channel=slack_channel, thread_ts = thread_ts)
     except:
@@ -252,6 +252,23 @@ def insert_string_at_nth_position(str_list, to_insert, n):
         count += 1  # Increment the counter
     return riffled_strings
 
+def get_total_size_of_directory(dir_path):
+    '''
+    Parameters
+    ----------
+    dir_path : str
+        Path to the directory whose size is to be calculated.
+    Returns
+    -------
+    dir_size_in_MB : float
+        The size of the files in the given directory, in MB. 
+        This does not include the size of files that may be
+        in subdirectories of the given directory.
+    '''
+    filenames = os.listdir(dir_path)
+    fsizes = [os.path.getsize(os.path.join(dir_path, f)) for f in filenames if os.path.isfile(os.path.join(dir_path, f))]
+    dir_size_in_MB = sum(fsizes)/1024**2
+    return dir_size_in_MB
 
 def dict_summary(adict, header, prekey='', aslist=False):
     '''
@@ -275,7 +292,9 @@ def dict_summary(adict, header, prekey='', aslist=False):
     -------
     txt_summary : str or list
         A string or list summarizing the contents of the dictionary.
-    '''
+'''
+    float_types = (float, np.float16, np.float32, np.float64)
+    int_types   = (int, np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32, np.uint64)
     if header:
         txt_summary = [header]
         txt_summary.append('-'*len(header))
@@ -287,12 +306,12 @@ def dict_summary(adict, header, prekey='', aslist=False):
                 txt_summary.append(prekey+'-'+key+' : '+val)
             else:
                 txt_summary.append('-'+key+' : '+val)
-        elif type(val) in [int]:
+        elif isinstance(val, int_types):
             if prekey:
                 txt_summary.append(prekey+'-'+key+' : ' + str(val))
             else:
                 txt_summary.append('-'+key+' : '+str(val))
-        elif type(val) in [float]:
+        elif isinstance(val, float_types):
             if prekey:
                 txt_summary.append('%s-%s : %.3f' % (prekey, key, val))
             else:

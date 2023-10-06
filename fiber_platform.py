@@ -1,22 +1,21 @@
 #!/usr/bin/env python3
 
+import os
+import h5py
+import time
+import pickle
+import psutil
+import argparse
 import meep as mp
 import numpy as np
-import h5py
 import cmasher as cm
-import os
-from matplotlib import pyplot as plt
-import wavesight as ws
-import time
-import cmasher as cm
-import pickle
-import argparse
-import psutil
-from matplotlib import style
-style.use('dark_background')
-from memory_profiler import profile
 from math import ceil
-import psutil
+import wavesight as ws
+from matplotlib import style
+from memory_profiler import profile
+from matplotlib import pyplot as plt
+
+style.use('dark_background')
 
 def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
     rtime = (kappa * sim_cell.x * sim_cell.y * sim_cell.z
@@ -37,7 +36,7 @@ parser.add_argument('num_time_slices', type=int, help='Determines sampling inter
 parser.add_argument('modeidx', type=int, help='The index for the launch mode.')
 args = parser.parse_args()
 
-run_time_scaler = 1 # scales the run time, keeping same memory usage
+run_time_scaler = 1.0 # scales the run time, keeping same memory usage
 data_dir = '/users/jlizaraz/data/jlizaraz/CEM/wavesight/'
 show_plots = False
 config_dict = pickle.load(open(args.config_dict_fname,'rb'))
@@ -49,7 +48,9 @@ save_fields_to_pkl = False
 sample_posts = 10 # sample about this amount and post to Slack as sims progress
 plot_field_profiles = False
 plot_current_streams = False
+# determines which sagittal planes are use for logging to Slack
 sag_plot_planes = ['xz']
+min_req_time_in_s = 25 * 60
 
 # load all the config values to session
 for k,v in config_dict.items():
@@ -253,8 +254,11 @@ def mode_solver(num_time_slices, mode_idx):
 
     fig, axes = plt.subplots(ncols=2, nrows=1, figsize=(12,6))
     axes[0].add_patch(plt.Circle((0,0), coreRadius, color='b', fill=True))
-    axes[0].add_patch(plt.Rectangle((-sxy/2 + pml_thickness, -sxy/2 + pml_thickness),
-                            sxy - 2*pml_thickness, sxy - 2*pml_thickness, color='w', fill=False))
+    pml_patch = ws.frame_patch((-sxy/2,-sxy/2),
+                            sxy,
+                            sxy,
+                            pml_thickness,hatch='/')
+    axes[0].add_patch(pml_patch),
     axes[0].set_xlim(-sxy/2, sxy/2)
     axes[0].set_ylim(-sxy/2, sxy/2)
     axes[0].set_xlabel('x/μm')
@@ -263,17 +267,38 @@ def mode_solver(num_time_slices, mode_idx):
     axes[0].set_title('xy cross section of simulation vol')
 
     # plot of the sagittal cross section
+    axes[1].add_patch(plt.Rectangle((-sxy/2,-fiber_height/2),
+                            sxy, fiber_height/2, 
+                            color='g',
+                            alpha=0.2,
+                            fill=True))
     axes[1].add_patch(plt.Rectangle((-coreRadius,-fiber_height/2),
-                            2*coreRadius, fiber_height, color='b', fill=True))
+                            2*coreRadius, fiber_height/2, 
+                            color='b',
+                            alpha=0.8,
+                            fill=True))
     # source
-    axes[1].plot([-sxy/2, sxy/2], [-fiber_height/2 + pml_thickness + source_loc]*2, color='r')
+    axes[1].plot([-sxy/2, sxy/2], 
+                 [-fiber_height/2 + pml_thickness + source_loc]*2,
+                 color='r')
     # monitor
-    axes[1].plot([-sxy/2, sxy/2], [fiber_height/2 - pml_thickness - source_loc]*2, color='g')
+    axes[1].plot([-sxy/2, sxy/2],
+                 [fiber_height/2 - pml_thickness - source_loc]*2,
+                 color='g')
     axes[1].add_patch(plt.Rectangle([-sxy/2 + pml_thickness, -fiber_height/2 + pml_thickness], 
                             sxy - pml_thickness*2, 
-                            fiber_height - pml_thickness*2, color='w', fill=False))
+                            fiber_height - pml_thickness*2,
+                            color='w',
+                            fill=False))
+    # the PML hatching shade
+    pml_patch = ws.frame_patch((-sxy/2,-fiber_height/2),
+                               sxy,
+                               fiber_height,
+                               pml_thickness,hatch='/')
+    axes[1].add_patch(pml_patch),
     axes[1].set_xlim(-sxy/2, sxy/2)
-    axes[1].set_ylim(-fiber_height/2, fiber_height/2)
+    axes[1].set_ylim(-fiber_height/2,
+                     fiber_height/2)
     axes[1].set_xlabel('x/μm')
     axes[1].set_ylabel('z/μm')
     axes[1].set_title('Sagittal cross section of simulation vol')
@@ -368,6 +393,7 @@ def mode_solver(num_time_slices, mode_idx):
     xz_monitor_vol          = mp.Volume(center=xz_monitor_plane_center, size=xz_monitor_plane_size)
 
     start_time = time.time()
+
     sim.run(
             mp.during_sources(mp.in_volume(xy_monitor_vol,
                             mp.to_appended(h_xy_slices_fname, 
@@ -409,7 +435,9 @@ def mode_solver(num_time_slices, mode_idx):
     coords['yCoordsMonyz'] = yCoordsMonyz
     coords['zCoordsMonyz'] = zCoordsMonyz
     mode_sol['coords']     = coords
-
+    mode_sol['simWidth_original'] = float(simWidth)
+    simWidth = float(xCoordsMonxy[-1] - xCoordsMonxy[0])
+    mode_sol['simWidth'] = simWidth
     on_axis_eps = sim.get_array(mp.Dielectric,
                 mp.Volume(
                     center=mp.Vector3(0,0,0),
@@ -449,8 +477,6 @@ def mode_solver(num_time_slices, mode_idx):
             field_arrays = np.array(field_arrays)
             monitor_fields[plane] = field_arrays
     effective_resolution = monitor_fields['xy'].shape[2]/clear_aperture
-    num_time_samples =  monitor_fields['xy'].shape[-1]
-    sampling_times = np.linspace(0, run_time, num_time_samples)
 
     print("MEEP-adjusted resolution: %.2f px/μm" % effective_resolution)
 
@@ -460,16 +486,21 @@ def mode_solver(num_time_slices, mode_idx):
         extent = [-simWidth/2, simWidth/2, -fiber_height/2, fiber_height/2]
         plotField = np.real(Ey_final_sag)
         fig, ax   = plt.subplots(figsize=(3, 3 * fiber_height / simWidth))
+        prange = np.max(np.abs(plotField))
+        pretty_range = '$%s$' % ws.num2tex(prange, 2)
         ax.imshow(plotField, 
-                cmap=cm.watermelon, 
-                origin='lower',
-                extent=extent,
-                interpolation='none')
-        ax.plot([-coreRadius,-coreRadius],[-fiber_height/2,fiber_height/2],'r:',alpha=0.3)
-        ax.plot([coreRadius,coreRadius],[-fiber_height/2,fiber_height/2],'r:',alpha=0.3)
+                cmap   = cm.watermelon, 
+                origin = 'lower',
+                extent = extent,
+                vmin   = -prange,
+                vmax   = prange,
+                interpolation = 'none')
+        ax.plot([-coreRadius,-coreRadius],[-fiber_height/2,0],'r:',alpha=0.3)
+        ax.plot([coreRadius,coreRadius],[-fiber_height/2,0],'r:',alpha=0.3)
         ax.set_xlabel('%s/μm' % sagplane[0])
         ax.set_ylabel('z/μm')
-        ax.set_title('Re(Ey)')
+        title = 'Re(Ey) | [%s]' % (pretty_range)
+        ax.set_title(title)
         plt.tight_layout()
         if send_to_slack:
             ws.send_fig_to_slack(fig, slack_channel, 'sagittal-%s-final-Ey' % sagplane,'sagittal-%s-final-Ey' % sagplane, thread_ts)
@@ -518,17 +549,17 @@ def mode_solver(num_time_slices, mode_idx):
     print("Making a comparison plot of the last measured field against mode ...")
     component_name = 'hx'
     component_index = {'hx':0, 'hy':1, 'hz':2}[component_name]
-    time_index = -1
-    extent    = [-clear_aperture/2, clear_aperture/2, -clear_aperture/2, clear_aperture/2]
+    extent    = [-clear_aperture/2, clear_aperture/2, 
+                 -clear_aperture/2, clear_aperture/2]
     fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10,10))
-    mask   = (Xg**2 + Yg**2) < coreRadius**2
     for idx, plotFun in enumerate([np.real, np.imag]):
         ax = axes[0,idx]
         plotField = field_array[component_index]
         plotField = plotFun(plotField)
-        title = ['re','im'][idx]
-        title = component_name + '.' + title
+        real_or_im = ['Re','Im'][idx]
         prange = np.max(np.abs(plotField))
+        pretty_range = '$%s$' % ws.num2tex(prange, 2)
+        title = '%s($H_%s$) | [%s]' % (real_or_im, component_name[-1], pretty_range)
         ax.imshow(plotField, vmin=-prange, vmax=prange, extent=extent, cmap=cm.watermelon)
         ax.set_title(title)
         ax.set_xlabel('x/μm')
@@ -537,6 +568,8 @@ def mode_solver(num_time_slices, mode_idx):
         ax = axes[1,idx]
         plotField = plotFun(H_field_GT[component_index])
         prange = np.max(np.abs(plotField))
+        pretty_range = '$%s$' % ws.num2tex(prange, 2)
+        title = '%s($H_%s$) | [%s]' % (real_or_im, component_name[-1], pretty_range)
         if idx == 0:
             vmin = -prange
             vmax = prange
@@ -545,8 +578,12 @@ def mode_solver(num_time_slices, mode_idx):
             vmin = 0
             vmax = prange
             cmap = cm.ember
-        ax.imshow(plotField, vmin=vmin, vmax=vmax, extent=extent, cmap=cmap)
-        title = 'GT.' + title
+        ax.imshow(plotField,
+                  vmin=vmin,
+                  vmax=vmax,
+                  extent=extent,
+                  cmap=cmap)
+        title = 'Mode field | ' + title
         ax.set_title(title)
         ax.set_xlabel('x/μm')
         ax.set_ylabel('y/μm')
@@ -558,11 +595,11 @@ def mode_solver(num_time_slices, mode_idx):
         plt.show()
     else:
         plt.close()
-    mode_sol['approx_MEEP_mem_usage_in_MB'] = mem_usage
+    mode_sol['approx_MEEP_mem_usage_in_MB'] = int(mem_usage)
     process = psutil.Process(os.getpid())
     mem_used_in_bytes = process.memory_info().rss
     mem_used_in_Mbytes = mem_used_in_bytes/1024/1024
-    mode_sol['overall_mem_usage_in_MB'] = str(mem_used_in_Mbytes)
+    mode_sol['overall_mem_usage_in_MB'] = int(mem_used_in_Mbytes)
     summary = ws.dict_summary(mode_sol, 'SIM-'+sim_id)
     if send_to_slack:
         ws.post_message_to_slack(summary, slack_channel=slack_channel,thread_ts=thread_ts)
@@ -570,22 +607,26 @@ def mode_solver(num_time_slices, mode_idx):
         mode_sol['monitor_field_slices'] = monitor_fields
     pkl_fname = 'sim-%s.pkl' % sim_id
     pkl_fname = os.path.join(output_dir, pkl_fname)
+    print("Calculating the size of h5 data files ...")
+    disk_usage_in_MB = ws.get_total_size_of_directory(output_dir)
+    mode_sol['disk_usage_in_MB'] = int(disk_usage_in_MB)
     with open(pkl_fname, 'wb') as file:
         print("Saving solution to %s ..." % pkl_fname)
         pickle.dump(mode_sol, file)
 
     mem_used_in_Gbytes = mem_used_in_Mbytes/1024
-    final_final_time = time.time()
-    time_taken_in_s = final_final_time - initial_time
-    time_req_in_s   = ceil_to_multiple(1.1*time_taken_in_s, 60*15)
-    mem_req_in_GB   = int(ceil_to_multiple(1.1*mem_used_in_Gbytes, 1.0))
-    time_req_fmt  = format_time(time_req_in_s)
-    mem_req_fmt   = '%d' % mem_req_in_GB
+    final_final_time   = time.time()
+    time_taken_in_s    = final_final_time - initial_time
+    time_req_in_s      = ceil_to_multiple(1.1*time_taken_in_s, 60*15)
+    time_req_in_s      = max(time_req_in_s, min_req_time_in_s)
+    mem_req_in_GB      = int(ceil_to_multiple(1.1*mem_used_in_Gbytes, 1.0))
+    time_req_fmt       = format_time(time_req_in_s)
+    mem_req_fmt        = '%d' % mem_req_in_GB
     print("Took %s s to run, and spent %.1f MB of RAM." % (time_taken_in_s,mem_used_in_Mbytes ))
     if not os.path.exists(reqs_fname):
         print("Creting resource requirement file...")
         with open(reqs_fname,'w') as file:
-            file.write('%s,%s' % (mem_req_fmt, time_req_fmt)) 
+            file.write('%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB)) 
 
 if __name__ == "__main__":
     mode_solver(args.num_time_slices, args.modeidx)

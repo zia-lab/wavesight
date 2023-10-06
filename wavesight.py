@@ -8,6 +8,7 @@ from fields import *
 from convstore import * 
 import diffkernels as dk
 from fieldgenesis import *
+from wavegraphics import *
 from fungenerators import *
 from tqdm.notebook import tqdm
 from collections import OrderedDict
@@ -1993,7 +1994,8 @@ def equivCurrents(Efuncs, Hfuncs, coreRadius, m, parity):
 
 def from_near_to_far_angular(field, xy_span,
                              kMedium, plotFun = np.real,
-                             angular_resolution = np.pi/50, make_plots=False):
+                             angular_resolution = np.pi/50, make_plots=False,
+                             griddata_method = 'nearest'):
     '''
     Parameters
     ----------
@@ -2028,8 +2030,8 @@ def from_near_to_far_angular(field, xy_span,
     num_theta_samples = int(np.pi / angular_resolution)
     num_phi_samples = num_theta_samples
 
-    x = np.linspace(-x_span/2,x_span/2, field.shape[0])
-    y = np.linspace(-y_span/2,y_span/2, field.shape[1])
+    x = np.linspace(-x_span/2, x_span/2, field.shape[0])
+    y = np.linspace(-y_span/2, y_span/2, field.shape[1])
 
     fourier_Field = np.fft.fft2(field)
     fourier_Field = np.fft.fftshift(fourier_Field)
@@ -2056,11 +2058,11 @@ def from_near_to_far_angular(field, xy_span,
                 extent=extent
                 )
         ax.add_patch(plt.Circle((0,0),
-                                1,
-                                fill=False,
-                                color='r',
-                                linestyle='--',
-                                alpha=0.5))
+                    1,
+                    fill=False,
+                    color='r',
+                    linestyle='--',
+                    alpha=0.5))
         ax.set_xlabel('kx/k')
         ax.set_ylabel('ky/k')
         ax.set_xlim(-1.1, 1.1)
@@ -2079,7 +2081,7 @@ def from_near_to_far_angular(field, xy_span,
     angular_rep = griddata((sx_grid_old.ravel(), 
                             sy_grid_old.ravel()), fourier_Field.ravel(), 
                         (sx_grid, sy_grid),
-                        method='cubic')
+                        method=griddata_method)
     angular_rep = np.abs(angular_rep**2)
 
     if make_plots:
@@ -2101,5 +2103,4 @@ def from_near_to_far_angular(field, xy_span,
         ax.set_xlabel('θ/∘')
         plt.show()
     
-    return (angular_rep, theta_range, phi_range, phi_sum, θmax)
-
+    return (angular_rep, theta_range, phi_range, phi_sum, θmax) 

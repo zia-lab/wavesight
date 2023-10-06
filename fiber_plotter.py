@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
 
 import os
-import pickle
 import h5py
-import cmasher as cm
-from matplotlib import style
-import numpy as np
-from matplotlib import pyplot as plt
-# style.use('default')
-style.use('dark_background')
-from matplotlib.backends.backend_pdf import PdfPages
-import wavesight as ws
+import pickle
 import argparse
+import numpy as np
+import cmasher as cm
+import wavesight as ws
+from matplotlib import style
+from matplotlib import pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
 
+style.use('dark_background')
 # this script can be used to generate a compendium of the fields in the xz yz sagittal planes
 # it takes as simple argument equal to the job id for the entire simulation
 
@@ -121,7 +120,7 @@ def wave_plotter(big_job_id, max_plots=np.inf):
         coreRadius = mode_sol['coreRadius']
 
         for sagplane in ['xz','yz']:
-            fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(3*3, 2*3 * fiber_height / simWidth))
+            fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(18, 18 * 2 * fiber_height / 3 / simWidth))
             for field_idx, field in enumerate(['E','H']):
                 for cartesian_idx, cartesian_component in enumerate('xyz'):
                     final_field = monitor_fields[sagplane][field_idx,cartesian_idx,:,:]
@@ -148,7 +147,7 @@ def wave_plotter(big_job_id, max_plots=np.inf):
             pdf_sink_sag_plots.savefig()
             plt.close()
         for plane in ['xy']:
-            fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(3*3, 2*3 * fiber_height / simWidth))
+            fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(9, 9 * 2 / 3))
             for field_idx, field in enumerate(['E','H']):
                 for cartesian_idx, cartesian_component in enumerate('xyz'):
                     final_field = monitor_fields[plane][field_idx,cartesian_idx,:,:]
