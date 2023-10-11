@@ -5,6 +5,7 @@ import numpy as np
 from misc import *
 import cmasher as cm
 from fields import *
+from templates import *
 from convstore import * 
 import diffkernels as dk
 from fieldgenesis import *
@@ -1239,7 +1240,7 @@ def FFT2D_convolution_integral(xCoords, yCoords, Usamples, kernelFun):
 
     The convolution has the same domain as the sample values for U.
 
-    .. math:: I(x',y') = \iint_\mathcal{A} U(x,y) \mathcal{K}(x-x', y-y') dxdy
+    .. math:: I(x',y')=\iint_\mathcal{A} U(x,y) \mathcal{K}(x-x', y-y') dxdy
 
     This   is  done  by  interpreting  the  discretized  integral  as  a
     convolution,  so  that the convolution may be performed with help of
@@ -1896,99 +1897,123 @@ def equivCurrents(Efuncs, Hfuncs, coreRadius, m, parity):
             ϕ = np.arctan2(y,x)
             ρ = np.sqrt(x**2 + y**2)
             if ρ < coreRadius:
-                return -HCoreϕ(ρ)*np.cos(ϕ) - HCoreρ(ρ)*np.sin(ϕ)
+                return (-HCoreϕ(ρ)*np.cos(ϕ) 
+                        - HCoreρ(ρ)*np.sin(ϕ))
             else:
-                return -HCladdingϕ(ρ)*np.cos(ϕ) - HCladdingρ(ρ)*np.sin(ϕ)
+                return (-HCladdingϕ(ρ)*np.cos(ϕ) 
+                        - HCladdingρ(ρ)*np.sin(ϕ))
         def Jy(vec):
             x, y, _ = vec
             ϕ = np.arctan2(y,x)
             ρ = np.sqrt(x**2 + y**2)
             if ρ < coreRadius:
-                return -HCoreϕ(ρ)*np.sin(ϕ) + HCoreρ(ρ)*np.cos(ϕ)
+                return (-HCoreϕ(ρ)*np.sin(ϕ) 
+                        + HCoreρ(ρ)*np.cos(ϕ))
             else:
-                return -HCladdingϕ(ρ)*np.sin(ϕ) + HCladdingρ(ρ)*np.cos(ϕ)
+                return (-HCladdingϕ(ρ)*np.sin(ϕ) 
+                        + HCladdingρ(ρ)*np.cos(ϕ))
         def Kx(vec):
             x, y, _ = vec
             ϕ = np.arctan2(y,x)
             ρ = np.sqrt(x**2 + y**2)
             if ρ < coreRadius:
-                return ECoreϕ(ρ)*np.cos(ϕ) + ECoreρ(ρ)*np.sin(ϕ)
+                return (ECoreϕ(ρ)*np.cos(ϕ) 
+                        + ECoreρ(ρ)*np.sin(ϕ))
             else:
-                return ECladdingϕ(ρ)*np.cos(ϕ) + ECladdingρ(ρ)*np.sin(ϕ)
+                return (ECladdingϕ(ρ)*np.cos(ϕ) 
+                        + ECladdingρ(ρ)*np.sin(ϕ))
         def Ky(vec):
             x, y, _ = vec
             ϕ = np.arctan2(y,x)
             ρ = np.sqrt(x**2 + y**2)
             if ρ < coreRadius:
-                return ECoreϕ(ρ)*np.sin(ϕ) - ECoreρ(ρ)*np.cos(ϕ)
+                return (ECoreϕ(ρ)*np.sin(ϕ) 
+                        - ECoreρ(ρ)*np.cos(ϕ))
             else:
-                return ECladdingϕ(ρ)*np.sin(ϕ) - ECladdingρ(ρ)*np.cos(ϕ)
+                return (ECladdingϕ(ρ)*np.sin(ϕ) 
+                        - ECladdingρ(ρ)*np.cos(ϕ))
     elif parity == 'EVEN':
         def Jx(vec):
             x, y, _ = vec
             ϕ = np.arctan2(y,x)
             ρ = np.sqrt(x**2 + y**2)
             if ρ < coreRadius:
-                return -HCoreϕ(ρ)*np.cos(m*ϕ)*np.cos(ϕ) - HCoreρ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ)
+                return (-HCoreϕ(ρ)*np.cos(m*ϕ)*np.cos(ϕ) 
+                        - HCoreρ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ))
             else:
-                return -HCladdingϕ(ρ)*np.cos(m*φ)*np.cos(ϕ) - HCladdingρ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ)
+                return (-HCladdingϕ(ρ)*np.cos(m*φ)*np.cos(ϕ) 
+                        - HCladdingρ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ))
         def Jy(vec):
             x, y, _ = vec
             ϕ = np.arctan2(y,x)
             ρ = np.sqrt(x**2 + y**2)
             if ρ < coreRadius:
-                return -HCoreϕ(ρ)*np.cos(m*ϕ)*np.sin(ϕ) + HCoreρ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ)
+                return (-HCoreϕ(ρ)*np.cos(m*ϕ)*np.sin(ϕ) 
+                        + HCoreρ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ))
             else:
-                return -HCladdingϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) + HCladdingρ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ)
+                return (-HCladdingϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) 
+                        + HCladdingρ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ))
         def Kx(vec):
             x, y, _ = vec
             ϕ = np.arctan2(y,x)
             ρ = np.sqrt(x**2 + y**2)
             if ρ < coreRadius:
-                return ECoreϕ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ) + ECoreρ(ρ)*np.cos(m*φ)*np.sin(ϕ)
+                return (ECoreϕ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ) 
+                        + ECoreρ(ρ)*np.cos(m*φ)*np.sin(ϕ))
             else:
-                return ECladdingϕ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ) + ECladdingρ(ρ)*np.cos(m*φ)*np.sin(ϕ)
+                return (ECladdingϕ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ) 
+                        + ECladdingρ(ρ)*np.cos(m*φ)*np.sin(ϕ))
         def Ky(vec):
             x, y, _ = vec
             ϕ = np.arctan2(y,x)
             ρ = np.sqrt(x**2 + y**2)
             if ρ < coreRadius:
-                return ECoreϕ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ) - ECoreρ(ρ)*np.cos(m*φ)*np.cos(ϕ)
+                return (ECoreϕ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ) 
+                        - ECoreρ(ρ)*np.cos(m*φ)*np.cos(ϕ))
             else:
-                return ECladdingϕ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ) - ECladdingρ(ρ)*np.cos(m*φ)*np.cos(ϕ)
+                return (ECladdingϕ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ) 
+                        - ECladdingρ(ρ)*np.cos(m*φ)*np.cos(ϕ))
     elif parity == 'ODD':
         def Jx(vec):
             x, y, _ = vec
             ϕ = np.arctan2(y,x)
             ρ = np.sqrt(x**2 + y**2)
             if ρ < coreRadius:
-                return -HCoreϕ(ρ)*np.sin(m*φ)*np.cos(ϕ) - HCoreρ(ρ)*np.cos(m*φ)*np.sin(ϕ)
+                return (-HCoreϕ(ρ)*np.sin(m*φ)*np.cos(ϕ) 
+                        - HCoreρ(ρ)*np.cos(m*φ)*np.sin(ϕ))
             else:
-                return -HCladdingϕ(ρ)*np.sin(m*φ)*np.cos(ϕ) - HCladdingρ(ρ)*np.cos(m*φ)*np.sin(ϕ)
+                return (-HCladdingϕ(ρ)*np.sin(m*φ)*np.cos(ϕ) 
+                        - HCladdingρ(ρ)*np.cos(m*φ)*np.sin(ϕ))
         def Jy(vec):
             x, y, _ = vec
             ϕ = np.arctan2(y,x)
             ρ = np.sqrt(x**2 + y**2)
             if ρ < coreRadius:
-                return -HCoreϕ(ρ)*np.sin(m*φ)*np.sin(ϕ) + HCoreρ(ρ)*np.cos(m*φ)*np.cos(ϕ)
+                return (-HCoreϕ(ρ)*np.sin(m*φ)*np.sin(ϕ) 
+                        + HCoreρ(ρ)*np.cos(m*φ)*np.cos(ϕ))
             else:
-                return -HCladdingϕ(ρ)*np.sin(m*φ)*np.sin(ϕ) + HCladdingρ(ρ)*np.cos(m*φ)*np.cos(ϕ)
+                return (-HCladdingϕ(ρ)*np.sin(m*φ)*np.sin(ϕ) 
+                        + HCladdingρ(ρ)*np.cos(m*φ)*np.cos(ϕ))
         def Kx(vec):
             x, y, _ = vec
             ϕ = np.arctan2(y,x)
             ρ = np.sqrt(x**2 + y**2)
             if ρ < coreRadius:
-                return ECoreϕ(ρ)*np.cos(m*φ)*np.cos(ϕ) + ECoreρ(ρ)*np.sin(m*φ)*np.sin(ϕ)
+                return (ECoreϕ(ρ)*np.cos(m*φ)*np.cos(ϕ) 
+                        + ECoreρ(ρ)*np.sin(m*φ)*np.sin(ϕ))
             else:
-                return ECladdingϕ(ρ)*np.cos(m*φ)*np.cos(ϕ) + ECladdingρ(ρ)*np.sin(m*φ)*np.sin(ϕ)
+                return (ECladdingϕ(ρ)*np.cos(m*φ)*np.cos(ϕ) 
+                        + ECladdingρ(ρ)*np.sin(m*φ)*np.sin(ϕ))
         def Ky(vec):
             x, y, _ = vec
             ϕ = np.arctan2(y,x)
             ρ = np.sqrt(x**2 + y**2)
             if ρ < coreRadius:
-                return ECoreϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) - ECoreρ(ρ)*np.sin(m*φ)*np.cos(ϕ)
+                return (ECoreϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) 
+                        - ECoreρ(ρ)*np.sin(m*φ)*np.cos(ϕ))
             else:
-                return ECladdingϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) - ECladdingρ(ρ)*np.sin(m*φ)*np.cos(ϕ)
+                return (ECladdingϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) 
+                        - ECladdingρ(ρ)*np.sin(m*φ)*np.cos(ϕ))
     JKfuns = (Jx, Jy, Kx, Ky)
     return JKfuns
 
@@ -2002,13 +2027,16 @@ def from_near_to_far_angular(field, xy_span,
     field : np.array (N, N)
         Values, possibly complex, of the given field.
     xy_span : float
-        The spatial extent in both the x and y axes that corresponds to the given field array.
+        The spatial extent in both the x and y axes that 
+        corresponds to the given field array.
     kMedium : float
         The magnitude of the homogeneous-medium wavevector
     plotFun : func
-        In case plots are presented, this function is applied to the given array before plotting.
+        In case plots are presented, this function is 
+        applied to the given array before plotting.
     angular_resolution: float, optional
-        To what angular resolution the angular representation of the field is calculated.
+        To what angular resolution the angular representation
+        of the field is calculated.
     make_plots: bool
         Whether to show plots as the calculation is carried out.
     Returns

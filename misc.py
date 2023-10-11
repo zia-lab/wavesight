@@ -8,8 +8,10 @@ import tempfile
 import requests
 import subprocess
 import numpy as np
+from math import ceil
 import http.client, urllib
 from time import time, sleep
+from scipy.signal import find_peaks
 
 try:
     from dave import secrets
@@ -294,7 +296,8 @@ def dict_summary(adict, header, prekey='', aslist=False):
         A string or list summarizing the contents of the dictionary.
 '''
     float_types = (float, np.float16, np.float32, np.float64)
-    int_types   = (int, np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32, np.uint64)
+    int_types   = (int, np.int8, np.int16, np.int32, np.int64,
+                   np.uint8, np.uint16, np.uint32, np.uint64)
     if header:
         txt_summary = [header]
         txt_summary.append('-'*len(header))
@@ -303,14 +306,19 @@ def dict_summary(adict, header, prekey='', aslist=False):
     for key, val in adict.items():
         if type(val) == str:
             if prekey:
-                txt_summary.append(prekey+'-'+key+' : '+val)
+                txt_summary.append(prekey + '-' + key + ' : ' + val)
             else:
-                txt_summary.append('-'+key+' : '+val)
+                txt_summary.append('-' + key + ' : ' + val)
+        elif type(val) == bool:
+            if prekey:
+                txt_summary.append(prekey + '-' + key + ' : ' + str(val))
+            else:
+                txt_summary.append('-' + key + ' : ' + str(val))
         elif isinstance(val, int_types):
             if prekey:
-                txt_summary.append(prekey+'-'+key+' : ' + str(val))
+                txt_summary.append(prekey + '-' + key + ' : ' + str(val))
             else:
-                txt_summary.append('-'+key+' : '+str(val))
+                txt_summary.append('-' + key + ' : ' + str(val))
         elif isinstance(val, float_types):
             if prekey:
                 txt_summary.append('%s-%s : %.3f' % (prekey, key, val))
@@ -571,3 +579,106 @@ def random_in_range(xmin, xmax, shape):
     '''
     rando_array = np.random.random(shape)*(xmax-xmin) + xmin
     return rando_array
+
+def transient_scope(times, time_signal, tol=0.01):
+    '''
+    This   function   finds  the  time  at  which  the  relative
+    oscillations  of  a  signal that is heading towards a steady
+    value  have  dropped  to  a given tolerance. This is done by
+    finding  the times at which the signal has local minimas and
+    then checking the relative difference between them.
+
+    If  the relative difference is below the tolerance, then the
+    first  time  is returned. If not, then the signal is flipped
+    and  the  same procedure is applied. If the tolerance is not
+    reached,  then  None is returned. This function assumes that
+    the  given  signal  is  non-negative, and that the transient
+    decays  in  an  oscillatory  manner, after having reached an
+    initial peak.
+
+    ▲                                                                                
+    │                                                                        
+    │                                                                        
+    │       *****                                                         
+    │      **   **                                                        
+    │     **      **         *******                                      
+    │     *        *         *     ***        ******       *****          
+    │    **         **      *        **      **    ***    **   *** 
+    │    *           **    **         **** ***       ******               
+    │    *            ******             ***                              
+    │   *               **                                                
+    │   *                                                                 
+    │   *                                                                 
+    │  **                                                                                                                             
+    │                                                                        
+  ──┼─────────────────────────────────────────────────────────────▶
+    │                                                                        
+
+    Parameters
+    ----------
+    times : np.array
+        Time axis.
+    time_signal : np.array
+        Time-dependent signal.
+    tol : float, optional
+
+    Returns
+    -------
+    good_time: float
+        Time at which the signal relative oscillations have 
+        dropped below the tolerance.
+
+    '''
+    valley_indices = find_peaks(-time_signal)[0]
+    valley_times = times[valley_indices]
+    relative_diffs = np.abs(np.diff(time_signal[valley_indices]))
+    relative_diffs /= time_signal[valley_indices][:-1]
+    good_times = valley_times[:-1][relative_diffs<tol]
+    if len(good_times)>1:
+        return (good_times[0])
+    else:
+        valley_indices = find_peaks(time_signal)[0]
+        valley_times = times[valley_indices]
+        relative_diffs = np.abs(np.diff(time_signal[valley_indices])/time_signal[valley_indices][:-1])
+        good_times = valley_times[:-1][relative_diffs<tol]
+        if len(good_times)>1:
+            return (good_times[0])
+        else:
+            print('No steady state time found within given tolerance.')
+            return None
+
+def format_time(seconds):
+    '''
+    Given a time in seconds this formats a string
+    as HH:MM:SS.
+    Parameters
+    ----------
+    seconds : float
+        Time in seconds.
+    Returns
+    -------
+    fmt_time : str
+        Time formatted as HH:MM:SS.
+    '''
+    hours, remainder = divmod(seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    fmt_time = "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
+    return fmt_time
+
+def ceil_to_multiple(number, mult = 1):
+    '''
+    Given a number this function returns the smallest multiple
+    of mult that is larger than the given number.
+    Parameters
+    ----------
+    number : float
+        The number to be ceiled.
+    multiple : float
+        The multiple to which the number should be ceiled.
+    Return
+    ------
+    ceiled_num : float
+        The ceiled number.
+    '''
+    ceiled_num = ceil(number / mult) * mult
+    return ceiled_num

@@ -7,6 +7,7 @@ import argparse
 import numpy as np
 import cmasher as cm
 import wavesight as ws
+
 from matplotlib import style
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
@@ -19,16 +20,37 @@ parser = argparse.ArgumentParser(description='Job plotter.')
 parser.add_argument('big_job_id', type=str, help='The label for the job.')
 args = parser.parse_args()
 
-cmap         = cm.watermelon
-data_dir     = '/users/jlizaraz/data/jlizaraz/CEM/wavesight'
-alt_indexing = False
+cmap          = cm.watermelon
+data_dir      = '/users/jlizaraz/data/jlizaraz/CEM/wavesight'
+alt_indexing  = False
 post_to_slack = True
 
-def wave_plotter(big_job_id, max_plots=np.inf):
+def wave_plotter(big_job_id, max_plots=np.inf, extra_fname = ''):
+    '''
+    This function takes the job id for a given batch simulation
+    and creates plots for the fields in the saggital and xy
+    monitors.
+    A pdf is created for each monitor. Thees pdfs are saved in
+    the same directory as the data and also posted to Slack.
+    Parameters
+    ----------
+    big_job_id : str
+        The label for the job.
+    max_plots : int, optional
+        The maximum number of plots to generate. The default is np.inf.
+    extra_fname : str, optional
+        Extra string to append to the filename. The default is ''.
+    Returns
+    -------
+    None
+    '''
+    # first find all the subdirs that correspond to the big_job_id
     data_dir_contents = os.listdir(data_dir)
-    job_dirs = [os.path.join(data_dir, dir) for dir in data_dir_contents if (dir.startswith(big_job_id) 
-                                                                            and os.path.isdir(os.path.join(data_dir,dir)))]
-    pkl_filter = lambda x: x.startswith('sim') and x.endswith('.pkl')
+    def job_dir_filter(a_dir):
+        return (a_dir.startswith(big_job_id) 
+                and os.path.isdir(os.path.join(data_dir, a_dir)))
+    job_dirs = [os.path.join(data_dir, a_dir) for a_dir in data_dir_contents if job_dir_filter(a_dir)]
+    pkl_filter = lambda x: (x.startswith('sim') and x.endswith('.pkl'))
     if alt_indexing:
         print("Retrieving the mode ordering ...")
         job_dirs = np.array(job_dirs)
@@ -51,16 +73,18 @@ def wave_plotter(big_job_id, max_plots=np.inf):
             return idx
         job_dirs = list(sorted(job_dirs, key = wave_sorter))
 
-    saggital_pdf_fname = '%s-sagittal.pdf' % big_job_id
-    xy_pdf_fname = '%s-xy.pdf' % big_job_id
+    saggital_pdf_fname = '%s-sagittal%s.pdf' % (big_job_id, extra_fname)
+    xy_pdf_fname = '%s-xy%s.pdf' % (big_job_id, extra_fname)
+    # these are the objects in which the figures will be saved
     pdf_sink_xy_plots = PdfPages(xy_pdf_fname)
     pdf_sink_sag_plots = PdfPages(saggital_pdf_fname)
-    
+    # go through each folder and make the sagittal and xy plots
     for job_idx, job_dir in enumerate(job_dirs):
+        # this is useful for debugging purposes
         if job_idx >= max_plots:
             continue
         print('%d/%d' % (job_idx, len(job_dirs)))
-        # grab the pickle
+        # grab the pickle filename
         job_dir_files = os.listdir(str(job_dir))
         pkl_fname = os.path.join(job_dir, list(filter(pkl_filter, job_dir_files))[0])
         # load the pickle
@@ -74,62 +98,83 @@ def wave_plotter(big_job_id, max_plots=np.inf):
         else:
             suptitle = 'Mode #%s | kz = %.2f 1/μm | m = %d | %s'  % (mode_idx, kz, m, modeType)
         # get the data from the h5 files
+        # these are only used if the data is time-resolved
         h5_keys = ['h_xy_slices_fname_h5', 'e_xy_slices_fname_h5',
-                'h_xz_slices_fname_h5', 'e_xz_slices_fname_h5',
-                'h_yz_slices_fname_h5', 'e_yz_slices_fname_h5']
+                   'h_xz_slices_fname_h5', 'e_xz_slices_fname_h5',
+                   'h_yz_slices_fname_h5', 'e_yz_slices_fname_h5']
         data = {}
-        for h5_key in h5_keys:
-            h5_fname = 'fiber_platform-' + mode_sol[h5_key]
-            field = h5_key[0]
-            plane = h5_key.split('_')[1]
-            field_list = []
-            h5_fname = os.path.join(job_dir, h5_fname)
-            with h5py.File(h5_fname, 'r') as h5f:
+        # the data is saved differently in the case of time-resolved
+        # and steady state simulations
+        if mode_sol['time_resolved']:
+            for h5_key in h5_keys:
+                h5_fname = 'fiber_platform-' + mode_sol[h5_key]
+                field = h5_key[0]
+                plane = h5_key.split('_')[1]
+                field_list = []
+                h5_fname = os.path.join(job_dir, h5_fname)
                 data_key_root = '%s-%s' % (field, plane)
-                for cartesian_component in 'xyz':
-                    data_key_r = '%s%s.r' % (field, cartesian_component)
-                    data_key_i = '%s%s.i' % (field, cartesian_component)
-                    field_data = 1j*np.array(h5f[data_key_i][:,:,-1])
-                    field_data += np.array(h5f[data_key_r][:,:,-1])
-                    field_list.append(field_data)
-            field_list = np.array(field_list)
-            data['%s_%s' %(field, plane)] = field_list
+                with h5py.File(h5_fname, 'r') as h5f:
+                    for cartesian_component in 'xyz':
+                        data_key_r = '%s%s.r' % (field, cartesian_component)
+                        data_key_i = '%s%s.i' % (field, cartesian_component)
+                        field_data = 1j*np.array(h5f[data_key_i][:,:,-1])
+                        field_data += np.array(h5f[data_key_r][:,:,-1])
+                        field_data = field_data.T
+                        field_list.append(field_data)
+                field_list = np.array(field_list)
+                data[data_key_root] = field_list
+        else:
+            h5_fname = mode_sol['eh_monitors_fname_h5']
+            with h5py.File(h5_fname, 'r') as h5f:
+                for plane in ['xy','yz','xz']:
+                    plane_slice = h5f[plane]
+                    for field in 'eh':
+                        field_list = []
+                        for cartesian_component in 'xyz':
+                            data_key_r = '%s%s.r' % (field, cartesian_component)
+                            data_key_i = '%s%s.i' % (field, cartesian_component)
+                            field_data = 1j*np.array(plane_slice[data_key_i])
+                            field_data += np.array(plane_slice[data_key_r])
+                            field_data = field_data.T
+                            field_list.append(field_data)
+                        field_list = np.array(field_list)
+                        data_key_root = '%s-%s' % (field, plane)
+                        data[data_key_root] = field_list
+        # These dictionaries are a bit more useful
+        monitor_fields       = {}
+        monitor_fields['xy'] = np.array([data['e-xy'], data['h-xy']])
+        monitor_fields['xz'] = np.array([data['e-xz'], data['h-xz']])
+        monitor_fields['yz'] = np.array([data['e-yz'], data['h-yz']])
+        sim_width            = mode_sol['sim_width']
+        full_sim_height      = mode_sol['full_sim_height']
+        coreRadius           = mode_sol['coreRadius']
 
-        monitor_fields = {}
-        for plane in ['xy','xz','yz']:
-            field_arrays = []
-            for idx, field_name in enumerate(['e','h']):
-                field_data = {}
-                h5_full_name = os.path.join(job_dir, 'fiber_platform-' + mode_sol[f'{field_name}_{plane}_slices_fname_h5'])
-                with h5py.File(h5_full_name,'r') as h5_file:
-                    h5_keys = list(h5_file.keys())
-                    for h5_key in h5_keys:
-                        datum = np.array(h5_file[h5_key][:,:,-1]).T
-                        # datum = np.transpose(datum,(1,0,2))
-                        field_data[h5_key] = datum
-                field_array = np.zeros((3,)+datum.shape, dtype=np.complex_)
-                field_parts  = f'{field_name}x {field_name}y {field_name}z'.split(' ')
-                for idx, field_component in enumerate(field_parts):
-                    field_array[idx] = 1j*np.array(field_data[field_component+'.i'])
-                    field_array[idx] += np.array(field_data[field_component+'.r'])
-                field_arrays.append(field_array)
-            field_arrays = np.array(field_arrays)
-            monitor_fields[plane] = field_arrays
-        simWidth = mode_sol['simWidth']
-        fiber_height = mode_sol['fiber_height']
-        coreRadius = mode_sol['coreRadius']
-
-        for sagplane in ['xz','yz']:
-            fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(18, 18 * 2 * fiber_height / 3 / simWidth))
+        extent = [-sim_width/2, sim_width/2, -full_sim_height/2, full_sim_height/2]
+        for sagidx, sagplane in enumerate(['xz','yz']):
+            # get a good figsize
+            if sagidx == 0:
+                dummyField = monitor_fields['xz'][0,0,:,:]
+                dummyField = np.real(dummyField)
+                fig, ax = plt.subplots()
+                ax.imshow(dummyField, extent=extent, cmap=cm.ember)
+                ax.set_xlabel('x/um')
+                ax.set_ylabel('y/um')
+                ax.set_title('Re(Ex) | [1.0]')
+                plt.tight_layout()
+                fig.canvas.draw()
+                bbox = fig.get_tightbbox(fig.canvas.get_renderer())
+                plt.close()
+                figsize = (3 * 4 * bbox.width/bbox.height, 2 * 4)
+            fig, axes = plt.subplots(nrows=2, ncols=3, figsize=figsize)
             for field_idx, field in enumerate(['E','H']):
                 for cartesian_idx, cartesian_component in enumerate('xyz'):
                     final_field = monitor_fields[sagplane][field_idx,cartesian_idx,:,:]
-                    extent = [-simWidth/2, simWidth/2, -fiber_height/2, fiber_height/2]
+                    
                     plotField = np.real(final_field)
                     cmrange = max(np.max(plotField), np.max(-plotField))
                     ax = axes[field_idx, cartesian_idx]
-                    ax.add_patch(plt.Rectangle((-simWidth/2,-fiber_height/2), simWidth, fiber_height/2, color='w', alpha=0.05))
-                    ax.add_patch(plt.Rectangle((-coreRadius,-fiber_height/2), 2*coreRadius, fiber_height/2, color='b', alpha=0.1))
+                    ax.add_patch(plt.Rectangle((-sim_width/2,-full_sim_height/2), sim_width, full_sim_height/2, color='w', alpha=0.05))
+                    ax.add_patch(plt.Rectangle((-coreRadius,-full_sim_height/2), 2*coreRadius, full_sim_height/2, color='b', alpha=0.1))
                     ax.imshow(plotField, 
                             cmap=cmap, 
                             origin='lower',
@@ -151,7 +196,7 @@ def wave_plotter(big_job_id, max_plots=np.inf):
             for field_idx, field in enumerate(['E','H']):
                 for cartesian_idx, cartesian_component in enumerate('xyz'):
                     final_field = monitor_fields[plane][field_idx,cartesian_idx,:,:]
-                    extent = [-simWidth/2, simWidth/2, -simWidth/2, simWidth/2]
+                    extent = [-sim_width/2, sim_width/2, -sim_width/2, sim_width/2]
                     plotField = np.real(final_field)
                     cmrange = max(np.max(plotField), np.max(-plotField))
                     ax = axes[field_idx, cartesian_idx]
@@ -176,13 +221,13 @@ def wave_plotter(big_job_id, max_plots=np.inf):
     pdf_sink_xy_plots.close()
 
     if post_to_slack:
-        msg = ws.post_file_to_slack(big_job_id,
+        _ = ws.post_file_to_slack(big_job_id,
                                     saggital_pdf_fname,
                                     open(saggital_pdf_fname,'rb'),
                                     'pdf',
                                     saggital_pdf_fname,
                                     slack_channel='nvs_and_metalenses')
-        msg = ws.post_file_to_slack(big_job_id,
+        _ = ws.post_file_to_slack(big_job_id,
                                     xy_pdf_fname,
                                     open(xy_pdf_fname,'rb'),
                                     'pdf',
