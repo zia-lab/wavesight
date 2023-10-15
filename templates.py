@@ -8,8 +8,10 @@ bash_template_1 = '''#!/bin/bash
 #free_wavelength : {wavelength} um
 #nUpper          : {nUpper}
 #numModes        : {numModes}
+#MEEP_resolution : {MEEP_resolution}
 
 cd {wavesight_dir}
+echo "{nCladding},{nCore},{coreRadius},{wavelength},{nUpper},{numModes},{MEEP_resolution},{config_root}" >> sim_log.txt
 # Check if the memory and time requirements have been already calculated
 if [[ -f "{config_root}.req" ]]; then
 echo "Requirements have already been estimated ..."
@@ -77,6 +79,7 @@ bash_template_2 = '''#!/bin/bash
 #free_wavelength : {wavelength} um
 #nUpper          : {nUpper}
 #numModes        : {numModes}
+#MEEP_resolution : {MEEP_resolution}
 
 cd {wavesight_dir}
 # Check if the memory and time requirements have been already calculated

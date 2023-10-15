@@ -2079,7 +2079,7 @@ def from_near_to_far_angular(field, xy_span,
                         freq_y_shifted[0],freq_y_shifted[-1]])
         extent = extent/kMedium
         fig, ax = plt.subplots()
-        ax.imshow(plotFun(fourier_Field),
+        ax.imshow(plotFun(np.roll(fourier_Field,shift=-1,axis=0)),
                 cmap=cm.ember,
                 vmin=0,
                 vmax=cmap_range,
@@ -2095,6 +2095,12 @@ def from_near_to_far_angular(field, xy_span,
         ax.set_ylabel('ky/k')
         ax.set_xlim(-1.1, 1.1)
         ax.set_ylim(-1.1, 1.1)
+        if plotFun == np.abs:
+            ax.set_title(r'|$(F(k_x,k_y))$|')
+        elif plotFun == np.real:
+            ax.set_title(r'Re$(F(k_x,k_y))$')
+        elif plotFun == np.imag:
+            ax.set_title(r'Im$(F(k_x,k_y))$')
         plt.show()
 
     # Convert the Fourier transform to angular variables
@@ -2104,7 +2110,6 @@ def from_near_to_far_angular(field, xy_span,
     sx_grid = np.sin(theta_grid) * np.cos(phi_grid)
     sy_grid = np.sin(theta_grid) * np.sin(phi_grid)
     sx_grid_old, sy_grid_old = np.meshgrid(freq_x_shifted/kMedium, freq_y_shifted/kMedium)
-    jacobian = np.abs(np.sin(theta_grid))
 
     angular_rep = griddata((sx_grid_old.ravel(), 
                             sy_grid_old.ravel()), fourier_Field.ravel(), 
@@ -2120,6 +2125,7 @@ def from_near_to_far_angular(field, xy_span,
         ax.set_ylabel(r'$\theta / deg$')
         ax.set_xticks(np.arange(0, 181, 45))
         ax.set_yticks(np.arange(-90, 91, 45))
+        ax.set_title(r'$|F(\theta,\phi)|^2$')
         plt.show()
 
     phi_sum = np.sum(angular_rep, axis=1)
@@ -2127,8 +2133,10 @@ def from_near_to_far_angular(field, xy_span,
     θmax = np.abs(theta_range[np.argmax(phi_sum)]/np.pi*180)
     if make_plots:
         fig, ax = plt.subplots(figsize=(10,3))
-        ax.plot(theta_range / np.pi * 180, phi_sum)
+        ax.stem(theta_range / np.pi * 180, phi_sum)
         ax.set_xlabel('θ/∘')
+        ax.set_ylabel(r'∝∫$|F(\theta,\phi)|^2$dϕ')
+        ax.set_aspect(50)
         plt.show()
     
     return (angular_rep, theta_range, phi_range, phi_sum, θmax) 

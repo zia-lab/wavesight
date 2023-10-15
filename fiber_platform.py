@@ -24,13 +24,15 @@ def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
     return rtime
 
 def run_time_fun(full_sim_height, nCore):
-    return 0.75 * full_sim_height * nCore
+    return 1.5 * full_sim_height * nCore
 
 def sim_height_fun(λFree, pml_thickness):
     return (10 * λFree + 2 * pml_thickness)
 
 # multiplies the time of the test-run for resource allocation
 time_boost_factor = 1.75
+# multiplies the simulation time
+steady_time_boost = 1.5
 # multiplies the memory of the test-run for resource allocation
 memory_boost_factor = 1.25
 # scales the run time, useful to debug by making the simulation end prematurely
@@ -131,7 +133,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, config_dict):
     if send_to_slack:
         mode_sol['thread_ts'] = thread_ts
     
-    mode_sol['time_resolved'] = time_resolved
+    mode_sol['time_resolved']        = time_resolved
     mode_sol['h_xy_slices_fname_h5'] = h_xy_slices_fname + '.h5'
     mode_sol['e_xy_slices_fname_h5'] = e_xy_slices_fname + '.h5'
     mode_sol['h_xz_slices_fname_h5'] = h_xz_slices_fname + '.h5'
@@ -561,7 +563,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, config_dict):
                     a_monitor_fields.append(the_field)
                 a_monitor_fields = np.array(a_monitor_fields)
                 for field_idx, field_component in enumerate('ex ey ez hx hy hz'.split(' ')):
-                    for complex_part, complex_fun in zip(['i','r'], [np.real, np.imag]):
+                    for complex_part, complex_fun in zip(['i','r'], [np.imag, np.real]):
                         key = '/%s/%s.%s' % (monitor_plane, field_component, complex_part)
                         export_field = complex_fun(a_monitor_fields[field_idx])
                         h5_file.create_dataset(key, data = export_field)
@@ -731,7 +733,9 @@ def mode_solver(num_time_slices, mode_idx, sim_time, config_dict):
             E_field_xy = monitor_fields['xy'][0]
             time_slice = np.sum(np.abs(E_field_xy)**2, axis=(0, 1, 2))
             time_axis = np.linspace(0, run_time, len(time_slice))
-            steady_time = '%.2f' % ws.transient_scope(time_axis, time_slice)
+            steady_time = ws.transient_scope(time_axis, time_slice)
+            steady_time = steady_time_boost * steady_time
+            steady_time = '%.2f' % steady_time
             print("Creating resource requirement file...")
             with open(reqs_fname,'w') as file:
                 file.write('%s,%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB, steady_time)) 

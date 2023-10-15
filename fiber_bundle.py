@@ -8,13 +8,12 @@ import subprocess
 import numpy as np
 import wavesight as ws
 
-warnings.filterwarnings('ignore', 'invalid value encountered in add')
-warnings.filterwarnings('ignore', 'invalid value encountered in subtract')
-warnings.filterwarnings('ignore', 'invalid value encountered in scalar add')
-warnings.filterwarnings('ignore', 'invalid value encountered in scalar subtract')
+ignored_warnings = ['add','subtract','scalar add','scalar subtract']
+for ignored in ignored_warnings:
+    warnings.filterwarnings('ignore', 'invalid value encountered in '+ignored)
 
 wavesight_dir = '/users/jlizaraz/CEM/wavesight'
-num_time_slices = 30 # approx how many time samples of fields
+num_time_slices = 60 # approx how many time samples of fields
 # sample about this amount and post to Slack as sims progress
 sample_posts = 3
 
@@ -27,7 +26,7 @@ def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
              * run_time * spatial_resolution**3)
     return rtime
 
-def fan_out(nCladding, nCore, coreRadius, λFree, nUpper, autorun):
+def fan_out(nCladding, nCore, coreRadius, λFree, nUpper, autorun, MEEP_resolution = 20):
     '''
     Given  the  geometry  and  composition of a step-index fiber
     this   function   solves   for   the  waveguide  propagation
@@ -88,7 +87,6 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nUpper, autorun):
     λUpper = λFree / nUpper
 
     sample_resolution   = 10
-    MEEP_resolution     = 20
     slack_channel       = 'nvs_and_metalenses'
     distance_to_monitor = 1.5 * λUpper
     fiber_alpha         = np.arcsin(np.sqrt(nCore**2-nCladding**2))
@@ -128,6 +126,7 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nUpper, autorun):
                     wavelength   = λFree,
                     numModes     = numModes,
                     num_time_slices = num_time_slices,
+                    MEEP_resolution = MEEP_resolution,
                     num_modes=(numModes-1))
     batch_script_2 = bash_template_2.format(wavesight_dir=wavesight_dir,
                     config_fname = config_fname,
@@ -139,6 +138,7 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nUpper, autorun):
                     wavelength   = λFree,
                     numModes     = numModes,
                     num_time_slices = num_time_slices,
+                    MEEP_resolution = MEEP_resolution,
                     num_modes=(numModes-1))
     with open(bash_script_fname_1, 'w') as file:
         print("Saving bash script to %s" % bash_script_fname_1)
@@ -158,6 +158,8 @@ if __name__ == "__main__":
     parser.add_argument('--free_space_wavelength', type=float, help='The free space wavelength.')
     parser.add_argument('--nUpper', type=float, help='The refrective index of the upper medium.')
     parser.add_argument('--autorun', action='store_true', help='Automatically submit the Slurm scripts.')
+    parser.add_argument('--MEEP_resolution', nargs='?', type=int, const=20, help='The resolution at which the MEEP simulations will be run.')
+    
     args = parser.parse_args()
     fan_out(args.nCladding, args.nCore, args.coreRadius, 
-            args.free_space_wavelength, args.nUpper, args.autorun)
+            args.free_space_wavelength, args.nUpper, args.autorun, args.MEEP_resolution)
