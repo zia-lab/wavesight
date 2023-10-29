@@ -1,6 +1,21 @@
 #!/usr/bin/env python3
-# fiber_bundle.py
 
+# ┌──────────────────────────────────────────────────────────┐
+# │              _   _   _   _   _   _   _   _   _           │
+# │             / \ / \ / \ / \ / \ / \ / \ / \ / \          │
+# │            ( w | a | v | e | s | i | g | h | t )         │
+# │             \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/          │
+# │                                                          │
+# │      This script takes the parameters that define a      │
+# │     step-index fiber. It solves for the propagation      │
+# │     constants and it creates a set of slurm scripts      │
+# │     that launch the simulation of the refraction of      │
+# │      the waveguide modes across an end face of the       │
+# │                          fiber.                          │
+# │                                                          │
+# └──────────────────────────────────────────────────────────┘
+
+import os
 import pickle
 import argparse
 import warnings
@@ -12,6 +27,7 @@ ignored_warnings = ['add','subtract','scalar add','scalar subtract']
 for ignored in ignored_warnings:
     warnings.filterwarnings('ignore', 'invalid value encountered in '+ignored)
 
+data_dir = '/users/jlizaraz/data/jlizaraz/CEM/wavesight/'
 wavesight_dir = '/users/jlizaraz/CEM/wavesight'
 num_time_slices = 60 # approx how many time samples of fields
 # sample about this amount and post to Slack as sims progress
@@ -91,36 +107,45 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nUpper, autorun, MEEP_resoluti
     distance_to_monitor = 1.5 * λUpper
     fiber_alpha         = np.arcsin(np.sqrt(nCore**2-nCladding**2))
 
-    config_dict = {}
-    config_dict['Xg'] = Xg
-    config_dict['Yg'] = Yg
-    config_dict['ρrange'] = ρrange
-    config_dict['λUpper'] = λUpper
-    config_dict['nUpper'] = nUpper
-    config_dict['numModes'] = numModes
-    config_dict['fiber_sol'] = fiber_sol
-    config_dict['fiber_alpha'] = fiber_alpha
-    config_dict['sample_posts'] = sample_posts
-    config_dict['slack_channel'] = slack_channel
-    config_dict['MEEP_resolution'] = MEEP_resolution
-    config_dict['num_time_slices'] = num_time_slices
-    config_dict['sample_resolution'] = sample_resolution
-    config_dict['eigennums'] = fiber_sol['eigenbasis_nums']
-    config_dict['distance_to_monitor'] = distance_to_monitor
+    waveguide_sol = {}
+    waveguide_sol['Xg'] = Xg
+    waveguide_sol['Yg'] = Yg
+    waveguide_sol['ρrange'] = ρrange
+    waveguide_sol['λUpper'] = λUpper
+    waveguide_sol['nUpper'] = nUpper
+    waveguide_sol['numModes'] = numModes
+    waveguide_sol['fiber_sol'] = fiber_sol
+    waveguide_sol['fiber_alpha'] = fiber_alpha
+    waveguide_sol['sample_posts'] = sample_posts
+    waveguide_sol['slack_channel'] = slack_channel
+    waveguide_sol['MEEP_resolution'] = MEEP_resolution
+    waveguide_sol['num_time_slices'] = num_time_slices
+    waveguide_sol['sample_resolution'] = sample_resolution
+    waveguide_sol['eigennums'] = fiber_sol['eigenbasis_nums']
+    waveguide_sol['distance_to_monitor'] = distance_to_monitor
 
     print("There are %d modes to solve." % numModes)
-    batch_rid = ws.rando_id()
-    config_fname = 'config_dict-'+batch_rid+'.pkl'
-    with open(config_fname,'wb') as file:
-        print("Saving configuration parameters to %s" % config_fname)
-        pickle.dump(config_dict, file)
-    bash_script_fname_1 = batch_rid+'-1.sh'
-    bash_script_fname_2 = batch_rid+'-2.sh'
-    batch_script_1 = bash_template_1.format(wavesight_dir=wavesight_dir,
-                    config_fname = config_fname,
-                    config_root  = batch_rid,
+    waveguide_id = ws.rando_id()
+    waveguide_dir = os.path.join(data_dir, waveguide_id)
+    if not os.path.exists(waveguide_dir):
+        os.mkdir(waveguide_dir)
+        print(f"Directory {waveguide_dir} created.")
+    else:
+        print(f"Directory {waveguide_dir} already exists.")
+    waveguide_sol_fname = 'waveguide_sol-' + waveguide_id + '.pkl'
+    waveguide_sol_fname = os.path.join(waveguide_dir, waveguide_sol_fname)
+    with open(waveguide_sol_fname,'wb') as file:
+        print("Saving configuration parameters to %s" % waveguide_sol_fname)
+        pickle.dump(waveguide_sol, file)
+    bash_script_fname_1 = waveguide_id + '-1.sh'
+    bash_script_fname_2 = waveguide_id + '-2.sh'
+    batch_script_1 = bash_template_1.format(
+                    waveguide_sol_fname = waveguide_sol_fname,
+                    wavesight_dir=wavesight_dir,
+                    waveguide_id = waveguide_id,
                     coreRadius   = coreRadius,
                     nCladding    = nCladding,
+                    waveguide_dir = waveguide_dir,
                     nCore        = nCore,
                     nUpper       = nUpper,
                     wavelength   = λFree,
@@ -129,8 +154,9 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nUpper, autorun, MEEP_resoluti
                     MEEP_resolution = MEEP_resolution,
                     num_modes=(numModes-1))
     batch_script_2 = bash_template_2.format(wavesight_dir=wavesight_dir,
-                    config_fname = config_fname,
-                    config_root  = batch_rid,
+                    waveguide_sol_fname = waveguide_sol_fname,
+                    waveguide_id = waveguide_id,
+                    waveguide_dir = waveguide_dir,
                     coreRadius   = coreRadius,
                     nCladding    = nCladding,
                     nCore        = nCore,

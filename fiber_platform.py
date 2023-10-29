@@ -1,5 +1,22 @@
 #!/usr/bin/env python3
 
+# ┌──────────────────────────────────────────────────────────┐
+# │              _   _   _   _   _   _   _   _   _           │
+# │             / \ / \ / \ / \ / \ / \ / \ / \ / \          │
+# │            ( w | a | v | e | s | i | g | h | t )         │
+# │             \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/          │
+# │                                                          │
+# │      Given the name of the configuration file for a      │
+# │        waveguide, the number of time slices to be        │
+# │     computed, the index for a mode, and a simulation     │
+# │    time. This script will run the corresponding MEEP     │
+# │      simulation. The MEEP resolution at which this       │
+# │    simulation is run is defined in the configuration     │
+# │        file. The configuration file is a pickled         │
+# │    dictionary that is generated from fiber_bundle.py.    │
+# │                                                          │
+# └──────────────────────────────────────────────────────────┘
+
 import os
 import h5py
 import time
@@ -29,6 +46,7 @@ def run_time_fun(full_sim_height, nCore):
 def sim_height_fun(λFree, pml_thickness):
     return (10 * λFree + 2 * pml_thickness)
 
+data_dir = '/users/jlizaraz/data/jlizaraz/CEM/wavesight/'
 # multiplies the time of the test-run for resource allocation
 time_boost_factor = 1.75
 # multiplies the simulation time
@@ -47,14 +65,14 @@ sag_plot_planes      = ['xz']
 # minimun wall time for sim jobs
 min_req_time_in_s    = 25 * 60
 # Whether to save the fields to the pickle or just leave them in the .h5 files
-save_fields_to_pkl = False
+save_fields_to_h5 = False
 
 # required simulation time ceiled to this many seconds
 time_req_rounded_to  = 60*15
 # and memory ceiled to this many Gb
 mem_req_rounded_to   = 1
 
-def mode_solver(num_time_slices, mode_idx, sim_time, config_dict):
+def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     '''
     This function takes a number of values, that are taken from 
     the CLI and a configuration dictionary that contains the basic
@@ -83,7 +101,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, config_dict):
         time for the simulation to run, the special value of 'auto' will
         cause the simulation time to be estimated from the height of
         the simulation volume.
-    config_dict : dict
+    waveguide_sol : dict
         Containing the following keys: nUpper, numModes, fiber_sol, fiber_alpha,
         slack_channel, MEEP_resolution, sample_resolution, distance_to_monitor.
     Returns
@@ -93,32 +111,34 @@ def mode_solver(num_time_slices, mode_idx, sim_time, config_dict):
         for mode_sol, and several .h5 files in the case of a time-resolved
         simulation or a single one in the case of a steady-state simulation.
     '''
-    nUpper = config_dict['nUpper']
-    numModes = config_dict['numModes']
-    fiber_sol = config_dict['fiber_sol']
-    fiber_alpha = config_dict['fiber_alpha']
-    sample_posts = config_dict['sample_posts']
-    slack_channel = config_dict['slack_channel']
-    MEEP_resolution = config_dict['MEEP_resolution']
-    sample_resolution = config_dict['sample_resolution']
-    distance_to_monitor = config_dict['distance_to_monitor']
+    nUpper = waveguide_sol['nUpper']
+    numModes = waveguide_sol['numModes']
+    fiber_sol = waveguide_sol['fiber_sol']
+    fiber_alpha = waveguide_sol['fiber_alpha']
+    sample_posts = waveguide_sol['sample_posts']
+    slack_channel = waveguide_sol['slack_channel']
+    MEEP_resolution = waveguide_sol['MEEP_resolution']
+    sample_resolution = waveguide_sol['sample_resolution']
+    distance_to_monitor = waveguide_sol['distance_to_monitor']
 
     time_resolved = (num_time_slices > 0)
     initial_time  = time.time()
     sim_id        = ws.rando_id()
-    output_dir    = '%s-%s-%s' % (data_dir, sim_id, mode_idx)
+    mode_sol_dir  = os.path.join(waveguide_dir, '%s-%s' % (sim_id,str(mode_idx)))
+    if not os.path.exists(mode_sol_dir):
+        os.mkdir(mode_sol_dir)
     send_to_slack = ((mode_idx % ceil(numModes/sample_posts)) == 0)
     if send_to_slack:
         slack_thread = ws.post_message_to_slack("%s - %s - %s" % (mode_idx, big_job_id, sim_id),
                                                 slack_channel=slack_channel)
         thread_ts = slack_thread['ts']
 
-    h_xy_slices_fname = 'h-field-xy-slices-' + sim_id
-    e_xy_slices_fname = 'e-field-xy-slices-' + sim_id
-    h_xz_slices_fname = 'h-field-xz-slices-' + sim_id
-    e_xz_slices_fname = 'e-field-xz-slices-' + sim_id
-    h_yz_slices_fname = 'h-field-yz-slices-' + sim_id
-    e_yz_slices_fname = 'e-field-yz-slices-' + sim_id
+    h_xy_slices_fname = 'h-field-xy-slices'
+    e_xy_slices_fname = 'e-field-xy-slices'
+    h_xz_slices_fname = 'h-field-xz-slices'
+    e_xz_slices_fname = 'e-field-xz-slices'
+    h_yz_slices_fname = 'h-field-yz-slices'
+    e_yz_slices_fname = 'e-field-yz-slices'
 
     mode_sol = {'mode_idx': mode_idx,
                 'nCore': fiber_sol['nCore'],
@@ -141,8 +161,9 @@ def mode_solver(num_time_slices, mode_idx, sim_time, config_dict):
     mode_sol['h_yz_slices_fname_h5'] = h_yz_slices_fname + '.h5'
     mode_sol['e_yz_slices_fname_h5'] = e_yz_slices_fname + '.h5'
 
-    ehfieldh5fname = 'e-h-fields-%s.h5' % sim_id
-    ehfieldh5fname = os.path.join(output_dir, ehfieldh5fname)
+    # ehfieldh5fname = 'e-h-fields-%s.h5' % sim_id
+    ehfieldh5fname = 'e-h-fields.h5'
+    ehfieldh5fname = os.path.join(mode_sol_dir, ehfieldh5fname)
     mode_sol['eh_monitors_fname_h5'] = ehfieldh5fname
 
     coord_layout = fiber_sol['coord_layout']
@@ -200,7 +221,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, config_dict):
         E_all = Ecorevals + ECladdingvals
         field_profiles[componentName] = E_all
 
-    mode_sol['field_profiles'] = (ρrange, field_profiles)
+    mode_sol['field_profiles'] = {'radial_range': ρrange, 'field_profiles':field_profiles}
 
     print("Calculating a sample of the generating effective currents ...")
     # calculate the generating currents
@@ -301,7 +322,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, config_dict):
     if time_resolved:
         field_sampling_interval = run_time/num_time_slices
     else:
-        field_sampling_interval = None
+        field_sampling_interval = 0
     source_time = run_time
     # the width of the simulation vol in the x and y directions adding the PML thickness
     full_sim_width = 2*(coreRadius + cladding_width) + 2 * pml_thickness
@@ -440,10 +461,10 @@ def mode_solver(num_time_slices, mode_idx, sim_time, config_dict):
         sources    = srcs,
         resolution = MEEP_resolution,
         boundary_layers      = pml_layers,
-        force_complex_fields = True,
-        filename_prefix = ''
+        force_complex_fields = True
     )
-    sim.use_output_directory(output_dir)
+    sim.use_output_directory(mode_sol_dir)
+    sim.filename_prefix = ''
 
     msg = "Simulation is estimated to take %0.2f minutes ..." % (approx_runtime/60)
     print(msg)
@@ -536,7 +557,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, config_dict):
             field_arrays = []
             for idx, field_name in enumerate(['e','h']):
                 field_data = {}
-                h5_full_name = os.path.join(output_dir, 'fiber_platform-' + mode_sol[f'{field_name}_{plane}_slices_fname_h5'])
+                h5_full_name = os.path.join(mode_sol_dir, mode_sol[f'{field_name}_{plane}_slices_fname_h5'])
                 with h5py.File(h5_full_name,'r') as h5_file:
                     h5_keys = list(h5_file.keys())
                     for h5_key in h5_keys:
@@ -574,9 +595,9 @@ def mode_solver(num_time_slices, mode_idx, sim_time, config_dict):
         if time_resolved:
             Ey_final_sag = monitor_fields[sagplane][0,1,:,:,-1]
         else:
-            Ey_final_sag = monitor_fields[sagplane][0,1,:,:]
+            Ey_final_sag = monitor_fields[sagplane][0,1,:,:].T
         extent = [-sim_width/2, sim_width/2, -full_sim_height/2, full_sim_height/2]
-        plotField = np.real(Ey_final_sag.T)
+        plotField = np.real(Ey_final_sag)
         fig, ax   = plt.subplots(figsize=(3, 3 * full_sim_height / sim_width))
         prange = np.max(np.abs(plotField))
         pretty_range = '$%s$' % ws.num2tex(prange, 2)
@@ -700,19 +721,19 @@ def mode_solver(num_time_slices, mode_idx, sim_time, config_dict):
     mem_used_in_bytes = process.memory_info().rss
     mem_used_in_Mbytes = mem_used_in_bytes/1024/1024
     mode_sol['overall_mem_usage_in_MB'] = int(mem_used_in_Mbytes)
-    summary = ws.dict_summary(mode_sol, 'SIM-'+sim_id)
+    summary = ws.dict_summary(mode_sol, 'sim-'+sim_id)
     if send_to_slack:
         ws.post_message_to_slack(summary, slack_channel=slack_channel,thread_ts=thread_ts)
-    if save_fields_to_pkl:
+    if save_fields_to_h5:
         mode_sol['monitor_field_slices'] = monitor_fields
-    pkl_fname = 'sim-%s.pkl' % sim_id
-    pkl_fname = os.path.join(output_dir, pkl_fname)
+    mode_sol_h5_fname = 'sim-results.h5'
+    mode_sol_h5_fname = os.path.join(mode_sol_dir, mode_sol_h5_fname)
     print("Calculating the size of h5 data files ...")
-    disk_usage_in_MB = ws.get_total_size_of_directory(output_dir)
+    disk_usage_in_MB = ws.get_total_size_of_directory(mode_sol_dir)
     mode_sol['disk_usage_in_MB'] = int(disk_usage_in_MB)
-    with open(pkl_fname, 'wb') as file:
-        print("Saving solution to %s ..." % pkl_fname)
-        pickle.dump(mode_sol, file)
+    print("Saving solution to %s ..." % mode_sol_h5_fname)
+    comments = 'created on %d' % int(time.time())
+    ws.save_to_h5(mode_sol, mode_sol_h5_fname, comments=comments)
 
     mem_used_in_Gbytes = mem_used_in_Mbytes/1024
     final_final_time   = time.time()
@@ -742,11 +763,12 @@ def mode_solver(num_time_slices, mode_idx, sim_time, config_dict):
         else:
             print("Creting resource requirement file...")
             with open(reqs_fname,'w') as file:
-                file.write('%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB)) 
+                file.write('%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB))
+    return mode_sol
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Mode launcher.')
-    parser.add_argument('--config_dict',
+    parser.add_argument('--waveguide_sol',
                         type=str,
                         help='Configuration file for modes.')
     parser.add_argument('--num_time_slices',
@@ -763,16 +785,18 @@ if __name__ == "__main__":
                         const=0,
                         help='The simulation time.')
     args = parser.parse_args()
-    config_dict_fname = args.config_dict
-
-    config_dict = pickle.load(open(config_dict_fname,'rb'))
-    big_job_id  = config_dict_fname.split('config_dict-')[-1].split('.')[0]
+    waveguide_sol_fname = args.waveguide_sol
+    big_job_id  = waveguide_sol_fname.split('waveguide_sol-')[-1].split('.')[0]
     reqs_fname = '%s.req' % big_job_id
-    data_dir = '/users/jlizaraz/data/jlizaraz/CEM/wavesight/'
-    data_dir = os.path.join(data_dir, big_job_id)
+    waveguide_dir = os.path.join(data_dir, big_job_id)
+    waveguide_sol_fname = os.path.join(waveguide_dir, waveguide_sol_fname)
+    reqs_fname = os.path.join(waveguide_dir, reqs_fname)
     num_time_slices = args.num_time_slices
     mode_idx = args.mode_idx
     sim_time = args.sim_time
+    # Load the waveguide_sol
+    with open(waveguide_sol_fname,'rb') as f:
+        waveguide_sol = pickle.load(f)
     if sim_time == 0:
         sim_time = 'auto'
-    mode_solver(num_time_slices, mode_idx, sim_time, config_dict)
+    mode_sol = mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol)

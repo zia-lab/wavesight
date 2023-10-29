@@ -682,3 +682,87 @@ def ceil_to_multiple(number, mult = 1):
     '''
     ceiled_num = ceil(number / mult) * mult
     return ceiled_num
+
+def array_stretcher(arr, min_range_new):
+    '''
+    Given  a  new range and a 1D array of evenly sampled numbers
+    spanning  a certain range. This function returns a new array
+    that is sampled to the same resolution but spanning across a
+    range  that  is at least as large as the provided range. The
+    new range may not be the one provided to the function, since
+    this  might conflict with sampling with the same resolution.
+    The  elements  of the original array will be a subset of the
+    elements of the new array.
+
+    The difference between the length of the new_array and the
+    arr is an even number.
+
+    Parameters
+    ----------
+    arr : np.array
+        An array of evenly sampled numbers.
+    min_range_new : float
+        The minimum span that the new array will have.
+    
+    Returns
+    -------
+    (new_range, new_array)
+    new_range : float
+        The actual range of the returned array
+    new_array : np.array
+        A new array with same mean as the original one, but such 
+        that new_array[-1]-new_array[0] is within the  requested
+        new  range  to  within one sampling unit of the original 
+        array.
+    '''
+    the_mean = np.mean(arr)
+    if np.isclose(the_mean, 0):
+        the_mean = 0
+    arr = arr - the_mean
+    N_old = len(arr)
+    # determine the spacing of the element in the array
+    # it should be sufficient to simply do one difference
+    # but because of numerical precision this is more precise
+    spacing = np.mean(np.diff(arr))
+    # determine the extent of numbers represented in the array
+    width_old = arr[-1] - arr[0]
+    # determine how many cells need to be added to the right
+    add_to_right = ceil_to_multiple(min_range_new/2 - width_old/2, spacing)
+    add_to_right = round(add_to_right/spacing)
+    # add the same to the left
+    N_new = N_old + 2 * add_to_right
+    new_range = spacing * (N_new - 1)
+    new_array = np.linspace(-new_range/2, new_range/2, N_new)
+    # put back the mean
+    new_array += the_mean
+    return (new_range, new_array)
+
+def sym_pad(arr, pad_width, mode='constant', **kwargs):
+    '''
+    Given n (which must be even) this function will pad on all sides
+    at the last two dimensions of the provided array.
+    Parameters
+    ----------
+    arr : np.array (..., N, N)
+        An array with at least two dimensions.
+    n : int
+        An even number, corresponding to the total width of the pad.
+    mode: str
+        The mode to use for padding: 'constant', 'mean', etc. Same 
+        as those for np.pad.
+    kwargs:
+        Same as thos that may be provided to np.pad.
+    Return
+    ------
+    padded_array : np.array (..., N + n, N + n)
+        Same as arr but padded.
+    References
+    ----------
+    https://numpy.org/doc/stable/reference/generated/numpy.pad.html
+    '''
+    assert pad_width % 2 == 0
+    num_dims = arr.ndim
+    half_pad = (pad_width//2, pad_width//2)
+    padding = [(0, 0)] * (num_dims - 2) + [half_pad, half_pad]
+    padded_array = np.pad(arr, padding, mode=mode, **kwargs)
+    return padded_array

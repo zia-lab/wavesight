@@ -6,7 +6,8 @@ from misc import *
 import cmasher as cm
 from fields import *
 from templates import *
-from convstore import * 
+from convstore import *
+from datapipes import *
 import diffkernels as dk
 from fieldgenesis import *
 from wavegraphics import *
@@ -20,6 +21,183 @@ from scipy.interpolate import RegularGridInterpolator
 
 real_dtype = np.float64
 complex_dtype = np.complex128  
+
+############################################################################################
+############################### Step Index Waveguide #######################################
+
+def equivCurrents(Efuncs, Hfuncs, coreRadius, m, parity):
+    '''
+    This  function  returns  the necessary magnetic and electric
+    currents  corresponding  to  the  given field functions. The
+    currents  are  calculated  in  a  plane  perpedicular to the
+    z-axis,  and  are  returned  so  that  they are functions of
+    cartesian   x,y  coordinates  and  represent  the  different
+    cartesian components of the currents.
+
+    Parameters
+    ----------
+    Efuncs : 6-tuple of functions
+        Having    the   structure   (ECoreρ,   ECoreϕ,   Ecorez,
+        ECladdingρ,  ECladdingϕ, Ecladdingz). The z-component is
+        not needed, if it is included, then it is neglected. The
+        first  three  functions  describing  the  electric field
+        inside  of the core and the following three the electric
+        field in the cladding.
+    Hfuncs : 6-tuple of functions
+        Having    the   structure   (HCoreρ,   HCoreϕ,   HCorez,
+        HCladdingρ,  HCladdingϕ, HCladdingz). The z-component is
+        not needed, if it is included, then it is neglected. The
+        first  three  functions describing the H-field inside of
+        the  core  and  the  following  three the H-field in the
+        cladding.
+    coreRadius : float
+        The radius of the core.
+    m : int
+        The azimuthal mode number.
+    parity : str
+        The parity of the mode. Can be 'TETM', 'EVEN', or 'ODD'.
+
+    Returns
+    -------
+    JKfuns : tuple of functions
+        Provided  as  (Jx, Jy, Kx, Ky). With Jx and Jy being the
+        functions  for  the  x-y  components  of  the equivalent
+        electric  current, and Kx and Ky being the functions for
+        the  x-y  components of the equivalent magnetic current.
+        Each  of the functions is a function of vec, which needs
+        to be an iterable with *three* elements corresponding to
+        the  x,y,z  cartesian components; this is to account for
+        the  fact  that  MEEP requires these functions to take a
+        single Vector3 argument.
+        
+    '''
+    (ECoreρ, ECoreϕ, _, ECladdingρ, ECladdingϕ, _) = Efuncs
+    (HCoreρ, HCoreϕ, _, HCladdingρ, HCladdingϕ, _) = Hfuncs
+    if parity == 'TETM':
+        def Jx(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return (-HCoreϕ(ρ)*np.cos(ϕ) 
+                        - HCoreρ(ρ)*np.sin(ϕ))
+            else:
+                return (-HCladdingϕ(ρ)*np.cos(ϕ) 
+                        - HCladdingρ(ρ)*np.sin(ϕ))
+        def Jy(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return (-HCoreϕ(ρ)*np.sin(ϕ) 
+                        + HCoreρ(ρ)*np.cos(ϕ))
+            else:
+                return (-HCladdingϕ(ρ)*np.sin(ϕ) 
+                        + HCladdingρ(ρ)*np.cos(ϕ))
+        def Kx(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return (ECoreϕ(ρ)*np.cos(ϕ) 
+                        + ECoreρ(ρ)*np.sin(ϕ))
+            else:
+                return (ECladdingϕ(ρ)*np.cos(ϕ) 
+                        + ECladdingρ(ρ)*np.sin(ϕ))
+        def Ky(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return (ECoreϕ(ρ)*np.sin(ϕ) 
+                        - ECoreρ(ρ)*np.cos(ϕ))
+            else:
+                return (ECladdingϕ(ρ)*np.sin(ϕ) 
+                        - ECladdingρ(ρ)*np.cos(ϕ))
+    elif parity == 'EVEN':
+        def Jx(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return (-HCoreϕ(ρ)*np.cos(m*ϕ)*np.cos(ϕ) 
+                        - HCoreρ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ))
+            else:
+                return (-HCladdingϕ(ρ)*np.cos(m*φ)*np.cos(ϕ) 
+                        - HCladdingρ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ))
+        def Jy(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return (-HCoreϕ(ρ)*np.cos(m*ϕ)*np.sin(ϕ) 
+                        + HCoreρ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ))
+            else:
+                return (-HCladdingϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) 
+                        + HCladdingρ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ))
+        def Kx(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return (ECoreϕ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ) 
+                        + ECoreρ(ρ)*np.cos(m*φ)*np.sin(ϕ))
+            else:
+                return (ECladdingϕ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ) 
+                        + ECladdingρ(ρ)*np.cos(m*φ)*np.sin(ϕ))
+        def Ky(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return (ECoreϕ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ) 
+                        - ECoreρ(ρ)*np.cos(m*φ)*np.cos(ϕ))
+            else:
+                return (ECladdingϕ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ) 
+                        - ECladdingρ(ρ)*np.cos(m*φ)*np.cos(ϕ))
+    elif parity == 'ODD':
+        def Jx(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return (-HCoreϕ(ρ)*np.sin(m*φ)*np.cos(ϕ) 
+                        - HCoreρ(ρ)*np.cos(m*φ)*np.sin(ϕ))
+            else:
+                return (-HCladdingϕ(ρ)*np.sin(m*φ)*np.cos(ϕ) 
+                        - HCladdingρ(ρ)*np.cos(m*φ)*np.sin(ϕ))
+        def Jy(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return (-HCoreϕ(ρ)*np.sin(m*φ)*np.sin(ϕ) 
+                        + HCoreρ(ρ)*np.cos(m*φ)*np.cos(ϕ))
+            else:
+                return (-HCladdingϕ(ρ)*np.sin(m*φ)*np.sin(ϕ) 
+                        + HCladdingρ(ρ)*np.cos(m*φ)*np.cos(ϕ))
+        def Kx(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return (ECoreϕ(ρ)*np.cos(m*φ)*np.cos(ϕ) 
+                        + ECoreρ(ρ)*np.sin(m*φ)*np.sin(ϕ))
+            else:
+                return (ECladdingϕ(ρ)*np.cos(m*φ)*np.cos(ϕ) 
+                        + ECladdingρ(ρ)*np.sin(m*φ)*np.sin(ϕ))
+        def Ky(vec):
+            x, y, _ = vec
+            ϕ = np.arctan2(y,x)
+            ρ = np.sqrt(x**2 + y**2)
+            if ρ < coreRadius:
+                return (ECoreϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) 
+                        - ECoreρ(ρ)*np.sin(m*φ)*np.cos(ϕ))
+            else:
+                return (ECladdingϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) 
+                        - ECladdingρ(ρ)*np.sin(m*φ)*np.cos(ϕ))
+    JKfuns = (Jx, Jy, Kx, Ky)
+    return JKfuns
 
 def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False, tm_te_funcs=False):
     '''
@@ -233,36 +411,8 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
     sol['totalModes'] = totalModesTE + totalModesTM + 2*totalModesHE
     return sol
 
-def field_dot(E_field, H_field, Δs, mask=None):
-    '''
-    Parameters
-    ----------
-    E_field : np.array
-        an electric field sampled on a cartesian grid of size Δs
-
-    H_field : np.array
-        a magnetic field sampled on a cartesian grid of size Δs
-
-    Δs : float
-        the grid spacing
-
-    mask : np.array
-        a mask to apply to the fields (same size as E_field[0,:,:] and H_field[0,:,:])
-    
-    Returns
-    -------
-    dotp : float
-        the dot product of the two given fields
-    '''
-    if mask is not None:
-        E_field[0][~mask] = 0
-        E_field[1][~mask] = 0
-        H_field[0][~mask] = 0
-        H_field[1][~mask] = 0
-    sumField = E_field[0] * np.conjugate(H_field[1]) - E_field[1] * np.conjugate(H_field[0])
-    dotp = np.sum(sumField)
-    dotp = 0.5 * dotp * Δs**2
-    return dotp
+############################### Step Index Waveguide #######################################
+############################################################################################
 
 def boundary_test(Efuncs, Hfuncs, fiber_spec, modeType, tolerance=1e-5):
     '''
@@ -671,6 +821,9 @@ def calculate_numerical_basis(fiber_sol, verbose=True):
     fiber_sol['eigenbasis_nums'] = eigenbasis_nums
     return fiber_sol
 
+############################################################################################
+################################ Ray Refractor #############################################
+
 def poynting_refractor(Efield, Hfield, nxy, nUpper, verbose=False):
     '''
     Approximate  the  refracted  field across a planar interface
@@ -849,105 +1002,11 @@ def poynting_refractor(Efield, Hfield, nxy, nUpper, verbose=False):
 
     return kref, Sfield, Stransverse, βfield, Eref, Href
 
+################################ Ray Refractor #############################################
+############################################################################################
 
-def from_cyl_cart_to_cart_cart(field):
-    '''
-    Given  a  field  in  cylindrical  coordinates, convert it to
-    cartesian  coordinates.  The  given  field  is assumed to be
-    anchored  to a cartesian coordinate system in the sense that
-    each  of the indices in its array corresponds to a cartesian
-    grid  in the usual sense but the value of the vector at that
-    position is given in terms of cylindrical coordinates.
-
-    This  function  assumes  that  the  region  described by the
-    cartesian coordinates is a square centered on the axis.
-
-    Parameters
-    ----------
-    field : np.array
-        A  field  in  cylindrical  coordinates  with  shape  (3,
-        numSamples,  numSamples) the indices being the ρ, φ, and
-        z components respectively.
-
-    Returns
-    -------
-    ccfield : np.array
-        A   field   in  cartesian  coordinates  with  shape  (3,
-        numSamples,  numSamples) the indices being the x, y, and
-        z components respectively of the given vector field.
-    '''
-    xrange = np.linspace(-1,1,field.shape[1])
-    yrange = np.linspace(-1,1,field.shape[2])
-    Xg, Yg = np.meshgrid(xrange, yrange)
-    φg     = np.arctan2(Yg, Xg)
-    ccfield = np.zeros(field.shape, dtype=field.dtype)
-    if field.shape[0] == 3:
-        ccfield[2] = field[2]
-    # create the cartesian coordinates of the cylindrical unit vector fields
-    # first for the ρ component
-    uρ = np.zeros((2,field.shape[1],field.shape[2]))
-    uρ[0] = np.cos(φg)
-    uρ[1] = np.sin(φg)
-    # now for the φ component
-    uφ = np.zeros((2,field.shape[1],field.shape[2]))
-    uφ[0] = -np.sin(φg)
-    uφ[1] = np.cos(φg)
-    # using these convert the cylindrical components to cartesian
-    # adding the x components of what comes from the two unit vectors
-    # scaled up by the field values in the cylindrical basis
-    ccfield[0] = field[0]*uρ[0] + field[1]*uφ[0]
-    ccfield[1] = field[0]*uρ[1] + field[1]*uφ[1]
-    return ccfield
-
-def from_cart_cart_to_cyl_cart(field):
-    '''
-    Given  a  field  in  cartesian  coordinates,  convert  it to
-    cylindrical  coordinates.  This assumes that the given field
-    represents   the   vector  field  in  cartesian  coordinates
-    anchored  in  a  centered  cartesian grid. The function then
-    returns  a  field that would be sampled in the same centered
-    cartesian  grid,  but  the field values are now given in the
-    associated cylindrical coordinate system.
-
-    ATTENTION:  This  function assumes that the region described
-    by  the  cartesian  coordinates  is a square centered on the
-    axis.
-
-    Parameters
-    ----------
-    field : np.array
-        A   field   in  cartesian  coordinates  with  shape  (3,
-        numSamples,  numSamples) the indices being the x, y, and
-        z components respectively of the given vector field.
-
-    Returns
-    -------
-    cylfield : np.array
-        A  field  in  cylindrical  coordinates  with  shape  (3,
-        numSamples,  numSamples) the indices being the ρ, φ, and
-        z components respectively.
-    '''
-    xrange = np.linspace(-1,1,field.shape[1])
-    yrange = np.linspace(-1,1,field.shape[2])
-    Xg, Yg = np.meshgrid(xrange, yrange)
-    φg     = np.arctan2(Yg, Xg)
-    cylfield = np.zeros(field.shape, dtype=field.dtype)
-    cylfield[2] = field[2]
-    # create the cylindrical coordinates of the cartesian unit vector fields
-    # first for the x component
-    ux = np.zeros((2,field.shape[1],field.shape[2]))
-    ux[0] = np.cos(φg)
-    ux[1] = -np.sin(φg)
-    # now for the y component
-    uy = np.zeros((2,field.shape[1],field.shape[2]))
-    uy[0] = np.sin(φg)
-    uy[1] = np.cos(φg)
-    # using these convert the cartesian components to cylindrical
-    # adding the ρ components of what comes from the two unit vectors
-    # scaled up by the field values in the cartesian basis
-    cylfield[0] = field[0]*ux[0] + field[1]*uy[0]
-    cylfield[1] = field[0]*ux[1] + field[1]*uy[1]
-    return cylfield
+############################################################################################
+###################################### Propagators #########################################
 
 def angular_farfield_propagator(field, λFree, nMedium, Zf, Zi, si, sf, Δf = None, options = {}):
     '''This function approximates the farfield of a field given the nearfield
@@ -1079,114 +1138,129 @@ def angular_farfield_propagator(field, λFree, nMedium, Zf, Zi, si, sf, Δf = No
         else:
             return Efar
 
-def device_layout(device_design):
+def from_near_to_far_angular(field, xy_span,
+                             kMedium, plotFun = np.real,
+                             angular_resolution = np.pi/50, make_plots=False,
+                             griddata_method = 'nearest'):
     '''
-    This function creates a figure representing the device layout.
-    
     Parameters
     ----------
-    device_design : dict with at least the following keys:
-        coreRadius : float
-            the radius of the core in μm
-        mlRadius : float
-            the radius of the metalens in μm
-        Δ : float
-            the distance between the end face of the
-            fiber and the start of the metalens in μm
-        mlPitch : float
-            the pitch of the metalens in μm
-        emDepth : float
-            the  depth of the emitter in the
-            crystal  host  in μm, measured from the base of the
-            metalens pillars
-        emΔxy : float
-            the lateral uncertainty (in μm) in
-            the position of the emitter
-        emΔz : float
-            the uncertainty in the axial position
-            of the emitter in μm
-        mlHeight : float
-            the height of the metalens in μm
-        λFree  : float
-            the  free-space  wavelength of the
-            emitter in μm
-        nCore : float
-            the refractive index of the core
-        nHost : float
-            the refractive index of the host
-        nClad : float
-            the refractive index of the cladding
-        NA : float
-            the numerical aperture of the fiber
-
-    
+    field : np.array (N, N)
+        Values, possibly complex, of the given field.
+    xy_span : float
+        The spatial extent in both the x and y axes that 
+        corresponds to the given field array.
+    kMedium : float
+        The magnitude of the homogeneous-medium wavevector
+    plotFun : func
+        In case plots are presented, this function is 
+        applied to the given array before plotting.
+    angular_resolution: float, optional
+        To what angular resolution the angular representation
+        of the field is calculated.
+    make_plots: bool
+        Whether to show plots as the calculation is carried out.
     Returns
     -------
-    fig, ax: the figure and axis objects
-
+    (angular_rep, theta_range, phi_range, phi_sum, θmax) : tuple
+        angular_rep : np.array (M, M)
+            The field values in angular coordinates (θ, ϕ).
+        theta_range : np.array
+            With the values of θ that match the provided angular_rep.
+        phi_range : np.array
+            With the values of ϕ that match the provided angular_rep.
+        phi_sum   : np.array
+            angular_rep summed along the ϕ axis
+        θmax      : float
+            The angle, in degrees, at which phi_sum is max.
     '''
-    def CenteredRectangle(xy, width, height, **opts):
-        x, y = xy
-        return Rectangle((x - width/2, y - height/2), width, height, **opts)
-    def BottomRectangle(xy, width, height, **opts):
-        x, y = xy
-        return Rectangle((x - width/2, y), width, height, **opts)
-    coreRadius = device_design['coreRadius']
-    mlRadius = device_design['mlRadius']
-    Δ = device_design['Δ']
-    mlPitch = device_design['mlPitch']
-    emDepth = device_design['emDepth']
-    emΔxy = device_design['emΔxy']
-    emΔz = device_design['emΔz']
-    mlHeight = device_design['mlHeight']
-    λFree = device_design['λFree']
-    nCore = device_design['nCore']
-    nHost = device_design['nHost']
-    wholeWidth  = 1.2*2*max(coreRadius, mlRadius)
-    textframe   = wholeWidth * 0.05
-    fiberTip    = emDepth* 0.75
-    NA = device_design['NA']
-    if 'nCladding' not in device_design:
-        nCladding = np.sqrt(nCore**2 - NA**2)
-    else:
-        nCladding = device_design['nCladding']
-    designSpec  = [f'λFree = {λFree*1000} nm',
-                f'Δ = {Δ} μm',
-                f'coreRad = {coreRadius} μm',
-                f'mlHeight = {mlHeight} μm',
-                f'emDepth = {emDepth} μm',
-                f'Δxy = {emΔxy} μm',
-                f'nCore = {nCore}',
-                f'nHost = {nHost}',
-                'nClad = %.2f' % nCladding,
-                'fiberNA = %.2f' % NA,
-                f'Δz = {emΔz} μm']
-    designSpec = list(sorted(designSpec, key=lambda x: -len(x)))
-    designSpec = '\n'.join(designSpec)
-    wholeHeight = (fiberTip + Δ + mlHeight + emDepth + 4 * emΔz)
-    top_left_corner = (-wholeWidth/2 + textframe, wholeHeight-fiberTip - textframe)
-    finalFieldWidth  =  2*emΔxy*1
-    finalFieldHeight =  2*emΔz*1
-    fig, ax = plt.subplots()
-    clad = BottomRectangle((0, 0-fiberTip), wholeWidth, fiberTip, color='c', alpha=0.5)
-    ax.add_patch(clad)
-    core = BottomRectangle((0, 0-fiberTip), coreRadius*2, fiberTip, color='r', alpha=0.5)
-    ax.add_patch(core)
-    ml = BottomRectangle((0, fiberTip + Δ - fiberTip), 2*mlRadius, mlHeight, color='g', alpha=0.5)
-    ax.add_patch(ml)
-    host = BottomRectangle((0, fiberTip + Δ + mlHeight - fiberTip), wholeWidth, wholeHeight, color='g', alpha=0.3)
-    ax.add_patch(host)
-    fieldBox = CenteredRectangle((0, fiberTip + Δ + mlHeight + emDepth - fiberTip), finalFieldWidth, finalFieldHeight, color='w', alpha=0.5)
-    ax.add_patch(fieldBox)
-    ax.set_xlim(-wholeWidth/2, wholeWidth/2)
-    ax.set_ylim(-fiberTip, wholeHeight - fiberTip)
-    ax.plot(([0,0],[0- fiberTip, wholeHeight- fiberTip]), 'w:', lw=1, alpha=0.2)
-    ax.text(*top_left_corner, designSpec, fontsize=9, ha='left', va = 'top', fontdict={'family': 'monospace'})
-    ax.set_xlabel('x/μm')
-    ax.set_ylabel('z/μm')
-    ax.set_aspect('equal')
-    plt.close()
-    return fig, ax
+    x_span = xy_span
+    y_span = xy_span
+    num_theta_samples = int(np.pi / angular_resolution)
+    num_phi_samples = num_theta_samples
+
+    x = np.linspace(-x_span/2, x_span/2, field.shape[0])
+    y = np.linspace(-y_span/2, y_span/2, field.shape[1])
+
+    fourier_Field = np.fft.fft2(field)
+    fourier_Field = np.fft.fftshift(fourier_Field)
+    # Infer the sampling rate of the given field
+    dx = x[1]-x[0]
+    dy = y[1]-y[0]
+    # Calculate and shift the corresponding frequencies
+    # converted to angular components of wavevector
+    freq_x = 2*np.pi*np.fft.fftfreq(fourier_Field.shape[0], dx)
+    freq_y = 2*np.pi*np.fft.fftfreq(fourier_Field.shape[1], dy)
+    freq_x_shifted = np.fft.fftshift(freq_x)
+    freq_y_shifted = np.fft.fftshift(freq_y)
+
+    if make_plots:
+        cmap_range = max(np.max(plotFun(fourier_Field)), np.max(-plotFun(fourier_Field)))
+        extent = np.array([freq_x_shifted[0],freq_x_shifted[-1],
+                        freq_y_shifted[0],freq_y_shifted[-1]])
+        extent = extent/kMedium
+        fig, ax = plt.subplots()
+        ax.imshow(plotFun(np.roll(fourier_Field,shift=-1,axis=0)),
+                cmap=cm.ember,
+                vmin=0,
+                vmax=cmap_range,
+                extent=extent
+                )
+        ax.add_patch(plt.Circle((0,0),
+                    1,
+                    fill=False,
+                    color='r',
+                    linestyle='--',
+                    alpha=0.5))
+        ax.set_xlabel('kx/k')
+        ax.set_ylabel('ky/k')
+        ax.set_xlim(-1.1, 1.1)
+        ax.set_ylim(-1.1, 1.1)
+        if plotFun == np.abs:
+            ax.set_title(r'|$(F(k_x,k_y))$|')
+        elif plotFun == np.real:
+            ax.set_title(r'Re$(F(k_x,k_y))$')
+        elif plotFun == np.imag:
+            ax.set_title(r'Im$(F(k_x,k_y))$')
+        plt.show()
+
+    # Convert the Fourier transform to angular variables
+    theta_range  = np.linspace(-np.pi/2, np.pi/2, num_theta_samples+1)
+    phi_range    = np.linspace(0, np.pi, num_phi_samples+1)
+    phi_grid, theta_grid   = np.meshgrid(phi_range, theta_range)
+    sx_grid = np.sin(theta_grid) * np.cos(phi_grid)
+    sy_grid = np.sin(theta_grid) * np.sin(phi_grid)
+    sx_grid_old, sy_grid_old = np.meshgrid(freq_x_shifted/kMedium, freq_y_shifted/kMedium)
+
+    angular_rep = griddata((sx_grid_old.ravel(), 
+                            sy_grid_old.ravel()), fourier_Field.ravel(), 
+                        (sx_grid, sy_grid),
+                        method=griddata_method)
+    angular_rep = np.abs(angular_rep**2)
+
+    if make_plots:
+        extent = np.array([0, 180, -90,  90])
+        fig, ax = plt.subplots(figsize=(10,5))
+        ax.imshow(angular_rep, cmap=cm.ember, extent=extent)
+        ax.set_xlabel('$\phi /deg$')
+        ax.set_ylabel(r'$\theta / deg$')
+        ax.set_xticks(np.arange(0, 181, 45))
+        ax.set_yticks(np.arange(-90, 91, 45))
+        ax.set_title(r'$|F(\theta,\phi)|^2$')
+        plt.show()
+
+    phi_sum = np.sum(angular_rep, axis=1)
+    phi_sum /= np.max(phi_sum)
+    θmax = np.abs(theta_range[np.argmax(phi_sum)]/np.pi*180)
+    if make_plots:
+        fig, ax = plt.subplots(figsize=(10,3))
+        ax.stem(theta_range / np.pi * 180, phi_sum)
+        ax.set_xlabel('θ/∘')
+        ax.set_ylabel(r'∝∫$|F(\theta,\phi)|^2$dϕ')
+        ax.set_aspect(50)
+        plt.show()
+    
+    return (angular_rep, theta_range, phi_range, phi_sum, θmax) 
 
 def simpson_weights_1D(numSamples):
     '''
@@ -1335,6 +1409,7 @@ def FFT2D_convolution_integral(xCoords, yCoords, Usamples, kernelFun):
     integral = integral.T
 
     return integral
+
 
 def electric_vectorial_diffraction(zProp, incidentEfield, xCoords, yCoords, λfree, nref):
     '''
@@ -1567,6 +1642,12 @@ def fresnel_t_θ1θ2(n1, n2, θ1, θ2):
              / (n2*cosθ1 + n1*cosθ2))
     return np.array([ts, tp])
 
+###################################### Propagators #########################################
+############################################################################################
+
+############################################################################################
+################################## Fresnel Coefficients ####################################
+
 def fresnel_ts_θ1θ2(n1, n2, θ1, θ2):
     '''
     This function returns the electric field transmission
@@ -1723,6 +1804,43 @@ def fresnel_ts_θ1(n1, n2, θ1):
     rp    = n2/n1*tp-1
     return np.array([ts, tp, rs, rp])
 
+################################## Fresnel Coefficients ####################################
+############################################################################################
+
+############################################################################################
+##################################### Field Management #####################################
+
+def field_dot(E_field, H_field, Δs, mask=None):
+    '''
+    Parameters
+    ----------
+    E_field : np.array
+        an electric field sampled on a cartesian grid of size Δs
+
+    H_field : np.array
+        a magnetic field sampled on a cartesian grid of size Δs
+
+    Δs : float
+        the grid spacing
+
+    mask : np.array
+        a mask to apply to the fields (same size as E_field[0,:,:] and H_field[0,:,:])
+    
+    Returns
+    -------
+    dotp : float
+        the dot product of the two given fields
+    '''
+    if mask is not None:
+        E_field[0][~mask] = 0
+        E_field[1][~mask] = 0
+        H_field[0][~mask] = 0
+        H_field[1][~mask] = 0
+    sumField = E_field[0] * np.conjugate(H_field[1]) - E_field[1] * np.conjugate(H_field[0])
+    dotp = np.sum(sumField)
+    dotp = 0.5 * dotp * Δs**2
+    return dotp
+
 def field_sampler(funPairs, cross_width, resolution, m, parity,
                   coreRadius, coord_sys = 'cartesian-cylindrical',
                   equiv_currents = False):
@@ -1843,300 +1961,318 @@ def field_sampler(funPairs, cross_width, resolution, m, parity,
         H_field = from_cyl_cart_to_cart_cart(H_field)
     return Xg, Yg, E_field, H_field
 
-def equivCurrents(Efuncs, Hfuncs, coreRadius, m, parity):
+def from_cyl_cart_to_cart_cart(field):
     '''
-    This  function  returns  the necessary magnetic and electric
-    currents  corresponding  to  the  given field functions. The
-    currents  are  calculated  in  a  plane  perpedicular to the
-    z-axis,  and  are  returned  so  that  they are functions of
-    cartesian   x,y  coordinates  and  represent  the  different
-    cartesian components of the currents.
+    Given  a  field  in  cylindrical  coordinates, convert it to
+    cartesian  coordinates.  The  given  field  is assumed to be
+    anchored  to a cartesian coordinate system in the sense that
+    each  of the indices in its array corresponds to a cartesian
+    grid  in the usual sense but the value of the vector at that
+    position is given in terms of cylindrical coordinates.
+
+    This  function  assumes  that  the  region  described by the
+    cartesian coordinates is a square centered on the axis.
 
     Parameters
     ----------
-    Efuncs : 6-tuple of functions
-        Having    the   structure   (ECoreρ,   ECoreϕ,   Ecorez,
-        ECladdingρ,  ECladdingϕ, Ecladdingz). The z-component is
-        not needed, if it is included, then it is neglected. The
-        first  three  functions  describing  the  electric field
-        inside  of the core and the following three the electric
-        field in the cladding.
-    Hfuncs : 6-tuple of functions
-        Having    the   structure   (HCoreρ,   HCoreϕ,   HCorez,
-        HCladdingρ,  HCladdingϕ, HCladdingz). The z-component is
-        not needed, if it is included, then it is neglected. The
-        first  three  functions describing the H-field inside of
-        the  core  and  the  following  three the H-field in the
-        cladding.
-    coreRadius : float
-        The radius of the core.
-    m : int
-        The azimuthal mode number.
-    parity : str
-        The parity of the mode. Can be 'TETM', 'EVEN', or 'ODD'.
+    field : np.array
+        A  field  in  cylindrical  coordinates  with  shape  (3,
+        numSamples,  numSamples) the indices being the ρ, φ, and
+        z components respectively.
 
     Returns
     -------
-    JKfuns : tuple of functions
-        Provided  as  (Jx, Jy, Kx, Ky). With Jx and Jy being the
-        functions  for  the  x-y  components  of  the equivalent
-        electric  current, and Kx and Ky being the functions for
-        the  x-y  components of the equivalent magnetic current.
-        Each  of the functions is a function of vec, which needs
-        to be an iterable with *three* elements corresponding to
-        the  x,y,z  cartesian components; this is to account for
-        the  fact  that  MEEP requires these functions to take a
-        single Vector3 argument.
-        
+    ccfield : np.array
+        A   field   in  cartesian  coordinates  with  shape  (3,
+        numSamples,  numSamples) the indices being the x, y, and
+        z components respectively of the given vector field.
     '''
-    (ECoreρ, ECoreϕ, _, ECladdingρ, ECladdingϕ, _) = Efuncs
-    (HCoreρ, HCoreϕ, _, HCladdingρ, HCladdingϕ, _) = Hfuncs
-    if parity == 'TETM':
-        def Jx(vec):
-            x, y, _ = vec
-            ϕ = np.arctan2(y,x)
-            ρ = np.sqrt(x**2 + y**2)
-            if ρ < coreRadius:
-                return (-HCoreϕ(ρ)*np.cos(ϕ) 
-                        - HCoreρ(ρ)*np.sin(ϕ))
-            else:
-                return (-HCladdingϕ(ρ)*np.cos(ϕ) 
-                        - HCladdingρ(ρ)*np.sin(ϕ))
-        def Jy(vec):
-            x, y, _ = vec
-            ϕ = np.arctan2(y,x)
-            ρ = np.sqrt(x**2 + y**2)
-            if ρ < coreRadius:
-                return (-HCoreϕ(ρ)*np.sin(ϕ) 
-                        + HCoreρ(ρ)*np.cos(ϕ))
-            else:
-                return (-HCladdingϕ(ρ)*np.sin(ϕ) 
-                        + HCladdingρ(ρ)*np.cos(ϕ))
-        def Kx(vec):
-            x, y, _ = vec
-            ϕ = np.arctan2(y,x)
-            ρ = np.sqrt(x**2 + y**2)
-            if ρ < coreRadius:
-                return (ECoreϕ(ρ)*np.cos(ϕ) 
-                        + ECoreρ(ρ)*np.sin(ϕ))
-            else:
-                return (ECladdingϕ(ρ)*np.cos(ϕ) 
-                        + ECladdingρ(ρ)*np.sin(ϕ))
-        def Ky(vec):
-            x, y, _ = vec
-            ϕ = np.arctan2(y,x)
-            ρ = np.sqrt(x**2 + y**2)
-            if ρ < coreRadius:
-                return (ECoreϕ(ρ)*np.sin(ϕ) 
-                        - ECoreρ(ρ)*np.cos(ϕ))
-            else:
-                return (ECladdingϕ(ρ)*np.sin(ϕ) 
-                        - ECladdingρ(ρ)*np.cos(ϕ))
-    elif parity == 'EVEN':
-        def Jx(vec):
-            x, y, _ = vec
-            ϕ = np.arctan2(y,x)
-            ρ = np.sqrt(x**2 + y**2)
-            if ρ < coreRadius:
-                return (-HCoreϕ(ρ)*np.cos(m*ϕ)*np.cos(ϕ) 
-                        - HCoreρ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ))
-            else:
-                return (-HCladdingϕ(ρ)*np.cos(m*φ)*np.cos(ϕ) 
-                        - HCladdingρ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ))
-        def Jy(vec):
-            x, y, _ = vec
-            ϕ = np.arctan2(y,x)
-            ρ = np.sqrt(x**2 + y**2)
-            if ρ < coreRadius:
-                return (-HCoreϕ(ρ)*np.cos(m*ϕ)*np.sin(ϕ) 
-                        + HCoreρ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ))
-            else:
-                return (-HCladdingϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) 
-                        + HCladdingρ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ))
-        def Kx(vec):
-            x, y, _ = vec
-            ϕ = np.arctan2(y,x)
-            ρ = np.sqrt(x**2 + y**2)
-            if ρ < coreRadius:
-                return (ECoreϕ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ) 
-                        + ECoreρ(ρ)*np.cos(m*φ)*np.sin(ϕ))
-            else:
-                return (ECladdingϕ(ρ)*np.sin(m*φ)*(-1)*np.cos(ϕ) 
-                        + ECladdingρ(ρ)*np.cos(m*φ)*np.sin(ϕ))
-        def Ky(vec):
-            x, y, _ = vec
-            ϕ = np.arctan2(y,x)
-            ρ = np.sqrt(x**2 + y**2)
-            if ρ < coreRadius:
-                return (ECoreϕ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ) 
-                        - ECoreρ(ρ)*np.cos(m*φ)*np.cos(ϕ))
-            else:
-                return (ECladdingϕ(ρ)*np.sin(m*φ)*(-1)*np.sin(ϕ) 
-                        - ECladdingρ(ρ)*np.cos(m*φ)*np.cos(ϕ))
-    elif parity == 'ODD':
-        def Jx(vec):
-            x, y, _ = vec
-            ϕ = np.arctan2(y,x)
-            ρ = np.sqrt(x**2 + y**2)
-            if ρ < coreRadius:
-                return (-HCoreϕ(ρ)*np.sin(m*φ)*np.cos(ϕ) 
-                        - HCoreρ(ρ)*np.cos(m*φ)*np.sin(ϕ))
-            else:
-                return (-HCladdingϕ(ρ)*np.sin(m*φ)*np.cos(ϕ) 
-                        - HCladdingρ(ρ)*np.cos(m*φ)*np.sin(ϕ))
-        def Jy(vec):
-            x, y, _ = vec
-            ϕ = np.arctan2(y,x)
-            ρ = np.sqrt(x**2 + y**2)
-            if ρ < coreRadius:
-                return (-HCoreϕ(ρ)*np.sin(m*φ)*np.sin(ϕ) 
-                        + HCoreρ(ρ)*np.cos(m*φ)*np.cos(ϕ))
-            else:
-                return (-HCladdingϕ(ρ)*np.sin(m*φ)*np.sin(ϕ) 
-                        + HCladdingρ(ρ)*np.cos(m*φ)*np.cos(ϕ))
-        def Kx(vec):
-            x, y, _ = vec
-            ϕ = np.arctan2(y,x)
-            ρ = np.sqrt(x**2 + y**2)
-            if ρ < coreRadius:
-                return (ECoreϕ(ρ)*np.cos(m*φ)*np.cos(ϕ) 
-                        + ECoreρ(ρ)*np.sin(m*φ)*np.sin(ϕ))
-            else:
-                return (ECladdingϕ(ρ)*np.cos(m*φ)*np.cos(ϕ) 
-                        + ECladdingρ(ρ)*np.sin(m*φ)*np.sin(ϕ))
-        def Ky(vec):
-            x, y, _ = vec
-            ϕ = np.arctan2(y,x)
-            ρ = np.sqrt(x**2 + y**2)
-            if ρ < coreRadius:
-                return (ECoreϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) 
-                        - ECoreρ(ρ)*np.sin(m*φ)*np.cos(ϕ))
-            else:
-                return (ECladdingϕ(ρ)*np.cos(m*φ)*np.sin(ϕ) 
-                        - ECladdingρ(ρ)*np.sin(m*φ)*np.cos(ϕ))
-    JKfuns = (Jx, Jy, Kx, Ky)
-    return JKfuns
+    xrange = np.linspace(-1,1,field.shape[1])
+    yrange = np.linspace(-1,1,field.shape[2])
+    Xg, Yg = np.meshgrid(xrange, yrange)
+    φg     = np.arctan2(Yg, Xg)
+    ccfield = np.zeros(field.shape, dtype=field.dtype)
+    if field.shape[0] == 3:
+        ccfield[2] = field[2]
+    # create the cartesian coordinates of the cylindrical unit vector fields
+    # first for the ρ component
+    uρ = np.zeros((2,field.shape[1],field.shape[2]))
+    uρ[0] = np.cos(φg)
+    uρ[1] = np.sin(φg)
+    # now for the φ component
+    uφ = np.zeros((2,field.shape[1],field.shape[2]))
+    uφ[0] = -np.sin(φg)
+    uφ[1] = np.cos(φg)
+    # using these convert the cylindrical components to cartesian
+    # adding the x components of what comes from the two unit vectors
+    # scaled up by the field values in the cylindrical basis
+    ccfield[0] = field[0]*uρ[0] + field[1]*uφ[0]
+    ccfield[1] = field[0]*uρ[1] + field[1]*uφ[1]
+    return ccfield
 
-def from_near_to_far_angular(field, xy_span,
-                             kMedium, plotFun = np.real,
-                             angular_resolution = np.pi/50, make_plots=False,
-                             griddata_method = 'nearest'):
+def from_cart_cart_to_cyl_cart(field):
     '''
+    Given  a  field  in  cartesian  coordinates,  convert  it to
+    cylindrical  coordinates.  This assumes that the given field
+    represents   the   vector  field  in  cartesian  coordinates
+    anchored  in  a  centered  cartesian grid. The function then
+    returns  a  field that would be sampled in the same centered
+    cartesian  grid,  but  the field values are now given in the
+    associated cylindrical coordinate system.
+
+    ATTENTION:  This  function assumes that the region described
+    by  the  cartesian  coordinates  is a square centered on the
+    axis.
+
     Parameters
     ----------
-    field : np.array (N, N)
-        Values, possibly complex, of the given field.
-    xy_span : float
-        The spatial extent in both the x and y axes that 
-        corresponds to the given field array.
-    kMedium : float
-        The magnitude of the homogeneous-medium wavevector
-    plotFun : func
-        In case plots are presented, this function is 
-        applied to the given array before plotting.
-    angular_resolution: float, optional
-        To what angular resolution the angular representation
-        of the field is calculated.
-    make_plots: bool
-        Whether to show plots as the calculation is carried out.
+    field : np.array
+        A   field   in  cartesian  coordinates  with  shape  (3,
+        numSamples,  numSamples) the indices being the x, y, and
+        z components respectively of the given vector field.
+
     Returns
     -------
-    (angular_rep, theta_range, phi_range, phi_sum, θmax) : tuple
-        angular_rep : np.array (M, M)
-            The field values in angular coordinates (θ, ϕ).
-        theta_range : np.array
-            With the values of θ that match the provided angular_rep.
-        phi_range : np.array
-            With the values of ϕ that match the provided angular_rep.
-        phi_sum   : np.array
-            angular_rep summed along the ϕ axis
-        θmax      : float
-            The angle, in degrees, at which phi_sum is max.
+    cylfield : np.array
+        A  field  in  cylindrical  coordinates  with  shape  (3,
+        numSamples,  numSamples) the indices being the ρ, φ, and
+        z components respectively.
     '''
-    x_span = xy_span
-    y_span = xy_span
-    num_theta_samples = int(np.pi / angular_resolution)
-    num_phi_samples = num_theta_samples
+    xrange = np.linspace(-1,1,field.shape[1])
+    yrange = np.linspace(-1,1,field.shape[2])
+    Xg, Yg = np.meshgrid(xrange, yrange)
+    φg     = np.arctan2(Yg, Xg)
+    cylfield = np.zeros(field.shape, dtype=field.dtype)
+    cylfield[2] = field[2]
+    # create the cylindrical coordinates of the cartesian unit vector fields
+    # first for the x component
+    ux = np.zeros((2,field.shape[1],field.shape[2]))
+    ux[0] = np.cos(φg)
+    ux[1] = -np.sin(φg)
+    # now for the y component
+    uy = np.zeros((2,field.shape[1],field.shape[2]))
+    uy[0] = np.sin(φg)
+    uy[1] = np.cos(φg)
+    # using these convert the cartesian components to cylindrical
+    # adding the ρ components of what comes from the two unit vectors
+    # scaled up by the field values in the cartesian basis
+    cylfield[0] = field[0]*ux[0] + field[1]*uy[0]
+    cylfield[1] = field[0]*ux[1] + field[1]*uy[1]
+    return cylfield
 
-    x = np.linspace(-x_span/2, x_span/2, field.shape[0])
-    y = np.linspace(-y_span/2, y_span/2, field.shape[1])
+def from_cyl_cart_to_cart_cart(field):
+    '''
+    Given  a  field  in  cylindrical  coordinates, convert it to
+    cartesian  coordinates.  The  given  field  is assumed to be
+    anchored  to a cartesian coordinate system in the sense that
+    each  of the indices in its array corresponds to a cartesian
+    grid  in the usual sense but the value of the vector at that
+    position is given in terms of cylindrical coordinates.
 
-    fourier_Field = np.fft.fft2(field)
-    fourier_Field = np.fft.fftshift(fourier_Field)
-    # Infer the sampling rate of the given field
-    dx = x[1]-x[0]
-    dy = y[1]-y[0]
-    # Calculate and shift the corresponding frequencies
-    # converted to angular components of wavevector
-    freq_x = 2*np.pi*np.fft.fftfreq(fourier_Field.shape[0], dx)
-    freq_y = 2*np.pi*np.fft.fftfreq(fourier_Field.shape[1], dy)
-    freq_x_shifted = np.fft.fftshift(freq_x)
-    freq_y_shifted = np.fft.fftshift(freq_y)
+    This  function  assumes  that  the  region  described by the
+    cartesian coordinates is a square centered on the axis.
 
-    if make_plots:
-        cmap_range = max(np.max(plotFun(fourier_Field)), np.max(-plotFun(fourier_Field)))
-        extent = np.array([freq_x_shifted[0],freq_x_shifted[-1],
-                        freq_y_shifted[0],freq_y_shifted[-1]])
-        extent = extent/kMedium
-        fig, ax = plt.subplots()
-        ax.imshow(plotFun(np.roll(fourier_Field,shift=-1,axis=0)),
-                cmap=cm.ember,
-                vmin=0,
-                vmax=cmap_range,
-                extent=extent
-                )
-        ax.add_patch(plt.Circle((0,0),
-                    1,
-                    fill=False,
-                    color='r',
-                    linestyle='--',
-                    alpha=0.5))
-        ax.set_xlabel('kx/k')
-        ax.set_ylabel('ky/k')
-        ax.set_xlim(-1.1, 1.1)
-        ax.set_ylim(-1.1, 1.1)
-        if plotFun == np.abs:
-            ax.set_title(r'|$(F(k_x,k_y))$|')
-        elif plotFun == np.real:
-            ax.set_title(r'Re$(F(k_x,k_y))$')
-        elif plotFun == np.imag:
-            ax.set_title(r'Im$(F(k_x,k_y))$')
-        plt.show()
+    Parameters
+    ----------
+    field : np.array
+        A  field  in  cylindrical  coordinates  with  shape  (3,
+        numSamples,  numSamples) the indices being the ρ, φ, and
+        z components respectively.
 
-    # Convert the Fourier transform to angular variables
-    theta_range  = np.linspace(-np.pi/2, np.pi/2, num_theta_samples+1)
-    phi_range    = np.linspace(0, np.pi, num_phi_samples+1)
-    phi_grid, theta_grid   = np.meshgrid(phi_range, theta_range)
-    sx_grid = np.sin(theta_grid) * np.cos(phi_grid)
-    sy_grid = np.sin(theta_grid) * np.sin(phi_grid)
-    sx_grid_old, sy_grid_old = np.meshgrid(freq_x_shifted/kMedium, freq_y_shifted/kMedium)
+    Returns
+    -------
+    ccfield : np.array
+        A   field   in  cartesian  coordinates  with  shape  (3,
+        numSamples,  numSamples) the indices being the x, y, and
+        z components respectively of the given vector field.
+    '''
+    xrange = np.linspace(-1,1,field.shape[1])
+    yrange = np.linspace(-1,1,field.shape[2])
+    Xg, Yg = np.meshgrid(xrange, yrange)
+    φg     = np.arctan2(Yg, Xg)
+    ccfield = np.zeros(field.shape, dtype=field.dtype)
+    if field.shape[0] == 3:
+        ccfield[2] = field[2]
+    # create the cartesian coordinates of the cylindrical unit vector fields
+    # first for the ρ component
+    uρ = np.zeros((2,field.shape[1],field.shape[2]))
+    uρ[0] = np.cos(φg)
+    uρ[1] = np.sin(φg)
+    # now for the φ component
+    uφ = np.zeros((2,field.shape[1],field.shape[2]))
+    uφ[0] = -np.sin(φg)
+    uφ[1] = np.cos(φg)
+    # using these convert the cylindrical components to cartesian
+    # adding the x components of what comes from the two unit vectors
+    # scaled up by the field values in the cylindrical basis
+    ccfield[0] = field[0]*uρ[0] + field[1]*uφ[0]
+    ccfield[1] = field[0]*uρ[1] + field[1]*uφ[1]
+    return ccfield
 
-    angular_rep = griddata((sx_grid_old.ravel(), 
-                            sy_grid_old.ravel()), fourier_Field.ravel(), 
-                        (sx_grid, sy_grid),
-                        method=griddata_method)
-    angular_rep = np.abs(angular_rep**2)
+def from_cart_cart_to_cyl_cart(field):
+    '''
+    Given  a  field  in  cartesian  coordinates,  convert  it to
+    cylindrical  coordinates.  This assumes that the given field
+    represents   the   vector  field  in  cartesian  coordinates
+    anchored  in  a  centered  cartesian grid. The function then
+    returns  a  field that would be sampled in the same centered
+    cartesian  grid,  but  the field values are now given in the
+    associated cylindrical coordinate system.
 
-    if make_plots:
-        extent = np.array([0, 180, -90,  90])
-        fig, ax = plt.subplots(figsize=(10,5))
-        ax.imshow(angular_rep, cmap=cm.ember, extent=extent)
-        ax.set_xlabel('$\phi /deg$')
-        ax.set_ylabel(r'$\theta / deg$')
-        ax.set_xticks(np.arange(0, 181, 45))
-        ax.set_yticks(np.arange(-90, 91, 45))
-        ax.set_title(r'$|F(\theta,\phi)|^2$')
-        plt.show()
+    ATTENTION:  This  function assumes that the region described
+    by  the  cartesian  coordinates  is a square centered on the
+    axis.
 
-    phi_sum = np.sum(angular_rep, axis=1)
-    phi_sum /= np.max(phi_sum)
-    θmax = np.abs(theta_range[np.argmax(phi_sum)]/np.pi*180)
-    if make_plots:
-        fig, ax = plt.subplots(figsize=(10,3))
-        ax.stem(theta_range / np.pi * 180, phi_sum)
-        ax.set_xlabel('θ/∘')
-        ax.set_ylabel(r'∝∫$|F(\theta,\phi)|^2$dϕ')
-        ax.set_aspect(50)
-        plt.show()
+    Parameters
+    ----------
+    field : np.array
+        A   field   in  cartesian  coordinates  with  shape  (3,
+        numSamples,  numSamples) the indices being the x, y, and
+        z components respectively of the given vector field.
+
+    Returns
+    -------
+    cylfield : np.array
+        A  field  in  cylindrical  coordinates  with  shape  (3,
+        numSamples,  numSamples) the indices being the ρ, φ, and
+        z components respectively.
+    '''
+    xrange = np.linspace(-1,1,field.shape[1])
+    yrange = np.linspace(-1,1,field.shape[2])
+    Xg, Yg = np.meshgrid(xrange, yrange)
+    φg     = np.arctan2(Yg, Xg)
+    cylfield = np.zeros(field.shape, dtype=field.dtype)
+    cylfield[2] = field[2]
+    # create the cylindrical coordinates of the cartesian unit vector fields
+    # first for the x component
+    ux = np.zeros((2,field.shape[1],field.shape[2]))
+    ux[0] = np.cos(φg)
+    ux[1] = -np.sin(φg)
+    # now for the y component
+    uy = np.zeros((2,field.shape[1],field.shape[2]))
+    uy[0] = np.sin(φg)
+    uy[1] = np.cos(φg)
+    # using these convert the cartesian components to cylindrical
+    # adding the ρ components of what comes from the two unit vectors
+    # scaled up by the field values in the cartesian basis
+    cylfield[0] = field[0]*ux[0] + field[1]*uy[0]
+    cylfield[1] = field[0]*ux[1] + field[1]*uy[1]
+    return cylfield
+
+##################################### Field Management #####################################
+############################################################################################
+
+############################################################################################
+########################################## Others ##########################################
+
+def device_layout(device_design):
+    '''
+    This function creates a figure representing the device layout.
     
-    return (angular_rep, theta_range, phi_range, phi_sum, θmax) 
+    Parameters
+    ----------
+    device_design : dict with at least the following keys:
+        coreRadius : float
+            the radius of the core in μm
+        mlRadius : float
+            the radius of the metalens in μm
+        Δ : float
+            the distance between the end face of the
+            fiber and the start of the metalens in μm
+        mlPitch : float
+            the pitch of the metalens in μm
+        emDepth : float
+            the  depth of the emitter in the
+            crystal  host  in μm, measured from the base of the
+            metalens pillars
+        emΔxy : float
+            the lateral uncertainty (in μm) in
+            the position of the emitter
+        emΔz : float
+            the uncertainty in the axial position
+            of the emitter in μm
+        mlHeight : float
+            the height of the metalens in μm
+        λFree  : float
+            the  free-space  wavelength of the
+            emitter in μm
+        nCore : float
+            the refractive index of the core
+        nHost : float
+            the refractive index of the host
+        nClad : float
+            the refractive index of the cladding
+        NA : float
+            the numerical aperture of the fiber
+
+    
+    Returns
+    -------
+    fig, ax: the figure and axis objects
+
+    '''
+    def CenteredRectangle(xy, width, height, **opts):
+        x, y = xy
+        return Rectangle((x - width/2, y - height/2), width, height, **opts)
+    def BottomRectangle(xy, width, height, **opts):
+        x, y = xy
+        return Rectangle((x - width/2, y), width, height, **opts)
+    coreRadius = device_design['coreRadius']
+    mlRadius = device_design['mlRadius']
+    Δ = device_design['Δ']
+    mlPitch = device_design['mlPitch']
+    emDepth = device_design['emDepth']
+    emΔxy = device_design['emΔxy']
+    emΔz = device_design['emΔz']
+    mlHeight = device_design['mlHeight']
+    λFree = device_design['λFree']
+    nCore = device_design['nCore']
+    nHost = device_design['nHost']
+    wholeWidth  = 1.2*2*max(coreRadius, mlRadius)
+    textframe   = wholeWidth * 0.05
+    fiberTip    = emDepth* 0.75
+    NA = device_design['NA']
+    if 'nCladding' not in device_design:
+        nCladding = np.sqrt(nCore**2 - NA**2)
+    else:
+        nCladding = device_design['nCladding']
+    designSpec  = [f'λFree = {λFree*1000} nm',
+                f'Δ = {Δ} μm',
+                f'coreRad = {coreRadius} μm',
+                f'mlHeight = {mlHeight} μm',
+                f'emDepth = {emDepth} μm',
+                f'Δxy = {emΔxy} μm',
+                f'nCore = {nCore}',
+                f'nHost = {nHost}',
+                'nClad = %.2f' % nCladding,
+                'fiberNA = %.2f' % NA,
+                f'Δz = {emΔz} μm']
+    designSpec = list(sorted(designSpec, key=lambda x: -len(x)))
+    designSpec = '\n'.join(designSpec)
+    wholeHeight = (fiberTip + Δ + mlHeight + emDepth + 4 * emΔz)
+    top_left_corner = (-wholeWidth/2 + textframe, wholeHeight-fiberTip - textframe)
+    finalFieldWidth  =  2*emΔxy*1
+    finalFieldHeight =  2*emΔz*1
+    fig, ax = plt.subplots()
+    clad = BottomRectangle((0, 0-fiberTip), wholeWidth, fiberTip, color='c', alpha=0.5)
+    ax.add_patch(clad)
+    core = BottomRectangle((0, 0-fiberTip), coreRadius*2, fiberTip, color='r', alpha=0.5)
+    ax.add_patch(core)
+    ml = BottomRectangle((0, fiberTip + Δ - fiberTip), 2*mlRadius, mlHeight, color='g', alpha=0.5)
+    ax.add_patch(ml)
+    host = BottomRectangle((0, fiberTip + Δ + mlHeight - fiberTip), wholeWidth, wholeHeight, color='g', alpha=0.3)
+    ax.add_patch(host)
+    fieldBox = CenteredRectangle((0, fiberTip + Δ + mlHeight + emDepth - fiberTip), finalFieldWidth, finalFieldHeight, color='w', alpha=0.5)
+    ax.add_patch(fieldBox)
+    ax.set_xlim(-wholeWidth/2, wholeWidth/2)
+    ax.set_ylim(-fiberTip, wholeHeight - fiberTip)
+    ax.plot(([0,0],[0- fiberTip, wholeHeight- fiberTip]), 'w:', lw=1, alpha=0.2)
+    ax.text(*top_left_corner, designSpec, fontsize=9, ha='left', va = 'top', fontdict={'family': 'monospace'})
+    ax.set_xlabel('x/μm')
+    ax.set_ylabel('z/μm')
+    ax.set_aspect('equal')
+    plt.close()
+    return fig, ax
+
+########################################## Others ##########################################
+############################################################################################

@@ -1,8 +1,19 @@
 #!/usr/bin/env python3
 
+# ┌──────────────────────────────────────────────────────────┐
+# │              _   _   _   _   _   _   _   _   _           │
+# │             / \ / \ / \ / \ / \ / \ / \ / \ / \          │
+# │            ( w | a | v | e | s | i | g | h | t )         │
+# │             \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/          │
+# │                                                          │
+# │       Given the waveguide ID this script generates       │
+# │     figures for the transverse and sagittal fields.      │
+# │           These plots are also sent to Slack.            │
+# │                                                          │
+# └──────────────────────────────────────────────────────────┘
+
 import os
 import h5py
-import pickle
 import argparse
 import numpy as np
 import cmasher as cm
@@ -22,8 +33,8 @@ args = parser.parse_args()
 
 cmap          = cm.watermelon
 data_dir      = '/users/jlizaraz/data/jlizaraz/CEM/wavesight'
-alt_indexing  = False
 post_to_slack = True
+exclude_dirs  = ['moovies']
 
 def wave_plotter(big_job_id, max_plots=np.inf, extra_fname = ''):
     '''
@@ -45,51 +56,33 @@ def wave_plotter(big_job_id, max_plots=np.inf, extra_fname = ''):
     None
     '''
     # first find all the subdirs that correspond to the big_job_id
-    data_dir_contents = os.listdir(data_dir)
-    def job_dir_filter(a_dir):
-        return (a_dir.startswith(big_job_id) 
-                and os.path.isdir(os.path.join(data_dir, a_dir)))
-    job_dirs = [os.path.join(data_dir, a_dir) for a_dir in data_dir_contents if job_dir_filter(a_dir)]
-    pkl_filter = lambda x: (x.startswith('sim') and x.endswith('.pkl'))
-    if alt_indexing:
-        print("Retrieving the mode ordering ...")
-        job_dirs = np.array(job_dirs)
-        indices = []
-        for job_dir in job_dirs:
-            # grab the pickle
-            job_dir_files = os.listdir(str(job_dir))
-            pkl_fname = os.path.join(job_dir, list(filter(pkl_filter, job_dir_files))[0])
-            # load the pickle
-            with open(pkl_fname, 'rb') as file:
-                mode_sol = pickle.load(file)
-            indices.append(mode_sol['mode_idx'])
-        indices = np.array(indices)
-        sorter = np.argsort(indices)
-        job_dirs = job_dirs[sorter]
-        job_dirs = list(map(str, job_dirs))
-    else:
-        def wave_sorter(x):
-            idx = int(x.split('-')[-1])
-            return idx
-        job_dirs = list(sorted(job_dirs, key = wave_sorter))
+    waveguide_dir = os.path.join(data_dir, big_job_id)
+    job_dir_contents = os.listdir(waveguide_dir)
+    job_dir_contents = [a_dir for a_dir in job_dir_contents if a_dir not in exclude_dirs]
+    job_dirs = [os.path.join(waveguide_dir, a_dir) for a_dir in job_dir_contents]
+    job_dirs = [a_dir for a_dir in job_dirs if os.path.isdir(a_dir)]
+    def wave_sorter(x):
+        idx = int(x.split('-')[-1])
+        return idx
+    job_dirs = list(sorted(job_dirs, key = wave_sorter))
 
     saggital_pdf_fname = '%s-sagittal%s.pdf' % (big_job_id, extra_fname)
+    saggital_pdf_fname = os.path.join(waveguide_dir, saggital_pdf_fname)
+
     xy_pdf_fname = '%s-xy%s.pdf' % (big_job_id, extra_fname)
+    xy_pdf_fname = os.path.join(waveguide_dir, xy_pdf_fname)
     # these are the objects in which the figures will be saved
     pdf_sink_xy_plots = PdfPages(xy_pdf_fname)
     pdf_sink_sag_plots = PdfPages(saggital_pdf_fname)
     # go through each folder and make the sagittal and xy plots
     for job_idx, job_dir in enumerate(job_dirs):
-        # this is useful for debugging purposes
+        mode_id = job_dir.split('/')[-1][:9]
         if job_idx >= max_plots:
             continue
         print('%d/%d' % (job_idx, len(job_dirs) - 1))
-        # grab the pickle filename
-        job_dir_files = os.listdir(str(job_dir))
-        pkl_fname = os.path.join(job_dir, list(filter(pkl_filter, job_dir_files))[0])
-        # load the pickle
-        with open(pkl_fname, 'rb') as file:
-            mode_sol = pickle.load(file)
+        h5_fname = 'sim-results.h5'
+        h5_fname = os.path.join(job_dir, h5_fname)
+        mode_sol, _ = ws.load_from_h5(h5_fname)
         mode_idx, kz, m, modeType, parity = mode_sol['mode_idx'], mode_sol['kz'], mode_sol['m'], mode_sol['modeType'], mode_sol['parity']
         if parity == 'EVEN':
             suptitle = 'Mode #%s | kz = %.2f 1/μm | m = %d | %s+' % (mode_idx, kz, m, modeType)
@@ -107,7 +100,7 @@ def wave_plotter(big_job_id, max_plots=np.inf, extra_fname = ''):
         # and steady state simulations
         if mode_sol['time_resolved']:
             for h5_key in h5_keys:
-                h5_fname = 'fiber_platform-' + mode_sol[h5_key]
+                h5_fname = mode_sol[h5_key]
                 field = h5_key[0]
                 plane = h5_key.split('_')[1]
                 field_list = []
@@ -169,7 +162,6 @@ def wave_plotter(big_job_id, max_plots=np.inf, extra_fname = ''):
             for field_idx, field in enumerate(['E','H']):
                 for cartesian_idx, cartesian_component in enumerate('xyz'):
                     final_field = monitor_fields[sagplane][field_idx,cartesian_idx,:,:]
-                    
                     plotField = np.real(final_field)
                     cmrange = max(np.max(plotField), np.max(-plotField))
                     ax = axes[field_idx, cartesian_idx]
