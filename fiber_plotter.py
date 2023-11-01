@@ -28,7 +28,7 @@ style.use('dark_background')
 # it takes as simple argument equal to the job id for the entire simulation
 
 parser = argparse.ArgumentParser(description='Job plotter.')
-parser.add_argument('big_job_id', type=str, help='The label for the job.')
+parser.add_argument('waveguide_id', type=str, help='The ID for a waveguide.')
 args = parser.parse_args()
 
 cmap          = cm.watermelon
@@ -36,7 +36,7 @@ data_dir      = '/users/jlizaraz/data/jlizaraz/CEM/wavesight'
 post_to_slack = True
 exclude_dirs  = ['moovies']
 
-def wave_plotter(big_job_id, max_plots=np.inf, extra_fname = ''):
+def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
     '''
     This function takes the job id for a given batch simulation
     and creates plots for the fields in the saggital and xy
@@ -45,7 +45,7 @@ def wave_plotter(big_job_id, max_plots=np.inf, extra_fname = ''):
     the same directory as the data and also posted to Slack.
     Parameters
     ----------
-    big_job_id : str
+    waveguide_id : str
         The label for the job.
     max_plots : int, optional
         The maximum number of plots to generate. The default is np.inf.
@@ -55,8 +55,8 @@ def wave_plotter(big_job_id, max_plots=np.inf, extra_fname = ''):
     -------
     None
     '''
-    # first find all the subdirs that correspond to the big_job_id
-    waveguide_dir = os.path.join(data_dir, big_job_id)
+    # first find all the subdirs that correspond to the waveguide_id
+    waveguide_dir = os.path.join(data_dir, waveguide_id)
     job_dir_contents = os.listdir(waveguide_dir)
     job_dir_contents = [a_dir for a_dir in job_dir_contents if a_dir not in exclude_dirs]
     job_dirs = [os.path.join(waveguide_dir, a_dir) for a_dir in job_dir_contents]
@@ -66,10 +66,10 @@ def wave_plotter(big_job_id, max_plots=np.inf, extra_fname = ''):
         return idx
     job_dirs = list(sorted(job_dirs, key = wave_sorter))
 
-    saggital_pdf_fname = '%s-sagittal%s.pdf' % (big_job_id, extra_fname)
+    saggital_pdf_fname = '%s-sagittal%s.pdf' % (waveguide_id, extra_fname)
     saggital_pdf_fname = os.path.join(waveguide_dir, saggital_pdf_fname)
 
-    xy_pdf_fname = '%s-xy%s.pdf' % (big_job_id, extra_fname)
+    xy_pdf_fname = '%s-xy%s.pdf' % (waveguide_id, extra_fname)
     xy_pdf_fname = os.path.join(waveguide_dir, xy_pdf_fname)
     # these are the objects in which the figures will be saved
     pdf_sink_xy_plots = PdfPages(xy_pdf_fname)
@@ -213,18 +213,18 @@ def wave_plotter(big_job_id, max_plots=np.inf, extra_fname = ''):
     pdf_sink_xy_plots.close()
 
     if post_to_slack:
-        _ = ws.post_file_to_slack(big_job_id,
+        _ = ws.post_file_to_slack(waveguide_id,
                                     saggital_pdf_fname,
                                     open(saggital_pdf_fname,'rb'),
                                     'pdf',
-                                    saggital_pdf_fname,
+                                    os.path.split(saggital_pdf_fname)[-1],
                                     slack_channel='nvs_and_metalenses')
-        _ = ws.post_file_to_slack(big_job_id,
+        _ = ws.post_file_to_slack(waveguide_id,
                                     xy_pdf_fname,
                                     open(xy_pdf_fname,'rb'),
                                     'pdf',
-                                    xy_pdf_fname,
+                                    os.path.split(xy_pdf_fname)[-1],
                                     slack_channel='nvs_and_metalenses')
 
 if __name__ == '__main__':
-    wave_plotter(args.big_job_id)
+    wave_plotter(args.waveguide_id)

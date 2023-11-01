@@ -129,7 +129,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
         os.mkdir(mode_sol_dir)
     send_to_slack = ((mode_idx % ceil(numModes/sample_posts)) == 0)
     if send_to_slack:
-        slack_thread = ws.post_message_to_slack("%s - %s - %s" % (mode_idx, big_job_id, sim_id),
+        slack_thread = ws.post_message_to_slack("%s - %s - %s" % (mode_idx, waveguide_id, sim_id),
                                                 slack_channel=slack_channel)
         thread_ts = slack_thread['ts']
 
@@ -786,9 +786,9 @@ if __name__ == "__main__":
                         help='The simulation time.')
     args = parser.parse_args()
     waveguide_sol_fname = args.waveguide_sol
-    big_job_id  = waveguide_sol_fname.split('waveguide_sol-')[-1].split('.')[0]
-    reqs_fname = '%s.req' % big_job_id
-    waveguide_dir = os.path.join(data_dir, big_job_id)
+    waveguide_id  = waveguide_sol_fname.split('waveguide_sol-')[-1].split('.')[0]
+    reqs_fname = '%s.req' % waveguide_id
+    waveguide_dir = os.path.join(data_dir, waveguide_id)
     waveguide_sol_fname = os.path.join(waveguide_dir, waveguide_sol_fname)
     reqs_fname = os.path.join(waveguide_dir, reqs_fname)
     num_time_slices = args.num_time_slices

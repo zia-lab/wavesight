@@ -29,7 +29,7 @@ style.use('dark_background')
 # it takes as simple argument equal to the job id for the entire simulation
 
 parser = argparse.ArgumentParser(description='Job plotter.')
-parser.add_argument('big_job_id', type=str, help='The label for the job.')
+parser.add_argument('waveguide_id', type=str, help='The ID for a waveguide.')
 args = parser.parse_args()
 
 cmap          = cm.watermelon
@@ -41,7 +41,7 @@ phase_max     = 2*np.pi
 phases        = np.linspace(phase_min, phase_max, num_frames, endpoint=False)
 exclude_dirs  = ['moovies']
 
-def wave_plotter(big_job_id, max_plots=np.inf, extra_fname = ''):
+def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
     '''
     This function takes the job id for a given batch simulation
     and creates plots for the fields in the saggital and xy
@@ -50,7 +50,7 @@ def wave_plotter(big_job_id, max_plots=np.inf, extra_fname = ''):
     the same directory as the data and also posted to Slack.
     Parameters
     ----------
-    big_job_id : str
+    waveguide_id : str
         The label for the job.
     max_plots : int, optional
         The maximum number of plots to generate. The default is np.inf.
@@ -60,8 +60,8 @@ def wave_plotter(big_job_id, max_plots=np.inf, extra_fname = ''):
     -------
     None
     '''
-    # first find all the subdirs that correspond to the big_job_id
-    waveguide_dir = os.path.join(data_dir, big_job_id)
+    # first find all the subdirs that correspond to the waveguide_id
+    waveguide_dir = os.path.join(data_dir, waveguide_id)
     job_dir_contents = os.listdir(waveguide_dir)
     job_dir_contents = [a_dir for a_dir in job_dir_contents if a_dir not in exclude_dirs]
     job_dirs = [os.path.join(waveguide_dir, a_dir) for a_dir in job_dir_contents]
@@ -248,4 +248,4 @@ def wave_plotter(big_job_id, max_plots=np.inf, extra_fname = ''):
             plt.close(fig)
 
 if __name__ == '__main__':
-    wave_plotter(args.big_job_id)
+    wave_plotter(args.waveguide_id)

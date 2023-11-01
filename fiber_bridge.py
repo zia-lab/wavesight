@@ -28,9 +28,9 @@ import numpy as np
 import wavesight as ws
 from contextlib import contextmanager
 
-data_dir      = '/users/jlizaraz/data/jlizaraz/CEM/wavesight'
-exclude_dirs  = ['moovies']
-overwrite     = True
+data_dir        = '/users/jlizaraz/data/jlizaraz/CEM/wavesight'
+exclude_dirs    = ['moovies']
+overwrite       = True
 
 @contextmanager
 def h5_handler(filename, mode):
@@ -44,9 +44,9 @@ def h5_handler(filename, mode):
         if file:
             file.close()
 
-def wave_jumper(big_job_id, zProp, nUpper):
-    # first find all the subdirs that correspond to the big_job_id
-    waveguide_dir = os.path.join(data_dir, big_job_id)
+def wave_jumper(waveguide_id, zProp, nProp):
+    # first find all the subdirs that correspond to the waveguide_id
+    waveguide_dir = os.path.join(data_dir, waveguide_id)
     job_dir_contents = os.listdir(waveguide_dir)
     job_dir_contents = [a_dir for a_dir in job_dir_contents if a_dir not in exclude_dirs]
     job_dirs = [os.path.join(waveguide_dir, a_dir) for a_dir in job_dir_contents]
@@ -81,7 +81,7 @@ def wave_jumper(big_job_id, zProp, nUpper):
         current_width = xCoords[-1] - xCoords[0]
         print(">> The source field spans is defined over a distance of %.2f μm ..." % current_width)
         prop_plane_width = 2 * (current_width/2 + 1.1 * zProp * np.tan(fiber_β))
-        print(">> Given the NA of the fiber and the propagation distance the field will be propagated to an extended width of %.2f μm ..." % prop_plane_width)
+        print(">> Given the NA of the fiber and the propagation distance the field will be propagated to an extended domain with width of %.2f μm ..." % prop_plane_width)
         (_, xCoords) = ws.array_stretcher(xCoords, prop_plane_width)
         (_, yCoords) = ws.array_stretcher(yCoords, prop_plane_width)
         total_pad_width = len(xCoords) - N_samples
@@ -89,7 +89,7 @@ def wave_jumper(big_job_id, zProp, nUpper):
         data = {}
         propagated_h5_fname = os.path.join(job_dir, propagated_h5_fname)
         if os.path.exists(propagated_h5_fname) and not overwrite:
-            print(>> "Done already, continue to next.")
+            print(">> Done already, continue to next.")
             continue
         else:
             with h5_handler(propagated_h5_fname, 'w') as prop_h5_file:
@@ -132,19 +132,41 @@ def wave_jumper(big_job_id, zProp, nUpper):
                                 data_key_root = '%s-%s' % (field, plane)
                                 data[data_key_root] = field_list
                 transverse_fields = np.array([data['e-xy'], data['h-xy']])
-                transverse_fields = ws.sym_pad(transverse_fields, total_pad_width, mode='mean')
-                prop_E_field = ws.electric_vectorial_diffraction(zProp, transverse_fields[0], xCoords, yCoords, λFree, nUpper)
-                prop_H_field = ws.magnetic_vectorial_diffraction(zProp, transverse_fields[1], xCoords, yCoords, λFree, nUpper)
+                transverse_fields = ws.sym_pad(transverse_fields, total_pad_width, mode='constant')
+                prop_E_field = ws.electric_vectorial_diffraction(zProp, transverse_fields[0], xCoords, yCoords, λFree, nProp)
+                prop_H_field = ws.magnetic_vectorial_diffraction(zProp, transverse_fields[0], xCoords, yCoords, λFree, nProp)
+
+                dx = xCoords[1] - xCoords[0]
+                integrand = np.sum(np.abs(transverse_fields[0])**2, axis=0)
+                E_squared_int_source = ws.simpson_quad_ND(integrand, [dx,dx])
+                integrand = np.sum(np.abs(prop_E_field)**2, axis=0)
+                E_squared_int_prop   = ws.simpson_quad_ND(integrand, [dx,dx])
+                print('∫E^2_source dxdy = %.3f' % E_squared_int_source)
+                print('∫E^2_propag dxdy = %.3f' % E_squared_int_prop)
+
+                integrand = np.sum(np.abs(transverse_fields[1])**2, axis=0)
+                H_squared_int_source = ws.simpson_quad_ND(integrand, [dx,dx])
+                integrand = np.sum(np.abs(prop_H_field)**2, axis=0)
+                H_squared_int_prop   = ws.simpson_quad_ND(integrand, [dx,dx])
+                print('∫H^2_source dxdy = %.3f' % H_squared_int_source)
+                print('∫H^2_propag dxdy = %.3f' % H_squared_int_prop)
+
                 propagated_field = np.array([prop_E_field, prop_H_field])
                 prop_h5_file.create_dataset('EH_field', data = propagated_field)
                 prop_h5_file.create_dataset('xCoords',  data = xCoords)
                 prop_h5_file.create_dataset('yCoords',  data = yCoords)
                 prop_h5_file.create_dataset('zProp',    data = zProp)
+                prop_h5_file.create_dataset('nProp',    data = nProp)
+                prop_h5_file.create_dataset('E^2_integral_source', data = E_squared_int_source)
+                prop_h5_file.create_dataset('E^2_integral_propagated', data = E_squared_int_prop)
+                prop_h5_file.create_dataset('H^2_integral_source', data = H_squared_int_source)
+                prop_h5_file.create_dataset('H^2_integral_propagated', data = H_squared_int_prop)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Job plotter.')
-    parser.add_argument('big_job_id', type=str, help='The label for the job.')
+    parser.add_argument('waveguide_id', type=str, help='The label for the job.')
     parser.add_argument('zProp', type=float, help='z-distance for propagation.')
-    parser.add_argument('nUpper', type=float, help='Refractive index of propagating medium.')
+    parser.add_argument('nProp', type=float, help='Refractive index of propagating medium.')
     args = parser.parse_args()
-    wave_jumper(args.big_job_id, args.zProp, args.nUpper)
+    wave_jumper(args.waveguide_id, args.zProp, args.nProp)

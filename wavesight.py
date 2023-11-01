@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import numbers
 import warnings
 import numpy as np
 from misc import *
@@ -1298,6 +1299,67 @@ def simpson_weights_1D(numSamples):
         BSimpson[0,-4] += 3/8.
         BSimpson[0,-3::] = 3/8*np.array([3,3,1])
     return BSimpson
+
+def simpson_quad_1D(arr, dx):
+    '''
+    Given  a 1D array of uniformly sampled values of a function
+    function  over  a  Cartesian grid, this function returns the
+    integral over the 0-th index of the array assuming that in
+    that direction the array contains samples at an interval dx.
+
+    Parameters
+    ----------
+    arr: np.array (N, N)
+        Uniform samples of a function on a cartesian grid.
+    dx: float
+        The size of the sampling, shared by both axes.
+    Returns
+    -------
+    simp_int: float
+        ∑ arr[i,j] B[i] B[j] dx dy
+    '''
+    Nx = arr.shape[0]
+    Bsimpsonx = simpson_weights_1D(Nx)
+    if arr.ndim > 1:
+        Bsimpsonx = Bsimpsonx.T
+        if Bsimpsonx.ndim != arr.ndim:
+            extra_dims = arr.ndim - Bsimpsonx.ndim
+            extras = (np.newaxis,) * extra_dims
+            Bsimpsonx = Bsimpsonx[:,*extras]
+        arrB = Bsimpsonx * arr
+        simp_int = np.sum(arrB, axis=0) * dx
+    else:
+        arrB = Bsimpsonx * arr
+        simp_int = np.sum(arrB) * dx
+    return simp_int
+
+def simpson_quad_ND(arr, dr):
+    '''
+    This function takes a multidimensional array with samples of
+    a multivariate function of cartesian coordinates and returns
+    the integral over all of the dimensions.
+
+    Parameters
+    ----------
+    arr: np.array (N, M, ...)
+        The samples of the function to be integrated.
+    dr: iterable or float
+        dr[i] being the sampling interval for dim-i in
+        the given arr. If a float is given, then the assumption
+        is that the sampling is equal in every dimension.
+    Returns
+    -------
+    the_integral : float
+        The required integral.
+    '''
+    if isinstance(dr, numbers.Number):
+        dr = [dr] * arr.ndim
+    if arr.ndim == 0:
+        the_integral = arr
+        return the_integral
+    else:
+        new_arr = simpson_quad_1D(arr, dr[0])
+        return simpson_quad_ND(new_arr, dr[1:])
 
 def FFT2D_convolution_integral(xCoords, yCoords, Usamples, kernelFun):
     '''
