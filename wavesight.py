@@ -2227,7 +2227,7 @@ def from_cart_cart_to_cyl_cart(field):
 ############################################################################################
 ########################################## Others ##########################################
 
-def device_layout(device_design):
+def device_layout(device_design, text_legend=True):
     '''
     This function creates a figure representing the device layout.
     
@@ -2279,35 +2279,36 @@ def device_layout(device_design):
     def BottomRectangle(xy, width, height, **opts):
         x, y = xy
         return Rectangle((x - width/2, y), width, height, **opts)
-    coreRadius = device_design['coreRadius']
-    mlRadius = device_design['mlRadius']
-    Δ = device_design['Δ']
-    mlPitch = device_design['mlPitch']
-    emDepth = device_design['emDepth']
-    emΔxy = device_design['emΔxy']
-    emΔz = device_design['emΔz']
-    mlHeight = device_design['mlHeight']
-    λFree = device_design['λFree']
-    nCore = device_design['nCore']
-    nHost = device_design['nHost']
+    coreRadius  = device_design['coreRadius']
+    mlRadius    = device_design['mlRadius']
+    Δ           = device_design['Δ']
+    mlPitch     = device_design['mlPitch']
+    emDepth     = device_design['emDepth']
+    emΔxy       = device_design['emΔxy']
+    emΔz        = device_design['emΔz']
+    mlHeight    = device_design['mlHeight']
+    λFree       = device_design['λFree']
+    nCore       = device_design['nCore']
+    nHost       = device_design['nHost']
+    δ           = device_design['δ']
     wholeWidth  = 1.2*2*max(coreRadius, mlRadius)
     textframe   = wholeWidth * 0.05
-    fiberTip    = emDepth* 0.75
-    NA = device_design['NA']
+    fiberTip    = emDepth * 1.5
+    NAf         = device_design['NAf']
     if 'nCladding' not in device_design:
-        nCladding = np.sqrt(nCore**2 - NA**2)
+        nCladding = np.sqrt(nCore**2 - NAf**2)
     else:
         nCladding = device_design['nCladding']
     designSpec  = [f'λFree = {λFree*1000} nm',
-                f'Δ = {Δ} μm',
-                f'coreRad = {coreRadius} μm',
+                f'Δ = {Δ:.2f} μm',
+                f'coreRad = {coreRadius:.1f} μm',
                 f'mlHeight = {mlHeight} μm',
                 f'emDepth = {emDepth} μm',
                 f'Δxy = {emΔxy} μm',
-                f'nCore = {nCore}',
-                f'nHost = {nHost}',
-                'nClad = %.2f' % nCladding,
-                'fiberNA = %.2f' % NA,
+                f'nCore = {nCore:.4f}',
+                f'nHost = {nHost:.4f}',
+                f'nClad = {nCladding:.4f}',
+                'fiberNA = %.2f' % NAf,
                 f'Δz = {emΔz} μm']
     designSpec = list(sorted(designSpec, key=lambda x: -len(x)))
     designSpec = '\n'.join(designSpec)
@@ -2315,21 +2316,28 @@ def device_layout(device_design):
     top_left_corner = (-wholeWidth/2 + textframe, wholeHeight-fiberTip - textframe)
     finalFieldWidth  =  2*emΔxy*1
     finalFieldHeight =  2*emΔz*1
+    emitter_z = fiberTip + Δ + mlHeight + emDepth - fiberTip
+    ml_z = fiberTip + Δ - fiberTip
     fig, ax = plt.subplots()
     clad = BottomRectangle((0, 0-fiberTip), wholeWidth, fiberTip, color='c', alpha=0.5)
     ax.add_patch(clad)
     core = BottomRectangle((0, 0-fiberTip), coreRadius*2, fiberTip, color='r', alpha=0.5)
     ax.add_patch(core)
-    ml = BottomRectangle((0, fiberTip + Δ - fiberTip), 2*mlRadius, mlHeight, color='g', alpha=0.5)
+    ml = BottomRectangle((0, ml_z), 2*mlRadius, mlHeight, color='g', alpha=0.5)
     ax.add_patch(ml)
-    host = BottomRectangle((0, fiberTip + Δ + mlHeight - fiberTip), wholeWidth, wholeHeight, color='g', alpha=0.3)
+    host = BottomRectangle((0, fiberTip + Δ + mlHeight - fiberTip), wholeWidth, wholeHeight, color='b', alpha=0.3)
     ax.add_patch(host)
-    fieldBox = CenteredRectangle((0, fiberTip + Δ + mlHeight + emDepth - fiberTip), finalFieldWidth, finalFieldHeight, color='w', alpha=0.5)
+    fieldBox = CenteredRectangle((0, emitter_z), finalFieldWidth, finalFieldHeight, color='w', alpha=0.5)
     ax.add_patch(fieldBox)
     ax.set_xlim(-wholeWidth/2, wholeWidth/2)
     ax.set_ylim(-fiberTip, wholeHeight - fiberTip)
-    ax.plot(([0,0],[0- fiberTip, wholeHeight- fiberTip]), 'w:', lw=1, alpha=0.2)
-    ax.text(*top_left_corner, designSpec, fontsize=9, ha='left', va = 'top', fontdict={'family': 'monospace'})
+    ax.plot([0, 0],[0 - fiberTip, wholeHeight - fiberTip], 'w:', lw=1, alpha=0.4)
+    ax.scatter([0],[emitter_z], s=0.5)
+    ax.plot([0, -coreRadius, -mlRadius, 0, mlRadius, coreRadius, 0], 
+            [-δ, 0., ml_z, emitter_z, ml_z, 0, -δ], 'y-', lw=1, alpha=0.4)
+    if text_legend:
+        ax.text(*top_left_corner, designSpec, fontsize=9, ha='left', va = 'top', fontdict={'family': 'monospace'})
+    ax.set_title(designSpec)
     ax.set_xlabel('x/μm')
     ax.set_ylabel('z/μm')
     ax.set_aspect('equal')
