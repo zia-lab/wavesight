@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 
+import os
+import time
+import pickle
+import argparse
 import meep as mp
 import numpy as np
 import h5py as h5pie
 import cmasher as cm
-import os
-from matplotlib import pyplot as plt
-import wavesight as ws
-import time
 import cmasher as cm
-from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
-import pickle
-import argparse
+import wavesight as ws
 from matplotlib import style
+from matplotlib import pyplot as plt
+from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
 style.use('dark_background')
 
 show_plot = False

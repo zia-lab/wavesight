@@ -97,6 +97,68 @@ def convert(o):
         return o.tolist()
     raise TypeError
 
+def meta_fields_hex(sim_params):
+    '''
+    Parameters
+    ----------
+    sim_params : dict with keys
+        'n_refractive' (float): refractive index
+        'post_radius' (float): width of the post
+        'numG' (int): number of basis vectors
+        's_amp' (float): amplitude of the s-polarized field
+        'p_amp' (float): amplitude of the p-polarized field
+        'wavelength' (float): wavelength of the light in vacuum
+        'lattice_constant' (float): lattice constant of the hexagonal lattice
+        'samples' (int): how many samples taken along the fundamental parallelogram
+        'zCoord' (float): z-coordinate where the resultant fields will be computed
+    Returns
+    -------
+    (E_field, H_field) : tuple of triples of complex numbers
+    '''
+    lattice_constant = sim_params['lattice_constant']
+    post_height = sim_params['post_height']
+    post_radius = sim_params['post_radius']
+    samples = sim_params['samples']
+    zCoord = sim_params['zCoord']
+    (half_post_radius, half_lattice_constant)  = post_radius/2, lattice_constant/2
+    numG = sim_params['numG']
+    (s_amp, p_amp) = sim_params['s_amp'], sim_params['p_amp']
+    n = sim_params['n_refractive']
+    epsilon = n**2
+    wavelength = sim_params['wavelength']
+    excitation_frequency = 1/wavelength
+    v1_arr = lattice_constant*np.array([1,0])
+    v2_arr = lattice_constant*np.array([np.cos(2*np.pi/3), np.sin(2*np.pi/3)])
+    fractions = np.linspace(0,1,samples+1)[:-1]
+    v1 = tuple(v1_arr)
+    v2 = tuple(v2_arr)
+    sim = S4.New((v1, v2), numG)
+    sim.AddMaterial("vacuum", 1)
+    sim.AddMaterial("substrate", epsilon)
+    sim.AddLayer('bottom',
+                0,
+                'substrate')
+    sim.AddLayer('forest',
+                post_height,
+                'vacuum')
+    sim.AddLayer('top',
+                0,
+                'vacuum')
+    sim.SetRegionCircle(
+        'forest',
+        'substrate',
+        (0,0),
+        post_radius) 
+    sim.SetExcitationPlanewave(
+        (0,0),
+        s_amp,  
+        p_amp 
+    )
+    sim.SetFrequency(excitation_frequency)
+
+    EH_fields = np.array(sim.GetFieldsOnGrid(zCoord, NumSamples=(samples, samples), Format = 'Array'))
+    return EH_fields
+
 def phase_crunch(n_refractive, min_post_width, max_post_width, 
                  num_post_widths,
                  free_wave, cell_width, post_height,
@@ -126,7 +188,7 @@ def phase_crunch(n_refractive, min_post_width, max_post_width,
         amplitude of the p-polarized field
     Returns
     -------
-    post_widths, scaled_phases : tuple of np.arrays
+    post_widths, phases : tuple of np.arrays
         post widths and corresponding phases in radians
 
     '''
@@ -137,7 +199,7 @@ def phase_crunch(n_refractive, min_post_width, max_post_width,
                     f'Using a hexagonal cell of lattice constant {cell_width} μm and post height {post_height} μm.',
                     f'Assuming a plane wave with free space wavelength of {free_wave} μm.',
                     f'The posts are assumed to be made of a material with refractive index {n_refractive}.',
-                    f'Using {numG} basis vectors.',
+                    f'Using {numG} basis vectors for RCWA.',
                     f'Using s-polarized field amplitude of {s_amp} and p-polarized field amplitude of {p_amp}.']
     printer_width = max([len(im) for im in info_message])
     printer_width += 4
@@ -148,28 +210,34 @@ def phase_crunch(n_refractive, min_post_width, max_post_width,
     for post_width in post_widths:
         print("> post_width: %f μm" % post_width, end=' -> ')
         sim_params = {
-        'wavelength'   : free_wave,
-        'cell_width'   : cell_width,
-        'post_height'  : post_height,
-        'post_width'   : post_width,
-        'numG'         : numG,
-        's_amp'        : s_amp,
-        'p_amp'        : p_amp,
-        'n_refractive' : n_refractive
+            'wavelength'   : free_wave,
+            'lattice_constant'   : cell_width,
+            'post_height'  : post_height,
+            'post_radius'  : post_width/2,
+            'samples'      : 100,
+            'numG'         : numG,
+            's_amp'        : s_amp,
+            'p_amp'        : p_amp,
+            'n_refractive' : n_refractive
         }
-        sim_params['coords'] = (0, 0, sim_params['post_height'])
-        E_field, _ = meta_field(sim_params)
-        Ex, Ey, Ez = E_field
-        phase = np.arctan2(np.imag(Ex), np.real(Ex))
+        sim_params['zCoord'] = sim_params['post_height']
+        fields = meta_fields_hex(sim_params)
+        E_field        = fields[0,:,:,:]
+        Ex, Ey         = E_field[:,:,0], E_field[:,:,1]
+        Exabs, Eyabs = np.max(np.abs(Ex)), np.max(np.abs(Ey))
+        if max(Exabs, Eyabs) == Exabs:
+            phase = np.angle(np.mean(Ex))
+        else:
+            phase = np.angle(np.mean(Ey))
         print("phase: %f rad" % phase)
+        print(Exabs, '|', Eyabs)
         phases.append(phase)
     print('-'*(printer_width))
     print('Unwrapping and removing offset...')
     phases = np.array(phases)
     phases = np.unwrap(phases)
     phases = phases - phases[0]
-    scaled_phases =  phases
-    return post_widths, scaled_phases
+    return post_widths, phases
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -183,11 +251,10 @@ if __name__ == '__main__':
     parser.add_argument('--numG',             type=int,   default=30)
     parser.add_argument('--s_amp',            type=float, default=0)
     parser.add_argument('--p_amp',            type=float, default=1.0)
-    parser.add_argument('--save_to_file',     type=bool,  default=True)
     args = parser.parse_args()
 
     start_time = int(time())
-    post_widths, scaled_phases = phase_crunch(
+    post_widths, phases = phase_crunch(
         args.n_refractive, args.min_post_width, args.max_post_width,
         args.num_post_widths, args.free_wave,
         args.cell_width, args.post_height,
@@ -197,22 +264,24 @@ if __name__ == '__main__':
     print("Total time: %d seconds" % (end_time - start_time))
     print('-'*(printer_width))
     created_on = int(start_time)
-    if args.save_to_file:
-        results = {
-            'numG': args.numG,
-            's_amp': args.s_amp,
-            'p_amp': args.p_amp,
-            'created_on': created_on,
-            'post_widths': post_widths,
-            'free_wave': args.free_wave,
-            'cell_width': args.cell_width,
-            'scaled_phases': scaled_phases,
-            'post_height': args.post_height,
-            'n_refractive': args.n_refractive,
-            'num_post_widths': args.num_post_widths}
-        json_fname = 'phase_data-%d.json' % (created_on)
-        with open(json_fname, 'w') as f:
-            print("Saving results to %s" % json_fname)
-            json.dump(results, f, default=convert, indent=4, sort_keys=True)
-        print('-'*(printer_width))
-    
+    results = {
+        'numG': args.numG,
+        's_amp': args.s_amp,
+        'p_amp': args.p_amp,
+        'created_on': created_on,
+        'post_widths': post_widths,
+        'free_wave': args.free_wave,
+        'cell_width': args.cell_width,
+        'phases': phases,
+        'post_height': args.post_height,
+        'n_refractive': args.n_refractive,
+        'num_post_widths': args.num_post_widths}
+    json_timestamp = int(time()*1e7)
+    json_fname = './json_out/phase_data-%d.json' % (json_timestamp)
+    results['json_fname'] = json_fname
+    with open(json_fname, 'w') as f:
+        print("Saving results to %s" % json_fname)
+        json.dump(results, f, default=convert, indent=4, sort_keys=True)
+    print('-'*(printer_width))
+    # this final print is necessary for being able to retrieve the results
+    print(json_fname)

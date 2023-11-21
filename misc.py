@@ -196,7 +196,7 @@ def post_file_to_slack(text, file_name, file_bytes, file_type=None, title=None, 
     except:
         pass
 
-def send_fig_to_slack(fig, slack_channel, info_msg, shortfname, thread_ts = None):
+def send_fig_to_slack(fig, slack_channel, info_msg, shortfname, thread_ts = None, format='png'):
     '''
     Use to send a matplotlib figure to Slack.
 
@@ -220,7 +220,10 @@ def send_fig_to_slack(fig, slack_channel, info_msg, shortfname, thread_ts = None
     '''
     try:
         buf = io.BytesIO()
-        fig.savefig(buf, format='jpg', dpi=200)
+        if format in ['jpg','jpeg','png']:
+            fig.savefig(buf, format=format, dpi=200)
+        elif format in ['pdf']:
+            fig.savefig(buf, format=format)
         buf.seek(0)
         post_file_to_slack(info_msg, shortfname, buf.read(), slack_channel=slack_channel, thread_ts = thread_ts)
     except:

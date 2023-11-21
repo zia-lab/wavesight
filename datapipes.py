@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
-
-import h5py
-import numpy as np
 import os
+import re
+import h5py
+import json
+import inspect
+import subprocess
+import numpy as np
+from functools import wraps
+
+def load_from_json(filename):
+    with open(filename, 'r') as file:
+        the_dictionary = json.load(file)
+    return the_dictionary
 
 def save_to_h5(data, filename, group=None, comments='', overwrite=False):
     '''
@@ -72,7 +81,6 @@ def save_to_h5(data, filename, group=None, comments='', overwrite=False):
                 # If the value is a string, encode it to UTF-8
                 if isinstance(value, str):
                     value = value.encode('utf-8')
-                print(key, type(key))
                 group.create_dataset(key, data=value)
 
 def load_from_h5(filename, keys=None, only_keys=False):
@@ -135,3 +143,139 @@ def load_from_h5(filename, keys=None, only_keys=False):
         return list(data.values())[0]
     else:
         return data, comment
+
+def run_script_and_get_json(script_path, args_dict):
+    '''
+    This function takes the path to a script with a command-line
+    interface,   and   a  dictionary  with  values  to  all  the
+    parameters that the CLI receives.
+
+    This  assumes  that  the  names  of  the arguments are known
+    beforehand so that args_dict may be well formed.
+
+    For an alternative that automatically analyzes the script to
+    be run, see extract_cli_arguments_and_run.
+
+    Using  the given values for the arguments this function runs
+    the script.
+
+    The  script  must  save  its results to a .json file and the
+    last line that it prints must be the name of such file.
+
+    When  the  script  has  finished running, this function will
+    then  grab the filename of that json file, read its contents
+    and return them as a dictionary.
+
+    Parameters
+    ----------
+    script_path: str
+        Path to Python script with CLI and json output.
+    args_dict: dict
+        Dictionary with keys equal to the named arguments of the
+        CLI and values equal to the values one wishes to input.
+    
+    Returns
+    -------
+    result_data: dict
+        Dictionary with the parsed results of the function as
+        saved in the json file by the Python script.
+
+    '''
+    # Construct the command with named arguments
+    command = [script_path]
+    for arg, value in args_dict.items():
+        command.append(f"--{arg}")
+        command.append(str(value))
+    
+    # Run the command and capture the output
+
+    process = subprocess.Popen(command,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT,
+                               text=True)
+    stdout_lines = []
+    while True:
+        output = process.stdout.readline()
+        if output == '' and process.poll() is not None:
+            break
+        if output:
+            clean_output = output.strip()
+            print(clean_output)
+            stdout_lines.append(clean_output)
+    
+    # Parse the last line of the standard output to get the JSON filename
+    json_output_filename = stdout_lines[-1]
+    
+    # Read the result from the JSON file
+    with open(json_output_filename, 'r') as file:
+        result_data = json.load(file)
+    result_data['stdout'] = '\n'.join(stdout_lines)
+    return result_data
+
+def extract_cli_arguments_and_run(script_path):
+    '''
+    Given  the  path  to  a  python  script  with a command-line
+    interface.   This   function   inspects   the  command  line
+    interface, which must be built with argparse and it define a
+    function  that will take in the CLI parameters as positional
+    arguments, feed them to the script via the CLI, and load the
+    output of the script.
+
+    Eventhough the CLI might allow for optional  parameters  the 
+    function  returned  here  requires  that  every parameter is
+    given.
+
+    The  script  needs  to output its results to a json file and
+    the  last  line  that it prints must contain the name of the
+    file to which the function saved its results to.
+
+    Parameters
+    ----------
+    script_path : str
+        The filepath to the script to be wrapped.
+    
+    Returns
+    -------
+    cli_function_wrapper : fun
+        A  function  that takes as aruments the arguments of the
+        CLI  and  which  returns  a  dictionary with the results
+        parse from json output.
+    '''
+    # Regular expression to match argparse argument definitions
+    arg_pattern = re.compile(r'\.add_argument\([\'"]--(\w+)')
+    
+    # List to store argument names
+    arg_names = []
+    
+    # Read the script and search for argparse definitions
+    with open(script_path, 'r') as file:
+        for line in file:
+            match = arg_pattern.search(line)
+            if match:
+                # Extract the argument name and add it to the list
+                arg_names.append(match.group(1))
+
+    # Function that takes CLI arguments, wraps them into a dictionary,
+    # and feeds them to run_script_and_get_json
+    def cli_function_template(*args):
+        # Construct the args dictionary from positional arguments
+        args_dict = dict(zip(arg_names, args))
+        
+        # Call the run_script_and_get_json function with the script path and args dictionary
+        return run_script_and_get_json(script_path, args_dict)
+    
+    # Set the __name__ attribute of the function to a generic name like 'cli_function'
+    cli_function_template.__name__ = 'cli_function'
+    
+    # Use functools.wraps to preserve the metadata of the template function
+    @wraps(cli_function_template)
+    def cli_function_wrapper(*args):
+        return cli_function_template(*args)
+    
+    # Update the signature of the wrapper function to match the argument names
+    cli_function_wrapper.__signature__ = inspect.signature(cli_function_template).replace(parameters=[
+        inspect.Parameter(name, inspect.Parameter.POSITIONAL_OR_KEYWORD)
+        for name in arg_names
+    ])
+    
+    return cli_function_wrapper

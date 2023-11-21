@@ -1,0 +1,16 @@
+{
+    "s_amp": 0,
+    "p_amp": 1.0,
+    "num_G" : 70,
+    "x_coord": 0,
+    "y_coord": 0,
+    "epsilon": 5.8081,
+    "focal_length": 12,
+    "cell_width": 0.25,
+    "wavelength": 0.400,
+    "post_width": 0.075,
+    "post_height": 0.800,
+    "num_post_widths": 20,
+    "full_aperture_in_um": 25.0,
+    "linear_polarization_direction": 0.0
+}

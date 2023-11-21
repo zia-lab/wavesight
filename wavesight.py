@@ -4,6 +4,7 @@ import numbers
 import warnings
 import numpy as np
 from misc import *
+from metal import *
 import cmasher as cm
 from fields import *
 from templates import *
@@ -2318,7 +2319,7 @@ def device_layout(device_design, text_legend=True):
     finalFieldHeight =  2*emΔz*1
     emitter_z = fiberTip + Δ + mlHeight + emDepth - fiberTip
     ml_z = fiberTip + Δ - fiberTip
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(5,10))
     clad = BottomRectangle((0, 0-fiberTip), wholeWidth, fiberTip, color='c', alpha=0.5)
     ax.add_patch(clad)
     core = BottomRectangle((0, 0-fiberTip), coreRadius*2, fiberTip, color='r', alpha=0.5)
