@@ -29,8 +29,7 @@ import json
 import argparse
 import numpy as np
 from time import time
-
-printer_width = 0
+from printech import *
 
 def meta_field(sim_params):
     '''
@@ -38,7 +37,7 @@ def meta_field(sim_params):
     ----------
     sim_params : dict with keys
         'n_refractive' (float): refractive index
-        'cell_width' (float): width of the cell
+        'lattice_const' (float): lattice constant of hex lattice
         'post_width' (float): width of the post
         'numG' (int): number of basis vectors
         's_amp' (float): amplitude of the s-polarized field
@@ -51,17 +50,17 @@ def meta_field(sim_params):
     n_refractive                = sim_params['n_refractive']
     numG                        = sim_params['numG']
     (x_coord, y_coord, z_coord) = sim_params['coords']
-    cell_width                  = sim_params['cell_width']
+    lattice_const                  = sim_params['lattice_const']
     post_width                  = sim_params['post_width']
     wavelength                  = sim_params['wavelength']
     post_height                 = sim_params['post_height']
     (s_amp, p_amp)              = sim_params['s_amp'], sim_params['p_amp']
     half_post_width             = post_width/2
-    half_cell_width             = cell_width/2
+    half_cell_width             = lattice_const/2
     excitation_frequency        = 1/wavelength
     epsilon                     = n_refractive**2
 
-    sim = S4.New(((cell_width,0), (0,cell_width)), numG)
+    sim = S4.New(((lattice_const,0), (0,lattice_const)), numG)
     sim.AddMaterial("vacuum", 1)
     sim.AddMaterial("substrate", epsilon)
     sim.AddLayer('bottom',
@@ -161,7 +160,7 @@ def meta_fields_hex(sim_params):
 
 def phase_crunch(n_refractive, min_post_width, max_post_width, 
                  num_post_widths,
-                 free_wave, cell_width, post_height,
+                 free_wave, lattice_const, post_height,
                  numG, s_amp, p_amp):
     '''
     Parameters
@@ -176,7 +175,7 @@ def phase_crunch(n_refractive, min_post_width, max_post_width,
         number of post widths to simulate
     free_wave : float
         equivalent wavelength in vacuum
-    cell_width : float
+    lattice_const : float
         width of the cell
     post_height : float
         height of the post
@@ -192,26 +191,23 @@ def phase_crunch(n_refractive, min_post_width, max_post_width,
         post widths and corresponding phases in radians
 
     '''
-    global printer_width
     phases = []
     post_widths = np.linspace(min_post_width, max_post_width, num_post_widths)
     info_message = [f'Simulating {num_post_widths} post geometries with diameters in the range [{min_post_width}, {max_post_width}] μm',
-                    f'Using a hexagonal cell of lattice constant {cell_width} μm and post height {post_height} μm.',
-                    f'Assuming a plane wave with free space wavelength of {free_wave} μm.',
-                    f'The posts are assumed to be made of a material with refractive index {n_refractive}.',
-                    f'Using {numG} basis vectors for RCWA.',
-                    f'Using s-polarized field amplitude of {s_amp} and p-polarized field amplitude of {p_amp}.']
-    printer_width = max([len(im) for im in info_message])
-    printer_width += 4
-    print('-'*(printer_width))
+                    f'Using a hexagonal cell of lattice constant {lattice_const} μm and post height {post_height} μm',
+                    f'Assuming a plane wave with free space wavelength of {free_wave} μm',
+                    f'The posts are assumed to be made of a material with refractive index {n_refractive}',
+                    f'Using {numG} basis vectors for RCWA',
+                    f'Using s-polarized field amplitude of {s_amp} and p-polarized field amplitude of {p_amp}']
+    rule()
     for im in info_message:
-        print(">> ", im)
-    print('-'*(printer_width))
+        printer(">> " + im)
+    rule()
     for post_width in post_widths:
-        print("> post_width: %f μm" % post_width, end=' -> ')
+        
         sim_params = {
             'wavelength'   : free_wave,
-            'lattice_constant'   : cell_width,
+            'lattice_constant'   : lattice_const,
             'post_height'  : post_height,
             'post_radius'  : post_width/2,
             'samples'      : 100,
@@ -229,11 +225,10 @@ def phase_crunch(n_refractive, min_post_width, max_post_width,
             phase = np.angle(np.mean(Ex))
         else:
             phase = np.angle(np.mean(Ey))
-        print("phase: %f rad" % phase)
-        print(Exabs, '|', Eyabs)
+        printer("> post_width: %f μm -> phase: %f rad" % (post_width, phase))
         phases.append(phase)
-    print('-'*(printer_width))
-    print('Unwrapping and removing offset...')
+    rule()
+    printer('Unwrapping and removing offset...')
     phases = np.array(phases)
     phases = np.unwrap(phases)
     phases = phases - phases[0]
@@ -245,7 +240,7 @@ if __name__ == '__main__':
     parser.add_argument('--min_post_width',   type=float, default=0.05)
     parser.add_argument('--max_post_width',   type=float, default=0.2)
     parser.add_argument('--free_wave',        type=float, default=0.532)
-    parser.add_argument('--cell_width',       type=float, default=0.25)
+    parser.add_argument('--lattice_const',       type=float, default=0.25)
     parser.add_argument('--post_height',      type=float, default=0.6)
     parser.add_argument('--num_post_widths',  type=int,   default=100)
     parser.add_argument('--numG',             type=int,   default=30)
@@ -257,12 +252,12 @@ if __name__ == '__main__':
     post_widths, phases = phase_crunch(
         args.n_refractive, args.min_post_width, args.max_post_width,
         args.num_post_widths, args.free_wave,
-        args.cell_width, args.post_height,
+        args.lattice_const, args.post_height,
         args.numG, args.s_amp, args.p_amp)
     end_time = int(time())
-    print('-'*(printer_width))
-    print("Total time: %d seconds" % (end_time - start_time))
-    print('-'*(printer_width))
+    rule()
+    printer("Total time: %d seconds" % (end_time - start_time))
+    rule()
     created_on = int(start_time)
     results = {
         'numG': args.numG,
@@ -271,7 +266,7 @@ if __name__ == '__main__':
         'created_on': created_on,
         'post_widths': post_widths,
         'free_wave': args.free_wave,
-        'cell_width': args.cell_width,
+        'lattice_const': args.lattice_const,
         'phases': phases,
         'post_height': args.post_height,
         'n_refractive': args.n_refractive,
@@ -280,8 +275,8 @@ if __name__ == '__main__':
     json_fname = './json_out/phase_data-%d.json' % (json_timestamp)
     results['json_fname'] = json_fname
     with open(json_fname, 'w') as f:
-        print("Saving results to %s" % json_fname)
+        printer("Saving results to %s" % json_fname)
         json.dump(results, f, default=convert, indent=4, sort_keys=True)
-    print('-'*(printer_width))
-    # this final print is necessary for being able to retrieve the results
+    rule()
+    # this final printer is necessary for being able to retrieve the results
     print(json_fname)

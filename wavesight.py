@@ -223,7 +223,7 @@ def multisolver(fiber_spec, solve_modes = 'all', drawPlots=False, verbose=False,
         grid_divider: int, not necessary here but when later
             used in the layout generator, this is used to determine
             the fineness of the grid by making it equal to
-            λfree / max(nCore, nCladding, nUpper) / grid_divider
+            λfree / max(nCore, nCladding, nBetween) / grid_divider
     solve_modes: str
         either 'all' or 'transvserse'
     drawPlots : bool, optional
@@ -563,11 +563,11 @@ def calculate_size_of_grid(fiber_sol):
     a = fiber_sol['coreRadius']
     nCore = fiber_sol['nCore']
     nCladding = fiber_sol['nCladding']
-    nUpper = fiber_sol['nUpper']
+    nBetween = fiber_sol['nBetween']
     λfree = fiber_sol['λFree']
     kFree = 2*np.pi/λfree
     grid_divider = fiber_sol['grid_divider']
-    maxIndex = max(nCore, nCladding, nUpper)
+    maxIndex = max(nCore, nCladding, nBetween)
     Δs = λfree / maxIndex / grid_divider
     # calculate the side of the computational domain: START
     allnums = []
@@ -637,11 +637,11 @@ def coordinate_layout(fiber_sol):
     a = fiber_sol['coreRadius']
     nCore = fiber_sol['nCore']
     nCladding = fiber_sol['nCladding']
-    nUpper = fiber_sol['nUpper']
+    nBetween = fiber_sol['nBetween']
     λfree = fiber_sol['λFree']
     kFree = 2*np.pi/λfree
     grid_divider = fiber_sol['grid_divider']
-    maxIndex = max(nCore, nCladding, nUpper)
+    maxIndex = max(nCore, nCladding, nBetween)
     Δs = λfree / maxIndex / grid_divider
     b = calculate_size_of_grid(fiber_sol)
     # calculate the side of the computational domain: END
@@ -826,7 +826,7 @@ def calculate_numerical_basis(fiber_sol, verbose=True):
 ############################################################################################
 ################################ Ray Refractor #############################################
 
-def poynting_refractor(Efield, Hfield, nxy, nUpper, verbose=False):
+def poynting_refractor(Efield, Hfield, nxy, nBetween, verbose=False):
     '''
     Approximate  the  refracted  field across a planar interface
     using  the Poynting vector as an analog to the wavevector of
@@ -844,7 +844,7 @@ def poynting_refractor(Efield, Hfield, nxy, nUpper, verbose=False):
         The H-field incident on the interface.
     nxy : np.array    (N, M)
         The refractive index transverse to the interface inside the incident medium.
-    nUpper : float
+    nBetween : float
         The refractive index of the homogeneous refractive medium.
     verbose : bool, optional
         Whether to print or not progress messages, by default False.
@@ -883,7 +883,7 @@ def poynting_refractor(Efield, Hfield, nxy, nUpper, verbose=False):
     # #θ-Calc
     if verbose:
         print("Calculating the angle of refraction field...")
-    θfield = np.arcsin(nxy/nUpper * np.sin(βfield))
+    θfield = np.arcsin(nxy/nBetween * np.sin(βfield))
 
     # #FresnelS-Calc
     if verbose:
@@ -891,15 +891,15 @@ def poynting_refractor(Efield, Hfield, nxy, nUpper, verbose=False):
     
     fresnelS = (2 * nxy * np.cos(βfield) 
                 / ( nxy * np.cos(βfield) 
-                + np.sqrt(nUpper**2 
+                + np.sqrt(nBetween**2 
                                 - nxy**2 * np.sin(βfield)**2)
                     )
                 )
     
     # #FresnelP-Calc
-    fresnelP = (2 * nUpper * nxy * np.cos(βfield) 
-                / (nUpper**2 * np.cos(βfield) 
-                +  nxy * np.sqrt(nUpper**2 
+    fresnelP = (2 * nBetween * nxy * np.cos(βfield) 
+                / (nBetween**2 * np.cos(βfield) 
+                +  nxy * np.sqrt(nBetween**2 
                             - nxy**2 * np.sin(βfield)**2)
                     )
                 )
@@ -962,9 +962,9 @@ def poynting_refractor(Efield, Hfield, nxy, nUpper, verbose=False):
     if verbose:
         print("Calculating the S and P component of the refracted H field...")
     HrefS = np.zeros(Hfield.shape, dtype=complex_dtype)
-    HrefS[0] = (nUpper / nxy) * fresnelP * HincS[0]
-    HrefS[1] = (nUpper / nxy) * fresnelP * HincS[1]
-    HrefS[2] = (nUpper / nxy) * fresnelP * HincS[2]
+    HrefS[0] = (nBetween / nxy) * fresnelP * HincS[0]
+    HrefS[1] = (nBetween / nxy) * fresnelP * HincS[1]
+    HrefS[2] = (nBetween / nxy) * fresnelP * HincS[2]
     HrefS[np.isnan(HrefS)] = 0
 
     # #ErefP-Calc
@@ -976,9 +976,9 @@ def poynting_refractor(Efield, Hfield, nxy, nUpper, verbose=False):
 
     # #HrefP-Calc
     HrefP = np.zeros(Hfield.shape, dtype=complex_dtype)
-    HrefP[0] = (nUpper / nxy) * fresnelS * HincP[0]
-    HrefP[1] = (nUpper / nxy) * fresnelS * HincP[1]
-    HrefP[2] = (nUpper / nxy) * fresnelS * HincP[2]
+    HrefP[0] = (nBetween / nxy) * fresnelS * HincP[0]
+    HrefP[1] = (nBetween / nxy) * fresnelS * HincP[1]
+    HrefP[2] = (nBetween / nxy) * fresnelS * HincP[2]
     HrefP[np.isnan(HrefP)] = 0
 
     # #Eref-Calc
@@ -1326,7 +1326,7 @@ def simpson_quad_1D(arr, dx):
         if Bsimpsonx.ndim != arr.ndim:
             extra_dims = arr.ndim - Bsimpsonx.ndim
             extras = (np.newaxis,) * extra_dims
-            Bsimpsonx = Bsimpsonx[:,*extras]
+            Bsimpsonx = Bsimpsonx[:,extras]
         arrB = Bsimpsonx * arr
         simp_int = np.sum(arrB, axis=0) * dx
     else:

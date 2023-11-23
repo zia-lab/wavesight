@@ -9,13 +9,38 @@ import numpy as np
 from functools import wraps
 
 def load_from_json(filename):
+    lines = []
     with open(filename, 'r') as file:
-        the_dictionary = json.load(file)
+        for line in file:
+            clear_line = line.split('//')[0].strip()
+            if clear_line:
+                lines.append(clear_line)
+    clear_lines = '\n'.join(lines)
+    the_dictionary = json.loads(clear_lines)
     return the_dictionary
+
+
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            # Convert numpy arrays to lists
+            return obj.tolist()
+        # Let the base class default method raise the TypeError
+        return json.JSONEncoder.default(self, obj)
+
+def save_to_json(filename, source_dict, header=''):
+    '''
+    This function saves a dictionary to a JSON file with the given filename.
+    It admits values to be int, float, str, list, dict, or numpy arrays.
+    '''
+    with open(filename, 'w', encoding='utf-8') as file:
+        json.dump(source_dict, file, ensure_ascii=False, cls=CustomJSONEncoder, indent=4)
+    return None
 
 def save_to_h5(data, filename, group=None, comments='', overwrite=False):
     '''
-    Save numeric values, numpy arrays, strings, and nested dictionaries from the provided dictionary to an H5 file.
+    Save numeric values, numpy arrays, strings, and nested dictionaries
+    from the provided dictionary to an H5 file.
     If a value of the provided dictionary is a list, then
     the list is converted to a dictionary with keys equal
     to the indices of the lists (as strings).    

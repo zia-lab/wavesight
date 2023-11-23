@@ -6,12 +6,12 @@ bash_template_1 = '''#!/bin/bash
 #nCore           : {nCore}
 #coreRadius      : {coreRadius}
 #free_wavelength : {wavelength} um
-#nUpper          : {nUpper}
+#nBetween        : {nBetween}
 #numModes        : {numModes}
 #MEEP_resolution : {MEEP_resolution}
 
 cd {wavesight_dir}
-echo "{nCladding},{nCore},{coreRadius},{wavelength},{nUpper},{numModes},{MEEP_resolution},{waveguide_id}" >> sim_log.txt
+echo "{nCladding},{nCore},{coreRadius},{wavelength},{nBetween},{numModes},{MEEP_resolution},{waveguide_id}" >> sim_log.txt
 # Check if the memory and time requirements have been already calculated
 if [[ -f "{waveguide_dir}/{waveguide_id}.req" ]]; then
 echo "Requirements have already been estimated ..."
@@ -77,7 +77,7 @@ bash_template_2 = '''#!/bin/bash
 #nCore           : {nCore}
 #coreRadius      : {coreRadius}
 #free_wavelength : {wavelength} um
-#nUpper          : {nUpper}
+#nBetween        : {nBetween}
 #numModes        : {numModes}
 #MEEP_resolution : {MEEP_resolution}
 
@@ -127,11 +127,30 @@ cd {wavesight_dir}
 ~/anaconda/meep/bin/python /users/jlizaraz/CEM/wavesight/fiber_plotter.py {waveguide_id}
 EOL
 )
+
 # get the job id
 plotter_job_id=$(echo "$sbatch_output_plotter" | awk '{{print $NF}}')
 
+# submit the propagator job
+sbatch_output_bridge=$(sbatch --dependency=afterany:$plotter_job_id <<EOL
+#SBATCH -n 1 
+#SBATCH --job-name=fiber_bridge_{waveguide_id}
+#SBATCH --mem=${{memreq}}GB
+#SBATCH -t ${{timereq}}
+#SBATCH -o "{waveguide_dir}/{waveguide_id}-bridge.out"
+#SBATCH -e "{waveguide_dir}/{waveguide_id}-bridge.err"
+
+cd {wavesight_dir}
+~/anaconda/meep/bin/python /users/jlizaraz/CEM/wavesight/fiber_bridge.py {waveguide_id} {zProp} {nProp}
+EOL
+)
+
+bridge_job_id=$(echo "$sbatch_output_bridge" | awk '{{print $NF}}')
+
+# once the fields have been propagated across the gap, propagate them across the metalens
+
 # submit the guardian job
-sbatch --dependency=afterany:$plotter_job_id <<EOL
+sbatch --dependency=afterany:$bridge_job_id <<EOL
 #!/bin/bash
 #SBATCH --job-name=calling_home_{waveguide_id}
 #SBATCH --output="{waveguide_dir}/calling_home.out"

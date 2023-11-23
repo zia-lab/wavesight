@@ -7,9 +7,9 @@ def expand_sim_params(sim_params):
     Compute additional parameters for the S4 simulations.
     '''
     sim_params['field_height']         = sim_params['post_height']
-    sim_params['half_cell_width']      = sim_params['cell_width'] / 2.
+    sim_params['half_cell_width']      = sim_params['lattice_const'] / 2.
     sim_params['half_post_width']      = sim_params['post_width'] / 2.
-    sim_params['excitation_frequency'] = 1. / sim_params['wavelength']
+    sim_params['excitation_frequency'] = 1. / sim_params['λFree']
 
     return sim_params
 

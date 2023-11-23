@@ -29,10 +29,35 @@ import cmasher as cm
 from math import ceil
 import wavesight as ws
 from matplotlib import style
-# from memory_profiler import profile
 from matplotlib import pyplot as plt
 
 style.use('dark_background')
+
+data_dir = '/users/jlizaraz/data/jlizaraz/CEM/wavesight/'
+# multiplies the time of the test-run for resource allocation
+time_boost_factor = 1.75
+# multiplies the simulation time
+steady_time_boost = 1.5
+# multiplies the memory of the test-run for resource allocation
+memory_boost_factor = 1.25
+# scales the run time, useful to debug by making the simulation end prematurely or run longer
+# a larger time might be necessary for a satisfactory steady state to be found in the req run
+run_time_scaler = 2.0
+# whether to show the plots as simulations are running
+show_plots = False
+# control which plots are made
+plot_field_profiles  = False
+plot_current_streams = False
+# determines which sagittal planes are used for plotting
+sag_plot_planes      = ['xz']
+# minimun wall time for sim jobs
+min_req_time_in_s    = 25 * 60
+# Whether to save the fields to the pickle or just leave them in the .h5 files
+save_fields_to_h5    = False
+# required simulation time ceiled to this many seconds
+time_req_rounded_to  = 60*15
+# and memory ceiled to this many Gb
+mem_req_rounded_to   = 1
 
 def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
     rtime = (kappa * sim_cell.x
@@ -45,32 +70,6 @@ def run_time_fun(full_sim_height, nCore):
 
 def sim_height_fun(λFree, pml_thickness):
     return (10 * λFree + 2 * pml_thickness)
-
-data_dir = '/users/jlizaraz/data/jlizaraz/CEM/wavesight/'
-# multiplies the time of the test-run for resource allocation
-time_boost_factor = 1.75
-# multiplies the simulation time
-steady_time_boost = 1.5
-# multiplies the memory of the test-run for resource allocation
-memory_boost_factor = 1.25
-# scales the run time, useful to debug by making the simulation end prematurely
-run_time_scaler = 1.0
-# whether to show the plots as simulations are running
-show_plots = False
-# control which plots are made
-plot_field_profiles = False
-plot_current_streams = False
-# determines which sagittal planes are used for plotting
-sag_plot_planes      = ['xz']
-# minimun wall time for sim jobs
-min_req_time_in_s    = 25 * 60
-# Whether to save the fields to the pickle or just leave them in the .h5 files
-save_fields_to_h5 = False
-
-# required simulation time ceiled to this many seconds
-time_req_rounded_to  = 60*15
-# and memory ceiled to this many Gb
-mem_req_rounded_to   = 1
 
 def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     '''
@@ -102,7 +101,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
         cause the simulation time to be estimated from the height of
         the simulation volume.
     waveguide_sol : dict
-        Containing the following keys: nUpper, numModes, fiber_sol, fiber_alpha,
+        Containing the following keys: nBetween, numModes, fiber_sol, fiber_alpha,
         slack_channel, MEEP_resolution, sample_resolution, distance_to_monitor.
     Returns
     -------
@@ -111,7 +110,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
         for mode_sol, and several .h5 files in the case of a time-resolved
         simulation or a single one in the case of a steady-state simulation.
     '''
-    nUpper = waveguide_sol['nUpper']
+    nBetween = waveguide_sol['nBetween']
     numModes = waveguide_sol['numModes']
     fiber_sol = waveguide_sol['fiber_sol']
     fiber_alpha = waveguide_sol['fiber_alpha']
@@ -161,7 +160,6 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     mode_sol['h_yz_slices_fname_h5'] = h_yz_slices_fname + '.h5'
     mode_sol['e_yz_slices_fname_h5'] = e_yz_slices_fname + '.h5'
 
-    # ehfieldh5fname = 'e-h-fields-%s.h5' % sim_id
     ehfieldh5fname = 'e-h-fields.h5'
     ehfieldh5fname = os.path.join(mode_sol_dir, ehfieldh5fname)
     mode_sol['eh_monitors_fname_h5'] = ehfieldh5fname
@@ -398,7 +396,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     print("Setting up the basic geometry of the FDTD simulation ...")
     cladding_medium = mp.Medium(index = nCladding)
     core_medium     = mp.Medium(index = nCore)
-    upper_medium    = mp.Medium(index = nUpper)
+    between_medium    = mp.Medium(index = nBetween)
     # set up the basic simulation geometry
     cladding_cell   = mp.Vector3(full_sim_width, full_sim_width, full_sim_height)
     cladding_center = mp.Vector3(0,0,0)
@@ -413,7 +411,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
                     material = core_medium),
         mp.Block(size    = mp.Vector3(full_sim_width, full_sim_width, full_sim_height/2),
                 center   = mp.Vector3(0, 0, full_sim_height/4),
-                material = upper_medium),  
+                material = between_medium),  
     ]
 
     print("Setting up the time-function for the sources ...")
@@ -625,31 +623,6 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
         else:
             plt.close()
 
-    # print("Picking a notable point at z=0 for sampling Ey at different times and z-values ...")
-    # numZsamples = Ey_final_sag.shape[0]
-    # midZsample = numZsamples // 2
-    # midCut     = Ey_final_sag[midZsample, :]
-    # goodIndex = np.argmax(np.real(midCut))
-    # columnChange = monitor_fields['xz'][0,1,:,goodIndex]
-    # plotField = np.real(columnChange)
-    # extent = [0, run_time, -full_sim_height/2, full_sim_height/2]
-    # fig, ax = plt.subplots(figsize=(6, 6))
-    # ax.imshow(plotField, 
-    #         origin='lower', 
-    #         extent=extent,
-    #         cmap=cm.watermelon)
-    # ax.set_xlabel('t/ν')
-    # ax.set_ylabel('z/μm')
-    # ax.set_aspect(run_time/full_sim_height)
-    # ax.set_title('Re(Ey) at fixed x,y')
-    # plt.tight_layout()
-    # if send_to_slack:
-    #     ws.send_fig_to_slack(fig, slack_channel, 'Re(Ey) at fixed x,y','Re(Ey)-at-fixed-x,y',thread_ts)
-    # if show_plots:
-    #     plt.show()
-    # else:
-    #     plt.close()
-
     print("Sampling the ground-truth modal profile ...")
     Xg, Yg, E_field_GT, H_field_GT = ws.field_sampler(funPairs, 
                                                 clear_aperture, 
@@ -755,6 +728,8 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
             time_slice = np.sum(np.abs(E_field_xy)**2, axis=(0, 1, 2))
             time_axis = np.linspace(0, run_time, len(time_slice))
             steady_time = ws.transient_scope(time_axis, time_slice)
+            if steady_time == None:
+                raise ValueError("Could not determine steady state time, consider increasing the simulation time.")
             steady_time = steady_time_boost * steady_time
             steady_time = '%.2f' % steady_time
             print("Creating resource requirement file...")

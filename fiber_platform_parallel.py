@@ -326,7 +326,7 @@ def mode_solver(num_time_slices, mode_idx):
     print("Setting up the basic geometry of the FDTD simulation ...")
     cladding_medium = mp.Medium(index = nCladding)
     core_medium     = mp.Medium(index = nCore)
-    upper_medium    = mp.Medium(index = nUpper)
+    between_medium    = mp.Medium(index = nBetween)
     # set up the basic simulation geometry
     cladding_cell   = mp.Vector3(sxy, sxy, fiber_height)
     cladding_center = mp.Vector3(0,0,0)
@@ -341,7 +341,7 @@ def mode_solver(num_time_slices, mode_idx):
                     material = core_medium),
         mp.Block(size    = mp.Vector3(sxy, sxy, fiber_height/2),
                 center   = mp.Vector3(0, 0, fiber_height/4),
-                material = upper_medium),  
+                material = between_medium),  
     ]
 
     print("Setting up the time-function for the sources ...")

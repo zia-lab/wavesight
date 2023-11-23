@@ -275,7 +275,7 @@ def get_total_size_of_directory(dir_path):
     dir_size_in_MB = sum(fsizes)/1024**2
     return dir_size_in_MB
 
-def dict_summary(adict, header, prekey='', aslist=False):
+def dict_summary(adict, header, prekey='', bullet='•', aslist=False, split=False):
     '''
     This function takes a dictionary and returns a summary of all the keys
     and values in the dictionary for which the values are either strings or
@@ -309,28 +309,30 @@ def dict_summary(adict, header, prekey='', aslist=False):
     for key, val in adict.items():
         if type(val) == str:
             if prekey:
-                txt_summary.append(prekey + '-' + key + ' : ' + val)
+                txt_summary.append(prekey + bullet + key + ' : ' + val)
             else:
-                txt_summary.append('-' + key + ' : ' + val)
+                txt_summary.append(bullet + key + ' : ' + val)
         elif type(val) == bool:
             if prekey:
-                txt_summary.append(prekey + '-' + key + ' : ' + str(val))
+                txt_summary.append(prekey + bullet + key + ' : ' + str(val))
             else:
-                txt_summary.append('-' + key + ' : ' + str(val))
+                txt_summary.append(bullet + key + ' : ' + str(val))
         elif isinstance(val, int_types):
             if prekey:
-                txt_summary.append(prekey + '-' + key + ' : ' + str(val))
+                txt_summary.append(prekey + bullet + key + ' : ' + str(val))
             else:
-                txt_summary.append('-' + key + ' : ' + str(val))
+                txt_summary.append(bullet + key + ' : ' + str(val))
         elif isinstance(val, float_types):
             if prekey:
-                txt_summary.append('%s-%s : %.3f' % (prekey, key, val))
+                txt_summary.append('%s%s : %.3f' % (prekey, key, val))
             else:
-                txt_summary.append('%s-%s : %.3f' % (prekey, key, val))
+                txt_summary.append('%s%s : %.3f' % (prekey, key, val))
         elif type(val) == dict:
             nested_dict = dict_summary(val, header='', prekey= prekey + '-' + key, aslist = True)
             txt_summary.extend(nested_dict)
     if aslist:
+        if split:
+            txt_summary = [(s.split(' : ')[0], ''.join(s.split(' : ')[1:])) for s in txt_summary]
         return txt_summary
     else:
         txt_summary = insert_string_at_nth_position(txt_summary, '', 5)

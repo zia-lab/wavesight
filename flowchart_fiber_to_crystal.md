@@ -10,18 +10,18 @@
 │ ...................║. V ................┌▶.......║................... │   │     
 │ ...................║..................┌─┘........║................... │   │     
 │ ...................║..............┴.┌─┘..........║................... │   │     
-│ ...................║............( ┌─┘............║................... │  EH5    
+│ ...................║............. ┌─┘............║................... │  EH5    
 │ ...................║............┌─┴'─┐...........║................... │   │     
 │ ...................║..........┌─┘.│..└─┐.........║................... │   │     
 │ ...................║........┌─┘........└─┐.......║................... │   │     
 │ ...................║.......◀┘............└─┐.....║................... │   │     
 │ ...................║..............│........└─┐...║................... │   │     
 │ .      ............╚═════════════════════════╩═╦═╝................... │   ◎     
-│ . nCry ........................................└─┐................... │         
+│ . nH   ........................................└─┐................... │         
 │ .      ...........................│..............└─┐................. │         
 │ ...................................................└┐................ │◎─── EH4 
-│ ─────── nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn ───ML── │         
-│    ▲    ◁──────────────────────── D ─────────────────┼──────▷         │◎─── EH3 
+│ ─────── uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu ───ML── │         
+│    ▲    ◁────────────────────── D_ML ────────────────┼──────▷         │◎─── EH3 
 │    │                                                 └┐               │         
 │    │                                                  │               │         
 │                                   │                   └┐              │         
@@ -34,13 +34,13 @@
 │  ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┴─┬ ─ ─ ─  │         
 │ --------------||||||||||||||||||||||||||||||||||||||||||-----└──┐---- │◎─── EH1 
 │ --------------||||||||||||||||||||│|||||||||||||||||||||--------└─┐-- │         
-│ --------------||||||||||||||||||||||||||||||||||||||||||----------└─┐ │         
+│ --------------||||||||||||||||||||||||||| nCore ||||||||----------└─┐ │         
 │ --------------||||||||||||||||||||||||||||||||||||||||||------------└─│         
 │ -- cladding --||||||||||||||||| core |||||||||||||||||||------------- │         
 │ --------------||||||||||||||||||||||||||||||||||||||||||------------- │         
-│ --------------||||||||||||||||||||||||||||||||||||||||||------------- │         
+│ --nCladding---||||||||||||||||||||||||||||||||||||||||||------------- │         
 │ --------------||||||||||||||||||||│|||||||||||||||||||||------------- │         
-│ --------------◁──────────────────2a ───────────────────▷------------- │         
+│ --------------◁───────────── 2 coreRadius ─────────────▷------------- │         
 │ --------------||||||||||||||||||||||||||||||||||||||||||------------- │         
 │ ◁──────────────────────────────── b ───────────────────────────────▷- │         
 └───────────────────────────────────────────────────────────────────────┘         
@@ -50,56 +50,115 @@
 ```mermaid
 flowchart TB
 
-Start["Given:
+Start["
+START
 ----------------------------------------
-ϕ(x,y)    : pol. independent phase profile of ML
-(θᵢ, φᵢ)  : orientation of emission dipole
-nCry      : refractive index of crystal host
-λfree     : free-space wavelength of monochromatic field
-Δ         : distance between fiber's end face and metalens
-V         : destination volume
-ΔF        : spatial resolution of fields
-D         : metalens aperture diameter
-f         : paraxial focal length of ML
-ρ(x,y,z)  : location probability
-a         : the radius of the waveguide core
-b         : side of computational square
-nCore     : ref index of core
-nCladding : ref index of cladding
-nFree     : ref index of launching space
-----------------------------------------"]
-
-Start --> Modes["[#fiberModes-Calc]
-Calculate the guided modes EH1ₙ of the step-index fiber.
+Given in 💾 metalens_spec-[design_name].json
+----------------------------------------
+emDepth     : depth of emitter in crystal host
+Δz          : uncertainty in depth
+Δxy         : transverse uncertainty in position
+----------------------------------------
+nHost       : refractive index of crystal host
+λfree       : free-space wavelength of monochromatic field
+D_ML        : metalens aperture
+nFree       : ref index space between waveguide and ML
+----------------------------------------
+coreRadius  : the radius of the waveguide core
+nCore       : ref index of core
+nCladding   : ref index of cladding
+----------------------------------------
+post_height : the height of the cylindrical posts for ML
+lattice_c   : lattice constant of hexagonal lattice
+min_ML_size : the minimum diameter of ML cylindrical posts
+----------------------------------------
+numG        : number of basis elements used in S4
+------------------------------------------
 "]
 
-Modes  -->  Poynting["[#forEachMode-Calc]
-For each EH1ₙ find the refracted fields (EH2ₙ) across the fiber boundary using they Poynting approximation."]
+Start --> Aux["[#paramExpand-Calc]
+Calculated by param_expander.py
+------------------------------------------
+Stored in 💾 metalens_full_spec-[design_name]-[now].json 
+together with values in metalens_spec-[design_id].json
+------------------------------------------
+wg_to_mon : gap between waveguide and monitor where fields are stored
+EH3_to_ML : gap between EH3 and ML
+ML_to_EH4 : gap between ML and EH4
+source_to_face : gap between mode source and fiber end
+------------------------------------------
+focal_length : focal length of ML for grazing coupling
+fiber_to_ml  : distance between fiber's end face and ML for grazing coupling
+Δfields      : spatial resolution of fields
+ϵHost        : electric permitivitty of crystal host
+ϵFree        : electric permitivitty of space between waveguide and ML
+------------------------------------------
+NAfiber   : nominal numerical aperture of waveguide given nCore and nCladding
+Δfield    : spatial resolution of fields adequate for simulation
+sxy       : length in μm of cross section adequate to describe all fields
+------------------------------------------
+now       : int of time of when this design was considered included in filename
+------------------------------------------
+"]
 
-Poynting --> FreeProp["[#freeProp-Calc]
-Propagate (EH2ₙ) across the gap between fiber and metalens. 
-Let the field incident on the metalens be (EH3ₙ)"]
+Start & Aux --> MetaDesigner["[#metasurf-Design]
+Executed by meta_designer.py 
+------------------------------------------
+Results stored in metalens-[design_name>-[now].h5
+-------------- from S4 -------------------
+post_widths : widths of cylindrical posts for phase/geom curve
+post_phases : corresponding phases
+------------------------------------------
+phase_geom_clipped_widths : accounting for min_ML_size
+phase_geom_clipped_phases : corresponding to the above
+------------------------------------------
+numPosts       : number of posts that make the metasurface
+post_phases    : required phases for necessary phase profile
+lattice_points : (x,y) coords of post centers
+post_radii     : corresponding post widths in μm
+------------------------------------------
+"] 
 
-FreeProp --> MetaLens["[#metaREF-Calc]
-Use the phase profile ϕ(x,y) to approximate the propagation of (EH3ₙ) across the metalens. 
-Add heuristic constraints that approximate realistic phase pickups. 
-Let the field right after the metalens be called EH4ₙ."]
+Start & Aux --> Modes["[#fiberModes-Calc]
+Executed by fiber_bundle.py. This script computes the 
+propagation constants of the waveguide modes, and  it
+schedules the jobs necessary to determine how the corresponding
+launched fields launch across the end face of the fiber.
+This script assigns a waveguide_id, it is a
+random alpha-numeric code for the waveguide.
+
+Resulting data for the waveguide solution is 'waveguide_sol-' + waveguide_id + '.pkl'
+"]
+
+Modes  -->  FDTDRef["[#forEachMode-Calc]
+Initiated by fiber_bundle.py, which sets up a series of cluster
+jobs that use fiber_platform.py to actually run the
+FDTD simulation for each mode. 
+Once all of these jobs finish the fiber_plotter.py script
+is automatically executed and this generates a set of plots
+that show the fiedls as they refracted from the tip of the
+fiber.
+Optionally one can also create animatios of the refracted fields
+by using fiber_animate.py
+"]
+
+FDTDRef --> FreeProp["[#freeProp-Calc]
+Executed by fiber_bridge.py
+This script propagates the EH2ₙ fields from the position of the
+output monitor of the fiber_platform.py simulations to the position
+of the input plane of the metalens.
+The fields at this plane are the EH3ₙ.
+"]
+
+FreeProp & MetaDesigner --> MetaLens["[#metaREF-Calc]
+Executed by a script to be written.
+Using EH3ₙ as the fields incident on the designed metasurface
+The fields at the output plane are the EH4ₙ."]
 
 MetaLens -->  HostProp["[#hostProp-Calc]
-Propagate EH4ₙ across the destination volume V. Whereas EH1-4 are fields evaluated on a plane, the resultant field here is evaluated on a volume."]
-
-HostProp --> ForEachOrientation["[#forEachOrientation-Calc]
-For each dipole orientation (θᵢ, φᵢ) estimate at each evaluation point of the destination volume V what would be the coupling efficiency into the current mode. 
-This should produce/use as many 3D arrays as dipole orientations there are. 
-In principle one would like to keep one such array for each mode, in practice it might be necessary to simply keep a running total.
-"]
-
-ForEachOrientation --> OrientationRepeat["Repeat for each (θᵢ, φᵢ)."]
-
-OrientationRepeat --> ForEachOrientation
-
-OrientationRepeat --> ModeRepeat["Repeat for each mode"]
-
-ModeRepeat --> Poynting
+Executed by a script to be written.
+Propagate EH4ₙ across the destination volume V. 
+Whereas EH1-4 are fields evaluated on a plane, 
+the resultant fields here are evaluated on a volume."]
 
 ```

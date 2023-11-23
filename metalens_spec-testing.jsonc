@@ -1,0 +1,48 @@
+{
+    // depth of emitter in crystal host
+    "emDepth": 25,
+    // uncertainty in depth
+    "Δz": 1.6,
+    // transverse uncertainty in position
+    "Δxy": 1.5, 
+ 
+    // refractive index of crystal host
+    "nHost": 2.41,
+    // free-space wavelength of monochromatic field
+    "λFree": 0.532,
+    // ref index space between waveguide and ML
+    "nBetween": 1.0, 
+
+    // the radius of the waveguide core
+    "coreRadius": 2.0,
+    // ref index of core
+    "nCore": 1.4607, 
+    // ref index of cladding
+    "nCladding":1.4573, 
+    // number of pixels per um
+    "MEEP_resolution": 20,
+
+    // params for metasurface design
+        // metalens aperture
+        "mlDiameter": 25.0,
+        // the height of the cylindrical posts for ML
+        "post_height":0.8, 
+        // lattice constant of hexagonal lattice
+        "lattice_const": 0.25, 
+        // number of basis vectors for RCWA
+        "numG" : 70,
+        // this is how many post widths are considered for the phase/geometry calculation
+        "num_post_widths": 30,
+        // the direction of the linear polarization of the incident field
+        "linear_polarization_direction": 0.0,
+        // the minimum diameter of ML cylindrical posts
+        "MIN_FEATURE_SIZE": 0.05,
+
+    // This controls if the launching simulations are automatically scheduled
+    "autorun": true,
+    // Whether to post the progress to Slack
+    "send_to_slack": true,
+    "slack_channel": "nvs_and_metalenses",
+    "show_plot": false
+
+}

@@ -23,7 +23,7 @@ def main(nCladding, nCore, coreRadius, λFree):
                 'nCore': nCore,
                 'coreRadius': coreRadius,
                 'grid_divider': 4,
-                'nUpper': 1.,
+                'nBetween': 1.,
                 'λFree': λFree}
     fiber_sol = ws.multisolver(fiber_spec,
                             solve_modes = 'all',
