@@ -59,9 +59,9 @@ def wave_jumper(waveguide_id, zProp, nProp):
     for job_idx, job_dir in enumerate(job_dirs):
         mode_id = job_dir.split('/')[-1][:9]
         print('>> %d/%d' % (job_idx, len(job_dirs) - 1))
-        refracted_h5_fname = 'sim-results.h5'
+        refracted_h5_fname = 'EH2.h5'
         refracted_h5_fname = os.path.join(job_dir, refracted_h5_fname)
-        propagated_h5_fname = 'incident_on_ML.h5'
+        propagated_h5_fname = 'EH3.h5'
         propagated_h5_fname = os.path.join(job_dir, propagated_h5_fname)
         mode_sol, _ = ws.load_from_h5(refracted_h5_fname)
         mode_idx, kz, m, modeType, parity = (mode_sol['mode_idx'], mode_sol['kz'],
@@ -161,6 +161,7 @@ def wave_jumper(waveguide_id, zProp, nProp):
                 prop_h5_file.create_dataset('E^2_integral_propagated', data = E_squared_int_prop)
                 prop_h5_file.create_dataset('H^2_integral_source', data = H_squared_int_source)
                 prop_h5_file.create_dataset('H^2_integral_propagated', data = H_squared_int_prop)
+                prop_h5_file.create_dataset('waveguide_id', data=waveguide_id)
 
 
 if __name__ == '__main__':

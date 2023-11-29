@@ -8,16 +8,22 @@ from meta_designer import *
 from printech import *
 from misc import dict_summary
 from fiber_bundle import *
+from sniffer import output_vigilante
 
 #[paramExpand-Calc]
 # This script also controls all the sequences of simulations and 
 # calculations that are necessary.
 
 def param_expander(sim_params):
-    # use the dictionary to instantiate all the variables
-    # in the global namespace
-    for key, value in sim_params.items():
-        globals()[key] = value
+    mlDiameter = sim_params['mlDiameter']
+    nCore = sim_params['nCore']
+    nCladding = sim_params['nCladding']
+    nBetween = sim_params['nBetween']
+    nHost = sim_params['nHost']
+    λFree = sim_params['λFree']
+    coreRadius = sim_params['coreRadius']
+    emDepth = sim_params['emDepth']
+    post_height = sim_params['post_height']
     # using the emitter depth and the size of the core
     rule()
     printer("calculating dependent model parameters")
@@ -64,6 +70,19 @@ def param_expander(sim_params):
     # sim_id
     sim_id = rando_id(1)
     sim_params['sim_id'] = sim_id
+    # some parameters for the second FDTD simulations
+    ml_thickness = post_height
+    sim_params['ml_thickness'] = ml_thickness
+    runway_cell_thickness = pml_thickness + 2 * EH3_to_ml
+    ml_cell_thickness     = ml_thickness
+    host_cell_thickness   = 2*ml_to_EH4 + pml_thickness
+    sim_params['runway_cell_thickness'] = runway_cell_thickness
+    sim_params['ml_cell_thickness'] = ml_cell_thickness
+    sim_params['host_cell_thickness'] = host_cell_thickness
+    full_sim_height = runway_cell_thickness + ml_cell_thickness + host_cell_thickness
+    sim_params['full_sim_height'] = full_sim_height
+    run_time_2 = (nHost + nBetween) * full_sim_height
+    sim_params['run_time_2'] = run_time_2
     return sim_params
 
 if __name__ == '__main__':
@@ -96,8 +115,11 @@ if __name__ == '__main__':
     printer("> schedule the jobs for transporting the fields across the metasurface", tail=',')
     printer("> schedule the jobs for propagating the transmitted fields to the final volume")
     rule()
-    fan_out(expanded_params['nCladding'], expanded_params['nCore'],
+    waveguide_dir = fan_out(expanded_params['nCladding'], expanded_params['nCore'],
             expanded_params['coreRadius'], expanded_params['λFree'],
             expanded_params['nBetween'], expanded_params['autorun'],
-            expanded_params['MEEP_resolution'], expanded_params['zProp'])
+            expanded_params['zProp'], expanded_params['MEEP_resolution'],
+            expanded_params['req_run_mem_in_GB'],
+            expanded_fname)
     rule()
+    output_vigilante(waveguide_dir)

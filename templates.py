@@ -23,7 +23,7 @@ sbatch_output=$(sbatch <<EOL
 #!/bin/bash
 #SBATCH -n 1
 #SBATCH --job-name=req_run_{waveguide_id}
-#SBATCH --mem=64GB
+#SBATCH --mem={req_run_mem_in_GB}GB
 #SBATCH -t 2:00:00
 
 #SBATCH -o "{waveguide_dir}/{waveguide_id}-req.out"
@@ -85,19 +85,19 @@ cd {wavesight_dir}
 # Check if the memory and time requirements have been already calculated
 if [[ -f "{waveguide_dir}/{waveguide_id}.req" ]]; then
 echo "Reading resource requirements ..."
-IFS=',' read -r memreq timereq diskreq simtime < "{waveguide_dir}/{waveguide_id}.req"
+IFS=',' read -r memreq timereq diskreq simtime memreq2 timereq2 < "{waveguide_dir}/{waveguide_id}.req"
 else
 echo "Requirements have not been determined."
 exit 1
 fi
 
-echo "sbatch resources: ${{memreq}}GB,${{timereq}},${{diskreq}}MB"
+echo "sbatch resources: ${{memreq}}GB,${{timereq}},${{diskreq}}MB,${{memreq2}}GB,${{timereq2}}"
 
 # Submit the first array job
 sbatch_output=$(sbatch <<EOL
 #!/bin/bash
 #SBATCH -n 1
-#SBATCH --job-name=light_array_{waveguide_id}
+#SBATCH --job-name=fiber_platform_{waveguide_id}
 #SBATCH --mem=${{memreq}}GB
 #SBATCH -t ${{timereq}}
 #SBATCH --array=1-{num_modes}
@@ -117,7 +117,7 @@ array_job_id=$(echo "$sbatch_output" | awk '{{print $NF}}')
 sbatch_output_plotter=$(sbatch --dependency=afterany:$array_job_id <<EOL
 #!/bin/bash
 #SBATCH -n 1 
-#SBATCH --job-name=light_plot_{waveguide_id}
+#SBATCH --job-name=fiber_plotter_{waveguide_id}
 #SBATCH --mem=${{memreq}}GB
 #SBATCH -t ${{timereq}}
 #SBATCH -o "{waveguide_dir}/{waveguide_id}-plotter.out"
@@ -133,6 +133,7 @@ plotter_job_id=$(echo "$sbatch_output_plotter" | awk '{{print $NF}}')
 
 # submit the propagator job
 sbatch_output_bridge=$(sbatch --dependency=afterany:$plotter_job_id <<EOL
+#!/bin/bash
 #SBATCH -n 1 
 #SBATCH --job-name=fiber_bridge_{waveguide_id}
 #SBATCH --mem=${{memreq}}GB
@@ -149,11 +150,30 @@ bridge_job_id=$(echo "$sbatch_output_bridge" | awk '{{print $NF}}')
 
 # once the fields have been propagated across the gap, propagate them across the metalens
 
+sbatch_output=$(sbatch --dependency=afterany:$bridge_job_id <<EOL
+#!/bin/bash
+#SBATCH -n 1
+#SBATCH --job-name=across_ML_{waveguide_id}
+#SBATCH --mem=${{memreq2}}GB
+#SBATCH -t ${{timereq2}}
+#SBATCH --array=0-{num_modes}
+
+#SBATCH -o "{waveguide_dir}/{waveguide_id}-acrossML-%a.out"
+#SBATCH -e "{waveguide_dir}/{waveguide_id}-acrossML-%a.err"
+
+cd {wavesight_dir}
+~/anaconda/meep/bin/python /users/jlizaraz/CEM/wavesight/across_ml.py {waveguide_id} \$SLURM_ARRAY_TASK_ID
+EOL
+)
+
+# get the job id
+across_job_id=$(echo "$sbatch_output" | awk '{{print $NF}}')
+
 # submit the guardian job
-sbatch --dependency=afterany:$bridge_job_id <<EOL
+sbatch --dependency=afterany:$across_job_id <<EOL
 #!/bin/bash
 #SBATCH --job-name=calling_home_{waveguide_id}
-#SBATCH --output="{waveguide_dir}/calling_home.out"
+#SBATCH --output="{waveguide_dir}/{waveguide_id}-calling_home.out"
 #SBATCH --error="{waveguide_dir}/calling_home.err"
 #SBATCH --time=00:01:00
 

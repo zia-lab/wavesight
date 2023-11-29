@@ -27,6 +27,7 @@ import meep as mp
 import numpy as np
 import cmasher as cm
 from math import ceil
+from printech import *
 import wavesight as ws
 from matplotlib import style
 from matplotlib import pyplot as plt
@@ -120,6 +121,8 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     sample_resolution = waveguide_sol['sample_resolution']
     distance_to_monitor = waveguide_sol['distance_to_monitor']
 
+
+
     time_resolved = (num_time_slices > 0)
     initial_time  = time.time()
     sim_id        = ws.rando_id()
@@ -185,8 +188,10 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     coreRadius = mode_sol['coreRadius']
     kFree = mode_sol['kFree']
 
+
+
     # calculate the field functions
-    print("Calculating the field functions from the analytical solution ...")
+    printer("calculating the field functions from the analytical solution")
     (Efuncs, Hfuncs) = ws.fieldGenerator(coreRadius, kFree, kz, m, nCladding, nCore, modType)
     (ECoreρ, ECoreϕ, ECorez, ECladdingρ, ECladdingϕ, ECladdingz) = Efuncs
     (HCoreρ, HCoreϕ, HCorez, HCladdingρ, HCladdingϕ, HCladdingz) = Hfuncs
@@ -221,7 +226,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
 
     mode_sol['field_profiles'] = {'radial_range': ρrange, 'field_profiles':field_profiles}
 
-    print("Calculating a sample of the generating effective currents ...")
+    printer("calculating a sample of the generating effective currents")
     # calculate the generating currents
     Xg, Yg, electric_J, magnetic_K = ws.field_sampler(funPairs, sim_width,
                                                 sample_resolution,
@@ -236,7 +241,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     mode_sol['sampled_Yg'] = Yg
 
     if plot_field_profiles:
-        print("Making a plot of the field profiles ...")
+        printer("making a plot of the field profiles")
         # make a plot of the field profiles
         vrange = 0
         fig, ax = plt.subplots(figsize=(6,3))
@@ -263,7 +268,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
             plt.close()
 
     if plot_current_streams:
-        print("Making a streamplot of the generating currents ...")
+        printer("making a streamplot of the generating currents")
         streamArrayK = np.real(magnetic_K)
         streamArrayJ = np.real(electric_J)
         fig, ax = plt.subplots(figsize=(6,6))
@@ -289,10 +294,10 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     (ECoreρ, ECoreϕ, ECorez, ECladdingρ, ECladdingϕ, ECladdingz) = Efuncs
     (HCoreρ, HCoreϕ, HCorez, HCladdingρ, HCladdingϕ, HCladdingz) = Hfuncs
 
-    print("Calculating the functions for the necessary equivalent currents ...")
+    printer("calculating the functions for the necessary equivalent currents")
     Jx, Jy, Kx, Ky = ws.equivCurrents(Efuncs, Hfuncs, coreRadius, m, parity)
 
-    print("Setting up the MEEP simulation ...")
+    printer("setting up the MEEP simulation")
     λFree                       = fiber_sol['λFree']
     kFree                       = 2*np.pi/λFree
     pml_thickness               = 2 * λFree
@@ -332,7 +337,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     approx_runtime = approx_time(sim_cell, MEEP_resolution, run_time)
 
     # plot of the cross section
-    print("Making a design draft from the fiber geometry ...")
+    printer("making a design draft from the fiber geometry")
 
     fig, axes = plt.subplots(ncols=2, nrows=1, figsize=(12,6))
     axes[0].add_patch(plt.Circle((0,0), coreRadius, color='b', fill=True))
@@ -393,10 +398,10 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
         plt.close()
 
     clear_aperture = sim_width
-    print("Setting up the basic geometry of the FDTD simulation ...")
+    printer("setting up the basic geometry of the FDTD simulation")
     cladding_medium = mp.Medium(index = nCladding)
     core_medium     = mp.Medium(index = nCore)
-    between_medium    = mp.Medium(index = nBetween)
+    between_medium  = mp.Medium(index = nBetween)
     # set up the basic simulation geometry
     cladding_cell   = mp.Vector3(full_sim_width, full_sim_width, full_sim_height)
     cladding_center = mp.Vector3(0,0,0)
@@ -414,12 +419,12 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
                 material = between_medium),  
     ]
 
-    print("Setting up the time-function for the sources ...")
+    printer("setting up the time-function for the sources")
     source_fun = mp.ContinuousSource(frequency=kFree/2/np.pi,
                                      width=2*base_period,
                                      end_time=source_time)
 
-    print("Setting up the monitor planes ...")
+    printer("setting up the monitor planes")
     xy_monitor_plane_center = mp.Vector3(0, 0, distance_to_monitor)
     xy_monitor_plane_size   = mp.Vector3(clear_aperture, clear_aperture, 0)
     xy_monitor_vol          = mp.Volume(center=xy_monitor_plane_center, size=xy_monitor_plane_size)
@@ -434,7 +439,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     yz_monitor_vol          = mp.Volume(center=yz_monitor_plane_center,
                                         size=yz_monitor_plane_size)
 
-    print("Setting up the effective current sources for the modal fields ...")
+    printer("setting up the effective current sources for the modal fields")
     source_center = mp.Vector3(0,0, -full_sim_height/2 + pml_thickness + source_loc)
     source_size   = mp.Vector3(full_sim_width, full_sim_width, 0)
 
@@ -452,7 +457,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
                             )
             srcs.append(src)
 
-    print("Setting up the base simulation object ...")
+    printer("setting up the base simulation object")
     sim = mp.Simulation(
         cell_size  = sim_cell,
         geometry   = geometry,
@@ -464,10 +469,10 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     sim.use_output_directory(mode_sol_dir)
     sim.filename_prefix = ''
 
-    msg = "Simulation is estimated to take %0.2f minutes ..." % (approx_runtime/60)
-    print(msg)
+    msg = "simulation is estimated to take %0.2f minutes" % (approx_runtime/60)
+    printer(msg)
     mem_usage = sim.get_estimated_memory_usage()/1024/1024
-    print(">> Estimated memory usage %.2f Mb ..." % mem_usage)
+    printer(">> estimated memory usage %.2f Mb" % mem_usage)
     if send_to_slack:
         ws.post_message_to_slack(msg, slack_channel=slack_channel, thread_ts = thread_ts) 
 
@@ -511,8 +516,8 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
 
     coords = {}
     (xCoords, yCoords, zCoords, _) = sim.get_array_metadata()
-    numMVx = len(xCoords) * len(yCoords) * len(zCoords)
-    mode_sol['numMVx'] = int(numMVx/1e6)
+    numVx = len(xCoords) * len(yCoords) * len(zCoords)
+    mode_sol['numVx'] = numVx
     (xCoordsMonxy, yCoordsMonxy, zCoordsMonxy, _) = sim.get_array_metadata(xy_monitor_vol)
     (xCoordsMonxz, yCoordsMonxz, zCoordsMonxz, _) = sim.get_array_metadata(xz_monitor_vol)
     (xCoordsMonyz, yCoordsMonyz, zCoordsMonyz, _) = sim.get_array_metadata(yz_monitor_vol)
@@ -532,6 +537,27 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     mode_sol['sim_width_original'] = float(sim_width)
     sim_width = float(xCoordsMonxy[-1] - xCoordsMonxy[0])
     mode_sol['sim_width'] = sim_width
+
+    params_dict = ws.load_from_json(waveguide_sol['config_file_fname'])
+    EH3_to_ml    = params_dict['EH3_to_ml']
+    ml_to_EH4    = params_dict['ml_to_EH4']
+    post_height  = params_dict['post_height']
+    run_time_2   = params_dict['run_time_2']
+    ml_thickness = post_height
+    fiber_NA   = np.sqrt(nCore**2 - nCladding**2)
+    fiber_β    = np.arcsin(fiber_NA)
+    current_width = xCoords[-1] - xCoords[0]
+    zProp      = params_dict['zProp']
+    prop_plane_width = 2 * (current_width/2 + 1.1 * zProp * np.tan(fiber_β))
+    runway_cell_thickness = pml_thickness + 2*EH3_to_ml
+    ml_cell_thickness     = ml_thickness
+    host_cell_thickness   = 2*ml_to_EH4 + pml_thickness
+    prop_plane_width_with_pml = prop_plane_width + 2 * pml_thickness
+    full_sim_height = runway_cell_thickness + ml_cell_thickness + host_cell_thickness
+    numVx_2 = prop_plane_width_with_pml**2 * full_sim_height * MEEP_resolution**3
+    mem_scale_factor = numVx_2 / numVx
+    time_scale_factor = run_time_2 / run_time
+
     on_axis_eps = sim.get_array(mp.Dielectric,
                     mp.Volume(
                         center=mp.Vector3(0,0,0),
@@ -543,12 +569,12 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     mode_sol['field_sampling_interval'] = field_sampling_interval
     mode_sol['full_simulation_width_with_PML'] = full_sim_width
     mode_sol['numModes'] = numModes
-    msg = "Simulation took %0.2f minutes to run." % (time_taken/60)
-    print(msg)
+    msg = "simulation took %0.2f minutes to run" % (time_taken/60)
+    printer(msg)
     if send_to_slack:
         ws.post_message_to_slack(msg, slack_channel=slack_channel, thread_ts = thread_ts) 
 
-    print("Getting the field data from the h5 files ...")
+    printer("getting the field data from the h5 files")
     if time_resolved:
         monitor_fields = {}
         for plane in ['xy','xz','yz']:
@@ -570,6 +596,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
                 field_arrays.append(field_array)
             field_arrays = np.array(field_arrays)
             monitor_fields[plane] = field_arrays
+            del field_arrays
     else:
         monitor_vols = {'xy': xy_monitor_vol,'yz': yz_monitor_vol,'xz': xz_monitor_vol}
         h5_fname = ehfieldh5fname
@@ -588,7 +615,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
                         h5_file.create_dataset(key, data = export_field)
                 monitor_fields[monitor_plane] = np.array([a_monitor_fields[:3], a_monitor_fields[3:]])
 
-    print("Calculating basic plots for the end time ...")
+    printer("calculating basic plots for the end time")
     for sagplane in sag_plot_planes:
         if time_resolved:
             Ey_final_sag = monitor_fields[sagplane][0,1,:,:,-1]
@@ -623,7 +650,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
         else:
             plt.close()
 
-    print("Sampling the ground-truth modal profile ...")
+    printer("sampling the ground-truth modal profile")
     Xg, Yg, E_field_GT, H_field_GT = ws.field_sampler(funPairs, 
                                                 clear_aperture, 
                                                 MEEP_resolution, 
@@ -637,11 +664,10 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     else:
         field_array = monitor_fields['xy'][1]
  
-    print("Making a comparison plot of the last measured field against mode ...")
+    printer("making a comparison plot of the last measured field against mode inside of waveguide")
     component_name = 'hx'
     component_index = {'hx':0, 'hy':1, 'hz':2}[component_name]
-    extent    = [-clear_aperture/2, clear_aperture/2, 
-                 -clear_aperture/2, clear_aperture/2]
+    extent    = [-clear_aperture/2, clear_aperture/2, -clear_aperture/2, clear_aperture/2]
     fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10,10))
     for idx, plotFun in enumerate([np.real, np.imag]):
         ax = axes[0,idx]
@@ -699,12 +725,12 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
         ws.post_message_to_slack(summary, slack_channel=slack_channel,thread_ts=thread_ts)
     if save_fields_to_h5:
         mode_sol['monitor_field_slices'] = monitor_fields
-    mode_sol_h5_fname = 'sim-results.h5'
+    mode_sol_h5_fname = 'EH2.h5'
     mode_sol_h5_fname = os.path.join(mode_sol_dir, mode_sol_h5_fname)
-    print("Calculating the size of h5 data files ...")
+    printer("calculating the size of h5 data files")
     disk_usage_in_MB = ws.get_total_size_of_directory(mode_sol_dir)
     mode_sol['disk_usage_in_MB'] = int(disk_usage_in_MB)
-    print("Saving solution to %s ..." % mode_sol_h5_fname)
+    printer("saving solution to %s" % mode_sol_h5_fname)
     comments = 'created on %d' % int(time.time())
     ws.save_to_h5(mode_sol, mode_sol_h5_fname, comments=comments)
 
@@ -713,12 +739,21 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     time_taken_in_s    = final_final_time - initial_time
     time_req_in_s      = ws.ceil_to_multiple(time_boost_factor*time_taken_in_s,
                                           time_req_rounded_to)
-    time_req_in_s      = max(time_req_in_s, min_req_time_in_s)
-    mem_req_in_GB      = int(ws.ceil_to_multiple(memory_boost_factor*mem_used_in_Gbytes,
-                                              mem_req_rounded_to))
+    time_req_in_s      = int(max(time_req_in_s, min_req_time_in_s))
+    mem_req_in_GB_1    = int(ws.ceil_to_multiple(memory_boost_factor*mem_used_in_Gbytes, mem_req_rounded_to))
     time_req_fmt       = ws.format_time(time_req_in_s)
-    mem_req_fmt        = '%d' % mem_req_in_GB
-    print("Took %s s to run, and spent %.1f MB of RAM." % (time_taken_in_s,mem_used_in_Mbytes ))
+    mem_req_fmt        = '%d' % mem_req_in_GB_1
+    printer("took %s s to run, and spent %.1f MB of RAM" % (time_taken_in_s,mem_used_in_Mbytes ))
+    printer("estimating the resource requirements for the second FDTD simulations")
+    mem_req_in_GB_2 = (ws.ceil_to_multiple(memory_boost_factor 
+                                           * mem_used_in_Gbytes 
+                                           * mem_scale_factor, mem_req_rounded_to))
+    mem_req_in_GB_2 = int(mem_req_in_GB_2)
+    mem_req_fmt_2   = '%d' % mem_req_in_GB_2
+    # sim time proportional both to number of voxels and simulation time
+    time_scale_factor *= mem_scale_factor
+    time_req_in_s_2 = int(max(time_boost_factor * time_taken_in_s * time_scale_factor, min_req_time_in_s))
+    time_req_fmt_2  = ws.format_time(time_req_in_s_2)
     # if the simulation time was run as automatic
     # then see if the steady state can be determined
     if not os.path.exists(reqs_fname):
@@ -730,15 +765,15 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
             steady_time = ws.transient_scope(time_axis, time_slice)
             if steady_time == None:
                 raise ValueError("Could not determine steady state time, consider increasing the simulation time.")
-            steady_time = steady_time_boost * steady_time
+            steady_time    = steady_time_boost * steady_time
             steady_time = '%.2f' % steady_time
-            print("Creating resource requirement file...")
+            printer("creating resource requirement file")
             with open(reqs_fname,'w') as file:
-                file.write('%s,%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB, steady_time)) 
+                file.write('%s,%s,%s,%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB, steady_time, mem_req_fmt_2, time_req_fmt_2)) 
         else:
-            print("Creting resource requirement file...")
+            printer("creating resource requirement file")
             with open(reqs_fname,'w') as file:
-                file.write('%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB))
+                file.write('%s,%s,%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB, mem_req_fmt_2, time_req_fmt_2))
     return mode_sol
 
 if __name__ == "__main__":

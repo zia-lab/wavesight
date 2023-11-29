@@ -35,8 +35,7 @@ def meta_designer(sim_params_fname):
     if send_to_slack:
         slack_thread = ws.post_message_to_slack("Drafting a new metalens design", slack_channel=slack_channel)
         thread_ts = slack_thread['ts']
-    sim_id = str(int(time.time()))
-    simulation_parameters['sim_id'] = sim_id
+    sim_id = simulation_parameters['sim_id']
     simulation_parameters['min_post_width'] = 0.05
     simulation_parameters['max_post_width'] = simulation_parameters['lattice_const']
     simulation_parameters['post_width'] = simulation_parameters['max_post_width']
@@ -119,7 +118,7 @@ def meta_designer(sim_params_fname):
     metalens_design['post_radii'] = post_radii
     metalens_design['num_posts']  = len(post_radii)
     metalens_design['lattice_points'] = lattice_points
-    printer(f"metalens design consists of {metalens_design['num_posts']} posts with a maximum radius of {max(post_radii):.2f} um...")
+    printer(f"metalens design consists of {metalens_design['num_posts']} posts with a maximum radius of {max(post_radii):.2f} um")
     printer("making a draft of the metalens design")
     fig, ax = plt.subplots(figsize=(8,8))
     for center, rad in zip(lattice_points, post_radii):
@@ -142,7 +141,7 @@ def meta_designer(sim_params_fname):
     else:
         plt.close()
 
-    metalens_design_fname = 'metalens-design-%d.h5' % time.time()
+    metalens_design_fname = 'metalens-design-%s.h5' % sim_id
     printer("saving design to %s" % metalens_design_fname)
     metalens_design['metalens_design_fname'] = metalens_design_fname
     ws.save_to_h5(metalens_design, metalens_design_fname, overwrite=True)

@@ -28,10 +28,6 @@ style.use('dark_background')
 # this script can be used to generate a compendium of the fields in the xz yz sagittal planes
 # it takes as simple argument equal to the job id for the entire simulation
 
-parser = argparse.ArgumentParser(description='Job plotter.')
-parser.add_argument('waveguide_id', type=str, help='The ID for a waveguide.')
-args = parser.parse_args()
-
 cmap          = cm.watermelon
 data_dir      = '/users/jlizaraz/data/jlizaraz/CEM/wavesight'
 post_to_slack = True
@@ -70,7 +66,7 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
         idx = int(x.split('-')[-1])
         return idx
     job_dirs = list(sorted(job_dirs, key = wave_sorter))
-    moovie_dir = os.path.join(waveguide_dir,'moovies')
+    moovie_dir = os.path.join(waveguide_dir,'moovies-EH4')
     if not os.path.exists(moovie_dir):
         os.mkdir(moovie_dir)
     # go through each folder and make the sagittal and xy animations
@@ -95,62 +91,44 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
                    'h_xz_slices_fname_h5', 'e_xz_slices_fname_h5',
                    'h_yz_slices_fname_h5', 'e_yz_slices_fname_h5']
         data = {}
-        # if mode_idx != 1:
-        #     continue
-        # the data is saved differently in the case of time-resolved
-        # and steady state simulations
-        if mode_sol['time_resolved']:
-            for h5_key in h5_keys:
-                h5_fname = mode_sol[h5_key]
-                field = h5_key[0]
-                plane = h5_key.split('_')[1]
+
+        h5_fname = 'EH4.h5'
+        h5_fname = os.path.join(job_dir, h5_fname)
+        EH4_sol, _ = ws.load_from_h5(h5_fname)
+        for plane in ['xy','yz','xz']:
+            plane_slice = EH4_sol[plane]
+            for field in 'eh':
                 field_list = []
-                h5_fname = os.path.join(job_dir, h5_fname)
-                data_key_root = '%s-%s' % (field, plane)
-                with h5py.File(h5_fname, 'r') as h5f:
-                    for cartesian_component in 'xyz':
-                        data_key_r = '%s%s.r' % (field, cartesian_component)
-                        data_key_i = '%s%s.i' % (field, cartesian_component)
-                        field_data = 1j*np.array(h5f[data_key_i][:,:,-1])
-                        field_data += np.array(h5f[data_key_r][:,:,-1])
-                        field_data = field_data.T
-                        field_list.append(field_data)
+                for cartesian_component in 'xyz':
+                    data_key_r = '%s%s.r' % (field, cartesian_component)
+                    data_key_i = '%s%s.i' % (field, cartesian_component)
+                    field_data = 1j*np.array(plane_slice[data_key_i])
+                    field_data += np.array(plane_slice[data_key_r])
+                    field_data = field_data.T
+                    field_list.append(field_data)
                 field_list = np.array(field_list)
+                data_key_root = '%s-%s' % (field, plane)
                 data[data_key_root] = field_list
-        else:
-            h5_fname = mode_sol['eh_monitors_fname_h5']
-            with h5py.File(h5_fname, 'r') as h5f:
-                for plane in ['xy','yz','xz']:
-                    plane_slice = h5f[plane]
-                    for field in 'eh':
-                        field_list = []
-                        for cartesian_component in 'xyz':
-                            data_key_r = '%s%s.r' % (field, cartesian_component)
-                            data_key_i = '%s%s.i' % (field, cartesian_component)
-                            field_data = 1j*np.array(plane_slice[data_key_i])
-                            field_data += np.array(plane_slice[data_key_r])
-                            field_data = field_data.T
-                            field_list.append(field_data)
-                        field_list = np.array(field_list)
-                        data_key_root = '%s-%s' % (field, plane)
-                        data[data_key_root] = field_list
         # These dictionaries are a bit more useful
         monitor_fields       = {}
-        monitor_fields['xy'] = np.array([data['e-xy'], data['h-xy']])
-        monitor_fields['xz'] = np.array([data['e-xz'], data['h-xz']])
-        monitor_fields['yz'] = np.array([data['e-yz'], data['h-yz']])
-        sim_width            = mode_sol['sim_width']
-        full_sim_height      = mode_sol['full_sim_height']
-        coreRadius           = mode_sol['coreRadius']
+        monitor_fields['xy'] = np.array([data.pop('e-xy'), data.pop('h-xy')])
+        monitor_fields['xz'] = np.array([data.pop('e-xz'), data.pop('h-xz')])
+        monitor_fields['yz'] = np.array([data.pop('e-yz'), data.pop('h-yz')])
+        xCoordsMonxy            = EH4_sol['xCoordsMonxy']
+        zCoordsMonxz = EH4_sol['zCoordsMonxz']
 
-        extent = [-sim_width/2, sim_width/2, -full_sim_height/2, full_sim_height/2]
+        full_sim_height      = zCoordsMonxz[-1] - zCoordsMonxz[0]
+        sim_width            = xCoordsMonxy[-1] - xCoordsMonxy[0]
+
+        xy_extent =  [-sim_width/2, sim_width/2, -sim_width/2, sim_width/2]
+        sag_extent = [-sim_width/2, sim_width/2, -full_sim_height/2, full_sim_height/2]
         for sagidx, sagplane in enumerate(['xz','yz']):
             # get a good figsize
             if sagidx == 0:
                 dummyField = monitor_fields['xz'][0,0,:,:]
                 dummyField = np.real(dummyField)
                 fig, ax = plt.subplots()
-                ax.imshow(dummyField, extent=extent, cmap=cm.ember)
+                ax.imshow(dummyField, extent=sag_extent, cmap=cm.ember)
                 ax.set_xlabel('x/um')
                 ax.set_ylabel('y/um')
                 ax.set_title('Re(Ex) | [1.0]')
@@ -168,6 +146,7 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
                 print("Animation already exists. Skipping ...")
                 continue
             def update(phase):
+                print(phase)
                 for field_idx, field in enumerate(['E','H']):
                     for cartesian_idx, cartesian_component in enumerate('xyz'):
                         final_field = monitor_fields[sagplane][field_idx,cartesian_idx,:,:]
@@ -178,15 +157,15 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
                             cmrange = np.max(np.abs(plotField))
                         plotField = np.real(plotField)
                         ax = axes[field_idx, cartesian_idx]
-                        if phase == 0:
-                            ax.add_patch(plt.Rectangle((-sim_width/2,-full_sim_height/2), sim_width, full_sim_height/2, color='w', alpha=0.05))
-                            ax.add_patch(plt.Rectangle((-coreRadius,-full_sim_height/2), 2*coreRadius, full_sim_height/2, color='b', alpha=0.1))
+                        # if phase == 0:
+                        #     ax.add_patch(plt.Rectangle((-sim_width/2,-full_sim_height/2), sim_width, full_sim_height/2, color='w', alpha=0.05))
+                        #     ax.add_patch(plt.Rectangle((-coreRadius,-full_sim_height/2), 2*coreRadius, full_sim_height/2, color='b', alpha=0.1))
                         ax.imshow(plotField, 
                                 cmap=cmap, 
                                 origin='lower',
                                 vmin=-cmrange,
                                 vmax=cmrange,
-                                extent=extent,
+                                extent=sag_extent,
                                 interpolation='none')
                         if phase == 0:
                             ax.set_xlabel('%s/μm' % sagplane[0])
@@ -209,11 +188,10 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
                 print("Animation already exists. Skipping ...")
                 continue
             def update(phase):
-                # print(phase)
+                print(phase)
                 for field_idx, field in enumerate(['E','H']):
                     for cartesian_idx, cartesian_component in enumerate('xyz'):
                         final_field = monitor_fields[plane][field_idx,cartesian_idx,:,:]
-                        extent = [-sim_width/2, sim_width/2, -sim_width/2, sim_width/2]
                         plotField = final_field * np.exp(-1j*phase)
                         if (field, cartesian_component) in cmranges:
                             cmrange = cmranges[(field, cartesian_component)]
@@ -221,14 +199,12 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
                             cmrange = np.max(np.abs(plotField))
                         plotField = np.real(plotField)
                         ax = axes[field_idx, cartesian_idx]
-                        if phase == 0:
-                            ax.add_patch(plt.Circle((0,0), radius=coreRadius, fill=False))
                         ax.imshow(plotField, 
                                 cmap=cmap, 
                                 origin='lower',
                                 vmin=-cmrange,
                                 vmax=cmrange,
-                                extent=extent,
+                                extent=xy_extent,
                                 interpolation='none')
                         if phase ==0:
                             ax.set_xlabel('x/μm')
@@ -248,4 +224,7 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
             plt.close(fig)
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Job plotter.')
+    parser.add_argument('waveguide_id', type=str, help='The ID for a waveguide.')
+    args = parser.parse_args()
     wave_plotter(args.waveguide_id)

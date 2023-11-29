@@ -17,6 +17,7 @@
 #fiberModes-Calc
 
 import os
+import shutil
 import pickle
 import argparse
 import warnings
@@ -44,7 +45,8 @@ def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
              * run_time * spatial_resolution**3)
     return rtime
 
-def fan_out(nCladding, nCore, coreRadius, λFree, nBetween, autorun, zProp, MEEP_resolution = 20):
+def fan_out(nCladding, nCore, coreRadius, λFree, nBetween, autorun,
+            zProp, MEEP_resolution, req_run_mem_in_GB, config_fname=''):
     '''
     Given  the  geometry  and  composition of a step-index fiber
     this   function   solves   for   the  waveguide  propagation
@@ -85,7 +87,8 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nBetween, autorun, zProp, MEEP
     
     Returns
     -------
-    None
+    waveguide_dir : str
+        The path of the directory where results will be saved.
 
     '''
     fiber_spec = {'nCladding': nCladding,
@@ -134,6 +137,16 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nBetween, autorun, zProp, MEEP
         printer(f"Directory {waveguide_dir} created.")
     else:
         printer(f"Directory {waveguide_dir} already exists.")
+    if config_fname:
+        printer('saving a copy of the config file to the data directory')
+        config_fname_dest = os.path.join(waveguide_dir, config_fname)
+        shutil.copy(config_fname, config_fname_dest)
+        waveguide_sol['config_file_fname'] = config_fname_dest
+        config_dict = ws.load_from_json(config_fname)
+        design_id   = config_dict['sim_id']
+        printer('moving the metalens design file to the data dir')
+        design_fname = 'metalens-design-%s.h5' % design_id
+        shutil.move(design_fname, os.path.join(waveguide_dir, 'metalens-design.h5'))
     waveguide_sol_fname = 'waveguide_sol-' + waveguide_id + '.pkl'
     waveguide_sol_fname = os.path.join(waveguide_dir, waveguide_sol_fname)
     with open(waveguide_sol_fname,'wb') as file:
@@ -154,6 +167,7 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nBetween, autorun, zProp, MEEP
                     numModes      = numModes,
                     num_time_slices = num_time_slices,
                     MEEP_resolution = MEEP_resolution,
+                    req_run_mem_in_GB = req_run_mem_in_GB,
                     num_modes       = (numModes-1))
     batch_script_2 = bash_template_2.format(wavesight_dir=wavesight_dir,
                     waveguide_sol_fname = waveguide_sol_fname,
@@ -170,20 +184,27 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nBetween, autorun, zProp, MEEP
                     zProp        = zProp,
                     nProp        = nBetween,
                     num_modes    = (numModes-1))
+    rule()
     with open(bash_script_fname_1, 'w') as file:
         printer("Saving bash script to %s" % bash_script_fname_1)
         file.write(batch_script_1+'\n')
+    extra_copy_fname = os.path.join(waveguide_dir, bash_script_fname_1)
+    shutil.copy(bash_script_fname_1, extra_copy_fname)
     rule()
     code_print(batch_script_1)
+    rule()
     with open(bash_script_fname_2, 'w') as file:
         printer("Saving bash script to %s" % bash_script_fname_2)
         file.write(batch_script_2+'\n')
+    extra_copy_fname = os.path.join(waveguide_dir, bash_script_fname_2)
+    shutil.copy(bash_script_fname_2, extra_copy_fname)
     rule()
     code_print(batch_script_2)
     rule()
     if autorun:
-        printer('Submitting the first job to Slurm ...')
+        printer('submitting the first job to Slurm')
         subprocess.run(['bash', bash_script_fname_1])
+    return waveguide_dir
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Launching the propagating modes of a fiber.')
@@ -191,7 +212,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     # read the config file
     sim_params = ws.load_from_json(args.configfile)
-    fan_out(sim_params['nCladding'],       sim_params['nCore'],
+    waveguide_dir = fan_out(sim_params['nCladding'],       sim_params['nCore'],
             sim_params['coreRadius'],      sim_params['λFree'],
             sim_params['nBetween'],        sim_params['autorun'],
-            sim_params['MEEP_resolution'], sim_params['zProp'])
+            sim_params['zProp'], sim_params['MEEP_resolution'],
+            sim_params['req_run_mem_in_GB'])

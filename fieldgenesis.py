@@ -1,5 +1,10 @@
 import numpy as np
 from scipy import special
+import warnings
+from printech import *
+
+printer("ATTENTION: disabling RuntimeWarning often due to evalution of square roots with negative arguments, which is probably produced by scalar_root")
+warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 def TE_ECoregenρ(a,kFree,kz,m,nCladding,nCore):
 

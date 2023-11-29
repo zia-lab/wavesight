@@ -76,7 +76,7 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
         if job_idx >= max_plots:
             continue
         print('%d/%d' % (job_idx, len(job_dirs) - 1))
-        h5_fname = 'sim-results.h5'
+        h5_fname = 'EH2.h5'
         h5_fname = os.path.join(job_dir, h5_fname)
         mode_sol, _ = ws.load_from_h5(h5_fname)
         mode_idx, kz, m, modeType, parity = mode_sol['mode_idx'], mode_sol['kz'], mode_sol['m'], mode_sol['modeType'], mode_sol['parity']
@@ -90,7 +90,7 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
         # these are only used if the data is time-resolved
 
         # These dictionaries are a bit more useful
-        propagated_h5_fname = 'incident_on_ML.h5'
+        propagated_h5_fname = 'EH3.h5'
         propagated_h5_fname = os.path.join(job_dir, propagated_h5_fname)
         with h5py.File(propagated_h5_fname, 'r') as h5f:
             plotting_fields     = np.array(h5f['EH_field'])

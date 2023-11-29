@@ -136,10 +136,10 @@ jobs that use fiber_platform.py to actually run the
 FDTD simulation for each mode. 
 Once all of these jobs finish the fiber_plotter.py script
 is automatically executed and this generates a set of plots
-that show the fiedls as they refracted from the tip of the
-fiber.
-Optionally one can also create animatios of the refracted fields
-by using fiber_animate.py
+that show the fields as they refracted from the end face of the
+waveguide.
+Optionally one can also create animations of the refracted fields
+by using fiber_animate.py.
 "]
 
 FDTDRef --> FreeProp["[#freeProp-Calc]
@@ -151,12 +151,12 @@ The fields at this plane are the EH3ₙ.
 "]
 
 FreeProp & MetaDesigner --> MetaLens["[#metaREF-Calc]
-Executed by a script to be written.
+Executed by script across_ML.py
 Using EH3ₙ as the fields incident on the designed metasurface
 The fields at the output plane are the EH4ₙ."]
 
 MetaLens -->  HostProp["[#hostProp-Calc]
-Executed by a script to be written.
+Executed by H4-toH5.py
 Propagate EH4ₙ across the destination volume V. 
 Whereas EH1-4 are fields evaluated on a plane, 
 the resultant fields here are evaluated on a volume."]

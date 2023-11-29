@@ -2024,6 +2024,51 @@ def field_sampler(funPairs, cross_width, resolution, m, parity,
         H_field = from_cyl_cart_to_cart_cart(H_field)
     return Xg, Yg, E_field, H_field
 
+def from_sampled_field_to_sampled_equiv_currents(EH_field):
+    '''
+    Given  cartesian  samples  of  the  E-H field, this function
+    returns the cartesian samples of the equivalent electric and
+    magnetic currents.
+
+    This function assumes that the samples are in a z-plane, and
+    that the field is solely propagating in the +z direction. In
+    this case the currents  have  no  z-component  so  that  the 
+    arrays this function returns are of shape (2, N, N).
+
+    Note that rigurously the equivalent currents are defined for
+    a  surface  of  zero  thickness  and  infinite  extent.  The
+    function  assumes  that  the  given  field  is  defined  for
+    a  finite  region  of  space  and  that  the  equivalent  is
+    therefore  defined  for  a  finite  region  of  space.  This
+    function  assumes  that  the  region  of  space  is  a square
+    centered on the axis.
+
+    This function is agnostic to the actual coordinates in which
+    the field has been sampled. The returned currents are to  be
+    assumed to be sampled in the same region.
+
+    Parameters
+    ----------
+    EH_field : np.ndarray
+        Sampled EH field,  in  cartesian  coordinates, of  shape
+        (2, 3, N, N) or (2, 2, N, N).
+    Returns
+    -------
+    electric_J : np.ndarray
+        Sampled   equivalent   electric   current,  in  cartesian
+        coordinates, of shape (2, N, N).
+    magnetic_K : np.ndarray
+        Sampled  equivalent  magnetic   current,   in   cartesian
+        coordinates, of shape (2, N, N).
+    '''
+    electric_J    = np.zeros((2,) + EH_field.shape[2:], dtype=np.complex_)
+    magnetic_K    = np.zeros((2,) + EH_field.shape[2:], dtype=np.complex_)
+    electric_J[0] = -EH_field[1,1]
+    electric_J[1] =  EH_field[1,0]
+    magnetic_K[0] =  EH_field[0,1]
+    magnetic_K[1] = -EH_field[0,0]
+    return electric_J, magnetic_K
+
 def from_cyl_cart_to_cart_cart(field):
     '''
     Given  a  field  in  cylindrical  coordinates, convert it to

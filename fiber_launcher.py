@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import sys
 import meep as mp
 import numpy as np
 import h5py
@@ -12,6 +11,7 @@ import cmasher as cm
 from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
 import pickle
 import argparse
+from printech import *
 
 def approx_time(sim_cell, spatial_resolution, run_time, kappa=2.2e-6):
     rtime = (kappa * sim_cell.x * sim_cell.y * sim_cell.z
@@ -91,7 +91,7 @@ def main(nCladding, nCore, coreRadius, λFree):
         kFree = mode_sol['kFree']
 
         # calculate the field functions
-        print("Calculating the field functions from the analytical solution ...")
+        printer("calculating the field functions from the analytical solution")
         (Efuncs, Hfuncs) = ws.fieldGenerator(coreRadius, kFree, kz, m, nCladding, nCore, modType)
         (ECoreρ, ECoreϕ, ECorez, ECladdingρ, ECladdingϕ, ECladdingz) = Efuncs
         (HCoreρ, HCoreϕ, HCorez, HCladdingρ, HCladdingϕ, HCladdingz) = Hfuncs
@@ -127,7 +127,7 @@ def main(nCladding, nCore, coreRadius, λFree):
 
         mode_sol['field_profiles'] = (ρrange, field_profiles)
 
-        print("Calculating a sample of the generating effective currents ...")
+        printer("calculating a sample of the generating effective currents")
         # calculate the generating currents
         Xg, Yg, electric_J, magnetic_K = ws.field_sampler(funPairs, simWidth,
                                                     sample_resolution,
@@ -141,7 +141,7 @@ def main(nCladding, nCore, coreRadius, λFree):
         mode_sol['sampled_Xg'] = Xg
         mode_sol['sampled_Yg'] = Yg
 
-        print("Making a plot of the field profiles ...")
+        printer("making a plot of the field profiles")
         # make a plot of the field profiles
         vrange = 0
         fig, ax = plt.subplots(figsize=(6,3))
@@ -163,7 +163,7 @@ def main(nCladding, nCore, coreRadius, λFree):
         else:
             plt.close()
 
-        print("Making a streamplot of the generating currents ...")
+        printer("making a streamplot of the generating currents")
         streamArrayK = np.real(magnetic_K)
         streamArrayJ = np.real(electric_J)
         fig, ax = plt.subplots(figsize=(6,6))
@@ -185,10 +185,10 @@ def main(nCladding, nCore, coreRadius, λFree):
         (ECoreρ, ECoreϕ, ECorez, ECladdingρ, ECladdingϕ, ECladdingz) = Efuncs
         (HCoreρ, HCoreϕ, HCorez, HCladdingρ, HCladdingϕ, HCladdingz) = Hfuncs
 
-        print("Calculating the functions for the necessary equivalent currents ...")
+        printer("calculating the functions for the necessary equivalent currents")
         Jx, Jy, Kx, Ky = ws.equivCurrents(Efuncs, Hfuncs, coreRadius, m, parity)
 
-        print("Setting up the MEEP simulation ...")
+        printer("setting up the MEEP simulation")
         λFree           = fiber_sol['λFree'] 
         kFree           = 2*np.pi/λFree
         pml_thickness   = 2 * coreRadius
@@ -218,7 +218,7 @@ def main(nCladding, nCore, coreRadius, λFree):
         approx_runtime = approx_time(sim_cell, MEEP_resolution, run_time)
 
         # plot of the cross section
-        print("Making a design draft from the fiber geometry ...")
+        printer("making a design draft from the fiber geometry")
         fig, axes = plt.subplots(ncols=2, nrows=1, figsize=(12,6))
         axes[0].add_patch(plt.Circle((0,0), coreRadius, color='w', fill=False))
         axes[0].add_patch(plt.Rectangle((-sxy/2 + pml_thickness, -sxy/2 + pml_thickness),
@@ -254,7 +254,7 @@ def main(nCladding, nCore, coreRadius, λFree):
             plt.close()
 
         clear_aperture = simWidth
-        print("Setting up the basic geometry of the FDTD simulation ...")
+        printer("cetting up the basic geometry of the FDTD simulation")
         cladding_medium = mp.Medium(index=nCladding)
         core_medium     = mp.Medium(index=nCore)
         # set up the basic simulation geometry
@@ -271,11 +271,11 @@ def main(nCladding, nCore, coreRadius, λFree):
             
         ]
 
-        print("Setting up the time-function for the sources ...")
+        printer("setting up the time-function for the sources")
         source_fun = mp.ContinuousSource(frequency=kFree/2/np.pi,
                                         end_time=run_time)
 
-        print("Setting up the monitor planes ...")
+        printer("setting up the monitor planes")
         xy_monitor_plane_center = mp.Vector3(0,0,fiber_height/2 - pml_thickness - source_loc)
         xy_monitor_plane_size   = mp.Vector3(clear_aperture, clear_aperture, 0)
         xy_monitor_vol          = mp.Volume(center=xy_monitor_plane_center, size=xy_monitor_plane_size)
@@ -284,7 +284,7 @@ def main(nCladding, nCore, coreRadius, λFree):
         xz_monitor_plane_size   = mp.Vector3(clear_aperture, 0, fiber_height)
         xz_monitor_vol          = mp.Volume(center=xz_monitor_plane_center, size=xz_monitor_plane_size)
 
-        print("Setting up the effective current sources for the modal fields ...")
+        printer("setting up the effective current sources for the modal fields")
         source_center = mp.Vector3(0,0, -fiber_height/2 + pml_thickness + source_loc)
         source_size   = mp.Vector3(sxy, sxy, 0)
 
@@ -302,7 +302,7 @@ def main(nCladding, nCore, coreRadius, λFree):
                                 )
                 srcs.append(src)
 
-        print("Setting up the base simulation object ...")
+        printer("setting up the base simulation object")
         sim = mp.Simulation(
             cell_size  = sim_cell,
             geometry   = geometry,
@@ -313,8 +313,8 @@ def main(nCladding, nCore, coreRadius, λFree):
         )
 
 
-        msg = "Simulation is estimated to take %0.2f minutes ..." % (approx_runtime/60)
-        print(msg)
+        msg = "simulation is estimated to take %0.2f minutes" % (approx_runtime/60)
+        printer(msg)
         if send_to_slack:
             ws.post_message_to_slack(msg, slack_channel=slack_channel, thread_ts = thread_ts) 
 
@@ -358,13 +358,13 @@ def main(nCladding, nCore, coreRadius, λFree):
         mode_sol['time_taken'] = time_taken
         mode_sol['field_sampling_interval'] = field_sampling_interval
         mode_sol['full_simulation_width_with_PML'] = sxy
-        msg = "Simulation took %0.2f minutes to run." % (time_taken/60)
-        print(msg)
+        msg = "simulation took %0.2f minutes to run" % (time_taken/60)
+        printer(msg)
         if send_to_slack:
             ws.post_message_to_slack(msg, slack_channel=slack_channel, thread_ts = thread_ts) 
 
         if grab_fields == True:
-            print("Getting the field data from the h5 files ...")
+            printer("getting the field data from the h5 files")
             monitor_fields = {}
             for plane in ['xy','xz']:
                 field_arrays = []
@@ -388,9 +388,9 @@ def main(nCladding, nCore, coreRadius, λFree):
         num_time_samples =  monitor_fields['xy'].shape[-1]
         sampling_times = np.linspace(0, run_time, num_time_samples)
 
-        print("MEEP-adjusted resolution: %.2f px/μm" % effective_resolution)
+        printer("MEEP-adjusted resolution: %.2f px/μm" % effective_resolution)
 
-        print("Calculating basic plots for the end time ...")
+        printer("calculating basic plots for the end time")
         Ey_final_sag = monitor_fields['xz'][0,1,:,:,-1]
         extent = [-simWidth/2, simWidth/2, -fiber_height/2, fiber_height/2]
         plotField = np.real(Ey_final_sag)
@@ -412,7 +412,7 @@ def main(nCladding, nCore, coreRadius, λFree):
         else:
             plt.close()
 
-        print("Picking a notable point at z=0 for sampling Ey at different times and z-values ...")
+        printer("picking a notable point at z=0 for sampling Ey at different times and z-values")
         numZsamples = Ey_final_sag.shape[0]
         midZsample = numZsamples // 2
         midCut     = Ey_final_sag[midZsample, :]
@@ -436,7 +436,7 @@ def main(nCladding, nCore, coreRadius, λFree):
         else:
             plt.close()
 
-        print("Sampling the ground-truth modal profile ...")
+        printer("sampling the ground-truth modal profile")
         Xg, Yg, E_field_GT, H_field_GT = ws.field_sampler(funPairs, 
                                                     clear_aperture, 
                                                     effective_resolution, 
@@ -446,7 +446,7 @@ def main(nCladding, nCore, coreRadius, λFree):
                                                     coord_sys = 'cartesian-cartesian',
                                                     equiv_currents=False)
 
-        print("Calculating the correlation of the monitored field against the ground truth ...")
+        printer("calculating the correlation of the monitored field against the ground truth")
         field_array = monitor_fields['xy'][1]
         component_name = 'hx'
         component_index = {'hx':0, 'hy':1, 'hz':2}[component_name]
@@ -476,7 +476,7 @@ def main(nCladding, nCore, coreRadius, λFree):
             plt.close()
         final_cos = cosims[-1]
 
-        print("Making a comparison plot for the last measured field ...")
+        printer("making a comparison plot for the last measured field")
         time_index = -1
         extent    = [-clear_aperture/2, clear_aperture/2, -clear_aperture/2, clear_aperture/2]
         fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10,10))

@@ -3,10 +3,13 @@ import os
 import re
 import h5py
 import json
+import time
 import inspect
+import tempfile
 import subprocess
 import numpy as np
 from functools import wraps
+from printech import *
 
 def load_from_json(filename):
     lines = []

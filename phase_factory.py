@@ -228,7 +228,7 @@ def phase_crunch(n_refractive, min_post_width, max_post_width,
         printer("> post_width: %f μm -> phase: %f rad" % (post_width, phase))
         phases.append(phase)
     rule()
-    printer('Unwrapping and removing offset...')
+    printer('Unwrapping and removing offset in phases')
     phases = np.array(phases)
     phases = np.unwrap(phases)
     phases = phases - phases[0]
