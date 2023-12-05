@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
+import time
+import argparse
+import numpy as np
+from printech import *
 from datapipes import *
 from misc import rando_id
-import numpy as np
-import argparse
-from meta_designer import *
-from printech import *
-from misc import dict_summary
 from fiber_bundle import *
+from meta_designer import *
+from misc import dict_summary
 from sniffer import output_vigilante
 
 #[paramExpand-Calc]
@@ -15,14 +16,22 @@ from sniffer import output_vigilante
 # calculations that are necessary.
 
 def param_expander(sim_params):
+    '''
+    Takes a dictionary of simulation parameters and calculates
+    the dependent parameters. It also generates a random id
+    for the simulation and adds it to the dictionary.
+    '''
     mlDiameter = sim_params['mlDiameter']
     nCore = sim_params['nCore']
     nCladding = sim_params['nCladding']
     nBetween = sim_params['nBetween']
     nHost = sim_params['nHost']
+    parallel_MEEP = sim_params['parallel_MEEP']
     λFree = sim_params['λFree']
     coreRadius = sim_params['coreRadius']
     emDepth = sim_params['emDepth']
+    emDepth_Δz = sim_params['emDepth_Δz']
+    emDepth_Δxy = sim_params['emDepth_Δxy']
     post_height = sim_params['post_height']
     # using the emitter depth and the size of the core
     rule()
@@ -57,16 +66,17 @@ def param_expander(sim_params):
     pml_thickness = 2 * λFree
     sim_params['pml_thickness'] = pml_thickness
     λBetween = λFree / nBetween
-    wg_to_mon = 1.5 * λBetween
-    sim_params['wg_to_mon'] = wg_to_mon
+    sim_params['λBetween'] = λBetween
+    wg_to_EH2 = λBetween
+    sim_params['wg_to_EH2'] = wg_to_EH2
     # define the distance between the input plane to ML and EH3
     EH3_to_ml = λBetween
     sim_params['EH3_to_ml'] = EH3_to_ml
     # and use the same as the distance between EH3 and the output plane of the ML simulation
     ml_to_EH4 = EH3_to_ml
     sim_params['ml_to_EH4'] = ml_to_EH4
-    # define the distance between EH3 to ML
-    sim_params['zProp'] =  wg_to_ml - wg_to_mon - EH3_to_ml
+    # define the distance between EH3 to input plane of ML
+    sim_params['zProp'] =  wg_to_ml - wg_to_EH2 - EH3_to_ml
     # sim_id
     sim_id = rando_id(1)
     sim_params['sim_id'] = sim_id
@@ -83,13 +93,48 @@ def param_expander(sim_params):
     sim_params['full_sim_height'] = full_sim_height
     run_time_2 = (nHost + nBetween) * full_sim_height
     sim_params['run_time_2'] = run_time_2
+    if 'zmin' not in sim_params:
+        printer("since zmin was not provided it is being calculated from the depth and uncertainty of the emitter position")
+        zmin = (emDepth - ml_to_EH4 - emDepth_Δz)
+        zmax = (emDepth - ml_to_EH4 + emDepth_Δz)
+        sim_params['zmin'] = zmin
+        sim_params['zmax'] = zmax
+    else:
+        assert 'zmax' in sim_params, "since zmin was provided, zmax must also be provided"
+        zmin = sim_params['zmin']
+        zmax = sim_params['zmax']
+        printer("since zmin and zmax were provided, these are overriding the values calculated from the depth and uncertainty of the emitter position")
+    if 'xymin' not in sim_params:
+        printer("since xymin was not provided it is being calculated from the uncertainty in the lateral position of the emitter")
+        xymin = -emDepth_Δxy
+        xymax =  emDepth_Δxy
+        sim_params['xymin'] = xymin
+        sim_params['xymax'] = xymax
+    else:
+        assert 'xymax' in sim_params, "since xymin was provided, xymax must also be provided"
+        printer("since xymin and xymax were provided, these are overriding the inferred values from the uncertainty in the lateral position of the emitter")
+    printer("calculating the array of z values for the EH5 volume")
+    num_zProps = int((zmax-zmin)*sim_params['MEEP_resolution'])+1
+    zProps = np.linspace(sim_params['zmin'] - sim_params['ml_to_EH4'],
+                         sim_params['zmax'] - sim_params['ml_to_EH4'],
+                         num_zProps
+                        )
+    sim_params['zProps']     = zProps
+    sim_params['num_zProps'] = num_zProps
+    sim_params['start_time'] = time.time()
+    if parallel_MEEP:
+        sim_params['MEEP_num_cores']  = 4
+        sim_params['python_bin_MEEP'] = 'mpirun -np %d %s -m mpi4py' % (sim_params['MEEP_num_cores'], sim_params['python_bin'])
+    else:
+        sim_params['MEEP_num_cores'] = 1
+        sim_params['python_bin_MEEP'] = sim_params['python_bin']
     return sim_params
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process a json config file')
     parser.add_argument('configfile', help='Name of json config file')
     args = parser.parse_args()
-    # read the config file\
+    # read the config file
     console.print(Rule("-- Metaorchestra", style="bold red", align="left"))
     printer("reading the configuration file %s" % args.configfile)
     sim_params = load_from_json(args.configfile)
@@ -97,8 +142,9 @@ if __name__ == '__main__':
     table_rows = dict_summary(expanded_params, header='', bullet='', aslist=True, split=True)
     rule()
     table(['param','value'], table_rows, title='Expanded parameters')
-    expanded_fname = (args.configfile).replace('.json', '-' + expanded_params['sim_id']+'.json')
-    printer("calculating dependent parameters and saving to %s" % expanded_fname)
+    expanded_fname = (args.configfile).replace('.jsonc', '-expanded.json')
+    printer("clalculating dependent parameters and saving to %s" % expanded_fname)
+    expanded_params['expanded_fname'] = expanded_fname
     save_to_json(expanded_fname, expanded_params)
     rule()
     printer("designing the required metasurface")
@@ -115,11 +161,6 @@ if __name__ == '__main__':
     printer("> schedule the jobs for transporting the fields across the metasurface", tail=',')
     printer("> schedule the jobs for propagating the transmitted fields to the final volume")
     rule()
-    waveguide_dir = fan_out(expanded_params['nCladding'], expanded_params['nCore'],
-            expanded_params['coreRadius'], expanded_params['λFree'],
-            expanded_params['nBetween'], expanded_params['autorun'],
-            expanded_params['zProp'], expanded_params['MEEP_resolution'],
-            expanded_params['req_run_mem_in_GB'],
-            expanded_fname)
+    waveguide_dir = fan_out(expanded_params)
     rule()
     output_vigilante(waveguide_dir)

@@ -63,7 +63,7 @@ try:
     from mpi4py import MPI
     rank = MPI.COMM_WORLD.rank
 except:
-    rank = None
+    rank = 0
 
 
 def standard(metalens):

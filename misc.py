@@ -9,6 +9,7 @@ import requests
 import subprocess
 import numpy as np
 from math import ceil
+from slacking import *
 import http.client, urllib
 from time import time, sleep
 from scipy.signal import find_peaks
@@ -64,199 +65,6 @@ def send_image(image_fname,message=''):
     })
     return None
 
-default_slack_channel = '#datahose'
-slack_icon_emoji = ':see_no_evil:'
-slack_user_name = 'labbot'
-
-def post_message_to_slack(text, blocks = None, thread_ts = None, slack_channel = default_slack_channel, max_retries = 20):
-    dt = 1
-    ok = False
-    num_tries = 0
-    max_wait_time = 60
-    try:
-        if thread_ts == None:
-            while (not ok) and (num_tries <= max_retries):
-                req = requests.post('https://slack.com/api/chat.postMessage', {
-                    'token': slack_token,
-                    'channel': slack_channel,
-                    'text': text,
-                    'icon_emoji': slack_icon_emoji,
-                    'username': slack_user_name,
-                    'blocks': json.dumps(blocks) if blocks else None
-                }).json()
-                ok = 'error' not in req
-                if not ok:
-                    if req['error'] == 'ratelimited':
-                        print("rate limited, waiting")
-                        sleep(dt)
-                        dt = dt*2
-                        if dt >= max_wait_time:
-                            dt = max_wait_time
-                        num_tries += 1
-                    else:
-                        print("Error in request")
-                        return req
-                if num_tries >= max_retries:
-                    print("Max retries reached.")
-                    return req
-            return req
-        else:
-            while (not ok) and (num_tries <= max_retries):
-                req = requests.post('https://slack.com/api/chat.postMessage', {
-                    'token': slack_token,
-                    'channel': slack_channel,
-                    'text': text,
-                    'icon_emoji': slack_icon_emoji,
-                    'username': slack_user_name,
-                    'thread_ts': thread_ts,
-                    'blocks': json.dumps(blocks) if blocks else None
-                }).json()
-                ok = 'error' not in req
-                if not ok:
-                    if req['error'] == 'ratelimited':
-                        print("rate limited, waiting")
-                        sleep(dt)
-                        dt = dt*2
-                        if dt >= max_wait_time:
-                            dt = max_wait_time
-                        num_tries += 1
-                    else:
-                        print("Error in request")
-                        return req
-                if num_tries >= max_retries:
-                    print("Max retries reached.")
-                    return req
-            return req
-    except:
-        pass
-
-def post_file_to_slack(text, file_name, file_bytes, file_type=None, title=None, thread_ts = None, slack_channel=default_slack_channel, max_retries=20):
-    dt = 1
-    ok = False
-    num_tries = 0
-    max_wait_time = 60
-    try:
-        if thread_ts == None:
-            while (not ok) and (num_tries <= max_retries):
-                req = requests.post(
-                'https://slack.com/api/files.upload',
-                {
-                    'token': slack_token,
-                    'filename': file_name,
-                    'channels': slack_channel,
-                    'filetype': file_type,
-                    'initial_comment': text,
-                    'title': title
-                },files = { 'file': file_bytes }).json()
-                ok = 'error' not in req
-                if not ok:
-                    if req['error'] == 'ratelimited':
-                        print("rate limited, waiting")
-                        sleep(dt)
-                        dt = dt*2
-                        if dt >= max_wait_time:
-                            dt = max_wait_time
-                        num_tries += 1
-                    else:
-                        print("Error in request")
-                        return req
-                if num_tries >= max_retries:
-                    print("Max retries reached.")
-                    return req
-            return req
-        else:
-            while (not ok) and (num_tries <= max_retries):
-                req = requests.post(
-                'https://slack.com/api/files.upload',
-                {
-                    'token': slack_token,
-                    'filename': file_name,
-                    'channels': slack_channel,
-                    'filetype': file_type,
-                    'initial_comment': text,
-                    'thread_ts': thread_ts,
-                    'title': title
-                },files = { 'file': file_bytes }).json()
-                ok = 'error' not in req
-                if not ok:
-                    if req['error'] == 'ratelimited':
-                        print("rate limited, waiting")
-                        sleep(dt)
-                        dt = dt*2
-                        if dt >= max_wait_time:
-                            dt = max_wait_time
-                        num_tries += 1
-                    else:
-                        print("Error in request")
-                        return req
-                if num_tries >= max_retries:
-                    print("Max retries reached.")
-                    return req
-            return req
-    except:
-        pass
-
-def send_fig_to_slack(fig, slack_channel, info_msg, shortfname, thread_ts = None, format='png'):
-    '''
-    Use to send a matplotlib figure to Slack.
-
-    Parameters
-    ----------
-    fig : matplotlib.figure.Figure
-        A figure object from matplotlib.
-    slack_channel : str
-        Name of Slack channel to send to.
-    info_msg : str
-        A string message to be send together with the figure.
-    shortfname : str
-        The string that is used in Slack to refer to the image, with no extension.
-    thread_ts : str, optional
-        The timestamp of the thread to which to post to inside of given channel. The default is None,
-        which means that the message will be posted to the channel directly.
-    
-    Returns
-    -------
-    None.
-    '''
-    try:
-        buf = io.BytesIO()
-        if format in ['jpg','jpeg','png']:
-            fig.savefig(buf, format=format, dpi=200)
-        elif format in ['pdf']:
-            fig.savefig(buf, format=format)
-        buf.seek(0)
-        post_file_to_slack(info_msg, shortfname, buf.read(), slack_channel=slack_channel, thread_ts = thread_ts)
-    except:
-        pass
-
-def insert_string_at_nth_position(str_list, to_insert, n):
-    '''
-    Given a list of strings, return the same list where
-    in the original n-th positions of the list the to_insert
-    string has been inserted.
-
-    Parameters
-    ----------
-    str_list : list of str
-    to_insert : str
-    n         : int
-
-    Returns
-    -------
-
-    '''
-    # Check if n is valid
-    if n < 1:
-        raise ValueError("n should be a positive integer")
-    riffled_strings = []  # Initialize a new list
-    count = 1  # Initialize a counter
-    for s in str_list:
-        riffled_strings.append(s)  # Append the current string from the original list
-        if count % n == 0 and count != len(str_list):  # Avoid inserting after the last element
-            riffled_strings.append(to_insert)  # Insert to_insert after every n-th position
-        count += 1  # Increment the counter
-    return riffled_strings
-
 def get_total_size_of_directory(dir_path):
     '''
     Parameters
@@ -275,7 +83,7 @@ def get_total_size_of_directory(dir_path):
     dir_size_in_MB = sum(fsizes)/1024**2
     return dir_size_in_MB
 
-def dict_summary(adict, header, prekey='', bullet='•', aslist=False, split=False):
+def dict_summary(adict, header, prekey='', bullet='', aslist=False, split=False):
     '''
     This function takes a dictionary and returns a summary of all the keys
     and values in the dictionary for which the values are either strings or
@@ -667,6 +475,9 @@ def format_time(seconds):
     '''
     hours, remainder = divmod(seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
+    hours = int(hours)
+    minutes = int(minutes)
+    seconds = int(seconds)
     fmt_time = "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
     return fmt_time
 
@@ -771,3 +582,31 @@ def sym_pad(arr, pad_width, mode='constant', **kwargs):
     padding = [(0, 0)] * (num_dims - 2) + [half_pad, half_pad]
     padded_array = np.pad(arr, padding, mode=mode, **kwargs)
     return padded_array
+
+def insert_string_at_nth_position(str_list, to_insert, n):
+    '''
+    Given a list of strings, return the same list where
+    in the original n-th positions of the list the to_insert
+    string has been inserted.
+
+    Parameters
+    ----------
+    str_list : list of str
+    to_insert : str
+    n         : int
+
+    Returns
+    -------
+
+    '''
+    # Check if n is valid
+    if n < 1:
+        raise ValueError("n should be a positive integer")
+    riffled_strings = []  # Initialize a new list
+    count = 1  # Initialize a counter
+    for s in str_list:
+        riffled_strings.append(s)  # Append the current string from the original list
+        if count % n == 0 and count != len(str_list):  # Avoid inserting after the last element
+            riffled_strings.append(to_insert)  # Insert to_insert after every n-th position
+        count += 1  # Increment the counter
+    return riffled_strings

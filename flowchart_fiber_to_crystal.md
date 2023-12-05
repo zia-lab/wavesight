@@ -82,7 +82,7 @@ Calculated by param_expander.py
 Stored in 💾 metalens_full_spec-[design_name]-[now].json 
 together with values in metalens_spec-[design_id].json
 ------------------------------------------
-wg_to_mon : gap between waveguide and monitor where fields are stored
+wg_to_EH2 : gap between waveguide and monitor where fields are stored
 EH3_to_ML : gap between EH3 and ML
 ML_to_EH4 : gap between ML and EH4
 source_to_face : gap between mode source and fiber end

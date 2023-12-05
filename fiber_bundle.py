@@ -45,8 +45,7 @@ def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
              * run_time * spatial_resolution**3)
     return rtime
 
-def fan_out(nCladding, nCore, coreRadius, λFree, nBetween, autorun,
-            zProp, MEEP_resolution, req_run_mem_in_GB, config_fname=''):
+def fan_out(sim_params):
     '''
     Given  the  geometry  and  composition of a step-index fiber
     this   function   solves   for   the  waveguide  propagation
@@ -91,6 +90,27 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nBetween, autorun,
         The path of the directory where results will be saved.
 
     '''
+    nCladding = sim_params['nCladding']
+    nCore = sim_params['nCore']
+    coreRadius = sim_params['coreRadius']
+    λFree = sim_params['λFree']
+    nBetween = sim_params['nBetween']
+    python_bin = sim_params['python_bin']
+    python_bin_MEEP = sim_params['python_bin_MEEP']
+    code_dir = sim_params['code_dir']
+    MEEP_num_cores = str(sim_params['MEEP_num_cores'])
+
+    autorun = sim_params['autorun']
+    zProp = sim_params['zProp']
+    MEEP_resolution = sim_params['MEEP_resolution']
+    req_run_mem_in_GB = sim_params['req_run_mem_in_GB']
+    num_zProps = sim_params['num_zProps']
+    
+    slack_channel = sim_params['slack_channel']
+    λBetween = sim_params['λBetween']
+    nBetween = sim_params['nBetween']
+    config_fname = sim_params['expanded_fname']
+
     fiber_spec = {'nCladding': nCladding,
                 'nCore': nCore,
                 'coreRadius': coreRadius,
@@ -101,15 +121,13 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nBetween, autorun,
                             solve_modes='all',
                             drawPlots=False,
                             verbose=True)
+
     numModes = fiber_sol['totalModes']
     fiber_sol = ws.calculate_numerical_basis(fiber_sol, verbose=False)
     (a, b, Δs, xrange, yrange, ρrange, φrange, Xg, Yg, ρg, φg, nxy, crossMask, numSamples) = fiber_sol['coord_layout']
-    nBetween = fiber_sol['nBetween']
-    λBetween = λFree / nBetween
 
     sample_resolution   = 10
-    slack_channel       = 'nvs_and_metalenses'
-    distance_to_monitor = 1.5 * λBetween
+    distance_to_monitor = sim_params['wg_to_EH2']
     fiber_alpha         = np.arcsin(np.sqrt(nCore**2-nCladding**2))
 
     waveguide_sol = {}
@@ -137,16 +155,15 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nBetween, autorun,
         printer(f"Directory {waveguide_dir} created.")
     else:
         printer(f"Directory {waveguide_dir} already exists.")
-    if config_fname:
-        printer('saving a copy of the config file to the data directory')
-        config_fname_dest = os.path.join(waveguide_dir, config_fname)
-        shutil.copy(config_fname, config_fname_dest)
-        waveguide_sol['config_file_fname'] = config_fname_dest
-        config_dict = ws.load_from_json(config_fname)
-        design_id   = config_dict['sim_id']
-        printer('moving the metalens design file to the data dir')
-        design_fname = 'metalens-design-%s.h5' % design_id
-        shutil.move(design_fname, os.path.join(waveguide_dir, 'metalens-design.h5'))
+    printer('saving a copy of the config file to the data directory')
+    config_fname_dest = os.path.join(waveguide_dir, 'config.json')
+    shutil.copy(config_fname, config_fname_dest)
+    waveguide_sol['config_file_fname'] = config_fname_dest
+    config_dict = ws.load_from_json(config_fname)
+    design_id   = config_dict['sim_id']
+    printer('moving the metalens design file to the data dir')
+    design_fname = 'metalens-design-%s.h5' % design_id
+    shutil.move(design_fname, os.path.join(waveguide_dir, 'metalens-design.h5'))
     waveguide_sol_fname = 'waveguide_sol-' + waveguide_id + '.pkl'
     waveguide_sol_fname = os.path.join(waveguide_dir, waveguide_sol_fname)
     with open(waveguide_sol_fname,'wb') as file:
@@ -155,6 +172,10 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nBetween, autorun,
     bash_script_fname_1 = waveguide_id + '-1.sh'
     bash_script_fname_2 = waveguide_id + '-2.sh'
     batch_script_1 = bash_template_1.format(
+                    MEEP_num_cores = MEEP_num_cores,
+                    code_dir = code_dir,
+                    python_bin = python_bin,
+                    python_bin_MEEP = python_bin_MEEP,
                     waveguide_sol_fname = waveguide_sol_fname,
                     wavesight_dir = wavesight_dir,
                     waveguide_id  = waveguide_id,
@@ -168,10 +189,16 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nBetween, autorun,
                     num_time_slices = num_time_slices,
                     MEEP_resolution = MEEP_resolution,
                     req_run_mem_in_GB = req_run_mem_in_GB,
-                    num_modes       = (numModes-1))
-    batch_script_2 = bash_template_2.format(wavesight_dir=wavesight_dir,
+                    num_modes       = (numModes-1),
+                    num_zProps       = (num_zProps-1))
+    batch_script_2 = bash_template_2.format(
+                    MEEP_num_cores = MEEP_num_cores,
+                    code_dir = code_dir,
+                    python_bin = python_bin,
+                    python_bin_MEEP = python_bin_MEEP,
+                    wavesight_dir=wavesight_dir,
                     waveguide_sol_fname = waveguide_sol_fname,
-                    waveguide_id = waveguide_id,
+                    waveguide_id  = waveguide_id,
                     waveguide_dir = waveguide_dir,
                     coreRadius   = coreRadius,
                     nCladding    = nCladding,
@@ -183,7 +210,8 @@ def fan_out(nCladding, nCore, coreRadius, λFree, nBetween, autorun,
                     MEEP_resolution = MEEP_resolution,
                     zProp        = zProp,
                     nProp        = nBetween,
-                    num_modes    = (numModes-1))
+                    num_modes    = (numModes-1),
+                    num_zProps    = (num_zProps-1))
     rule()
     with open(bash_script_fname_1, 'w') as file:
         printer("Saving bash script to %s" % bash_script_fname_1)
@@ -212,8 +240,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     # read the config file
     sim_params = ws.load_from_json(args.configfile)
-    waveguide_dir = fan_out(sim_params['nCladding'],       sim_params['nCore'],
-            sim_params['coreRadius'],      sim_params['λFree'],
-            sim_params['nBetween'],        sim_params['autorun'],
-            sim_params['zProp'], sim_params['MEEP_resolution'],
-            sim_params['req_run_mem_in_GB'])
+    waveguide_dir = fan_out(sim_params)

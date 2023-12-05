@@ -512,7 +512,7 @@ def main(nCladding, nCore, coreRadius, λFree):
             ax.add_patch(plt.Circle((0,0), coreRadius, color='w', fill=False))
         plt.tight_layout()
         if send_to_slack:
-            ws.send_fig_to_slack(fig, slack_channel, 'Comparison of last measured field','comparison-of-last-measured-field',thread_ts)
+            ws.send_fig_to_slack(fig, slack_channel, 'launched field','comparison-of-last-measured-field',thread_ts)
         if show_plot:
             plt.show()
         else:

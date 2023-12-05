@@ -14,7 +14,6 @@ import diffkernels as dk
 from fieldgenesis import *
 from wavegraphics import *
 from fungenerators import *
-from tqdm.notebook import tqdm
 from collections import OrderedDict
 from matplotlib import pyplot as plt
 from scipy.interpolate import griddata
@@ -741,10 +740,7 @@ def calculate_numerical_basis(fiber_sol, verbose=True):
     eigenbasis = np.zeros((totalModes, 2, 3, numSamples, numSamples),  dtype=complex_dtype)
     counter = 0
     eigenbasis_nums = []
-    if verbose:
-        iter_fun = tqdm
-    else:
-        iter_fun = lambda x: x
+    iter_fun = lambda x: x
     for modType in ['TE','TM','HE']:
         if modType == 'HE':
             parities = ['EVEN', 'ODD']

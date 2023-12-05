@@ -3,9 +3,7 @@ import os
 import re
 import h5py
 import json
-import time
 import inspect
-import tempfile
 import subprocess
 import numpy as np
 from functools import wraps
@@ -111,7 +109,7 @@ def save_to_h5(data, filename, group=None, comments='', overwrite=False):
                     value = value.encode('utf-8')
                 group.create_dataset(key, data=value)
 
-def load_from_h5(filename, keys=None, only_keys=False):
+def load_from_h5(filename, keys=None, only_keys=False, return_comments=True):
     '''
     Load an H5 file and return its contents or its keys.
 
@@ -170,7 +168,10 @@ def load_from_h5(filename, keys=None, only_keys=False):
     if len(data) == 1:
         return list(data.values())[0]
     else:
-        return data, comment
+        if return_comments:
+            return data, comment
+        else:
+            return data
 
 def run_script_and_get_json(script_path, args_dict):
     '''

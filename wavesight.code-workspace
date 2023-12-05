@@ -5,6 +5,7 @@
 		}
 	],
 	"settings": {
-		"workbench.colorTheme": "monokai-charcoal (purple)"
+		"workbench.colorTheme": "monokai-charcoal (purple)",
+		"git.openRepositoryInParentFolders": "always"
 	}
 }

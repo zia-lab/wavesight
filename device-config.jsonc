@@ -1,11 +1,28 @@
 {
+    // The location of the python binary
+    "python_bin": "~/anaconda/pameep/bin/python",
+    // Directory where the code is located
+    "code_dir": "/users/jlizaraz/CEM/wavesight/",
+    // Whether to use parallel MEEP
+    "parallel_MEEP": true,
     // depth of emitter in crystal host
     "emDepth": 25,
+    // these two following parameters determine the size of the box where Eh5 is calculated
     // uncertainty in depth
-    "Δz": 1.6,
+    "emDepth_Δz": 1.6,
     // transverse uncertainty in position
-    "Δxy": 1.5, 
- 
+    "emDepth_Δxy": 1.5, 
+    // if zmin is not provided here, then it is calculated from emDepth and emDepth_Δz
+    // if zmin is provided here, then zmax also need to be provided
+    // and these two together then determine the axial range of the box where Eh5 is calculated
+    // both zmin and zmax assume a coordinate system where the origin is at
+    // the base of the pillars that create the metasurface
+    "zmin": 24,
+    "zmax": 32,
+    // similarly xymin and xymax determine the transverse range of the box where Eh5 is calculated
+    // if provided they override the values that are calculated from emDepth_Δxy
+    "xymin": -3.0,
+    "xymax":  3.0,
     // refractive index of crystal host
     "nHost": 2.41,
     // free-space wavelength of monochromatic field
@@ -13,18 +30,19 @@
     // ref index space between waveguide and ML
     "nBetween": 1.0, 
 
+    // waveguide parameters
     // the radius of the waveguide core
     "coreRadius": 2.0,
     // ref index of core
     "nCore": 1.4607, 
     // ref index of cladding
-    "nCladding":1.4573, 
+    "nCladding": 1.4573, 
     // number of pixels per um
     "MEEP_resolution": 20,
 
     // params for metasurface design
         // metalens aperture
-        "mlDiameter": 25.0,
+        "mlDiameter": 8.0,
         // the height of the cylindrical posts for ML
         "post_height":0.8, 
         // lattice constant of hexagonal lattice
@@ -40,9 +58,12 @@
 
     // This controls if the launching simulations are automatically scheduled
     "autorun": true,
+
+    // The amount of memory alloted for the requirement run
+    "req_run_mem_in_GB": 64,
+
     // Whether to post the progress to Slack
     "send_to_slack": true,
     "slack_channel": "nvs_and_metalenses",
     "show_plot": false
-
 }

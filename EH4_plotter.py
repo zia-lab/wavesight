@@ -5,6 +5,7 @@ import argparse
 import numpy as np
 import cmasher as cm
 import wavesight as ws
+from printech import *
 from matplotlib import style
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
@@ -13,8 +14,7 @@ style.use('dark_background')
 
 cmap          = cm.watermelon
 data_dir      = '/users/jlizaraz/data/jlizaraz/CEM/wavesight'
-post_to_slack = True
-exclude_dirs  = ['moovies']
+exclude_dirs  = ['moovies', 'err', 'figs', 'out']
 
 
 def EH4_plot(waveguide_id, max_plots=np.inf, extra_fname = ''):
@@ -38,6 +38,8 @@ def EH4_plot(waveguide_id, max_plots=np.inf, extra_fname = ''):
     '''
     # first find all the subdirs that correspond to the waveguide_id
     waveguide_dir = os.path.join(data_dir, waveguide_id)
+    config_params = ws.load_from_json(os.path.join(waveguide_dir, 'config.json'))
+    send_to_slack = config_params['send_to_slack']
     job_dir_contents = os.listdir(waveguide_dir)
     job_dir_contents = [a_dir for a_dir in job_dir_contents if a_dir not in exclude_dirs]
     job_dirs = [os.path.join(waveguide_dir, a_dir) for a_dir in job_dir_contents]
@@ -63,10 +65,17 @@ def EH4_plot(waveguide_id, max_plots=np.inf, extra_fname = ''):
         print('%d/%d' % (job_idx, len(job_dirs) - 1))
         h5_fname_EH2 = 'EH2.h5'
         h5_fname_EH2 = os.path.join(job_dir, h5_fname_EH2)
-        mode_sol, _ = ws.load_from_h5(h5_fname_EH2)
+        try:
+            mode_sol, _ = ws.load_from_h5(h5_fname_EH2)
+        except:
+            printer('Could not load %s' % h5_fname_EH2)
+            continue
         h5_fname_EH4 = 'EH4.h5'
         h5_fname_EH4 = os.path.join(job_dir, h5_fname_EH4)
-        EH4_sol,  _ = ws.load_from_h5(h5_fname_EH4)
+        try:
+            EH4_sol,  _ = ws.load_from_h5(h5_fname_EH4)
+        except:
+            continue
         mode_idx, kz, m, modeType, parity = mode_sol['mode_idx'], mode_sol['kz'], mode_sol['m'], mode_sol['modeType'], mode_sol['parity']
         if parity == 'EVEN':
             suptitle = 'Mode #%s | kz = %.2f 1/μm | m = %d | %s+' % (mode_idx, kz, m, modeType)
@@ -170,14 +179,14 @@ def EH4_plot(waveguide_id, max_plots=np.inf, extra_fname = ''):
     pdf_sink_sag_plots.close()
     pdf_sink_xy_plots.close()
 
-    if post_to_slack:
-        _ = ws.post_file_to_slack(waveguide_id,
+    if send_to_slack:
+        _ = ws.post_file_to_slack('EH3-EH4 : %s (sagittal)' % waveguide_id,
                                     saggital_pdf_fname,
                                     open(saggital_pdf_fname,'rb'),
                                     'pdf',
                                     os.path.split(saggital_pdf_fname)[-1],
                                     slack_channel='nvs_and_metalenses')
-        _ = ws.post_file_to_slack(waveguide_id,
+        _ = ws.post_file_to_slack('EH3-EH4 : %s (xy)' % waveguide_id,
                                     xy_pdf_fname,
                                     open(xy_pdf_fname,'rb'),
                                     'pdf',
@@ -185,7 +194,7 @@ def EH4_plot(waveguide_id, max_plots=np.inf, extra_fname = ''):
                                     slack_channel='nvs_and_metalenses')
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Job plotter.')
-    parser.add_argument('waveguide_id', type=str, help='The ID for a waveguide.')
+    parser = argparse.ArgumentParser(description='EH4 plotter.')
+    parser.add_argument('waveguide_id', type=str, help='The ID for the waveguide.')
     args = parser.parse_args()
     EH4_plot(args.waveguide_id)

@@ -29,6 +29,7 @@ import cmasher as cm
 from math import ceil
 from printech import *
 import wavesight as ws
+from pathlib import Path
 from matplotlib import style
 from matplotlib import pyplot as plt
 
@@ -111,6 +112,16 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
         for mode_sol, and several .h5 files in the case of a time-resolved
         simulation or a single one in the case of a steady-state simulation.
     '''
+
+    params_dict   = ws.load_from_json(waveguide_sol['config_file_fname'])
+    parallel_MEEP = params_dict['parallel_MEEP']
+    MEEP_num_cores = params_dict['MEEP_num_cores']
+    if parallel_MEEP:
+        from mpi4py import MPI
+        rank = MPI.COMM_WORLD.rank
+    else:
+        rank = 0
+
     nBetween = waveguide_sol['nBetween']
     numModes = waveguide_sol['numModes']
     fiber_sol = waveguide_sol['fiber_sol']
@@ -121,15 +132,15 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     sample_resolution = waveguide_sol['sample_resolution']
     distance_to_monitor = waveguide_sol['distance_to_monitor']
 
-
-
     time_resolved = (num_time_slices > 0)
     initial_time  = time.time()
     sim_id        = ws.rando_id()
     mode_sol_dir  = os.path.join(waveguide_dir, '%s-%s' % (sim_id,str(mode_idx)))
     if not os.path.exists(mode_sol_dir):
-        os.mkdir(mode_sol_dir)
+        if rank == 0:
+            os.makedirs(mode_sol_dir)
     send_to_slack = ((mode_idx % ceil(numModes/sample_posts)) == 0)
+    send_to_slack = send_to_slack and (rank==0)
     if send_to_slack:
         slack_thread = ws.post_message_to_slack("%s - %s - %s" % (mode_idx, waveguide_id, sim_id),
                                                 slack_channel=slack_channel)
@@ -187,8 +198,6 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     nCladding = mode_sol['nCladding']
     coreRadius = mode_sol['coreRadius']
     kFree = mode_sol['kFree']
-
-
 
     # calculate the field functions
     printer("calculating the field functions from the analytical solution")
@@ -390,7 +399,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     axes[1].set_ylabel('z/μm')
     axes[1].set_title('Sagittal cross section of simulation vol')
     axes[1].set_aspect('equal')
-    if send_to_slack and (mode_idx == 0):
+    if send_to_slack and (mode_idx == 0) and (rank == 0):
         ws.send_fig_to_slack(fig, slack_channel, "Device layout", 'device-layout-%s.png' % sim_id, thread_ts = thread_ts)
     if show_plots:
         plt.show()
@@ -480,35 +489,65 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     xz_monitor_plane_size   = mp.Vector3(clear_aperture, 0, full_sim_height)
     xz_monitor_vol          = mp.Volume(center=xz_monitor_plane_center,
                                         size=xz_monitor_plane_size)
+    
+    if parallel_MEEP:
+        pickle_dir = os.path.join(mode_sol_dir, 'pickles')
+        if rank == 0:
+            os.mkdir(pickle_dir)
 
+    # Define a function that will be called at regular intervals to save fields
+    def save_fields(sim):
+        monitor_vols = {'xy': xy_monitor_vol,
+                        'xz': xz_monitor_vol,
+                        'yz': yz_monitor_vol}
+        time_step = sim.round_time()
+        pkl_fname = 'EH2-%d.pkl' % (time_step)
+        pkl_fname = os.path.join(mode_sol_dir, 'pickles', pkl_fname)
+        monitor_fields = {}
+        monitor_fields['t'] = sim.meep_time()
+        for monitor_plane in 'xy xz yz'.split(' '):
+            a_monitor_fields = []
+            for field_component in [mp.Ex, mp.Ey, mp.Ez, mp.Hx, mp.Hy, mp.Hz]:
+                the_field = sim.get_array(field_component, monitor_vols[monitor_plane])
+                a_monitor_fields.append(the_field)
+            a_monitor_fields = np.array(a_monitor_fields)
+            monitor_fields[monitor_plane] = np.array([a_monitor_fields[:3], a_monitor_fields[3:]])
+        if rank == 0:
+            with open(pkl_fname,'wb') as pkl_file:
+                pickle.dump(monitor_fields, pkl_file)
     start_time = time.time()
     if time_resolved:
-        sim.run(
-                mp.during_sources(mp.in_volume(xy_monitor_vol,
-                                    mp.to_appended(h_xy_slices_fname, 
-                                    mp.at_every(field_sampling_interval,
-                                                mp.output_hfield)))),
-                mp.during_sources(mp.in_volume(xy_monitor_vol,
-                                    mp.to_appended(e_xy_slices_fname, 
-                                    mp.at_every(field_sampling_interval,
-                                                mp.output_efield)))),
-                mp.during_sources(mp.in_volume(xz_monitor_vol,
-                                    mp.to_appended(h_xz_slices_fname, 
-                                    mp.at_every(field_sampling_interval,
-                                                mp.output_hfield)))),
-                mp.during_sources(mp.in_volume(xz_monitor_vol,
-                                    mp.to_appended(e_xz_slices_fname, 
-                                    mp.at_every(field_sampling_interval,
-                                                mp.output_efield)))),
-                mp.during_sources(mp.in_volume(yz_monitor_vol,
-                                    mp.to_appended(h_yz_slices_fname, 
-                                    mp.at_every(field_sampling_interval,
-                                                mp.output_hfield)))),
-                mp.during_sources(mp.in_volume(yz_monitor_vol,
-                                    mp.to_appended(e_yz_slices_fname, 
-                                    mp.at_every(field_sampling_interval,
-                                                mp.output_efield)))),
-                until=run_time)
+        if parallel_MEEP:
+            sim.run(mp.at_every(field_sampling_interval,
+                                save_fields),
+                    until=run_time)
+        else:
+            sim.run(
+                    mp.during_sources(mp.in_volume(xy_monitor_vol,
+                                        mp.to_appended(h_xy_slices_fname, 
+                                        mp.at_every(field_sampling_interval,
+                                                    mp.output_hfield)))),
+                    mp.during_sources(mp.in_volume(xy_monitor_vol,
+                                        mp.to_appended(e_xy_slices_fname, 
+                                        mp.at_every(field_sampling_interval,
+                                                    mp.output_efield)))),
+                    mp.during_sources(mp.in_volume(xz_monitor_vol,
+                                        mp.to_appended(h_xz_slices_fname, 
+                                        mp.at_every(field_sampling_interval,
+                                                    mp.output_hfield)))),
+                    mp.during_sources(mp.in_volume(xz_monitor_vol,
+                                        mp.to_appended(e_xz_slices_fname, 
+                                        mp.at_every(field_sampling_interval,
+                                                    mp.output_efield)))),
+                    mp.during_sources(mp.in_volume(yz_monitor_vol,
+                                        mp.to_appended(h_yz_slices_fname, 
+                                        mp.at_every(field_sampling_interval,
+                                                    mp.output_hfield)))),
+                    mp.during_sources(mp.in_volume(yz_monitor_vol,
+                                        mp.to_appended(e_yz_slices_fname, 
+                                        mp.at_every(field_sampling_interval,
+                                                    mp.output_efield)))),
+                    until=run_time)
     else:
         sim.run(until=run_time)
     end_time = time.time()
@@ -538,16 +577,15 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     sim_width = float(xCoordsMonxy[-1] - xCoordsMonxy[0])
     mode_sol['sim_width'] = sim_width
 
-    params_dict = ws.load_from_json(waveguide_sol['config_file_fname'])
-    EH3_to_ml    = params_dict['EH3_to_ml']
-    ml_to_EH4    = params_dict['ml_to_EH4']
-    post_height  = params_dict['post_height']
-    run_time_2   = params_dict['run_time_2']
-    ml_thickness = post_height
-    fiber_NA   = np.sqrt(nCore**2 - nCladding**2)
-    fiber_β    = np.arcsin(fiber_NA)
+    EH3_to_ml     = params_dict['EH3_to_ml']
+    ml_to_EH4     = params_dict['ml_to_EH4']
+    post_height   = params_dict['post_height']
+    run_time_2    = params_dict['run_time_2']
+    ml_thickness  = post_height
+    fiber_NA      = np.sqrt(nCore**2 - nCladding**2)
+    fiber_β       = np.arcsin(fiber_NA)
     current_width = xCoords[-1] - xCoords[0]
-    zProp      = params_dict['zProp']
+    zProp         = params_dict['zProp']
     prop_plane_width = 2 * (current_width/2 + 1.1 * zProp * np.tan(fiber_β))
     runway_cell_thickness = pml_thickness + 2*EH3_to_ml
     ml_cell_thickness     = ml_thickness
@@ -576,205 +614,268 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
 
     printer("getting the field data from the h5 files")
     if time_resolved:
-        monitor_fields = {}
-        for plane in ['xy','xz','yz']:
-            field_arrays = []
-            for idx, field_name in enumerate(['e','h']):
-                field_data = {}
-                h5_full_name = os.path.join(mode_sol_dir, mode_sol[f'{field_name}_{plane}_slices_fname_h5'])
-                with h5py.File(h5_full_name,'r') as h5_file:
-                    h5_keys = list(h5_file.keys())
-                    for h5_key in h5_keys:
-                        datum = np.array(h5_file[h5_key][:,:])
-                        datum = np.transpose(datum, (1,0,2))
-                        field_data[h5_key] = datum
-                field_array = np.zeros((3,)+datum.shape, dtype=np.complex_)
-                field_parts  = f'{field_name}x {field_name}y {field_name}z'.split(' ')
-                for idx, field_component in enumerate(field_parts):
-                    field_array[idx] = 1j*np.array(field_data[field_component+'.i'])
-                    field_array[idx] +=   np.array(field_data[field_component+'.r'])
-                field_arrays.append(field_array)
-            field_arrays = np.array(field_arrays)
-            monitor_fields[plane] = field_arrays
-            del field_arrays
+        if not parallel_MEEP:
+            monitor_fields = {}
+            for plane in ['xy','xz','yz']:
+                field_arrays = []
+                for idx, field_name in enumerate(['e','h']):
+                    field_data = {}
+                    h5_full_name = os.path.join(mode_sol_dir, mode_sol[f'{field_name}_{plane}_slices_fname_h5'])
+                    with h5py.File(h5_full_name,'r') as h5_file:
+                        h5_keys = list(h5_file.keys())
+                        for h5_key in h5_keys:
+                            datum = np.array(h5_file[h5_key][:,:])
+                            datum = np.transpose(datum, (1,0,2))
+                            field_data[h5_key] = datum
+                    field_array = np.zeros((3,)+datum.shape, dtype=np.complex_)
+                    field_parts  = f'{field_name}x {field_name}y {field_name}z'.split(' ')
+                    for idx, field_component in enumerate(field_parts):
+                        field_array[idx] = 1j*np.array(field_data[field_component+'.i'])
+                        field_array[idx] +=   np.array(field_data[field_component+'.r'])
+                    field_arrays.append(field_array)
+                field_arrays = np.array(field_arrays)
+                monitor_fields[plane] = field_arrays
+                del field_arrays
+        else:
+            # need to both produce the standard h5 files
+            # but also load them in monitor_fields
+            if rank == 0:
+                parent_dir = Path(pickle_dir).parent
+                pkls = os.listdir(pickle_dir)
+                pkls = [os.path.join(pickle_dir, pkl) for pkl in pkls]
+                def pickle_sorter(pkl):
+                    return int(pkl.split('-')[-1].split('.')[0])
+                pkls.sort(key=pickle_sorter)
+                xy_e_fields, xz_e_fields, yz_e_fields = [], [], []
+                xy_h_fields, xz_h_fields, yz_h_fields = [], [], []
+                monitor_fields = {}
+                for pkl in pkls:
+                    with open(pkl, 'rb') as f:
+                        data = pickle.load(f)
+                    t = data['t']
+                    for plane_string in 'xy xz yz'.split():
+                        if plane_string not in monitor_fields:
+                            monitor_fields[plane_string] = []
+                        monitor_fields[plane_string].append(data[plane_string])
+                    xy_e_fields.append(data['xy'][0])
+                    xz_e_fields.append(data['xz'][0])
+                    yz_e_fields.append(data['yz'][0])
+                    xy_h_fields.append(data['xy'][1])
+                    xz_h_fields.append(data['xz'][1])
+                    yz_h_fields.append(data['yz'][1])
+
+                for plane_string in 'xy xz yz'.split():
+                    monitor_fields[plane_string] = np.array(monitor_fields[plane_string])
+                    monitor_fields[plane_string] = np.transpose(monitor_fields[plane_string], (1,2,3,4,0))
+
+                xy_e_fields = np.array(xy_e_fields)
+                xz_e_fields = np.array(xz_e_fields)
+                yz_e_fields = np.array(yz_e_fields)
+                xy_h_fields = np.array(xy_h_fields)
+                xz_h_fields = np.array(xz_h_fields)
+                yz_h_fields = np.array(yz_h_fields)
+
+                sliced_fields={}
+                sliced_fields['xy_e'] = xy_e_fields
+                sliced_fields['xz_e'] = xz_e_fields
+                sliced_fields['yz_e'] = yz_e_fields
+                sliced_fields['xy_h'] = xy_h_fields
+                sliced_fields['xz_h'] = xz_h_fields
+                sliced_fields['yz_h'] = yz_h_fields
+                ordering = (1,2,0)
+                for field_idx, field_name in enumerate(['e','h']):
+                    for slice_plane in ['xy','xz','yz']:
+                        h5_fname = f'{field_name}-field-{slice_plane}-slices.h5'
+                        h5_fname = os.path.join(parent_dir, h5_fname)
+                        export_dict = {}
+                        for cartesian_idx, cartesian_name in enumerate('xyz'):
+                            field_key = f'{slice_plane}_{field_name}'
+                            for complex_part, complex_fun in zip(['r','i'],[np.real, np.imag]):
+                                field = complex_fun(sliced_fields[field_key][:,cartesian_idx])
+                                field = np.transpose(field,ordering)
+                                export_dict[f'{field_name}{cartesian_name}.{complex_part}'] = field
+                        printer("saving to %s" % h5_fname)
+                        ws.save_to_h5(export_dict, h5_fname, overwrite=True)
     else:
         monitor_vols = {'xy': xy_monitor_vol,'yz': yz_monitor_vol,'xz': xz_monitor_vol}
         h5_fname = ehfieldh5fname
-        with h5py.File(h5_fname,'w') as h5_file:
-            monitor_fields = {}
-            for monitor_plane in 'xz yz xy'.split(' '):
-                a_monitor_fields = []
-                for field_component in [mp.Ex, mp.Ey, mp.Ez, mp.Hx, mp.Hy, mp.Hz]:
-                    the_field = sim.get_array(field_component, monitor_vols[monitor_plane])
-                    a_monitor_fields.append(the_field)
-                a_monitor_fields = np.array(a_monitor_fields)
-                for field_idx, field_component in enumerate('ex ey ez hx hy hz'.split(' ')):
-                    for complex_part, complex_fun in zip(['i','r'], [np.imag, np.real]):
-                        key = '/%s/%s.%s' % (monitor_plane, field_component, complex_part)
-                        export_field = complex_fun(a_monitor_fields[field_idx])
-                        h5_file.create_dataset(key, data = export_field)
-                monitor_fields[monitor_plane] = np.array([a_monitor_fields[:3], a_monitor_fields[3:]])
-
+        export_dict = {}
+        monitor_fields = {}
+        for monitor_plane in 'xz yz xy'.split(' '):
+            a_monitor_fields = []
+            for field_component in [mp.Ex, mp.Ey, mp.Ez, mp.Hx, mp.Hy, mp.Hz]:
+                the_field = sim.get_array(field_component, monitor_vols[monitor_plane])
+                a_monitor_fields.append(the_field)
+            a_monitor_fields = np.array(a_monitor_fields)
+            for field_idx, field_component in enumerate('ex ey ez hx hy hz'.split(' ')):
+                for complex_part, complex_fun in zip(['i','r'], [np.imag, np.real]):
+                    key = '/%s/%s.%s' % (monitor_plane, field_component, complex_part)
+                    export_field = complex_fun(a_monitor_fields[field_idx])
+                    export_dict[key] = export_field
+            monitor_fields[monitor_plane] = np.array([a_monitor_fields[:3], a_monitor_fields[3:]])
+        if rank == 0:
+            ws.save_to_h5(export_dict, h5_fname, overwrite=True)
     printer("calculating basic plots for the end time")
-    for sagplane in sag_plot_planes:
+    if rank == 0:
+        for sagplane in sag_plot_planes:
+            if time_resolved:
+                Ey_final_sag = monitor_fields[sagplane][0,1,:,:,-1]
+            else:
+                Ey_final_sag = monitor_fields[sagplane][0,1,:,:].T
+            extent = [-sim_width/2, sim_width/2, -full_sim_height/2, full_sim_height/2]
+            plotField = np.real(Ey_final_sag)
+            fig, ax   = plt.subplots(figsize=(3, 3 * full_sim_height / sim_width))
+            prange = np.max(np.abs(plotField))
+            pretty_range = '$%s$' % ws.num2tex(prange, 2)
+            ax.imshow(plotField, 
+                    cmap   = cm.watermelon, 
+                    origin = 'lower',
+                    extent = extent,
+                    vmin   = -prange,
+                    vmax   = prange,
+                    interpolation = 'none')
+            ax.plot([-coreRadius,-coreRadius],[-full_sim_height/2,0],'r:',alpha=0.3)
+            ax.plot([coreRadius,coreRadius],[-full_sim_height/2,0],'r:',alpha=0.3)
+            ax.set_xlabel('%s/μm' % sagplane[0])
+            ax.set_ylabel('z/μm')
+            title = 'Re(Ey) | [%s]' % (pretty_range)
+            ax.set_title(title)
+            plt.tight_layout()
+            if send_to_slack:
+                ws.send_fig_to_slack(fig, slack_channel,
+                                    'sagittal-%s-final-Ey' % sagplane,
+                                    'sagittal-%s-final-Ey' % sagplane,
+                                    thread_ts)
+            if show_plots:
+                plt.show()
+            else:
+                plt.close()
+
+        printer("sampling the ground-truth modal profile")
+        Xg, Yg, E_field_GT, H_field_GT = ws.field_sampler(funPairs, 
+                                                    clear_aperture, 
+                                                    MEEP_resolution, 
+                                                    m, 
+                                                    parity, 
+                                                    coreRadius, 
+                                                    coord_sys = 'cartesian-cartesian',
+                                                    equiv_currents=False)
         if time_resolved:
-            Ey_final_sag = monitor_fields[sagplane][0,1,:,:,-1]
+            field_array = monitor_fields['xy'][1,:,:,:,-1]
         else:
-            Ey_final_sag = monitor_fields[sagplane][0,1,:,:].T
-        extent = [-sim_width/2, sim_width/2, -full_sim_height/2, full_sim_height/2]
-        plotField = np.real(Ey_final_sag)
-        fig, ax   = plt.subplots(figsize=(3, 3 * full_sim_height / sim_width))
-        prange = np.max(np.abs(plotField))
-        pretty_range = '$%s$' % ws.num2tex(prange, 2)
-        ax.imshow(plotField, 
-                cmap   = cm.watermelon, 
-                origin = 'lower',
-                extent = extent,
-                vmin   = -prange,
-                vmax   = prange,
-                interpolation = 'none')
-        ax.plot([-coreRadius,-coreRadius],[-full_sim_height/2,0],'r:',alpha=0.3)
-        ax.plot([coreRadius,coreRadius],[-full_sim_height/2,0],'r:',alpha=0.3)
-        ax.set_xlabel('%s/μm' % sagplane[0])
-        ax.set_ylabel('z/μm')
-        title = 'Re(Ey) | [%s]' % (pretty_range)
-        ax.set_title(title)
+            field_array = monitor_fields['xy'][1]
+ 
+        printer("making a comparison plot of the last measured field against mode inside of waveguide")
+        component_name = 'hx'
+        component_index = {'hx':0, 'hy':1, 'hz':2}[component_name]
+        extent    = [-clear_aperture/2, clear_aperture/2, -clear_aperture/2, clear_aperture/2]
+        fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10,10))
+        for idx, plotFun in enumerate([np.real, np.imag]):
+            ax = axes[0,idx]
+            plotField = field_array[component_index]
+            plotField = plotFun(plotField)
+            real_or_im = ['Re','Im'][idx]
+            prange = np.max(np.abs(plotField))
+            pretty_range = '$%s$' % ws.num2tex(prange, 2)
+            title = '%s($H_%s$) | [%s]' % (real_or_im, component_name[-1], pretty_range)
+            ax.imshow(plotField, vmin=-prange, vmax=prange, extent=extent, cmap=cm.watermelon)
+            ax.set_title(title)
+            ax.set_xlabel('x/μm')
+            ax.set_ylabel('y/μm')
+            ax.add_patch(plt.Circle((0,0), coreRadius, color='w', fill=False))
+            ax = axes[1,idx]
+            plotField = plotFun(H_field_GT[component_index])
+            prange = np.max(np.abs(plotField))
+            pretty_range = '$%s$' % ws.num2tex(prange, 2)
+            title = '%s($H_%s$) | [%s]' % (real_or_im, component_name[-1], pretty_range)
+            if idx == 0:
+                vmin = -prange
+                vmax = prange
+                cmap = cm.watermelon
+            else:
+                vmin = 0
+                vmax = prange
+                cmap = cm.ember
+            ax.imshow(plotField,
+                    vmin=vmin,
+                    vmax=vmax,
+                    extent=extent,
+                    cmap=cmap)
+            title = 'Mode field | ' + title
+            ax.set_title(title)
+            ax.set_xlabel('x/μm')
+            ax.set_ylabel('y/μm')
+            ax.add_patch(plt.Circle((0,0), coreRadius, color='w', fill=False))
         plt.tight_layout()
         if send_to_slack:
-            ws.send_fig_to_slack(fig, slack_channel,
-                                 'sagittal-%s-final-Ey' % sagplane,
-                                 'sagittal-%s-final-Ey' % sagplane,
-                                 thread_ts)
+            ws.send_fig_to_slack(fig, slack_channel, 
+                                'launched field',
+                                'comparison-of-last-measured-field',
+                                thread_ts)
         if show_plots:
             plt.show()
         else:
             plt.close()
+        mode_sol['approx_MEEP_mem_usage_in_MB'] = int(mem_usage)
+        process = psutil.Process(os.getpid())
+        mem_used_in_bytes = process.memory_info().rss
+        mem_used_in_Mbytes = mem_used_in_bytes/1024/1024
+        mode_sol['overall_mem_usage_in_MB'] = int(mem_used_in_Mbytes)
+        summary = ws.dict_summary(mode_sol, 'sim-'+sim_id)
+        if send_to_slack:
+            ws.post_message_to_slack(summary, slack_channel=slack_channel,thread_ts=thread_ts)
+        if save_fields_to_h5 and (rank == 0):
+            mode_sol['monitor_field_slices'] = monitor_fields
+        mode_sol_h5_fname = 'EH2.h5'
+        mode_sol_h5_fname = os.path.join(mode_sol_dir, mode_sol_h5_fname)
+        printer("calculating the size of h5 data files")
+        disk_usage_in_MB = ws.get_total_size_of_directory(mode_sol_dir)
+        mode_sol['disk_usage_in_MB'] = int(disk_usage_in_MB)
+        printer("saving solution to %s" % mode_sol_h5_fname)
+        comments = 'created on %d' % int(time.time())
+        ws.save_to_h5(mode_sol, mode_sol_h5_fname, comments=comments)
 
-    printer("sampling the ground-truth modal profile")
-    Xg, Yg, E_field_GT, H_field_GT = ws.field_sampler(funPairs, 
-                                                clear_aperture, 
-                                                MEEP_resolution, 
-                                                m, 
-                                                parity, 
-                                                coreRadius, 
-                                                coord_sys = 'cartesian-cartesian',
-                                                equiv_currents=False)
-    if time_resolved:
-        field_array = monitor_fields['xy'][1,:,:,:,-1]
-    else:
-        field_array = monitor_fields['xy'][1]
- 
-    printer("making a comparison plot of the last measured field against mode inside of waveguide")
-    component_name = 'hx'
-    component_index = {'hx':0, 'hy':1, 'hz':2}[component_name]
-    extent    = [-clear_aperture/2, clear_aperture/2, -clear_aperture/2, clear_aperture/2]
-    fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10,10))
-    for idx, plotFun in enumerate([np.real, np.imag]):
-        ax = axes[0,idx]
-        plotField = field_array[component_index]
-        plotField = plotFun(plotField)
-        real_or_im = ['Re','Im'][idx]
-        prange = np.max(np.abs(plotField))
-        pretty_range = '$%s$' % ws.num2tex(prange, 2)
-        title = '%s($H_%s$) | [%s]' % (real_or_im, component_name[-1], pretty_range)
-        ax.imshow(plotField, vmin=-prange, vmax=prange, extent=extent, cmap=cm.watermelon)
-        ax.set_title(title)
-        ax.set_xlabel('x/μm')
-        ax.set_ylabel('y/μm')
-        ax.add_patch(plt.Circle((0,0), coreRadius, color='w', fill=False))
-        ax = axes[1,idx]
-        plotField = plotFun(H_field_GT[component_index])
-        prange = np.max(np.abs(plotField))
-        pretty_range = '$%s$' % ws.num2tex(prange, 2)
-        title = '%s($H_%s$) | [%s]' % (real_or_im, component_name[-1], pretty_range)
-        if idx == 0:
-            vmin = -prange
-            vmax = prange
-            cmap = cm.watermelon
-        else:
-            vmin = 0
-            vmax = prange
-            cmap = cm.ember
-        ax.imshow(plotField,
-                  vmin=vmin,
-                  vmax=vmax,
-                  extent=extent,
-                  cmap=cmap)
-        title = 'Mode field | ' + title
-        ax.set_title(title)
-        ax.set_xlabel('x/μm')
-        ax.set_ylabel('y/μm')
-        ax.add_patch(plt.Circle((0,0), coreRadius, color='w', fill=False))
-    plt.tight_layout()
-    if send_to_slack:
-        ws.send_fig_to_slack(fig, slack_channel, 
-                             'Comparison of last measured field',
-                             'comparison-of-last-measured-field',
-                             thread_ts)
-    if show_plots:
-        plt.show()
-    else:
-        plt.close()
-    mode_sol['approx_MEEP_mem_usage_in_MB'] = int(mem_usage)
-    process = psutil.Process(os.getpid())
-    mem_used_in_bytes = process.memory_info().rss
-    mem_used_in_Mbytes = mem_used_in_bytes/1024/1024
-    mode_sol['overall_mem_usage_in_MB'] = int(mem_used_in_Mbytes)
-    summary = ws.dict_summary(mode_sol, 'sim-'+sim_id)
-    if send_to_slack:
-        ws.post_message_to_slack(summary, slack_channel=slack_channel,thread_ts=thread_ts)
-    if save_fields_to_h5:
-        mode_sol['monitor_field_slices'] = monitor_fields
-    mode_sol_h5_fname = 'EH2.h5'
-    mode_sol_h5_fname = os.path.join(mode_sol_dir, mode_sol_h5_fname)
-    printer("calculating the size of h5 data files")
-    disk_usage_in_MB = ws.get_total_size_of_directory(mode_sol_dir)
-    mode_sol['disk_usage_in_MB'] = int(disk_usage_in_MB)
-    printer("saving solution to %s" % mode_sol_h5_fname)
-    comments = 'created on %d' % int(time.time())
-    ws.save_to_h5(mode_sol, mode_sol_h5_fname, comments=comments)
-
-    mem_used_in_Gbytes = mem_used_in_Mbytes/1024
-    final_final_time   = time.time()
-    time_taken_in_s    = final_final_time - initial_time
-    time_req_in_s      = ws.ceil_to_multiple(time_boost_factor*time_taken_in_s,
-                                          time_req_rounded_to)
-    time_req_in_s      = int(max(time_req_in_s, min_req_time_in_s))
-    mem_req_in_GB_1    = int(ws.ceil_to_multiple(memory_boost_factor*mem_used_in_Gbytes, mem_req_rounded_to))
-    time_req_fmt       = ws.format_time(time_req_in_s)
-    mem_req_fmt        = '%d' % mem_req_in_GB_1
-    printer("took %s s to run, and spent %.1f MB of RAM" % (time_taken_in_s,mem_used_in_Mbytes ))
-    printer("estimating the resource requirements for the second FDTD simulations")
-    mem_req_in_GB_2 = (ws.ceil_to_multiple(memory_boost_factor 
-                                           * mem_used_in_Gbytes 
-                                           * mem_scale_factor, mem_req_rounded_to))
-    mem_req_in_GB_2 = int(mem_req_in_GB_2)
-    mem_req_fmt_2   = '%d' % mem_req_in_GB_2
-    # sim time proportional both to number of voxels and simulation time
-    time_scale_factor *= mem_scale_factor
-    time_req_in_s_2 = int(max(time_boost_factor * time_taken_in_s * time_scale_factor, min_req_time_in_s))
-    time_req_fmt_2  = ws.format_time(time_req_in_s_2)
-    # if the simulation time was run as automatic
-    # then see if the steady state can be determined
-    if not os.path.exists(reqs_fname):
-        if sim_time == 'auto':
-            run_time = mode_sol['run_time']
-            E_field_xy = monitor_fields['xy'][0]
-            time_slice = np.sum(np.abs(E_field_xy)**2, axis=(0, 1, 2))
-            time_axis = np.linspace(0, run_time, len(time_slice))
-            steady_time = ws.transient_scope(time_axis, time_slice)
-            if steady_time == None:
-                raise ValueError("Could not determine steady state time, consider increasing the simulation time.")
-            steady_time    = steady_time_boost * steady_time
-            steady_time = '%.2f' % steady_time
-            printer("creating resource requirement file")
-            with open(reqs_fname,'w') as file:
-                file.write('%s,%s,%s,%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB, steady_time, mem_req_fmt_2, time_req_fmt_2)) 
-        else:
-            printer("creating resource requirement file")
-            with open(reqs_fname,'w') as file:
-                file.write('%s,%s,%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB, mem_req_fmt_2, time_req_fmt_2))
-    return mode_sol
+        mem_used_in_Gbytes = mem_used_in_Mbytes/1024
+        final_final_time   = time.time()
+        time_taken_in_s    = final_final_time - initial_time
+        time_req_in_s      = ws.ceil_to_multiple(time_boost_factor*time_taken_in_s,
+                                            time_req_rounded_to)
+        time_req_in_s      = int(max(time_req_in_s, min_req_time_in_s))
+        mem_req_in_GB_1    = MEEP_num_cores * int(ws.ceil_to_multiple(memory_boost_factor*mem_used_in_Gbytes, mem_req_rounded_to))
+        time_req_fmt       = ws.format_time(time_req_in_s)
+        mem_req_fmt        = '%d' % mem_req_in_GB_1
+        printer("took %s s to run, and spent %.1f MB of RAM" % (time_taken_in_s,mem_used_in_Mbytes ))
+        printer("estimating the resource requirements for the second FDTD simulations")
+        mem_req_in_GB_2 = MEEP_num_cores * (ws.ceil_to_multiple(memory_boost_factor 
+                                            * mem_used_in_Gbytes 
+                                            * mem_scale_factor, mem_req_rounded_to))
+        mem_req_in_GB_2 = int(mem_req_in_GB_2)
+        mem_req_fmt_2   = '%d' % mem_req_in_GB_2
+        # sim time proportional both to number of voxels and simulation time
+        time_scale_factor *= mem_scale_factor
+        time_req_in_s_2 = int(max(time_boost_factor * time_taken_in_s * time_scale_factor, min_req_time_in_s))
+        time_req_fmt_2  = ws.format_time(time_req_in_s_2)
+        # if the simulation time was run as automatic
+        # then see if the steady state can be determined
+        if not os.path.exists(reqs_fname):
+            if sim_time == 'auto':
+                run_time = mode_sol['run_time']
+                E_field_xy = monitor_fields['xy'][0]
+                time_slice = np.sum(np.abs(E_field_xy)**2, axis=(0, 1, 2))
+                time_axis = np.linspace(0, run_time, len(time_slice))
+                steady_time = ws.transient_scope(time_axis, time_slice)
+                if steady_time == None:
+                    raise ValueError("Could not determine steady state time, consider increasing the simulation time.")
+                steady_time = steady_time_boost * steady_time
+                steady_time = '%.2f' % steady_time
+                printer("creating resource requirement file")
+                with open(reqs_fname,'w') as file:
+                    file.write('%s,%s,%s,%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB, steady_time, mem_req_fmt_2, time_req_fmt_2)) 
+            else:
+                printer("creating resource requirement file")
+                with open(reqs_fname,'w') as file:
+                    file.write('%s,%s,%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB, mem_req_fmt_2, time_req_fmt_2))
+        return mode_sol
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Mode launcher.')

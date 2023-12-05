@@ -68,7 +68,7 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
     job_dirs = list(sorted(job_dirs, key = wave_sorter))
     moovie_dir = os.path.join(waveguide_dir,'moovies-EH4')
     if not os.path.exists(moovie_dir):
-        os.mkdir(moovie_dir)
+        os.makedirs(moovie_dir)
     # go through each folder and make the sagittal and xy animations
     for job_idx, job_dir in enumerate(job_dirs):
         mode_id = job_dir.split('/')[-1][:9]

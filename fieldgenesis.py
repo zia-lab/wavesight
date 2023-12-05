@@ -3,7 +3,7 @@ from scipy import special
 import warnings
 from printech import *
 
-printer("ATTENTION: disabling RuntimeWarning often due to evalution of square roots with negative arguments, which is probably produced by scalar_root")
+printer("ATTENTION: disabling RuntimeWarning often triggered due to evaluation of square roots with negative arguments")
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 def TE_ECoregenρ(a,kFree,kz,m,nCladding,nCore):

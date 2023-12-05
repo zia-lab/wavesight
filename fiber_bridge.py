@@ -26,6 +26,7 @@ import h5py
 import argparse
 import numpy as np
 import wavesight as ws
+from printech import *
 from contextlib import contextmanager
 
 data_dir        = '/users/jlizaraz/data/jlizaraz/CEM/wavesight'
@@ -79,9 +80,9 @@ def wave_jumper(waveguide_id, zProp, nProp):
         yCoords    = mode_sol['coords']['yCoordsMonxy']
         N_samples  = len(xCoords)
         current_width = xCoords[-1] - xCoords[0]
-        print(">> The source field spans is defined over a distance of %.2f μm ..." % current_width)
+        printer("the source field is defined over a square region with a side of %.2f μm" % current_width)
         prop_plane_width = 2 * (current_width/2 + 1.1 * zProp * np.tan(fiber_β))
-        print(">> Given the NA of the fiber and the propagation distance the field will be propagated to an extended domain with width of %.2f μm ..." % prop_plane_width)
+        printer("considering the NA of the fiber and the propagation distance, the field will be propagated to an extended domain with a width of %.2f μm" % prop_plane_width)
         (_, xCoords) = ws.array_stretcher(xCoords, prop_plane_width)
         (_, yCoords) = ws.array_stretcher(yCoords, prop_plane_width)
         total_pad_width = len(xCoords) - N_samples
@@ -89,7 +90,7 @@ def wave_jumper(waveguide_id, zProp, nProp):
         data = {}
         propagated_h5_fname = os.path.join(job_dir, propagated_h5_fname)
         if os.path.exists(propagated_h5_fname) and not overwrite:
-            print(">> Done already, continue to next.")
+            printer(">> Done already, continue to next.")
             continue
         else:
             with h5_handler(propagated_h5_fname, 'w') as prop_h5_file:
@@ -141,15 +142,15 @@ def wave_jumper(waveguide_id, zProp, nProp):
                 E_squared_int_source = ws.simpson_quad_ND(integrand, [dx,dx])
                 integrand = np.sum(np.abs(prop_E_field)**2, axis=0)
                 E_squared_int_prop   = ws.simpson_quad_ND(integrand, [dx,dx])
-                print('∫E^2_source dxdy = %.3f' % E_squared_int_source)
-                print('∫E^2_propag dxdy = %.3f' % E_squared_int_prop)
+                printer('∫E^2_source dxdy = %.3f' % E_squared_int_source)
+                printer('∫E^2_propag dxdy = %.3f' % E_squared_int_prop)
 
                 integrand = np.sum(np.abs(transverse_fields[1])**2, axis=0)
                 H_squared_int_source = ws.simpson_quad_ND(integrand, [dx,dx])
                 integrand = np.sum(np.abs(prop_H_field)**2, axis=0)
                 H_squared_int_prop   = ws.simpson_quad_ND(integrand, [dx,dx])
-                print('∫H^2_source dxdy = %.3f' % H_squared_int_source)
-                print('∫H^2_propag dxdy = %.3f' % H_squared_int_prop)
+                printer('∫H^2_source dxdy = %.3f' % H_squared_int_source)
+                printer('∫H^2_propag dxdy = %.3f' % H_squared_int_prop)
 
                 propagated_field = np.array([prop_E_field, prop_H_field])
                 prop_h5_file.create_dataset('EH_field', data = propagated_field)
