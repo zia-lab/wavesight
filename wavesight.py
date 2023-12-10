@@ -1871,6 +1871,8 @@ def fresnel_ts_θ1(n1, n2, θ1):
 
 def field_dot(E_field, H_field, Δs, mask=None):
     '''
+    Be mindful that this includes a factor of 1/2.
+
     Parameters
     ----------
     E_field : np.array
@@ -1889,13 +1891,18 @@ def field_dot(E_field, H_field, Δs, mask=None):
     -------
     dotp : float
         the dot product of the two given fields
+    
+    References
+    ----------
+    + Syner and Love, Optical Waveguide Theory, 1983, eqn. 11-10.
     '''
     if mask is not None:
         E_field[0][~mask] = 0
         E_field[1][~mask] = 0
         H_field[0][~mask] = 0
         H_field[1][~mask] = 0
-    sumField = E_field[0] * np.conjugate(H_field[1]) - E_field[1] * np.conjugate(H_field[0])
+    sumField = (E_field[0] * np.conjugate(H_field[1])
+                - E_field[1] * np.conjugate(H_field[0]))
     dotp = np.sum(sumField)
     dotp = 0.5 * dotp * Δs**2
     return dotp

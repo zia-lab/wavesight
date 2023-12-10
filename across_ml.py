@@ -152,7 +152,6 @@ def meta_duct(waveguide_id, mode_idx):
     Kxf = RegularGridInterpolator((xCoords,yCoords), magnetic_K[0], bounds_error=False, fill_value=0.0)
     Kyf = RegularGridInterpolator((xCoords,yCoords), magnetic_K[1], bounds_error=False, fill_value=0.0)
 
-    
     def Jx(vec):
         return complex(Jxf((vec.x, vec.y)))
 

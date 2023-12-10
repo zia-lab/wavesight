@@ -24,7 +24,7 @@ sbatch_output=$(sbatch <<EOL
 #SBATCH -n {MEEP_num_cores}
 #SBATCH --job-name=req_run_{waveguide_id}
 #SBATCH --mem={req_run_mem_in_GB}GB
-#SBATCH -t 2:00:00
+#SBATCH -t {req_run_time_in_hours}:00:00
 
 #SBATCH -o "{waveguide_dir}/{waveguide_id}-req.out"
 #SBATCH -e "{waveguide_dir}/{waveguide_id}-req.err"

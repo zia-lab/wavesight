@@ -44,4 +44,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Monitor output files for new lines')
     parser.add_argument('monitor_folder', help='The path to a folder')
     args = parser.parse_args()
-    output_vigilante(args.monitor_folder)
+    try:
+        output_vigilante(args.monitor_folder)
+    except KeyboardInterrupt:
+        printer('\nExiting vigilante ...')
+        printer('To run again, type: python vigilante.py %s' % args.monitor_folder)
+        exit(0)

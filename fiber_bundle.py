@@ -90,26 +90,31 @@ def fan_out(sim_params):
         The path of the directory where results will be saved.
 
     '''
-    nCladding = sim_params['nCladding']
-    nCore = sim_params['nCore']
-    coreRadius = sim_params['coreRadius']
-    λFree = sim_params['λFree']
-    nBetween = sim_params['nBetween']
-    python_bin = sim_params['python_bin']
+    nCladding       = sim_params['nCladding']
+    nCore           = sim_params['nCore']
+    coreRadius      = sim_params['coreRadius']
+    λFree           = sim_params['λFree']
+    nBetween        = sim_params['nBetween']
+    python_bin      = sim_params['python_bin']
     python_bin_MEEP = sim_params['python_bin_MEEP']
-    code_dir = sim_params['code_dir']
+    code_dir        = sim_params['code_dir']
+
+    if 'req_run_time_in_hours' in sim_params:
+        req_run_time_in_hours = sim_params['req_run_time_in_hours']
+    else:
+        req_run_time_in_hours = 2
     MEEP_num_cores = str(sim_params['MEEP_num_cores'])
 
-    autorun = sim_params['autorun']
-    zProp = sim_params['zProp']
-    MEEP_resolution = sim_params['MEEP_resolution']
+    autorun           = sim_params['autorun']
+    zProp             = sim_params['zProp']
+    MEEP_resolution   = sim_params['MEEP_resolution']
     req_run_mem_in_GB = sim_params['req_run_mem_in_GB']
-    num_zProps = sim_params['num_zProps']
+    num_zProps        = sim_params['num_zProps']
     
     slack_channel = sim_params['slack_channel']
-    λBetween = sim_params['λBetween']
-    nBetween = sim_params['nBetween']
-    config_fname = sim_params['expanded_fname']
+    λBetween      = sim_params['λBetween']
+    nBetween      = sim_params['nBetween']
+    config_fname  = sim_params['expanded_fname']
 
     fiber_spec = {'nCladding': nCladding,
                 'nCore': nCore,
@@ -173,6 +178,7 @@ def fan_out(sim_params):
     bash_script_fname_2 = waveguide_id + '-2.sh'
     batch_script_1 = bash_template_1.format(
                     MEEP_num_cores = MEEP_num_cores,
+                    req_run_time_in_hours = req_run_time_in_hours,
                     code_dir = code_dir,
                     python_bin = python_bin,
                     python_bin_MEEP = python_bin_MEEP,
@@ -193,6 +199,7 @@ def fan_out(sim_params):
                     num_zProps       = (num_zProps-1))
     batch_script_2 = bash_template_2.format(
                     MEEP_num_cores = MEEP_num_cores,
+                    req_run_time_in_hours = req_run_time_in_hours,
                     code_dir = code_dir,
                     python_bin = python_bin,
                     python_bin_MEEP = python_bin_MEEP,
