@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>across_ml &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="convstore" href="convstore.html" />
+    <link rel="prev" title="Indices and tables" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">across_ml</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#across_ml.meta_duct"><code class="docutils literal notranslate"><span class="pre">meta_duct()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#across_ml.metasurf_designer"><code class="docutils literal notranslate"><span class="pre">metasurf_designer()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#across_ml.wave_sorter"><code class="docutils literal notranslate"><span class="pre">wave_sorter()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="convstore.html">convstore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datapipes.html">datapipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diffkernels.html">diffkernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_animate.html">EH4_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_plotter.html">EH4_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_to_EH5.html">EH4_to_EH5</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH5_assembly.html">EH5_assembly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_animate.html">fiber_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_bridge.html">fiber_bridge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_bundle.html">fiber_bundle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_platform.html">fiber_platform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_plotter.html">fiber_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fieldgenesis.html">fieldgenesis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fields.html">fields</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fungenerators.html">fungenerators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hail_david.html">hail_david</a></li>
+<li class="toctree-l1"><a class="reference internal" href="housekeeping.html">housekeeping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="meta_designer.html">meta_designer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metal.html">metal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metaorchestra.html">metaorchestra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">misc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ml_plot_in.html">ml_plot_in</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_factory.html">phase_factory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="printech.html">printech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="slacking.html">slacking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sniffer.html">sniffer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="standard_candle.html">standard_candle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html">templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wavegraphics.html">wavegraphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wavesight.html">wavesight</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">across_ml</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/usage/across_ml.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Indices and tables" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="convstore.html" class="btn btn-neutral float-right" title="convstore" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="across-ml">
+<h1>across_ml<a class="headerlink" href="#across-ml" title="Link to this heading">¶</a></h1>
+<p>This script is used to set up and launch FDTD simulations of the designed metalenses.</p>
+<dl class="py function" id="module-across_ml">
+<dt class="sig sig-object py" id="across_ml.meta_duct">
+<span class="sig-prename descclassname"><span class="pre">across_ml.</span></span><span class="sig-name descname"><span class="pre">meta_duct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">waveguide_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode_idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/across_ml.html#meta_duct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#across_ml.meta_duct" title="Link to this definition">¶</a></dt>
+<dd><p>This function will take the id for a waveguide and the index for
+one of its propagating modes, and it will take the fields that have
+been propagated to the input plane of the metalens and will produce
+the fields that are transported across it.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="across_ml.metasurf_designer">
+<span class="sig-prename descclassname"><span class="pre">across_ml.</span></span><span class="sig-name descname"><span class="pre">metasurf_designer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metalens_design_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_z_center</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/across_ml.html#metasurf_designer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#across_ml.metasurf_designer" title="Link to this definition">¶</a></dt>
+<dd><p>Given a dictionary with the design parameters for a metalens, this function
+will return a list of MEEP objects that represent the metalens structure.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>metalens_design_dict<span class="classifier">dict</span></dt><dd><p>A dictionary with the design parameters for the metalens.</p>
+</dd>
+<dt>post_z_center<span class="classifier">float</span></dt><dd><p>The z coordinate of the center of the metalens pillars.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>post_forest<span class="classifier">list</span></dt><dd><p>A list of MEEP objects that represent the cylindrical pillars that make
+up the metalens.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="across_ml.wave_sorter">
+<span class="sig-prename descclassname"><span class="pre">across_ml.</span></span><span class="sig-name descname"><span class="pre">wave_sorter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/across_ml.html#wave_sorter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#across_ml.wave_sorter" title="Link to this definition">¶</a></dt>
+<dd><p>A convenience function to sort directories accoring to their
+filename.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

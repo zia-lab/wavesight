@@ -15,6 +15,23 @@ exclude_dirs    = ['moovies']
 save_cross_eps  = True
 
 def metasurf_designer(metalens_design_dict, post_z_center):
+    '''
+    Given a dictionary with the design parameters for a metalens, this function
+    will return a list of MEEP objects that represent the metalens structure.
+
+    Parameters
+    ----------
+    metalens_design_dict : dict
+        A dictionary with the design parameters for the metalens.
+    post_z_center : float
+        The z coordinate of the center of the metalens pillars.
+    
+    Returns
+    -------
+    post_forest : list
+        A list of MEEP objects that represent the cylindrical pillars that make
+        up the metalens.
+    '''
     post_radii = metalens_design_dict['post_radii']
     post_height = metalens_design_dict['post_height']
     lattice_points = metalens_design_dict['lattice_points']
@@ -30,13 +47,11 @@ def metasurf_designer(metalens_design_dict, post_z_center):
         post_forest.append(a_post)
     return post_forest
 
-def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
-    rtime = (kappa * sim_cell.x
-             * sim_cell.y * sim_cell.z
-             * run_time * spatial_resolution**3)
-    return rtime
-
 def wave_sorter(x):
+    '''
+    A convenience function to sort directories accoring to their
+    filename.
+    '''
     idx = int(x.split('-')[-1])
     return idx
 
@@ -221,7 +236,7 @@ def meta_duct(waveguide_id, mode_idx):
     yz_monitor_vol          = mp.Volume(center=yz_monitor_plane_center,
                                         size=yz_monitor_plane_size)
 
-    approx_runtime = approx_time(sim_cell, MEEP_resolution, run_time)
+    approx_runtime = ws.approx_time(sim_cell, MEEP_resolution, run_time)
     printer("simulation is estimated to take %.1f minutes" % (approx_runtime/60.))
 
     printer("finalizing the setup fo the simulation object")

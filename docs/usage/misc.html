@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>misc.py &mdash; wavesight  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <title>misc &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -19,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="fieldgenesis.py" href="fieldgenesis.html" />
-    <link rel="prev" title="diffkernels.py" href="diffkernels.html" /> 
+    <link rel="next" title="ml_plot_in" href="ml_plot_in.html" />
+    <link rel="prev" title="metaorchestra" href="metaorchestra.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,22 +44,64 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="wavesight.html">wavesight.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fields.html">fields.py</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="across_ml.html">across_ml</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convstore.html">convstore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datapipes.html">datapipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diffkernels.html">diffkernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_animate.html">EH4_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_plotter.html">EH4_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_to_EH5.html">EH4_to_EH5</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH5_assembly.html">EH5_assembly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_animate.html">fiber_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_bridge.html">fiber_bridge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_bundle.html">fiber_bundle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_platform.html">fiber_platform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_plotter.html">fiber_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fieldgenesis.html">fieldgenesis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fields.html">fields</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fungenerators.html">fungenerators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hail_david.html">hail_david</a></li>
+<li class="toctree-l1"><a class="reference internal" href="housekeeping.html">housekeeping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="maxwell.html">Maxwell’s Equations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="diffkernels.html">diffkernels.py</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">misc.py</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="meta_designer.html">meta_designer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metal.html">metal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metaorchestra.html">metaorchestra</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">misc</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#misc.array_stretcher"><code class="docutils literal notranslate"><span class="pre">array_stretcher()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.ceil_to_multiple"><code class="docutils literal notranslate"><span class="pre">ceil_to_multiple()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.dict_summary"><code class="docutils literal notranslate"><span class="pre">dict_summary()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.format_time"><code class="docutils literal notranslate"><span class="pre">format_time()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.get_global_memory_usage"><code class="docutils literal notranslate"><span class="pre">get_global_memory_usage()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.get_max_RSS"><code class="docutils literal notranslate"><span class="pre">get_max_RSS()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.get_memory_usage"><code class="docutils literal notranslate"><span class="pre">get_memory_usage()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.get_squeue_data"><code class="docutils literal notranslate"><span class="pre">get_squeue_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.get_total_size_of_directory"><code class="docutils literal notranslate"><span class="pre">get_total_size_of_directory()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.insert_string_at_nth_position"><code class="docutils literal notranslate"><span class="pre">insert_string_at_nth_position()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#misc.latex_eqn_to_png"><code class="docutils literal notranslate"><span class="pre">latex_eqn_to_png()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#misc.num2tex"><code class="docutils literal notranslate"><span class="pre">num2tex()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.rando_id"><code class="docutils literal notranslate"><span class="pre">rando_id()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.random_in_range"><code class="docutils literal notranslate"><span class="pre">random_in_range()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#misc.rounder"><code class="docutils literal notranslate"><span class="pre">rounder()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.send_count"><code class="docutils literal notranslate"><span class="pre">send_count()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.send_image"><code class="docutils literal notranslate"><span class="pre">send_image()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.send_message"><code class="docutils literal notranslate"><span class="pre">send_message()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#misc.sig_figs_in"><code class="docutils literal notranslate"><span class="pre">sig_figs_in()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.sym_pad"><code class="docutils literal notranslate"><span class="pre">sym_pad()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#misc.transient_scope"><code class="docutils literal notranslate"><span class="pre">transient_scope()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#misc.var_collisions"><code class="docutils literal notranslate"><span class="pre">var_collisions()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="fieldgenesis.html">fieldgenesis.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fungenerators.html">fungenerators.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="convstore.html">convstore.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ml_plot_in.html">ml_plot_in</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_factory.html">phase_factory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="printech.html">printech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="slacking.html">slacking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sniffer.html">sniffer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="standard_candle.html">standard_candle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html">templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wavegraphics.html">wavegraphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wavesight.html">wavesight</a></li>
 </ul>
 
         </div>
@@ -74,27 +118,295 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">misc.py</li>
+      <li class="breadcrumb-item active">misc</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/usage/misc.rst.txt" rel="nofollow"> View page source</a>
       </li>
-  </ul>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="metaorchestra.html" class="btn btn-neutral float-left" title="metaorchestra" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ml_plot_in.html" class="btn btn-neutral float-right" title="ml_plot_in" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-misc">
-<span id="misc-py"></span><h1>misc.py<a class="headerlink" href="#module-misc" title="Link to this heading">¶</a></h1>
+  <section id="misc">
+<h1>misc<a class="headerlink" href="#misc" title="Link to this heading">¶</a></h1>
+<p>This module contains miscellaneous functions to manage resource usage at the cluster, sending timely notifications changing the size of arrays, detecting settling times in time-resolved data, and others.</p>
+<dl class="py function" id="module-misc">
+<dt class="sig sig-object py" id="misc.array_stretcher">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">array_stretcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_range_new</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#array_stretcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.array_stretcher" title="Link to this definition">¶</a></dt>
+<dd><p>Given  a  new range and a 1D array of evenly sampled numbers
+spanning  a certain range. This function returns a new array
+that is sampled to the same resolution but spanning across a
+range  that  is at least as large as the provided range. The
+new range may not be the one provided to the function, since
+this  might conflict with sampling with the same resolution.
+The  elements  of the original array will be a subset of the
+elements of the new array.</p>
+<p>The difference between the length of the new_array and the
+arr is an even number.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>arr<span class="classifier">np.array</span></dt><dd><p>An array of evenly sampled numbers.</p>
+</dd>
+<dt>min_range_new<span class="classifier">float</span></dt><dd><p>The minimum span that the new array will have.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>(new_range, new_array)<span class="classifier">tuple</span></dt><dd><p>2-tuple containing</p>
+</dd>
+<dt>new_range<span class="classifier">float</span></dt><dd><p>The actual range of the returned array</p>
+</dd>
+<dt>new_array<span class="classifier">np.array</span></dt><dd><p>A new array with same mean as the original one, but such 
+that new_array[-1]-new_array[0] is within the  requested
+new  range  to  within one sampling unit of the original 
+array.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.ceil_to_multiple">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">ceil_to_multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mult</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#ceil_to_multiple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.ceil_to_multiple" title="Link to this definition">¶</a></dt>
+<dd><p>Given a number this function returns the smallest multiple
+of mult that is larger than the given number.</p>
+<section id="id1">
+<h2>Parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>number<span class="classifier">float</span></dt><dd><p>The number to be ceiled.</p>
+</dd>
+<dt>multiple<span class="classifier">float</span></dt><dd><p>The multiple to which the number should be ceiled.</p>
+</dd>
+</dl>
+</section>
+<section id="return">
+<h2>Return<a class="headerlink" href="#return" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>ceiled_num<span class="classifier">float</span></dt><dd><p>The ceiled number.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.dict_summary">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">dict_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prekey</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bullet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aslist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#dict_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.dict_summary" title="Link to this definition">¶</a></dt>
+<dd><p>This function takes a dictionary and returns a summary of all the keys
+and values in the dictionary for which the values are either strings or
+numbers. If the value is a dictionary, then the function calls itself
+recursively.</p>
+<section id="id2">
+<h2>Parameters<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>adict<span class="classifier">dict</span></dt><dd><p>Dictionary.</p>
+</dd>
+<dt>header<span class="classifier">str</span></dt><dd><p>something to append to the top of the summary</p>
+</dd>
+<dt>prekey<span class="classifier">str, optional</span></dt><dd><p>What to prepend to the key in the final format, by default ‘’</p>
+</dd>
+<dt>aslist<span class="classifier">bool, optional</span></dt><dd><p>Whether to return as a string of a list with the rows, by default False</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h2>Returns<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>txt_summary<span class="classifier">str or list</span></dt><dd><p>A string or list summarizing the contents of the dictionary.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.format_time">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">format_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#format_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.format_time" title="Link to this definition">¶</a></dt>
+<dd><p>Given a time in seconds this formats a string
+as HH:MM:SS.</p>
+<section id="id4">
+<h2>Parameters<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>seconds<span class="classifier">float</span></dt><dd><p>Time in seconds.</p>
+</dd>
+</dl>
+</section>
+<section id="id5">
+<h2>Returns<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>fmt_time<span class="classifier">str</span></dt><dd><p>Time formatted as HH:MM:SS.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.get_global_memory_usage">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">get_global_memory_usage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">caller_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string_ouput</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#get_global_memory_usage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.get_global_memory_usage" title="Link to this definition">¶</a></dt>
+<dd><p>This function returns the memory ussage of the given process. It also
+returns the line in the code where the call was made.
+Useful for debugging memory usage.</p>
+<section id="id6">
+<h2>Parameters<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>caller_frame<span class="classifier">frame</span></dt><dd><p>The frame of the caller function.</p>
+</dd>
+<dt>string_output<span class="classifier">bool, optional</span></dt><dd><p>Whether to return a string or a float, by default True.</p>
+</dd>
+</dl>
+</section>
+<section id="id7">
+<h2>Returns<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
+<p>memory_usage, line_no : float, int
+memory_usage : float or str</p>
+<blockquote>
+<div><p>Memory usage in MB either as formatted string or a float.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>line_no<span class="classifier">int</span></dt><dd><p>The line number of the caller function.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.get_max_RSS">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">get_max_RSS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_as_string</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#get_max_RSS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.get_max_RSS" title="Link to this definition">¶</a></dt>
+<dd><p>Get the max RSS of a given job id.</p>
+<section id="id8">
+<h2>Parameters<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>job_id<span class="classifier">int</span></dt><dd><p>The job id at slurm.</p>
+</dd>
+<dt>return_as_string<span class="classifier">bool, optional</span></dt><dd><p>Whether to return the max RSS as a string, by default False.</p>
+</dd>
+</dl>
+</section>
+<section id="id9">
+<h2>Returns<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>max_rss_in_GB<span class="classifier">float or str</span></dt><dd><p>The max RSS in GB.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.get_memory_usage">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">get_memory_usage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">caller_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string_ouput</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#get_memory_usage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.get_memory_usage" title="Link to this definition">¶</a></dt>
+<dd><p>This function returns the memory ussage of the given process. It also
+returns the line in the code where the call was made.
+Useful for debugging memory usage.</p>
+<section id="id10">
+<h2>Parameters<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>caller_frame<span class="classifier">frame</span></dt><dd><p>The frame of the caller function.</p>
+</dd>
+<dt>string_output<span class="classifier">bool, optional</span></dt><dd><p>Whether to return a string or a float, by default True.</p>
+</dd>
+</dl>
+</section>
+<section id="id11">
+<h2>Returns<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>memory_usage, line_no<span class="classifier">tuple</span></dt><dd><p>A tuple containing the memory usage and the line number.</p>
+</dd>
+<dt>memory_usage<span class="classifier">float or str</span></dt><dd><p>Memory usage in MB either as formatted string or a float.</p>
+</dd>
+<dt>line_no<span class="classifier">int</span></dt><dd><p>The line number of the caller function.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.get_squeue_data">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">get_squeue_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'jlizaraz'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_RSS</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_as_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#get_squeue_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.get_squeue_data" title="Link to this definition">¶</a></dt>
+<dd><p>This function can be use to get the squeue data for a given user.</p>
+<section id="id12">
+<h2>Parameters<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>user<span class="classifier">str, optional</span></dt><dd><p>The user for which to get the squeue data, by default ‘jlizaraz’.</p>
+</dd>
+<dt>get_RSS<span class="classifier">bool, optional</span></dt><dd><p>Whether to get the max RSS for each job, by default True.</p>
+</dd>
+<dt>return_as_dict<span class="classifier">bool, optional</span></dt><dd><p>Whether to return the data as a dictionary, by default True.</p>
+</dd>
+</dl>
+</section>
+<section id="id13">
+<h2>Returns<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>jobs<span class="classifier">list or dict</span></dt><dd><p>The squeue data for the given user parsed as a list of a dictionary of
+dictionaries.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.get_total_size_of_directory">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">get_total_size_of_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#get_total_size_of_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.get_total_size_of_directory" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the total size of files in a given directory.
+Only at the first level.</p>
+<section id="id14">
+<h2>Parameters<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>dir_path<span class="classifier">str</span></dt><dd><p>Path to the directory whose size is to be calculated.</p>
+</dd>
+</dl>
+</section>
+<section id="id15">
+<h2>Returns<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>dir_size_in_MB<span class="classifier">float</span></dt><dd><p>The size of the files in the given directory, in MB. 
+This does not include the size of files that may be
+in subdirectories of the given directory.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.insert_string_at_nth_position">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">insert_string_at_nth_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">str_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_insert</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#insert_string_at_nth_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.insert_string_at_nth_position" title="Link to this definition">¶</a></dt>
+<dd><p>Given a list of strings, return the same list where
+in the original n-th positions of the list the to_insert
+string has been inserted.</p>
+<section id="id16">
+<h2>Parameters<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>str_list<span class="classifier">list of str</span></dt><dd><p>A list of strings.</p>
+</dd>
+<dt>to_insert<span class="classifier">str</span></dt><dd><p>The string to insert.</p>
+</dd>
+<dt>n<span class="classifier">int</span></dt><dd><p>Where should it be.</p>
+</dd>
+</dl>
+</section>
+<section id="id17">
+<h2>Returns<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>riffled_strings<span class="classifier">list of str</span></dt><dd><p>The new list of strings.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="misc.latex_eqn_to_png">
-<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">latex_eqn_to_png</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tex_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfolder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/Users/juan/ZiaLab/Codebase/wavesight/docs/src'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#latex_eqn_to_png"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.latex_eqn_to_png" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">latex_eqn_to_png</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tex_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfolder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/oscar/home/jlizaraz/CEM/wavesight/docs'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#latex_eqn_to_png"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.latex_eqn_to_png" title="Link to this definition">¶</a></dt>
 <dd><p>Compile a given bit of LaTeX into png and pdf formats. Best for creating equations, since
 it creates a tight bounding box around the given equation.</p>
 <p>The pdf might have white space around the equation, but the png is very nicely trimmed.</p>
 <p>Requires a local installation of pdflatex and convert.</p>
-<section id="parameters">
-<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<section id="id18">
+<h2>Parameters<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h2>
 <dl class="simple">
 <dt>tex_code<span class="classifier">str</span></dt><dd><p>An equation, including $$, [] or LaTeX equation environment.</p>
 </dd>
@@ -106,18 +418,21 @@ it creates a tight bounding box around the given equation.</p>
 </dd>
 </dl>
 </section>
-<section id="returns">
-<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
+<section id="id19">
+<h2>Returns<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h2>
 <p>None</p>
 </section>
 <section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Link to this heading">¶</a></h2>
-<p>tex_code = r”””egin{equation}
-x+y
-end{equation}”””</p>
-<p>latex_eqn_to_png(tex_code, True, ‘simple_eqn’, outfolder = ‘/Users/juan/’)</p>
-<p>–&gt; creates /Users/juan/simple_eqn.pdf and /Users/juan/simple_eqn.npg</p>
-<p>Nov-24 2021-11-24 14:39:28</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tex_code</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;egin</span><span class="si">{equation}</span>
+<span class="s2">x+y</span>
+<span class="s2">\end</span><span class="si">{equation}</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">latex_eqn_to_png</span><span class="p">(</span><span class="n">tex_code</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;simple_eqn&#39;</span><span class="p">,</span> <span class="n">outfolder</span> <span class="o">=</span> <span class="s1">&#39;/Users/juan/&#39;</span><span class="p">)</span>
+
+<span class="o">--&gt;</span> <span class="n">creates</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">juan</span><span class="o">/</span><span class="n">simple_eqn</span><span class="o">.</span><span class="n">pdf</span> <span class="ow">and</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">juan</span><span class="o">/</span><span class="n">simple_eqn</span><span class="o">.</span><span class="n">npg</span>
+</pre></div>
+</div>
 </section>
 </dd></dl>
 
@@ -127,8 +442,8 @@ end{equation}”””</p>
 <dd><p>Given a number this function formats it in LaTeX scientific notation.
 The output has the number of significant figures specified by the user, padding
 with zeroes if necessary.</p>
-<section id="id1">
-<h2>Parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<section id="id20">
+<h2>Parameters<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h2>
 <dl class="simple">
 <dt>num<span class="classifier">float</span></dt><dd><p>A number.</p>
 </dd>
@@ -136,9 +451,59 @@ with zeroes if necessary.</p>
 </dd>
 </dl>
 </section>
-<section id="id2">
-<h2>Returns<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<section id="id21">
+<h2>Returns<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h2>
 <p>str: A string in LaTeX scientific notation.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.rando_id">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">rando_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_groups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#rando_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.rando_id" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a random string formed from pairs of vowels
+and consonants. By default the string returned  has
+27-bit entropy, which makes each string to be about
+10^-8 likely to be chosen.</p>
+<section id="id22">
+<h2>Parameters<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>num_groups: int</dt><dd><p>How many 4-char groups the random string has.</p>
+</dd>
+<dt>sep: str</dt><dd><p>The string that separates the 4-char groups.</p>
+</dd>
+<dt>verbose: bool</dt><dd><p>Whether to print the entropy of the generated strings.</p>
+</dd>
+</dl>
+</section>
+<section id="id23">
+<h2>Returns<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>rid<span class="classifier">str</span></dt><dd><p>A random string in a somewhat readable format.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.random_in_range">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">random_in_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#random_in_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.random_in_range" title="Link to this definition">¶</a></dt>
+<dd><section id="id24">
+<h2>Parameters<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>xmin<span class="classifier">float</span></dt><dd><p>lower bound of random numbers</p>
+</dd>
+<dt>xmax<span class="classifier">float</span></dt><dd><p>upper bound of random numbers</p>
+</dd>
+<dt>shape<span class="classifier">tuple or int</span></dt><dd><p>shape of array of random numbers</p>
+</dd>
+</dl>
+</section>
+<section id="id25">
+<h2>Returns<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>rando_array<span class="classifier">np.array (shape)</span></dt><dd><p>pseudo-random real numbers in given range</p>
+</dd>
+</dl>
 </section>
 </dd></dl>
 
@@ -146,20 +511,71 @@ with zeroes if necessary.</p>
 <dt class="sig sig-object py" id="misc.rounder">
 <span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">rounder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#rounder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.rounder" title="Link to this definition">¶</a></dt>
 <dd><p>Given a number, round it to n significant figures.</p>
-<section id="id3">
-<h2>Parameters<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<section id="id26">
+<h2>Parameters<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h2>
 <p>num : float</p>
 <dl class="simple">
 <dt>n<span class="classifier">int</span></dt><dd><p>how many sig figs to return in the rounded num.</p>
 </dd>
 </dl>
 </section>
-<section id="id4">
-<h2>Returns<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<section id="id27">
+<h2>Returns<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h2>
 <dl class="simple">
 <dt>rounded<span class="classifier">int</span></dt><dd><p>the rounded number.</p>
 </dd>
 </dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.send_count">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">send_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#send_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.send_count" title="Link to this definition">¶</a></dt>
+<dd><p>This function sends a notification count via Pushover.</p>
+<section id="id28">
+<h2>Parameters<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>count<span class="classifier">int</span></dt><dd><p>The count to be sent.</p>
+</dd>
+</dl>
+</section>
+<section id="id29">
+<h2>Returns<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h2>
+<p>None</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.send_image">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">send_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#send_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.send_image" title="Link to this definition">¶</a></dt>
+<dd><p>This function sends images via Pushover.</p>
+<section id="id30">
+<h2>Parameters<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>image_fname<span class="classifier">str</span></dt><dd><p>The file name of the image to be sent</p>
+</dd>
+</dl>
+</section>
+<section id="id31">
+<h2>Returns<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h2>
+<p>None</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.send_message">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#send_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.send_message" title="Link to this definition">¶</a></dt>
+<dd><p>This function sends a notification message via Pushover.</p>
+<section id="id32">
+<h2>Parameters<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>message<span class="classifier">str</span></dt><dd><p>The message to be sent.</p>
+</dd>
+</dl>
+</section>
+<section id="id33">
+<h2>Returns<a class="headerlink" href="#id33" title="Link to this heading">¶</a></h2>
+<p>None</p>
 </section>
 </dd></dl>
 
@@ -172,6 +588,95 @@ Only good for numbers one has input oneself.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="misc.sym_pad">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">sym_pad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'constant'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#sym_pad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.sym_pad" title="Link to this definition">¶</a></dt>
+<dd><p>Given n (which must be even) this function will pad on all sides
+at the last two dimensions of the provided array.</p>
+<section id="id34">
+<h2>Parameters<a class="headerlink" href="#id34" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>arr<span class="classifier">np.array (…, N, N)</span></dt><dd><p>An array with at least two dimensions.</p>
+</dd>
+<dt>n<span class="classifier">int</span></dt><dd><p>An even number, corresponding to the total width of the pad.</p>
+</dd>
+<dt>mode: str</dt><dd><p>The mode to use for padding: ‘constant’, ‘mean’, etc. Same 
+as those for np.pad.</p>
+</dd>
+<dt>kwargs:</dt><dd><p>Same as thos that may be provided to np.pad.</p>
+</dd>
+</dl>
+</section>
+<section id="id35">
+<h2>Return<a class="headerlink" href="#id35" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>padded_array<span class="classifier">np.array (…, N + n, N + n)</span></dt><dd><p>Same as arr but padded.</p>
+</dd>
+</dl>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.pad.html">https://numpy.org/doc/stable/reference/generated/numpy.pad.html</a></p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="misc.transient_scope">
+<span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">transient_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#transient_scope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.transient_scope" title="Link to this definition">¶</a></dt>
+<dd><p>This   function   finds  the  time  at  which  the  relative
+oscillations  of  a  signal that is heading towards a steady
+value  have  dropped  to  a given tolerance. This is done by
+finding  the times at which the signal has local minimas and
+then checking the relative difference between them.</p>
+<p>If  the relative difference is below the tolerance, then the
+first  time  is returned. If not, then the signal is flipped
+and  the  same procedure is applied. If the tolerance is not
+reached,  then  None is returned. This function assumes that
+the  given  signal  is  non-negative, and that the transient
+decays  in  an  oscillatory  manner, after having reached an
+initial peak.</p>
+<p>..code-block:: python</p>
+<blockquote>
+<div><p>▲                                                                                
+│                                                                        
+│                                                                        
+│       <strong>*</strong>                                                         
+│      **   **                                                        
+│     **      **         <strong>***</strong>                                      
+│     *        *         *     <strong>*        ****</strong>       <strong>*</strong>          
+│    **         **      *        **      **    <strong>*    **   *</strong> 
+│    *           **    **         <a href="#id36"><span class="problematic" id="id37">**</span></a>** <strong>*       ****</strong>               
+│    *            <strong>**</strong>             <a href="#id38"><span class="problematic" id="id39">**</span></a>*                              
+│   *               **                                                
+│   *                                                                 
+│   *                                                                 
+│  **                                                                                                                             
+│</p>
+</div></blockquote>
+<dl class="simple">
+<dt>──┼─────────────────────────────────────────────────────────────▶</dt><dd><p>│</p>
+</dd>
+</dl>
+<section id="id40">
+<h2>Parameters<a class="headerlink" href="#id40" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>times<span class="classifier">np.array</span></dt><dd><p>Time axis.</p>
+</dd>
+<dt>time_signal<span class="classifier">np.array</span></dt><dd><p>Time-dependent signal.</p>
+</dd>
+</dl>
+<p>tol : float, optional</p>
+</section>
+<section id="id41">
+<h2>Returns<a class="headerlink" href="#id41" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>good_time: float</dt><dd><p>Time at which the signal relative oscillations have 
+dropped below the tolerance.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="misc.var_collisions">
 <span class="sig-prename descclassname"><span class="pre">misc.</span></span><span class="sig-name descname"><span class="pre">var_collisions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">varname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">these_globals</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/misc.html#var_collisions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#misc.var_collisions" title="Link to this definition">¶</a></dt>
 <dd><p>Given a variable name, return a list of all variables in the
@@ -181,8 +686,8 @@ collide with an existing variable name.</p>
 <p>A  variable  name  is  a  good  variable name if it is not a
 substring  of any other variable name, and no other variable
 name is a substring of it.</p>
-<section id="id5">
-<h2>Parameters<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<section id="id42">
+<h2>Parameters<a class="headerlink" href="#id42" title="Link to this heading">¶</a></h2>
 <dl class="simple">
 <dt>varname<span class="classifier">str</span></dt><dd><p>variable name to check.</p>
 </dd>
@@ -190,8 +695,8 @@ name is a substring of it.</p>
 </dd>
 </dl>
 </section>
-<section id="id6">
-<h2>Returns<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<section id="id43">
+<h2>Returns<a class="headerlink" href="#id43" title="Link to this heading">¶</a></h2>
 <dl class="simple">
 <dt>commonvars<span class="classifier">list</span></dt><dd><p>list of variable names that collide with varname.</p>
 </dd>
@@ -204,15 +709,12 @@ name is a substring of it.</p>
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="diffkernels.html" class="btn btn-neutral float-left" title="diffkernels.py" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="fieldgenesis.html" class="btn btn-neutral float-right" title="fieldgenesis.py" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright .</p>
+    <p></p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

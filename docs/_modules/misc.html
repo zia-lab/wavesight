@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>misc &mdash; wavesight  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -39,15 +41,40 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../usage/wavesight.html">wavesight.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage/fields.html">fields.py</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/across_ml.html">across_ml</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/convstore.html">convstore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/datapipes.html">datapipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/diffkernels.html">diffkernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_animate.html">EH4_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_plotter.html">EH4_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_to_EH5.html">EH4_to_EH5</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH5_assembly.html">EH5_assembly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_animate.html">fiber_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_bridge.html">fiber_bridge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_bundle.html">fiber_bundle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_platform.html">fiber_platform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_plotter.html">fiber_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fieldgenesis.html">fieldgenesis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fields.html">fields</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fungenerators.html">fungenerators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/hail_david.html">hail_david</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/housekeeping.html">housekeeping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage/maxwell.html">Maxwell’s Equations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage/diffkernels.html">diffkernels.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage/misc.html">misc.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage/fieldgenesis.html">fieldgenesis.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage/fungenerators.html">fungenerators.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage/convstore.html">convstore.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/meta_designer.html">meta_designer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metal.html">metal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metaorchestra.html">metaorchestra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/misc.html">misc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/ml_plot_in.html">ml_plot_in</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/phase_factory.html">phase_factory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/printech.html">printech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/slacking.html">slacking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/sniffer.html">sniffer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/standard_candle.html">standard_candle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/templates.html">templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavegraphics.html">wavegraphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavesight.html">wavesight</a></li>
 </ul>
 
         </div>
@@ -78,10 +105,240 @@
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="kn">import</span> <span class="nn">psutil</span>
+<span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+<span class="kn">from</span> <span class="nn">slacking</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">http.client</span><span class="o">,</span> <span class="nn">urllib</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span><span class="p">,</span> <span class="n">sleep</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">find_peaks</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">dave</span> <span class="kn">import</span> <span class="n">secrets</span>
+    <span class="n">pushover_user</span> <span class="o">=</span> <span class="n">secrets</span><span class="p">[</span><span class="s1">&#39;pushover_user&#39;</span><span class="p">]</span>
+    <span class="n">pushover_token</span> <span class="o">=</span> <span class="n">secrets</span><span class="p">[</span><span class="s1">&#39;pushover_token&#39;</span><span class="p">]</span>
+    <span class="n">slack_token</span> <span class="o">=</span> <span class="n">secrets</span><span class="p">[</span><span class="s1">&#39;slack_token&#39;</span><span class="p">]</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ask David about secrets.&quot;</span><span class="p">)</span>
+    <span class="k">pass</span>
+
+<div class="viewcode-block" id="send_message">
+<a class="viewcode-back" href="../usage/misc.html#misc.send_message">[docs]</a>
+<span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function sends a notification message via Pushover.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    message : str</span>
+<span class="sd">        The message to be sent.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">HTTPSConnection</span><span class="p">(</span><span class="s2">&quot;api.pushover.net&quot;</span><span class="p">,</span><span class="mi">443</span><span class="p">)</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;/1/messages.json&quot;</span><span class="p">,</span>
+        <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlencode</span><span class="p">({</span>
+        <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">pushover_token</span><span class="p">,</span>
+        <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">pushover_user</span><span class="p">,</span>
+        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">,</span>
+        <span class="p">}),</span> <span class="p">{</span> <span class="s2">&quot;Content-type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/x-www-form-urlencoded&quot;</span> <span class="p">})</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="send_count">
+<a class="viewcode-back" href="../usage/misc.html#misc.send_count">[docs]</a>
+<span class="k">def</span> <span class="nf">send_count</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function sends a notification count via Pushover.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    count : int</span>
+<span class="sd">        The count to be sent.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">HTTPSConnection</span><span class="p">(</span><span class="s2">&quot;api.pushover.net&quot;</span><span class="p">,</span><span class="mi">443</span><span class="p">)</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;/1/glances.json&quot;</span><span class="p">,</span>
+        <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlencode</span><span class="p">({</span>
+        <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">pushover_token</span><span class="p">,</span>
+        <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">pushover_user</span><span class="p">,</span>
+        <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="n">count</span><span class="p">,</span>
+        <span class="p">}),</span> <span class="p">{</span> <span class="s2">&quot;Content-type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/x-www-form-urlencoded&quot;</span> <span class="p">})</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="send_image">
+<a class="viewcode-back" href="../usage/misc.html#misc.send_image">[docs]</a>
+<span class="k">def</span> <span class="nf">send_image</span><span class="p">(</span><span class="n">image_fname</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function sends images via Pushover.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    image_fname : str</span>
+<span class="sd">        The file name of the image to be sent</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">image_fname</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.jpg&#39;</span><span class="p">):</span>
+        <span class="n">mime</span> <span class="o">=</span> <span class="s1">&#39;image/jpeg&#39;</span>
+    <span class="k">elif</span> <span class="n">image_fname</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.png&#39;</span><span class="p">):</span>
+        <span class="n">mime</span> <span class="o">=</span> <span class="s1">&#39;image/png&#39;</span>
+    <span class="k">elif</span> <span class="n">image_fname</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.jpeg&#39;</span><span class="p">):</span>
+        <span class="n">mime</span> <span class="o">=</span> <span class="s1">&#39;image/jpeg&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;send jpg, jpeg, or png only&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://api.pushover.net/1/messages.json&quot;</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">pushover_token</span><span class="p">,</span>
+        <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">pushover_user</span><span class="p">,</span>
+        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span>
+    <span class="p">},</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;attachment&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;image.jpg&quot;</span><span class="p">,</span>
+                        <span class="nb">open</span><span class="p">(</span><span class="n">image_fname</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">),</span> <span class="s2">&quot;image/jpeg&quot;</span><span class="p">)</span>
+    <span class="p">})</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="get_total_size_of_directory">
+<a class="viewcode-back" href="../usage/misc.html#misc.get_total_size_of_directory">[docs]</a>
+<span class="k">def</span> <span class="nf">get_total_size_of_directory</span><span class="p">(</span><span class="n">dir_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculate the total size of files in a given directory.</span>
+<span class="sd">    Only at the first level.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dir_path : str</span>
+<span class="sd">        Path to the directory whose size is to be calculated.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dir_size_in_MB : float</span>
+<span class="sd">        The size of the files in the given directory, in MB. </span>
+<span class="sd">        This does not include the size of files that may be</span>
+<span class="sd">        in subdirectories of the given directory.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">filenames</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dir_path</span><span class="p">)</span>
+    <span class="n">fsizes</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">f</span><span class="p">))]</span>
+    <span class="n">dir_size_in_MB</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">fsizes</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">dir_size_in_MB</span></div>
+
+
+<div class="viewcode-block" id="dict_summary">
+<a class="viewcode-back" href="../usage/misc.html#misc.dict_summary">[docs]</a>
+<span class="k">def</span> <span class="nf">dict_summary</span><span class="p">(</span><span class="n">adict</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">prekey</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">bullet</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">aslist</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function takes a dictionary and returns a summary of all the keys</span>
+<span class="sd">    and values in the dictionary for which the values are either strings or</span>
+<span class="sd">    numbers. If the value is a dictionary, then the function calls itself</span>
+<span class="sd">    recursively.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    adict : dict</span>
+<span class="sd">        Dictionary.</span>
+<span class="sd">    header : str</span>
+<span class="sd">        something to append to the top of the summary</span>
+<span class="sd">    prekey : str, optional</span>
+<span class="sd">        What to prepend to the key in the final format, by default &#39;&#39;</span>
+<span class="sd">    aslist : bool, optional</span>
+<span class="sd">        Whether to return as a string of a list with the rows, by default False</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    txt_summary : str or list</span>
+<span class="sd">        A string or list summarizing the contents of the dictionary.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+    <span class="n">float_types</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">int_types</span>   <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
+                   <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">header</span><span class="p">:</span>
+        <span class="n">txt_summary</span> <span class="o">=</span> <span class="p">[</span><span class="n">header</span><span class="p">]</span>
+        <span class="n">txt_summary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">txt_summary</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">adict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">prekey</span><span class="p">:</span>
+                <span class="n">txt_summary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prekey</span> <span class="o">+</span> <span class="n">bullet</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39; : &#39;</span> <span class="o">+</span> <span class="n">val</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">txt_summary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bullet</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39; : &#39;</span> <span class="o">+</span> <span class="n">val</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">prekey</span><span class="p">:</span>
+                <span class="n">txt_summary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prekey</span> <span class="o">+</span> <span class="n">bullet</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39; : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">txt_summary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bullet</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39; : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">int_types</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">prekey</span><span class="p">:</span>
+                <span class="n">txt_summary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prekey</span> <span class="o">+</span> <span class="n">bullet</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39; : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">txt_summary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bullet</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39; : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">float_types</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">prekey</span><span class="p">:</span>
+                <span class="n">txt_summary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1"> : </span><span class="si">%.3f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">prekey</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">txt_summary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1"> : </span><span class="si">%.3f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">prekey</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
+            <span class="n">nested_dict</span> <span class="o">=</span> <span class="n">dict_summary</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">prekey</span><span class="o">=</span> <span class="n">prekey</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">key</span><span class="p">,</span> <span class="n">aslist</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">txt_summary</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">nested_dict</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">aslist</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">split</span><span class="p">:</span>
+            <span class="n">txt_summary</span> <span class="o">=</span> <span class="p">[(</span><span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; : &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; : &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]))</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">txt_summary</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">txt_summary</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">txt_summary</span> <span class="o">=</span> <span class="n">insert_string_at_nth_position</span><span class="p">(</span><span class="n">txt_summary</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt_summary</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="rando_id">
+<a class="viewcode-back" href="../usage/misc.html#misc.rando_id">[docs]</a>
+<span class="k">def</span> <span class="nf">rando_id</span><span class="p">(</span><span class="n">num_groups</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns a random string formed from pairs of vowels</span>
+<span class="sd">    and consonants. By default the string returned  has</span>
+<span class="sd">    27-bit entropy, which makes each string to be about</span>
+<span class="sd">    10^-8 likely to be chosen.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    num_groups: int</span>
+<span class="sd">        How many 4-char groups the random string has.</span>
+<span class="sd">    sep: str</span>
+<span class="sd">        The string that separates the 4-char groups.</span>
+<span class="sd">    verbose: bool</span>
+<span class="sd">        Whether to print the entropy of the generated strings.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rid : str</span>
+<span class="sd">        A random string in a somewhat readable format.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">vowels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="s1">&#39;AEIOU&#39;</span><span class="p">)</span>
+    <span class="n">consonants</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="s1">&#39;BCDFGHJKLMNPQRSTVWXYZ&#39;</span><span class="p">)</span>
+    <span class="n">rid</span> <span class="o">=</span> <span class="p">[(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">vowels</span><span class="p">)</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">consonants</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">vowels</span><span class="p">)</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">consonants</span><span class="p">))</span> 
+                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_groups</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="n">ent</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">num_groups</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vowels</span><span class="p">))</span>
+                    <span class="o">+</span><span class="p">(</span><span class="n">num_groups</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">consonants</span><span class="p">)))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Generated string has </span><span class="si">%d</span><span class="s1">-bit entropy.&#39;</span> <span class="o">%</span> <span class="n">ent</span><span class="p">)</span>
+    <span class="n">rid</span> <span class="o">=</span> <span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rid</span></div>
+
 
 <div class="viewcode-block" id="latex_eqn_to_png">
 <a class="viewcode-back" href="../usage/misc.html#misc.latex_eqn_to_png">[docs]</a>
@@ -112,15 +369,16 @@
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
 <span class="sd">    </span>
-<span class="sd">    tex_code = r&quot;&quot;&quot;\begin{equation}</span>
-<span class="sd">    x+y</span>
-<span class="sd">    \end{equation}&quot;&quot;&quot;</span>
-<span class="sd">    </span>
-<span class="sd">    latex_eqn_to_png(tex_code, True, &#39;simple_eqn&#39;, outfolder = &#39;/Users/juan/&#39;)</span>
-<span class="sd">    </span>
-<span class="sd">    --&gt; creates /Users/juan/simple_eqn.pdf and /Users/juan/simple_eqn.npg</span>
-<span class="sd">    </span>
-<span class="sd">    Nov-24 2021-11-24 14:39:28</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        tex_code = r&quot;&quot;&quot;\begin{equation}</span>
+<span class="sd">        x+y</span>
+<span class="sd">        \end{equation}&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        latex_eqn_to_png(tex_code, True, &#39;simple_eqn&#39;, outfolder = &#39;/Users/juan/&#39;)</span>
+<span class="sd">        </span>
+<span class="sd">        --&gt; creates /Users/juan/simple_eqn.pdf and /Users/juan/simple_eqn.npg</span>
+
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">now</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">())</span>
     <span class="n">percentage_margin</span> <span class="o">=</span> <span class="mf">10.</span>
@@ -295,6 +553,465 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The following variable names collide with &#39;</span><span class="si">%s</span><span class="s2">&#39;:&quot;</span> <span class="o">%</span> <span class="n">varname</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">commonvars</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="random_in_range">
+<a class="viewcode-back" href="../usage/misc.html#misc.random_in_range">[docs]</a>
+<span class="k">def</span> <span class="nf">random_in_range</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xmin : float</span>
+<span class="sd">        lower bound of random numbers</span>
+<span class="sd">    xmax : float</span>
+<span class="sd">        upper bound of random numbers</span>
+<span class="sd">    shape : tuple or int</span>
+<span class="sd">        shape of array of random numbers</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rando_array : np.array (shape)</span>
+<span class="sd">        pseudo-random real numbers in given range</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">rando_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">xmax</span><span class="o">-</span><span class="n">xmin</span><span class="p">)</span> <span class="o">+</span> <span class="n">xmin</span>
+    <span class="k">return</span> <span class="n">rando_array</span></div>
+
+
+<div class="viewcode-block" id="transient_scope">
+<a class="viewcode-back" href="../usage/misc.html#misc.transient_scope">[docs]</a>
+<span class="k">def</span> <span class="nf">transient_scope</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">time_signal</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This   function   finds  the  time  at  which  the  relative</span>
+<span class="sd">    oscillations  of  a  signal that is heading towards a steady</span>
+<span class="sd">    value  have  dropped  to  a given tolerance. This is done by</span>
+<span class="sd">    finding  the times at which the signal has local minimas and</span>
+<span class="sd">    then checking the relative difference between them.</span>
+
+<span class="sd">    If  the relative difference is below the tolerance, then the</span>
+<span class="sd">    first  time  is returned. If not, then the signal is flipped</span>
+<span class="sd">    and  the  same procedure is applied. If the tolerance is not</span>
+<span class="sd">    reached,  then  None is returned. This function assumes that</span>
+<span class="sd">    the  given  signal  is  non-negative, and that the transient</span>
+<span class="sd">    decays  in  an  oscillatory  manner, after having reached an</span>
+<span class="sd">    initial peak.</span>
+
+<span class="sd">    ..code-block:: python</span>
+
+<span class="sd">        ▲                                                                                </span>
+<span class="sd">        │                                                                        </span>
+<span class="sd">        │                                                                        </span>
+<span class="sd">        │       *****                                                         </span>
+<span class="sd">        │      **   **                                                        </span>
+<span class="sd">        │     **      **         *******                                      </span>
+<span class="sd">        │     *        *         *     ***        ******       *****          </span>
+<span class="sd">        │    **         **      *        **      **    ***    **   *** </span>
+<span class="sd">        │    *           **    **         **** ***       ******               </span>
+<span class="sd">        │    *            ******             ***                              </span>
+<span class="sd">        │   *               **                                                </span>
+<span class="sd">        │   *                                                                 </span>
+<span class="sd">        │   *                                                                 </span>
+<span class="sd">        │  **                                                                                                                             </span>
+<span class="sd">        │                                                                        </span>
+<span class="sd">    ──┼─────────────────────────────────────────────────────────────▶</span>
+<span class="sd">        │                                                                        </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    times : np.array</span>
+<span class="sd">        Time axis.</span>
+<span class="sd">    time_signal : np.array</span>
+<span class="sd">        Time-dependent signal.</span>
+<span class="sd">    tol : float, optional</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    good_time: float</span>
+<span class="sd">        Time at which the signal relative oscillations have </span>
+<span class="sd">        dropped below the tolerance.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">valley_indices</span> <span class="o">=</span> <span class="n">find_peaks</span><span class="p">(</span><span class="o">-</span><span class="n">time_signal</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">valley_times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">valley_indices</span><span class="p">]</span>
+    <span class="n">relative_diffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">time_signal</span><span class="p">[</span><span class="n">valley_indices</span><span class="p">]))</span>
+    <span class="n">relative_diffs</span> <span class="o">/=</span> <span class="n">time_signal</span><span class="p">[</span><span class="n">valley_indices</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">good_times</span> <span class="o">=</span> <span class="n">valley_times</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">relative_diffs</span><span class="o">&lt;</span><span class="n">tol</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">good_times</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">good_times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">valley_indices</span> <span class="o">=</span> <span class="n">find_peaks</span><span class="p">(</span><span class="n">time_signal</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">valley_times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">valley_indices</span><span class="p">]</span>
+        <span class="n">relative_diffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">time_signal</span><span class="p">[</span><span class="n">valley_indices</span><span class="p">])</span><span class="o">/</span><span class="n">time_signal</span><span class="p">[</span><span class="n">valley_indices</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">good_times</span> <span class="o">=</span> <span class="n">valley_times</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">relative_diffs</span><span class="o">&lt;</span><span class="n">tol</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">good_times</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">good_times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No steady state time found within given tolerance.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="format_time">
+<a class="viewcode-back" href="../usage/misc.html#misc.format_time">[docs]</a>
+<span class="k">def</span> <span class="nf">format_time</span><span class="p">(</span><span class="n">seconds</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given a time in seconds this formats a string</span>
+<span class="sd">    as HH:MM:SS.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    seconds : float</span>
+<span class="sd">        Time in seconds.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    fmt_time : str</span>
+<span class="sd">        Time formatted as HH:MM:SS.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">hours</span><span class="p">,</span> <span class="n">remainder</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="mi">3600</span><span class="p">)</span>
+    <span class="n">minutes</span><span class="p">,</span> <span class="n">seconds</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">remainder</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="n">hours</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">hours</span><span class="p">)</span>
+    <span class="n">minutes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">minutes</span><span class="p">)</span>
+    <span class="n">seconds</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+    <span class="n">fmt_time</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:02}</span><span class="s2">:</span><span class="si">{:02}</span><span class="s2">:</span><span class="si">{:02}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fmt_time</span></div>
+
+
+<div class="viewcode-block" id="ceil_to_multiple">
+<a class="viewcode-back" href="../usage/misc.html#misc.ceil_to_multiple">[docs]</a>
+<span class="k">def</span> <span class="nf">ceil_to_multiple</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">mult</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given a number this function returns the smallest multiple</span>
+<span class="sd">    of mult that is larger than the given number.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    number : float</span>
+<span class="sd">        The number to be ceiled.</span>
+<span class="sd">    multiple : float</span>
+<span class="sd">        The multiple to which the number should be ceiled.</span>
+<span class="sd">    </span>
+<span class="sd">    Return</span>
+<span class="sd">    ------</span>
+<span class="sd">    ceiled_num : float</span>
+<span class="sd">        The ceiled number.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">ceiled_num</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">number</span> <span class="o">/</span> <span class="n">mult</span><span class="p">)</span> <span class="o">*</span> <span class="n">mult</span>
+    <span class="k">return</span> <span class="n">ceiled_num</span></div>
+
+
+<div class="viewcode-block" id="array_stretcher">
+<a class="viewcode-back" href="../usage/misc.html#misc.array_stretcher">[docs]</a>
+<span class="k">def</span> <span class="nf">array_stretcher</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">min_range_new</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given  a  new range and a 1D array of evenly sampled numbers</span>
+<span class="sd">    spanning  a certain range. This function returns a new array</span>
+<span class="sd">    that is sampled to the same resolution but spanning across a</span>
+<span class="sd">    range  that  is at least as large as the provided range. The</span>
+<span class="sd">    new range may not be the one provided to the function, since</span>
+<span class="sd">    this  might conflict with sampling with the same resolution.</span>
+<span class="sd">    The  elements  of the original array will be a subset of the</span>
+<span class="sd">    elements of the new array.</span>
+
+<span class="sd">    The difference between the length of the new_array and the</span>
+<span class="sd">    arr is an even number.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    arr : np.array</span>
+<span class="sd">        An array of evenly sampled numbers.</span>
+<span class="sd">    min_range_new : float</span>
+<span class="sd">        The minimum span that the new array will have.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (new_range, new_array) : tuple</span>
+<span class="sd">        2-tuple containing</span>
+<span class="sd">    new_range : float</span>
+<span class="sd">        The actual range of the returned array</span>
+<span class="sd">    new_array : np.array</span>
+<span class="sd">        A new array with same mean as the original one, but such </span>
+<span class="sd">        that new_array[-1]-new_array[0] is within the  requested</span>
+<span class="sd">        new  range  to  within one sampling unit of the original </span>
+<span class="sd">        array.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">the_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">the_mean</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">the_mean</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span> <span class="o">-</span> <span class="n">the_mean</span>
+    <span class="n">N_old</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+    <span class="c1"># determine the spacing of the element in the array</span>
+    <span class="c1"># it should be sufficient to simply do one difference</span>
+    <span class="c1"># but because of numerical precision this is more precise</span>
+    <span class="n">spacing</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
+    <span class="c1"># determine the extent of numbers represented in the array</span>
+    <span class="n">width_old</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># determine how many cells need to be added to the right</span>
+    <span class="n">add_to_right</span> <span class="o">=</span> <span class="n">ceil_to_multiple</span><span class="p">(</span><span class="n">min_range_new</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">width_old</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">spacing</span><span class="p">)</span>
+    <span class="n">add_to_right</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">add_to_right</span><span class="o">/</span><span class="n">spacing</span><span class="p">)</span>
+    <span class="c1"># add the same to the left</span>
+    <span class="n">N_new</span> <span class="o">=</span> <span class="n">N_old</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">add_to_right</span>
+    <span class="n">new_range</span> <span class="o">=</span> <span class="n">spacing</span> <span class="o">*</span> <span class="p">(</span><span class="n">N_new</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">new_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">new_range</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">new_range</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">N_new</span><span class="p">)</span>
+    <span class="c1"># put back the mean</span>
+    <span class="n">new_array</span> <span class="o">+=</span> <span class="n">the_mean</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">new_range</span><span class="p">,</span> <span class="n">new_array</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sym_pad">
+<a class="viewcode-back" href="../usage/misc.html#misc.sym_pad">[docs]</a>
+<span class="k">def</span> <span class="nf">sym_pad</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given n (which must be even) this function will pad on all sides</span>
+<span class="sd">    at the last two dimensions of the provided array.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    arr : np.array (..., N, N)</span>
+<span class="sd">        An array with at least two dimensions.</span>
+<span class="sd">    n : int</span>
+<span class="sd">        An even number, corresponding to the total width of the pad.</span>
+<span class="sd">    mode: str</span>
+<span class="sd">        The mode to use for padding: &#39;constant&#39;, &#39;mean&#39;, etc. Same </span>
+<span class="sd">        as those for np.pad.</span>
+<span class="sd">    kwargs:</span>
+<span class="sd">        Same as thos that may be provided to np.pad.</span>
+<span class="sd">    </span>
+<span class="sd">    Return</span>
+<span class="sd">    ------</span>
+<span class="sd">    padded_array : np.array (..., N + n, N + n)</span>
+<span class="sd">        Same as arr but padded.</span>
+<span class="sd">    </span>
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    https://numpy.org/doc/stable/reference/generated/numpy.pad.html</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="n">pad_width</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="n">num_dims</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span>
+    <span class="n">half_pad</span> <span class="o">=</span> <span class="p">(</span><span class="n">pad_width</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">pad_width</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">padding</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">*</span> <span class="p">(</span><span class="n">num_dims</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">half_pad</span><span class="p">,</span> <span class="n">half_pad</span><span class="p">]</span>
+    <span class="n">padded_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">padded_array</span></div>
+
+
+<div class="viewcode-block" id="insert_string_at_nth_position">
+<a class="viewcode-back" href="../usage/misc.html#misc.insert_string_at_nth_position">[docs]</a>
+<span class="k">def</span> <span class="nf">insert_string_at_nth_position</span><span class="p">(</span><span class="n">str_list</span><span class="p">,</span> <span class="n">to_insert</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given a list of strings, return the same list where</span>
+<span class="sd">    in the original n-th positions of the list the to_insert</span>
+<span class="sd">    string has been inserted.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    str_list : list of str</span>
+<span class="sd">        A list of strings.</span>
+<span class="sd">    to_insert : str</span>
+<span class="sd">        The string to insert.</span>
+<span class="sd">    n         : int</span>
+<span class="sd">        Where should it be.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    riffled_strings : list of str</span>
+<span class="sd">        The new list of strings.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Check if n is valid</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n should be a positive integer&quot;</span><span class="p">)</span>
+    <span class="n">riffled_strings</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Initialize a new list</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Initialize a counter</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">str_list</span><span class="p">:</span>
+        <span class="n">riffled_strings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>  <span class="c1"># Append the current string from the original list</span>
+        <span class="k">if</span> <span class="n">count</span> <span class="o">%</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">count</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">str_list</span><span class="p">):</span>  <span class="c1"># Avoid inserting after the last element</span>
+            <span class="n">riffled_strings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_insert</span><span class="p">)</span>  <span class="c1"># Insert to_insert after every n-th position</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># Increment the counter</span>
+    <span class="k">return</span> <span class="n">riffled_strings</span></div>
+
+
+<div class="viewcode-block" id="get_memory_usage">
+<a class="viewcode-back" href="../usage/misc.html#misc.get_memory_usage">[docs]</a>
+<span class="k">def</span> <span class="nf">get_memory_usage</span><span class="p">(</span><span class="n">caller_frame</span><span class="p">,</span> <span class="n">string_ouput</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function returns the memory ussage of the given process. It also</span>
+<span class="sd">    returns the line in the code where the call was made.</span>
+<span class="sd">    Useful for debugging memory usage.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    caller_frame : frame</span>
+<span class="sd">        The frame of the caller function.</span>
+<span class="sd">    string_output : bool, optional</span>
+<span class="sd">        Whether to return a string or a float, by default True.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    memory_usage, line_no : tuple</span>
+<span class="sd">        A tuple containing the memory usage and the line number.</span>
+<span class="sd">    memory_usage : float or str</span>
+<span class="sd">        Memory usage in MB either as formatted string or a float.</span>
+<span class="sd">    line_no : int</span>
+<span class="sd">        The line number of the caller function.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">line_no</span> <span class="o">=</span> <span class="n">caller_frame</span><span class="o">.</span><span class="n">f_lineno</span>
+    <span class="n">process</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
+    <span class="n">memory_usage</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>  <span class="c1"># Memory in MB</span>
+    <span class="k">if</span> <span class="n">string_ouput</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(MEM USAGE) #</span><span class="si">{</span><span class="n">line_no</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">memory_usage</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MB&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">memory_usage</span><span class="p">,</span> <span class="n">line_no</span></div>
+
+
+<div class="viewcode-block" id="get_global_memory_usage">
+<a class="viewcode-back" href="../usage/misc.html#misc.get_global_memory_usage">[docs]</a>
+<span class="k">def</span> <span class="nf">get_global_memory_usage</span><span class="p">(</span><span class="n">caller_frame</span><span class="p">,</span> <span class="n">job_id</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">string_ouput</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function returns the memory ussage of the given process. It also</span>
+<span class="sd">    returns the line in the code where the call was made.</span>
+<span class="sd">    Useful for debugging memory usage.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    caller_frame : frame</span>
+<span class="sd">        The frame of the caller function.</span>
+<span class="sd">    string_output : bool, optional</span>
+<span class="sd">        Whether to return a string or a float, by default True.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    memory_usage, line_no : float, int</span>
+<span class="sd">    memory_usage : float or str</span>
+<span class="sd">        Memory usage in MB either as formatted string or a float.</span>
+<span class="sd">    line_no : int</span>
+<span class="sd">        The line number of the caller function.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">line_no</span> <span class="o">=</span> <span class="n">caller_frame</span><span class="o">.</span><span class="n">f_lineno</span>
+    <span class="k">if</span> <span class="n">job_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">get_memory_usage</span><span class="p">(</span><span class="n">caller_frame</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">memory_usage_in_GB</span> <span class="o">=</span> <span class="n">get_max_RSS</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+        <span class="n">memory_usage</span> <span class="o">=</span> <span class="n">memory_usage_in_GB</span><span class="o">*</span><span class="mi">1024</span>
+    <span class="k">if</span> <span class="n">string_ouput</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(MEM USAGE) #</span><span class="si">{</span><span class="n">line_no</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">memory_usage</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MB&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">memory_usage</span><span class="p">,</span> <span class="n">line_no</span></div>
+
+
+<div class="viewcode-block" id="get_max_RSS">
+<a class="viewcode-back" href="../usage/misc.html#misc.get_max_RSS">[docs]</a>
+<span class="k">def</span> <span class="nf">get_max_RSS</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">return_as_string</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Get the max RSS of a given job id.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    job_id : int</span>
+<span class="sd">        The job id at slurm.</span>
+<span class="sd">    return_as_string : bool, optional</span>
+<span class="sd">        Whether to return the max RSS as a string, by default False.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    max_rss_in_GB : float or str</span>
+<span class="sd">        The max RSS in GB.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Execute sacct command to get MaxRSS for the specified job</span>
+        <span class="n">job_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+        <span class="n">job_id</span> <span class="o">=</span> <span class="n">job_id</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">job_id</span> <span class="o">=</span> <span class="n">job_id</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sstat&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;-j&#39;</span><span class="p">,</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">job_id</span><span class="p">),</span>
+                <span class="s1">&#39;--format=MaxRSS&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;--noheader&#39;</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        <span class="c1"># Parse the output to get MaxRSS</span>
+        <span class="n">max_rss</span> <span class="o">=</span> <span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># Take the first line of output</span>
+        <span class="c1"># Handling cases where MaxRSS is not available or the job is not found</span>
+        <span class="k">if</span> <span class="n">max_rss</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="s2">&quot;not found&quot;</span> <span class="ow">in</span> <span class="n">max_rss</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">return_as_string</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">max_rss</span> <span class="o">=</span> <span class="n">max_rss</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s1">&#39;No steps running for&#39;</span> <span class="ow">in</span> <span class="n">max_rss</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">return_as_string</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">max_rss</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;K&#39;</span><span class="p">):</span>
+            <span class="n">max_rss</span> <span class="o">=</span> <span class="n">max_rss</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">max_rss</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_rss</span><span class="p">)</span>
+            <span class="n">max_rss_in_GB</span> <span class="o">=</span> <span class="n">max_rss</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>
+        <span class="k">elif</span> <span class="n">max_rss</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">):</span>
+            <span class="n">max_rss</span> <span class="o">=</span> <span class="n">max_rss</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">max_rss</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_rss</span><span class="p">)</span>
+            <span class="n">max_rss_in_GB</span> <span class="o">=</span> <span class="n">max_rss</span> <span class="o">/</span> <span class="mi">1024</span>
+        <span class="k">elif</span> <span class="n">max_rss</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;G&#39;</span><span class="p">):</span>
+            <span class="n">max_rss</span> <span class="o">=</span> <span class="n">max_rss</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">max_rss_in_GB</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_rss</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">max_rss_in_GB</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="k">if</span> <span class="n">return_as_string</span><span class="p">:</span>
+            <span class="n">max_rss_in_GB</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2"> GB&quot;</span> <span class="o">%</span> <span class="n">max_rss_in_GB</span>
+        <span class="k">return</span> <span class="n">max_rss_in_GB</span>
+
+    <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># Handle errors in subprocess execution</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error in subprocess execution: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
+
+
+<span class="n">slurm_things</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;%j | %T | </span><span class="si">%i</span><span class="s2"> | %C | %l | %L | </span><span class="si">%r</span><span class="s2"> | %S | %m | %D | </span><span class="si">%E</span><span class="s2"> | %k | %N&quot;</span>
+
+<div class="viewcode-block" id="get_squeue_data">
+<a class="viewcode-back" href="../usage/misc.html#misc.get_squeue_data">[docs]</a>
+<span class="k">def</span> <span class="nf">get_squeue_data</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s1">&#39;jlizaraz&#39;</span><span class="p">,</span> <span class="n">get_RSS</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_as_dict</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function can be use to get the squeue data for a given user.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    user : str, optional</span>
+<span class="sd">        The user for which to get the squeue data, by default &#39;jlizaraz&#39;.</span>
+<span class="sd">    get_RSS : bool, optional</span>
+<span class="sd">        Whether to get the max RSS for each job, by default True.</span>
+<span class="sd">    return_as_dict : bool, optional</span>
+<span class="sd">        Whether to return the data as a dictionary, by default True.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    jobs : list or dict</span>
+<span class="sd">        The squeue data for the given user parsed as a list of a dictionary of</span>
+<span class="sd">        dictionaries.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Define a more comprehensive squeue format string</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;squeue&quot;</span><span class="p">,</span> <span class="s2">&quot;-u&quot;</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="s2">&quot;--format&quot;</span><span class="p">,</span> <span class="n">slurm_things</span><span class="p">]</span>
+    <span class="c1"># Execute the command</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error executing squeue: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="c1"># Parse the output</span>
+    <span class="n">jobs</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+    <span class="n">jobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">job</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; | &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">]</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="n">jobs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">jobs</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])))</span>
+    <span class="n">jobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">headers</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span>
+    <span class="k">if</span> <span class="n">get_RSS</span><span class="p">:</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">jobs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;MaxRSS&#39;</span><span class="p">]</span>
+        <span class="n">job_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">max_rss</span> <span class="o">=</span> <span class="n">get_max_RSS</span><span class="p">(</span><span class="n">job</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">job_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job</span> <span class="o">+</span> <span class="p">[</span><span class="n">max_rss</span><span class="p">])</span>
+        <span class="n">jobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">header</span><span class="p">]</span> <span class="o">+</span> <span class="n">job_data</span>
+    <span class="k">if</span> <span class="n">return_as_dict</span><span class="p">:</span>
+        <span class="n">job_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">job_row</span> <span class="ow">in</span> <span class="n">job_data</span><span class="p">:</span>
+            <span class="n">job_dict</span><span class="p">[</span><span class="n">job_row</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">job_row</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">job_dict</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jobs</span></div>
+
 </pre></div>
 
            </div>
@@ -304,7 +1021,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright .</p>
+    <p></p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

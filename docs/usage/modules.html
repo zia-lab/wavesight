@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>wavesight &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="across_ml.html">across_ml</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convstore.html">convstore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datapipes.html">datapipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diffkernels.html">diffkernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_animate.html">EH4_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_plotter.html">EH4_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_to_EH5.html">EH4_to_EH5</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH5_assembly.html">EH5_assembly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_animate.html">fiber_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_bridge.html">fiber_bridge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_bundle.html">fiber_bundle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_platform.html">fiber_platform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_plotter.html">fiber_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fieldgenesis.html">fieldgenesis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fields.html">fields</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fungenerators.html">fungenerators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hail_david.html">hail_david</a></li>
+<li class="toctree-l1"><a class="reference internal" href="housekeeping.html">housekeeping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="meta_designer.html">meta_designer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metal.html">metal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metaorchestra.html">metaorchestra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">misc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ml_plot_in.html">ml_plot_in</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_factory.html">phase_factory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="printech.html">printech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="slacking.html">slacking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sniffer.html">sniffer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="standard_candle.html">standard_candle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html">templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wavegraphics.html">wavegraphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wavesight.html">wavesight</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">wavesight</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/usage/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="wavesight">
+<h1>wavesight<a class="headerlink" href="#wavesight" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="EH4_to_EH5.html">EH4_to_EH5</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="EH4_to_EH5.html#EH4_to_EH5.h5_handler"><code class="docutils literal notranslate"><span class="pre">h5_handler()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="EH4_to_EH5.html#EH4_to_EH5.wave_to_vol"><code class="docutils literal notranslate"><span class="pre">wave_to_vol()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_animate.html">EH4_animate</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="EH4_animate.html#EH4_animate.wave_plotter"><code class="docutils literal notranslate"><span class="pre">wave_plotter()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_plotter.html">EH4_plotter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="EH4_plotter.html#EH4_plotter.EH4_plot"><code class="docutils literal notranslate"><span class="pre">EH4_plot()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="EH5_assembly.html">EH5_assembly</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="EH5_assembly.html#EH5_assembly.h5_handler"><code class="docutils literal notranslate"><span class="pre">h5_handler()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="EH5_assembly.html#EH5_assembly.vol_assembler"><code class="docutils literal notranslate"><span class="pre">vol_assembler()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="across_ml.html">across_ml</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="across_ml.html#across_ml.meta_duct"><code class="docutils literal notranslate"><span class="pre">meta_duct()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="across_ml.html#across_ml.metasurf_designer"><code class="docutils literal notranslate"><span class="pre">metasurf_designer()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="across_ml.html#across_ml.wave_sorter"><code class="docutils literal notranslate"><span class="pre">wave_sorter()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="convstore.html">convstore</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="convstore.html#convstore.count_shared_chars"><code class="docutils literal notranslate"><span class="pre">count_shared_chars()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="convstore.html#convstore.find_layout_rectangle"><code class="docutils literal notranslate"><span class="pre">find_layout_rectangle()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="convstore.html#convstore.findallroots"><code class="docutils literal notranslate"><span class="pre">findallroots()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="convstore.html#convstore.round2sigfigs"><code class="docutils literal notranslate"><span class="pre">round2sigfigs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="convstore.html#convstore.zerocrossings"><code class="docutils literal notranslate"><span class="pre">zerocrossings()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="datapipes.html">datapipes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="datapipes.html#datapipes.CustomJSONEncoder"><code class="docutils literal notranslate"><span class="pre">CustomJSONEncoder</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="datapipes.html#datapipes.CustomJSONEncoder.default"><code class="docutils literal notranslate"><span class="pre">CustomJSONEncoder.default()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="datapipes.html#datapipes.extract_cli_arguments_and_run"><code class="docutils literal notranslate"><span class="pre">extract_cli_arguments_and_run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="datapipes.html#datapipes.load_from_h5"><code class="docutils literal notranslate"><span class="pre">load_from_h5()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="datapipes.html#datapipes.load_from_json"><code class="docutils literal notranslate"><span class="pre">load_from_json()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="datapipes.html#datapipes.run_script_and_get_json"><code class="docutils literal notranslate"><span class="pre">run_script_and_get_json()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="datapipes.html#datapipes.save_to_h5"><code class="docutils literal notranslate"><span class="pre">save_to_h5()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="datapipes.html#datapipes.save_to_json"><code class="docutils literal notranslate"><span class="pre">save_to_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="diffkernels.html">diffkernels</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="diffkernels.html#diffkernels.electricKernels"><code class="docutils literal notranslate"><span class="pre">electricKernels()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="diffkernels.html#diffkernels.jit"><code class="docutils literal notranslate"><span class="pre">jit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="diffkernels.html#diffkernels.magneticKernels"><code class="docutils literal notranslate"><span class="pre">magneticKernels()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_animate.html">fiber_animate</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fiber_animate.html#fiber_animate.wave_animator"><code class="docutils literal notranslate"><span class="pre">wave_animator()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_bridge.html">fiber_bridge</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fiber_bridge.html#fiber_bridge.h5_handler"><code class="docutils literal notranslate"><span class="pre">h5_handler()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fiber_bridge.html#fiber_bridge.wave_jumper"><code class="docutils literal notranslate"><span class="pre">wave_jumper()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_bundle.html">fiber_bundle</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fiber_bundle.html#fiber_bundle.fan_out"><code class="docutils literal notranslate"><span class="pre">fan_out()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_platform.html">fiber_platform</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fiber_platform.html#fiber_platform.mode_solver"><code class="docutils literal notranslate"><span class="pre">mode_solver()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fiber_platform.html#fiber_platform.run_time_fun"><code class="docutils literal notranslate"><span class="pre">run_time_fun()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fiber_platform.html#fiber_platform.sim_height_fun"><code class="docutils literal notranslate"><span class="pre">sim_height_fun()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_plotter.html">fiber_plotter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fiber_plotter.html#fiber_plotter.wave_plotter"><code class="docutils literal notranslate"><span class="pre">wave_plotter()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fieldgenesis.html">fieldgenesis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.HE_ECladdinggenz"><code class="docutils literal notranslate"><span class="pre">HE_ECladdinggenz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.HE_ECladdinggen"><code class="docutils literal notranslate"><span class="pre">HE_ECladdinggenρ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#id0"><code class="docutils literal notranslate"><span class="pre">HE_ECladdinggenφ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.HE_ECoregenz"><code class="docutils literal notranslate"><span class="pre">HE_ECoregenz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.HE_ECoregen"><code class="docutils literal notranslate"><span class="pre">HE_ECoregenρ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#id13"><code class="docutils literal notranslate"><span class="pre">HE_ECoregenφ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.HE_HCladdinggenz"><code class="docutils literal notranslate"><span class="pre">HE_HCladdinggenz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.HE_HCladdinggen"><code class="docutils literal notranslate"><span class="pre">HE_HCladdinggenρ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#id23"><code class="docutils literal notranslate"><span class="pre">HE_HCladdinggenφ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.HE_HCoregenz"><code class="docutils literal notranslate"><span class="pre">HE_HCoregenz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.HE_HCoregen"><code class="docutils literal notranslate"><span class="pre">HE_HCoregenρ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#id33"><code class="docutils literal notranslate"><span class="pre">HE_HCoregenφ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TE_ECladdinggenz"><code class="docutils literal notranslate"><span class="pre">TE_ECladdinggenz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TE_ECladdinggen"><code class="docutils literal notranslate"><span class="pre">TE_ECladdinggenρ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#id43"><code class="docutils literal notranslate"><span class="pre">TE_ECladdinggenφ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TE_ECoregenz"><code class="docutils literal notranslate"><span class="pre">TE_ECoregenz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TE_ECoregen"><code class="docutils literal notranslate"><span class="pre">TE_ECoregenρ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#id53"><code class="docutils literal notranslate"><span class="pre">TE_ECoregenφ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TE_HCladdinggenz"><code class="docutils literal notranslate"><span class="pre">TE_HCladdinggenz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TE_HCladdinggen"><code class="docutils literal notranslate"><span class="pre">TE_HCladdinggenρ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#id63"><code class="docutils literal notranslate"><span class="pre">TE_HCladdinggenφ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TE_HCoregenz"><code class="docutils literal notranslate"><span class="pre">TE_HCoregenz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TE_HCoregen"><code class="docutils literal notranslate"><span class="pre">TE_HCoregenρ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#id73"><code class="docutils literal notranslate"><span class="pre">TE_HCoregenφ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TM_ECladdinggenz"><code class="docutils literal notranslate"><span class="pre">TM_ECladdinggenz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TM_ECladdinggen"><code class="docutils literal notranslate"><span class="pre">TM_ECladdinggenρ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#id83"><code class="docutils literal notranslate"><span class="pre">TM_ECladdinggenφ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TM_ECoregenz"><code class="docutils literal notranslate"><span class="pre">TM_ECoregenz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TM_ECoregen"><code class="docutils literal notranslate"><span class="pre">TM_ECoregenρ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#id93"><code class="docutils literal notranslate"><span class="pre">TM_ECoregenφ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TM_HCladdinggenz"><code class="docutils literal notranslate"><span class="pre">TM_HCladdinggenz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TM_HCladdinggen"><code class="docutils literal notranslate"><span class="pre">TM_HCladdinggenρ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#id103"><code class="docutils literal notranslate"><span class="pre">TM_HCladdinggenφ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TM_HCoregenz"><code class="docutils literal notranslate"><span class="pre">TM_HCoregenz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.TM_HCoregen"><code class="docutils literal notranslate"><span class="pre">TM_HCoregenρ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#id113"><code class="docutils literal notranslate"><span class="pre">TM_HCoregenφ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fieldgenesis.html#fieldgenesis.fieldGenerator"><code class="docutils literal notranslate"><span class="pre">fieldGenerator()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fields.html">fields</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fields.html#fields.electric_dipole"><code class="docutils literal notranslate"><span class="pre">electric_dipole()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fields.html#fields.magnetic_dipole"><code class="docutils literal notranslate"><span class="pre">magnetic_dipole()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fields.html#fields.plane_wave"><code class="docutils literal notranslate"><span class="pre">plane_wave()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fungenerators.html">fungenerators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fungenerators.html#fungenerators.hefungen"><code class="docutils literal notranslate"><span class="pre">hefungen()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fungenerators.html#fungenerators.tefungen"><code class="docutils literal notranslate"><span class="pre">tefungen()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fungenerators.html#fungenerators.tmfungen"><code class="docutils literal notranslate"><span class="pre">tmfungen()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hail_david.html">hail_david</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hail_david.html#hail_david.send_message"><code class="docutils literal notranslate"><span class="pre">send_message()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="housekeeping.html">housekeeping</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="housekeeping.html#housekeeping.house_keeper"><code class="docutils literal notranslate"><span class="pre">house_keeper()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="meta_designer.html">meta_designer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="meta_designer.html#meta_designer.meta_designer"><code class="docutils literal notranslate"><span class="pre">meta_designer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="metal.html">metal</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="metal.html#metal.expand_sim_params"><code class="docutils literal notranslate"><span class="pre">expand_sim_params()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metal.html#metal.fresnel_fun_gen"><code class="docutils literal notranslate"><span class="pre">fresnel_fun_gen()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metal.html#metal.hex_lattice_points"><code class="docutils literal notranslate"><span class="pre">hex_lattice_points()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="metalenses.html">metalenses</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.aux_params"><code class="docutils literal notranslate"><span class="pre">aux_params()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.compute_post_simulation_params"><code class="docutils literal notranslate"><span class="pre">compute_post_simulation_params()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.dipole_fluxor"><code class="docutils literal notranslate"><span class="pre">dipole_fluxor()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.expand_sim_params"><code class="docutils literal notranslate"><span class="pre">expand_sim_params()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.far_ez_source_amp_func"><code class="docutils literal notranslate"><span class="pre">far_ez_source_amp_func()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.focal_length"><code class="docutils literal notranslate"><span class="pre">focal_length()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.fresnel_phase_profile"><code class="docutils literal notranslate"><span class="pre">fresnel_phase_profile()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.function_topper"><code class="docutils literal notranslate"><span class="pre">function_topper()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.get_size"><code class="docutils literal notranslate"><span class="pre">get_size()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.imaging_phase_profile"><code class="docutils literal notranslate"><span class="pre">imaging_phase_profile()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.in_plane_dip_amp_func_Ex"><code class="docutils literal notranslate"><span class="pre">in_plane_dip_amp_func_Ex()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.in_plane_dip_amp_func_Hz"><code class="docutils literal notranslate"><span class="pre">in_plane_dip_amp_func_Hz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.into_the_farfield"><code class="docutils literal notranslate"><span class="pre">into_the_farfield()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.make_metalens_geometry"><code class="docutils literal notranslate"><span class="pre">make_metalens_geometry()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.para_metalens"><code class="docutils literal notranslate"><span class="pre">para_metalens()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.plot_density"><code class="docutils literal notranslate"><span class="pre">plot_density()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.plot_em_energy_density"><code class="docutils literal notranslate"><span class="pre">plot_em_energy_density()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.plot_phase_profile"><code class="docutils literal notranslate"><span class="pre">plot_phase_profile()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.plot_simulation_cell"><code class="docutils literal notranslate"><span class="pre">plot_simulation_cell()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.post_phase"><code class="docutils literal notranslate"><span class="pre">post_phase()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.post_transmission"><code class="docutils literal notranslate"><span class="pre">post_transmission()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.print_params"><code class="docutils literal notranslate"><span class="pre">print_params()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.simulate_metalens"><code class="docutils literal notranslate"><span class="pre">simulate_metalens()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metalenses.html#metalenses.wave_to_rgb"><code class="docutils literal notranslate"><span class="pre">wave_to_rgb()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="metaorchestra.html">metaorchestra</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="metaorchestra.html#metaorchestra.param_expander"><code class="docutils literal notranslate"><span class="pre">param_expander()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">misc</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.array_stretcher"><code class="docutils literal notranslate"><span class="pre">array_stretcher()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.ceil_to_multiple"><code class="docutils literal notranslate"><span class="pre">ceil_to_multiple()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.dict_summary"><code class="docutils literal notranslate"><span class="pre">dict_summary()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.format_time"><code class="docutils literal notranslate"><span class="pre">format_time()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.get_global_memory_usage"><code class="docutils literal notranslate"><span class="pre">get_global_memory_usage()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.get_max_RSS"><code class="docutils literal notranslate"><span class="pre">get_max_RSS()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.get_memory_usage"><code class="docutils literal notranslate"><span class="pre">get_memory_usage()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.get_squeue_data"><code class="docutils literal notranslate"><span class="pre">get_squeue_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.get_total_size_of_directory"><code class="docutils literal notranslate"><span class="pre">get_total_size_of_directory()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.insert_string_at_nth_position"><code class="docutils literal notranslate"><span class="pre">insert_string_at_nth_position()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.latex_eqn_to_png"><code class="docutils literal notranslate"><span class="pre">latex_eqn_to_png()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.num2tex"><code class="docutils literal notranslate"><span class="pre">num2tex()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.rando_id"><code class="docutils literal notranslate"><span class="pre">rando_id()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.random_in_range"><code class="docutils literal notranslate"><span class="pre">random_in_range()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.rounder"><code class="docutils literal notranslate"><span class="pre">rounder()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.send_count"><code class="docutils literal notranslate"><span class="pre">send_count()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.send_image"><code class="docutils literal notranslate"><span class="pre">send_image()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.send_message"><code class="docutils literal notranslate"><span class="pre">send_message()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.sig_figs_in"><code class="docutils literal notranslate"><span class="pre">sig_figs_in()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.sym_pad"><code class="docutils literal notranslate"><span class="pre">sym_pad()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.transient_scope"><code class="docutils literal notranslate"><span class="pre">transient_scope()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html#misc.var_collisions"><code class="docutils literal notranslate"><span class="pre">var_collisions()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ml_plot_in.html">ml_plot_in</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ml_plot_in.html#ml_plot_in.wave_plotter"><code class="docutils literal notranslate"><span class="pre">wave_plotter()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="phase_factory.html">phase_factory</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="phase_factory.html#phase_factory.convert"><code class="docutils literal notranslate"><span class="pre">convert()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="phase_factory.html#phase_factory.meta_field"><code class="docutils literal notranslate"><span class="pre">meta_field()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="phase_factory.html#phase_factory.meta_fields_hex"><code class="docutils literal notranslate"><span class="pre">meta_fields_hex()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="phase_factory.html#phase_factory.phase_crunch"><code class="docutils literal notranslate"><span class="pre">phase_crunch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="printech.html">printech</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="printech.html#printech.code_print"><code class="docutils literal notranslate"><span class="pre">code_print()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="printech.html#printech.printer"><code class="docutils literal notranslate"><span class="pre">printer()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="printech.html#printech.rule"><code class="docutils literal notranslate"><span class="pre">rule()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="printech.html#printech.table"><code class="docutils literal notranslate"><span class="pre">table()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="slacking.html">slacking</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="slacking.html#slacking.delete_thread"><code class="docutils literal notranslate"><span class="pre">delete_thread()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="slacking.html#slacking.post_file_to_slack"><code class="docutils literal notranslate"><span class="pre">post_file_to_slack()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="slacking.html#slacking.post_message_to_slack"><code class="docutils literal notranslate"><span class="pre">post_message_to_slack()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="slacking.html#slacking.search_threads"><code class="docutils literal notranslate"><span class="pre">search_threads()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="slacking.html#slacking.send_fig_to_slack"><code class="docutils literal notranslate"><span class="pre">send_fig_to_slack()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sniffer.html">sniffer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sniffer.html#sniffer.output_vigilante"><code class="docutils literal notranslate"><span class="pre">output_vigilante()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="standard_candle.html">standard_candle</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="standard_candle.html#standard_candle.standard"><code class="docutils literal notranslate"><span class="pre">standard()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html">templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wavegraphics.html">wavegraphics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wavegraphics.html#wavegraphics.frame_patch"><code class="docutils literal notranslate"><span class="pre">frame_patch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wavesight.html">wavesight</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.FFT2D_convolution_integral"><code class="docutils literal notranslate"><span class="pre">FFT2D_convolution_integral()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.angular_farfield_propagator"><code class="docutils literal notranslate"><span class="pre">angular_farfield_propagator()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.approx_time"><code class="docutils literal notranslate"><span class="pre">approx_time()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.boundary_test"><code class="docutils literal notranslate"><span class="pre">boundary_test()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.calculate_numerical_basis"><code class="docutils literal notranslate"><span class="pre">calculate_numerical_basis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.calculate_size_of_grid"><code class="docutils literal notranslate"><span class="pre">calculate_size_of_grid()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.coordinate_layout"><code class="docutils literal notranslate"><span class="pre">coordinate_layout()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.device_layout"><code class="docutils literal notranslate"><span class="pre">device_layout()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.electric_vectorial_diffraction"><code class="docutils literal notranslate"><span class="pre">electric_vectorial_diffraction()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.equivCurrents"><code class="docutils literal notranslate"><span class="pre">equivCurrents()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.field_dot"><code class="docutils literal notranslate"><span class="pre">field_dot()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.field_sampler"><code class="docutils literal notranslate"><span class="pre">field_sampler()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.fresnel_t_1"><code class="docutils literal notranslate"><span class="pre">fresnel_t_θ1()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.fresnel_t_12"><code class="docutils literal notranslate"><span class="pre">fresnel_t_θ1θ2()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.fresnel_ts_1"><code class="docutils literal notranslate"><span class="pre">fresnel_ts_θ1()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.fresnel_ts_12"><code class="docutils literal notranslate"><span class="pre">fresnel_ts_θ1θ2()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.from_cart_cart_to_cyl_cart"><code class="docutils literal notranslate"><span class="pre">from_cart_cart_to_cyl_cart()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.from_cyl_cart_to_cart_cart"><code class="docutils literal notranslate"><span class="pre">from_cyl_cart_to_cart_cart()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.from_near_to_far_angular"><code class="docutils literal notranslate"><span class="pre">from_near_to_far_angular()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.from_sampled_field_to_sampled_equiv_currents"><code class="docutils literal notranslate"><span class="pre">from_sampled_field_to_sampled_equiv_currents()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.magnetic_vectorial_diffraction"><code class="docutils literal notranslate"><span class="pre">magnetic_vectorial_diffraction()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.multisolver"><code class="docutils literal notranslate"><span class="pre">multisolver()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.poynting_refractor"><code class="docutils literal notranslate"><span class="pre">poynting_refractor()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.scalar_diffraction"><code class="docutils literal notranslate"><span class="pre">scalar_diffraction()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.simpson_quad_1D"><code class="docutils literal notranslate"><span class="pre">simpson_quad_1D()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.simpson_quad_ND"><code class="docutils literal notranslate"><span class="pre">simpson_quad_ND()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavesight.html#wavesight.simpson_weights_1D"><code class="docutils literal notranslate"><span class="pre">simpson_weights_1D()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

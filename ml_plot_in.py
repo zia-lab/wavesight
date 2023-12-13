@@ -28,10 +28,6 @@ style.use('dark_background')
 # this script can be used to generate plots for the fields incident on the metasurface
 # it takes as simple argument equal to the job id for the entire simulation
 
-parser = argparse.ArgumentParser(description = 'Plot the fields incident of the metasurface.')
-parser.add_argument('waveguide_id', type=str, help='The label for the job.')
-args = parser.parse_args()
-
 cmap          = cm.watermelon
 data_dir      = '/users/jlizaraz/data/jlizaraz/CEM/wavesight'
 post_to_slack = True
@@ -43,6 +39,7 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
     and creates plots for the fields incident on the metasurface.
     These pdfs are saved in the same directory as the data and 
     are also posted to Slack.
+    
     Parameters
     ----------
     waveguide_id : str
@@ -51,6 +48,7 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
         The maximum number of plots to generate. The default is np.inf.
     extra_fname : str, optional
         Extra string to append to the filename. The default is ''.
+    
     Returns
     -------
     None
@@ -143,4 +141,7 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
                                     slack_channel='nvs_and_metalenses')
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description = 'Plot the fields incident of the metasurface.')
+    parser.add_argument('waveguide_id', type=str, help='The label for the job.')
+    args = parser.parse_args()
     wave_plotter(args.waveguide_id)

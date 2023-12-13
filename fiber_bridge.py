@@ -16,7 +16,7 @@
 # │      whose second index picks between E or H, whose      │
 # │    third index picks between the x-y-z components of     │
 # │      the field, on whose fourth and fifth index are      │
-# │    indexed to the spatial positions at the propagated    │
+# │    indexed to the spatial positions at the propagation   │
 # │                          plane.                          │
 # │                                                          │
 # └──────────────────────────────────────────────────────────┘
@@ -30,7 +30,7 @@ from printech import *
 from contextlib import contextmanager
 
 data_dir        = '/users/jlizaraz/data/jlizaraz/CEM/wavesight'
-exclude_dirs    = ['moovies']
+exclude_dirs    = ['moovies', 'moovies-EH4', 'err', 'out', 'figs']
 overwrite       = True
 
 @contextmanager
@@ -46,6 +46,28 @@ def h5_handler(filename, mode):
             file.close()
 
 def wave_jumper(waveguide_id, zProp, nProp):
+    '''
+    This function takes the id for a given simulation and
+    takes the modal fields that have been launched from the
+    waveguide and propagates them across the given distance
+    zProp in the given medium with refractive index nProp.
+
+    The propagated fields are saved in a single array in 
+    h5 format.
+
+    Parameters
+    ----------
+    waveguide_id : str
+        The label for the job.
+    zProp : float
+        The propagation distance along the z-axis.
+    nProp : float
+        The refractive index of the propagation medium.
+    
+    Returns
+    -------
+    None
+    '''
     # first find all the subdirs that correspond to the waveguide_id
     waveguide_dir = os.path.join(data_dir, waveguide_id)
     job_dir_contents = os.listdir(waveguide_dir)
@@ -65,9 +87,6 @@ def wave_jumper(waveguide_id, zProp, nProp):
         propagated_h5_fname = 'EH3.h5'
         propagated_h5_fname = os.path.join(job_dir, propagated_h5_fname)
         mode_sol, _ = ws.load_from_h5(refracted_h5_fname)
-        mode_idx, kz, m, modeType, parity = (mode_sol['mode_idx'], mode_sol['kz'],
-                                             mode_sol['m'], mode_sol['modeType'],
-                                             mode_sol['parity'])
         kFree      = mode_sol['kFree']
         λFree      = 2*np.pi/kFree
         coreRadius = mode_sol['coreRadius']
@@ -88,7 +107,6 @@ def wave_jumper(waveguide_id, zProp, nProp):
         total_pad_width = len(xCoords) - N_samples
         h5_keys = ['h_xy_slices_fname_h5', 'e_xy_slices_fname_h5']
         data = {}
-        propagated_h5_fname = os.path.join(job_dir, propagated_h5_fname)
         if os.path.exists(propagated_h5_fname) and not overwrite:
             printer(">> Done already, continue to next.")
             continue
@@ -162,7 +180,7 @@ def wave_jumper(waveguide_id, zProp, nProp):
                 prop_h5_file.create_dataset('E^2_integral_propagated', data = E_squared_int_prop)
                 prop_h5_file.create_dataset('H^2_integral_source', data = H_squared_int_source)
                 prop_h5_file.create_dataset('H^2_integral_propagated', data = H_squared_int_prop)
-                prop_h5_file.create_dataset('waveguide_id', data=waveguide_id)
+                prop_h5_file.create_dataset('waveguide_id', data = waveguide_id)
 
 
 if __name__ == '__main__':

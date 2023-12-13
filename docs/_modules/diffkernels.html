@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>diffkernels &mdash; wavesight  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -40,14 +42,38 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../usage/wavesight.html">wavesight.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage/fields.html">fields.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/across_ml.html">across_ml module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/convstore.html">convstore module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/datapipes.html">datapipes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/diffkernels.html">diffkernels module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_animate.html">EH4_animate module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_plotter.html">EH4_plotter module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4-to-EH5.html">EH4-to-EH5 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH5-assembly.html">EH5-assembly module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_animate.html">fiber_animate module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_bridge.html">fiber_bridge module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_bundle.html">fiber_bundle module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_platform.html">fiber_platform module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_plotter.html">fiber_plotter module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fieldgenesis.html">fieldgenesis module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fields.html">fields module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fungenerators.html">fungenerators module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/hail_david.html">hail_david module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/housekeeping.html">housekeeping module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage/maxwell.html">Maxwell’s Equations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage/diffkernels.html">diffkernels.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage/misc.html">misc.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage/fieldgenesis.html">fieldgenesis.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage/fungenerators.html">fungenerators.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage/convstore.html">convstore.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/meta_designer.html">meta_designer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metal.html">metal module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metaorchestra.html">metaorchestra module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/misc.html">misc module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/ml_plot_in.html">ml_plot_in module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/phase_factory.html">phase_factory module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/printech.html">printech module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/slacking.html">slacking module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/sniffer.html">sniffer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/standard_candle.html">standard_candle module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/templates.html">templates module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavegraphics.html">wavegraphics module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavesight.html">wavesight module</a></li>
 </ul>
 
         </div>
@@ -76,13 +102,24 @@
              
   <h1>Source code for diffkernels</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
+
 <span class="c1"># This   script   contains  some  necessary  functions  to  compute  the</span>
 <span class="c1"># diffracted  electric  and  magnetic fields within the Smythe-Kirchhoff</span>
 <span class="c1"># approximation.</span>
 <span class="c1"># It was generated by the Mathematica notebook diffint.nb.</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">jit</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">jit</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Numba not available, defining a dummy jit decorator.&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="jit">
+<a class="viewcode-back" href="../usage/diffkernels.html#diffkernels.jit">[docs]</a>
+    <span class="k">def</span> <span class="nf">jit</span><span class="p">(</span><span class="n">nopython</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">func</span> 
+        <span class="k">return</span> <span class="n">decorator</span></div>
+
 
 <div class="viewcode-block" id="electricKernels">
 <a class="viewcode-back" href="../usage/diffkernels.html#diffkernels.electricKernels">[docs]</a>

@@ -10,7 +10,7 @@
 # │     step-index fiber. It solves for the propagation      │
 # │     constants and it creates a set of slurm scripts      │
 # │     that launch the simulation of the refraction of      │
-# │      the waveguide modes across an end face of the       │
+# │      the waveguide modes across the end face of the      │
 # │                          fiber.                          │
 # │                                                          │
 # └──────────────────────────────────────────────────────────┘
@@ -39,11 +39,6 @@ sample_posts = 3
 # load the templates for the first and second bash scripts
 bash_template_1 = ws.bash_template_1
 bash_template_2 = ws.bash_template_2
-
-def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
-    rtime = (kappa * sim_cell.x * sim_cell.y * sim_cell.z
-             * run_time * spatial_resolution**3)
-    return rtime
 
 def fan_out(sim_params):
     '''

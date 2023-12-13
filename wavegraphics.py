@@ -19,6 +19,7 @@ def frame_patch(xy, width, height, border_width, facecolor='none', hatch = '/', 
         The color of the rectangle.
     hatch : str, optional
         The hatch pattern of the rectangle.
+    
     Returns
     -------
     patch : matplotlib.patches.PathPatch

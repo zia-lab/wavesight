@@ -56,7 +56,8 @@ def tefungen(λfree, n1, n2, a):
 
 def hefungen(λfree, m, n1, n2, a):
     '''
-    This function returns the eigenvalue function for HE(n,m) modes.
+    This function returns the eigenvalue function for HE(n,m) modes in 
+    a step index waveguide.
 
     Parameters
     ----------

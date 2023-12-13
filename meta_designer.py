@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import time
 import argparse
 import numpy as np
 import wavesight as ws
@@ -18,10 +17,12 @@ def meta_designer(sim_params_fname):
     and produces the corresponding metalens design.
     The design is saved to disk as an .h5 file and a summary of the design,
     together with some figures are posted to Slack for archival purposes.
+
     Parameters
     ----------
     sim_params_fname: str
         Filename of the simulation parameters file.
+    
     Returns
     -------
     metalens_design: dict
@@ -30,8 +31,10 @@ def meta_designer(sim_params_fname):
     phase_factory = ws.extract_cli_arguments_and_run('./phase_factory.py')
     simulation_parameters = ws.load_from_json(sim_params_fname)
     printer("defining local variables from the simulation dictionary")
-    for key, value in simulation_parameters.items():
-        globals()[key] = value
+    send_to_slack = simulation_parameters['send_to_slack']
+    slack_channel = simulation_parameters['slack_channel']
+    show_plot = simulation_parameters['show_plot']
+    MIN_FEATURE_SIZE = simulation_parameters['MIN_FEATURE_SIZE']
     if send_to_slack:
         slack_thread = ws.post_message_to_slack("Drafting a new metalens design", slack_channel=slack_channel)
         thread_ts = slack_thread['ts']

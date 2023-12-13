@@ -24,7 +24,6 @@ try:
     import S4
 except:
     print("S4 not found, this script must be run from the S4env conda environment.")
-    exit()
 import json
 import argparse
 import numpy as np
@@ -43,6 +42,7 @@ def meta_field(sim_params):
         's_amp' (float): amplitude of the s-polarized field
         'p_amp' (float): amplitude of the p-polarized field
         'wavelength' (float): equivalent wavelength in vacuum
+    
     Returns
     -------
     E_field, H_field : tuple of triples of complex numbers
@@ -88,12 +88,21 @@ def meta_field(sim_params):
 
     return E_field, H_field
 
-def convert(o):
-    ''''
-    Used to convert numpy arrays to lists when saving to json.
+def convert(arr):
     '''
-    if isinstance(o, np.ndarray):
-        return o.tolist()
+    Used to convert numpy arrays to lists when saving to json.
+
+    Parameters
+    ----------
+    arr : np.ndarray
+        The array to be converted
+    
+    Returns
+    -------
+    arr.tolist() : list
+    '''
+    if isinstance(arr, np.ndarray):
+        return arr.tolist()
     raise TypeError
 
 def meta_fields_hex(sim_params):
@@ -110,6 +119,7 @@ def meta_fields_hex(sim_params):
         'lattice_constant' (float): lattice constant of the hexagonal lattice
         'samples' (int): how many samples taken along the fundamental parallelogram
         'zCoord' (float): z-coordinate where the resultant fields will be computed
+    
     Returns
     -------
     (E_field, H_field) : tuple of triples of complex numbers
@@ -185,6 +195,7 @@ def phase_crunch(n_refractive, min_post_width, max_post_width,
         amplitude of the s-polarized field
     p_amp : float
         amplitude of the p-polarized field
+    
     Returns
     -------
     post_widths, phases : tuple of np.arrays
@@ -278,5 +289,5 @@ if __name__ == '__main__':
         printer("Saving results to %s" % json_fname)
         json.dump(results, f, default=convert, indent=4, sort_keys=True)
     rule()
-    # this final printer is necessary for being able to retrieve the results
+    # this final print is necessary for being able to retrieve the results
     print(json_fname)

@@ -42,8 +42,10 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
     This function takes the job id for a given batch simulation
     and creates plots for the fields in the saggital and xy
     monitors.
+
     A pdf is created for each monitor. Thees pdfs are saved in
     the same directory as the data and also posted to Slack.
+
     Parameters
     ----------
     waveguide_id : str
@@ -52,6 +54,7 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
         The maximum number of plots to generate. The default is np.inf.
     extra_fname : str, optional
         Extra string to append to the filename. The default is ''.
+    
     Returns
     -------
     None

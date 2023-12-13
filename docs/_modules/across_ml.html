@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>across_ml &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/across_ml.html">across_ml module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/convstore.html">convstore module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/datapipes.html">datapipes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/diffkernels.html">diffkernels module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_animate.html">EH4_animate module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_plotter.html">EH4_plotter module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4-to-EH5.html">EH4-to-EH5 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH5-assembly.html">EH5-assembly module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_animate.html">fiber_animate module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_bridge.html">fiber_bridge module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_bundle.html">fiber_bundle module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_launcher.html">fiber_launcher module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_platform.html">fiber_platform module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_plotter.html">fiber_plotter module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fieldgenesis.html">fieldgenesis module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fields.html">fields module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fungenerators.html">fungenerators module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/hail_david.html">hail_david module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/housekeeping.html">housekeeping module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/mem_tester.html">mem_tester module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/meta_designer.html">meta_designer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metalenses.html">metalenses module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metal.html">metal module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metaorchestra.html">metaorchestra module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/misc.html">misc module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/ml_plot_in.html">ml_plot_in module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/modules.html">wavesight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/phase_factory.html">phase_factory module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/printech.html">printech module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/pyq.html">pyq module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/readme_factory.html">readme_factory module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/slacking.html">slacking module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/sniffer.html">sniffer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/standard_candle.html">standard_candle module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/templates.html">templates module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavegraphics.html">wavegraphics module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavesight.html">wavesight module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">across_ml</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for across_ml</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/users/jlizaraz/anaconda/meep/bin/python</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">meep</span> <span class="k">as</span> <span class="nn">mp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">wavesight</span> <span class="k">as</span> <span class="nn">ws</span>
+<span class="kn">from</span> <span class="nn">printech</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">RegularGridInterpolator</span>
+
+<span class="n">data_dir</span>        <span class="o">=</span> <span class="s1">&#39;/users/jlizaraz/data/jlizaraz/CEM/wavesight&#39;</span>
+<span class="n">exclude_dirs</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;moovies&#39;</span><span class="p">]</span>
+<span class="n">save_cross_eps</span>  <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="metasurf_designer">
+<a class="viewcode-back" href="../usage/across_ml.html#across_ml.metasurf_designer">[docs]</a>
+<span class="k">def</span> <span class="nf">metasurf_designer</span><span class="p">(</span><span class="n">metalens_design_dict</span><span class="p">,</span> <span class="n">post_z_center</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given a dictionary with the design parameters for a metalens, this function</span>
+<span class="sd">    will return a list of MEEP objects that represent the metalens structure.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    metalens_design_dict : dict</span>
+<span class="sd">        A dictionary with the design parameters for the metalens.</span>
+<span class="sd">    post_z_center : float</span>
+<span class="sd">        The z coordinate of the center of the metalens pillars.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    post_forest : list</span>
+<span class="sd">        A list of MEEP objects that represent the cylindrical pillars that make</span>
+<span class="sd">        up the metalens.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">post_radii</span> <span class="o">=</span> <span class="n">metalens_design_dict</span><span class="p">[</span><span class="s1">&#39;post_radii&#39;</span><span class="p">]</span>
+    <span class="n">post_height</span> <span class="o">=</span> <span class="n">metalens_design_dict</span><span class="p">[</span><span class="s1">&#39;post_height&#39;</span><span class="p">]</span>
+    <span class="n">lattice_points</span> <span class="o">=</span> <span class="n">metalens_design_dict</span><span class="p">[</span><span class="s1">&#39;lattice_points&#39;</span><span class="p">]</span>
+    <span class="n">post_forest</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">nPosts</span> <span class="o">=</span> <span class="n">metalens_design_dict</span><span class="p">[</span><span class="s1">&#39;nHost&#39;</span><span class="p">]</span>
+    <span class="n">postMedium</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Medium</span><span class="p">(</span><span class="n">index</span> <span class="o">=</span> <span class="n">nPosts</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">lattice_point</span><span class="p">,</span> <span class="n">post_radius</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">lattice_points</span><span class="p">,</span> <span class="n">post_radii</span><span class="p">):</span>
+        <span class="n">post_location</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="n">lattice_point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">lattice_point</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">post_z_center</span><span class="p">)</span>
+        <span class="n">a_post</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Cylinder</span><span class="p">(</span><span class="n">radius</span> <span class="o">=</span> <span class="n">post_radius</span><span class="p">,</span>
+                             <span class="n">height</span> <span class="o">=</span> <span class="n">post_height</span><span class="p">,</span>
+                             <span class="n">center</span> <span class="o">=</span> <span class="n">post_location</span><span class="p">,</span>
+                             <span class="n">material</span> <span class="o">=</span> <span class="n">postMedium</span><span class="p">)</span>
+        <span class="n">post_forest</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a_post</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">post_forest</span></div>
+
+
+<div class="viewcode-block" id="wave_sorter">
+<a class="viewcode-back" href="../usage/across_ml.html#across_ml.wave_sorter">[docs]</a>
+<span class="k">def</span> <span class="nf">wave_sorter</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    A convenience function to sort directories accoring to their</span>
+<span class="sd">    filename.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">idx</span></div>
+
+
+<div class="viewcode-block" id="meta_duct">
+<a class="viewcode-back" href="../usage/across_ml.html#across_ml.meta_duct">[docs]</a>
+<span class="k">def</span> <span class="nf">meta_duct</span><span class="p">(</span><span class="n">waveguide_id</span><span class="p">,</span> <span class="n">mode_idx</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function will take the id for a waveguide and the index for</span>
+<span class="sd">    one of its propagating modes, and it will take the fields that have</span>
+<span class="sd">    been propagated to the input plane of the metalens and will produce</span>
+<span class="sd">    the fields that are transported across it.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># first find all the subdirs that correspond to the waveguide_id</span>
+    <span class="n">waveguide_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">waveguide_id</span><span class="p">)</span>
+    <span class="n">job_dir_contents</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">waveguide_dir</span><span class="p">)</span>
+    <span class="n">job_dir_contents</span> <span class="o">=</span> <span class="p">[</span><span class="n">a_dir</span> <span class="k">for</span> <span class="n">a_dir</span> <span class="ow">in</span> <span class="n">job_dir_contents</span> <span class="k">if</span> <span class="n">a_dir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude_dirs</span><span class="p">]</span>
+    <span class="n">job_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">waveguide_dir</span><span class="p">,</span> <span class="n">a_dir</span><span class="p">)</span> <span class="k">for</span> <span class="n">a_dir</span> <span class="ow">in</span> <span class="n">job_dir_contents</span><span class="p">]</span>
+    <span class="n">expanded_params_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">waveguide_dir</span><span class="p">,</span><span class="s1">&#39;config.json&#39;</span><span class="p">)</span>
+    <span class="n">params_dict</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">load_from_json</span><span class="p">(</span><span class="n">expanded_params_fname</span><span class="p">)</span>
+    <span class="n">nHost</span>           <span class="o">=</span> <span class="n">params_dict</span><span class="p">[</span><span class="s1">&#39;nHost&#39;</span><span class="p">]</span>
+    <span class="n">nBetween</span>        <span class="o">=</span> <span class="n">params_dict</span><span class="p">[</span><span class="s1">&#39;nBetween&#39;</span><span class="p">]</span>
+    <span class="n">MEEP_resolution</span> <span class="o">=</span> <span class="n">params_dict</span><span class="p">[</span><span class="s1">&#39;MEEP_resolution&#39;</span><span class="p">]</span>
+    <span class="n">EH3_to_ml</span>       <span class="o">=</span> <span class="n">params_dict</span><span class="p">[</span><span class="s1">&#39;EH3_to_ml&#39;</span><span class="p">]</span>
+    <span class="n">ml_to_EH4</span>       <span class="o">=</span> <span class="n">params_dict</span><span class="p">[</span><span class="s1">&#39;ml_to_EH4&#39;</span><span class="p">]</span>
+    <span class="n">ml_thickness</span>    <span class="o">=</span> <span class="n">params_dict</span><span class="p">[</span><span class="s1">&#39;ml_thickness&#39;</span><span class="p">]</span>
+    <span class="n">parallel_MEEP</span>   <span class="o">=</span> <span class="n">params_dict</span><span class="p">[</span><span class="s1">&#39;parallel_MEEP&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">parallel_MEEP</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
+        <span class="n">rank</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">rank</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># if not running parallel same as if running in serial</span>
+        <span class="n">rank</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">job_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">a_dir</span> <span class="k">for</span> <span class="n">a_dir</span> <span class="ow">in</span> <span class="n">job_dirs</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">a_dir</span><span class="p">)</span> <span class="p">]</span>
+    <span class="n">job_dirs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">job_dirs</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="n">wave_sorter</span><span class="p">))</span>
+    <span class="n">mode_to_dir</span> <span class="o">=</span> <span class="p">{</span><span class="n">jdir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> <span class="n">jdir</span> <span class="k">for</span> <span class="n">jdir</span> <span class="ow">in</span> <span class="n">job_dirs</span><span class="p">}</span>
+    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">mode_idx</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mode_to_dir</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid mode_idx&quot;</span><span class="p">)</span>
+    <span class="n">job_dir</span> <span class="o">=</span> <span class="n">mode_to_dir</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">mode_idx</span><span class="p">)]</span>
+
+    <span class="n">propagated_h5_fname</span> <span class="o">=</span> <span class="s1">&#39;EH3.h5&#39;</span>
+    <span class="n">propagated_h5_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="n">propagated_h5_fname</span><span class="p">)</span>
+    <span class="n">refracted_h5_fname</span>  <span class="o">=</span> <span class="s1">&#39;EH2.h5&#39;</span>
+    <span class="n">refracted_h5_fname</span>  <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="n">refracted_h5_fname</span><span class="p">)</span>
+
+    <span class="p">(</span><span class="n">metadata_dict</span><span class="p">,</span> <span class="n">created_on</span><span class="p">)</span>    <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">load_from_h5</span><span class="p">(</span><span class="n">refracted_h5_fname</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">prop_fields_dict</span><span class="p">,</span> <span class="n">created_on</span><span class="p">)</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">load_from_h5</span><span class="p">(</span><span class="n">propagated_h5_fname</span><span class="p">)</span>
+    <span class="n">incident_EH_field</span>              <span class="o">=</span> <span class="n">prop_fields_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;EH_field&#39;</span><span class="p">)</span>
+    <span class="n">electric_J</span><span class="p">,</span> <span class="n">magnetic_K</span>         <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">from_sampled_field_to_sampled_equiv_currents</span><span class="p">(</span><span class="n">incident_EH_field</span><span class="p">)</span>
+
+    <span class="n">pml_thickness</span> <span class="o">=</span> <span class="n">metadata_dict</span><span class="p">[</span><span class="s1">&#39;pml_thickness&#39;</span><span class="p">]</span>
+    <span class="n">xCoords</span>       <span class="o">=</span> <span class="n">prop_fields_dict</span><span class="p">[</span><span class="s1">&#39;xCoords&#39;</span><span class="p">]</span>
+    <span class="n">yCoords</span>       <span class="o">=</span> <span class="n">prop_fields_dict</span><span class="p">[</span><span class="s1">&#39;yCoords&#39;</span><span class="p">]</span>
+    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;retrieving predetermined thickness of the PML of </span><span class="si">%.1f</span><span class="s2"> um&quot;</span> <span class="o">%</span> <span class="n">pml_thickness</span><span class="p">)</span>
+    <span class="n">field_width</span>    <span class="o">=</span> <span class="n">xCoords</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">xCoords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">full_sim_width</span> <span class="o">=</span> <span class="n">field_width</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pml_thickness</span>
+
+    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;setting up the MEEP media&quot;</span><span class="p">)</span>
+    <span class="n">between_medium</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Medium</span><span class="p">(</span><span class="n">index</span> <span class="o">=</span> <span class="n">nBetween</span><span class="p">)</span>
+    <span class="n">host_medium</span>    <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Medium</span><span class="p">(</span><span class="n">index</span> <span class="o">=</span> <span class="n">nHost</span><span class="p">)</span>
+    <span class="n">ml_medium</span>      <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Medium</span><span class="p">(</span><span class="n">index</span> <span class="o">=</span> <span class="n">nHost</span><span class="p">)</span>
+
+    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;padding the incident field with zeros to account for the full width of the simulation cross section&quot;</span><span class="p">)</span>
+
+    <span class="n">N_samples</span>                <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xCoords</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">new_sim_width</span><span class="p">,</span> <span class="n">xCoords</span><span class="p">)</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">array_stretcher</span><span class="p">(</span><span class="n">xCoords</span><span class="p">,</span> <span class="n">full_sim_width</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">new_sim_width</span><span class="p">,</span> <span class="n">yCoords</span><span class="p">)</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">array_stretcher</span><span class="p">(</span><span class="n">yCoords</span><span class="p">,</span> <span class="n">full_sim_width</span><span class="p">)</span>
+    <span class="n">full_sim_width</span>           <span class="o">=</span> <span class="n">new_sim_width</span>
+    <span class="n">total_pad_width</span>          <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xCoords</span><span class="p">)</span> <span class="o">-</span> <span class="n">N_samples</span>
+    <span class="n">electric_J</span>               <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">sym_pad</span><span class="p">(</span><span class="n">electric_J</span><span class="p">,</span> <span class="n">total_pad_width</span><span class="p">)</span>
+    <span class="n">magnetic_K</span>               <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">sym_pad</span><span class="p">(</span><span class="n">magnetic_K</span><span class="p">,</span> <span class="n">total_pad_width</span><span class="p">)</span>
+
+    <span class="n">runway_cell_thickness</span> <span class="o">=</span> <span class="n">params_dict</span><span class="p">[</span><span class="s1">&#39;runway_cell_thickness&#39;</span><span class="p">]</span>
+    <span class="n">ml_cell_thickness</span>     <span class="o">=</span> <span class="n">params_dict</span><span class="p">[</span><span class="s1">&#39;ml_cell_thickness&#39;</span><span class="p">]</span>
+    <span class="n">host_cell_thickness</span>   <span class="o">=</span> <span class="n">params_dict</span><span class="p">[</span><span class="s1">&#39;host_cell_thickness&#39;</span><span class="p">]</span>
+
+    <span class="n">full_sim_height</span> <span class="o">=</span> <span class="n">runway_cell_thickness</span> <span class="o">+</span> <span class="n">ml_cell_thickness</span> <span class="o">+</span> <span class="n">host_cell_thickness</span>
+
+    <span class="n">runway_cell_z_center</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">full_sim_height</span><span class="o">/</span><span class="mi">2</span>
+                            <span class="o">+</span> <span class="n">runway_cell_thickness</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">ml_cell_z_center</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">full_sim_height</span><span class="o">/</span><span class="mi">2</span>
+                <span class="o">+</span> <span class="n">runway_cell_thickness</span>
+                <span class="o">+</span> <span class="n">ml_thickness</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">host_cell_z_center</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">full_sim_height</span><span class="o">/</span><span class="mi">2</span>
+                <span class="o">+</span> <span class="n">runway_cell_thickness</span>
+                <span class="o">+</span> <span class="n">ml_thickness</span>
+                <span class="o">+</span> <span class="n">host_cell_thickness</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+
+    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;setting up the simulation geometry&quot;</span><span class="p">)</span>
+    <span class="n">host_cell</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="n">full_sim_width</span><span class="p">,</span> <span class="n">full_sim_width</span><span class="p">,</span> <span class="n">host_cell_thickness</span><span class="p">)</span>
+    <span class="n">host_cell_center</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">host_cell_z_center</span><span class="p">)</span>
+
+    <span class="n">ml_cell</span>   <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="n">full_sim_width</span><span class="p">,</span> <span class="n">full_sim_width</span><span class="p">,</span> <span class="n">ml_thickness</span><span class="p">)</span>
+    <span class="n">ml_cell_center</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ml_cell_z_center</span><span class="p">)</span>
+
+    <span class="n">runway_cell</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="n">full_sim_width</span><span class="p">,</span> <span class="n">full_sim_width</span><span class="p">,</span> <span class="n">runway_cell_thickness</span><span class="p">)</span>
+    <span class="n">runway_cell_center</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">runway_cell_z_center</span><span class="p">)</span>
+
+    <span class="n">geometry</span> <span class="o">=</span> <span class="p">[</span><span class="n">mp</span><span class="o">.</span><span class="n">Block</span><span class="p">(</span><span class="n">size</span>     <span class="o">=</span> <span class="n">host_cell</span><span class="p">,</span>
+                         <span class="n">center</span>   <span class="o">=</span> <span class="n">host_cell_center</span><span class="p">,</span>
+                         <span class="n">material</span> <span class="o">=</span> <span class="n">host_medium</span><span class="p">),</span>
+                <span class="n">mp</span><span class="o">.</span><span class="n">Block</span><span class="p">(</span><span class="n">size</span>     <span class="o">=</span> <span class="n">runway_cell</span><span class="p">,</span>
+                         <span class="n">center</span>   <span class="o">=</span> <span class="n">runway_cell_center</span><span class="p">,</span>
+                         <span class="n">material</span> <span class="o">=</span> <span class="n">between_medium</span><span class="p">)</span>
+                            <span class="p">]</span>
+    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;adding the metasurface geometry&quot;</span><span class="p">)</span>
+    <span class="n">metalens_desing_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">waveguide_dir</span><span class="p">,</span> <span class="s1">&#39;metalens-design.h5&#39;</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">metalens_dict</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">load_from_h5</span><span class="p">(</span><span class="n">metalens_desing_fname</span><span class="p">)</span>
+    <span class="n">geometry</span> <span class="o">=</span> <span class="n">geometry</span> <span class="o">+</span> <span class="n">metasurf_designer</span><span class="p">(</span><span class="n">metalens_dict</span><span class="p">,</span> <span class="n">ml_cell_z_center</span><span class="p">)</span>
+
+    <span class="n">Jxf</span> <span class="o">=</span> <span class="n">RegularGridInterpolator</span><span class="p">((</span><span class="n">xCoords</span><span class="p">,</span><span class="n">yCoords</span><span class="p">),</span> <span class="n">electric_J</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">Jyf</span> <span class="o">=</span> <span class="n">RegularGridInterpolator</span><span class="p">((</span><span class="n">xCoords</span><span class="p">,</span><span class="n">yCoords</span><span class="p">),</span> <span class="n">electric_J</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">Kxf</span> <span class="o">=</span> <span class="n">RegularGridInterpolator</span><span class="p">((</span><span class="n">xCoords</span><span class="p">,</span><span class="n">yCoords</span><span class="p">),</span> <span class="n">magnetic_K</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">Kyf</span> <span class="o">=</span> <span class="n">RegularGridInterpolator</span><span class="p">((</span><span class="n">xCoords</span><span class="p">,</span><span class="n">yCoords</span><span class="p">),</span> <span class="n">magnetic_K</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">Jx</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">complex</span><span class="p">(</span><span class="n">Jxf</span><span class="p">((</span><span class="n">vec</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">vec</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">Jy</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">complex</span><span class="p">(</span><span class="n">Jyf</span><span class="p">((</span><span class="n">vec</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">vec</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">Kx</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">complex</span><span class="p">(</span><span class="n">Kxf</span><span class="p">((</span><span class="n">vec</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">vec</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">Ky</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">complex</span><span class="p">(</span><span class="n">Kyf</span><span class="p">((</span><span class="n">vec</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">vec</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
+
+    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;setting up the simulation cell&quot;</span><span class="p">)</span>
+    <span class="n">sim_cell</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="n">full_sim_width</span><span class="p">,</span> <span class="n">full_sim_width</span><span class="p">,</span> <span class="n">full_sim_height</span><span class="p">)</span>
+
+    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;setting up the PML layers&quot;</span><span class="p">)</span>
+    <span class="n">pml_layers</span>  <span class="o">=</span> <span class="p">[</span><span class="n">mp</span><span class="o">.</span><span class="n">PML</span><span class="p">(</span><span class="n">pml_thickness</span><span class="p">)]</span>
+
+    <span class="n">kFree</span> <span class="o">=</span> <span class="n">metadata_dict</span><span class="p">[</span><span class="s1">&#39;kFree&#39;</span><span class="p">]</span>
+    <span class="n">base_period</span>     <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">kFree</span>
+    <span class="n">run_time</span>        <span class="o">=</span> <span class="n">params_dict</span><span class="p">[</span><span class="s1">&#39;run_time_2&#39;</span><span class="p">]</span>
+    <span class="n">source_time</span>     <span class="o">=</span> <span class="n">run_time</span>
+
+    <span class="n">source_z</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">full_sim_height</span><span class="o">/</span><span class="mi">2</span>
+                <span class="o">+</span> <span class="n">pml_thickness</span>
+                <span class="o">+</span> <span class="n">EH3_to_ml</span><span class="p">)</span>
+
+    <span class="n">source_center</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="n">source_z</span><span class="p">)</span>
+    <span class="n">source_size</span>   <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="n">full_sim_width</span><span class="p">,</span> <span class="n">full_sim_width</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;setting up the sources for the input field&quot;</span><span class="p">)</span>
+    <span class="n">srcs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">source_fun</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">ContinuousSource</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="n">kFree</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
+                                        <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">base_period</span><span class="p">,</span>
+                                        <span class="n">end_time</span><span class="o">=</span><span class="n">source_time</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="p">[((</span><span class="n">mp</span><span class="o">.</span><span class="n">Ex</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ey</span><span class="p">),</span> <span class="p">(</span><span class="n">Jx</span><span class="p">,</span> <span class="n">Jy</span><span class="p">)),</span>
+                 <span class="p">((</span><span class="n">mp</span><span class="o">.</span><span class="n">Hx</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Hy</span><span class="p">),</span> <span class="p">(</span><span class="n">Kx</span><span class="p">,</span> <span class="n">Ky</span><span class="p">))]:</span>
+        <span class="k">for</span> <span class="n">field_component</span><span class="p">,</span> <span class="n">current_fun</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">src</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Source</span><span class="p">(</span><span class="n">src</span> <span class="o">=</span> <span class="n">source_fun</span><span class="p">,</span>
+                            <span class="n">component</span> <span class="o">=</span> <span class="n">field_component</span><span class="p">,</span>
+                            <span class="n">center</span> <span class="o">=</span> <span class="n">source_center</span><span class="p">,</span>
+                            <span class="n">size</span> <span class="o">=</span> <span class="n">source_size</span><span class="p">,</span>
+                            <span class="n">amp_func</span> <span class="o">=</span> <span class="n">current_fun</span>
+                            <span class="p">)</span>
+            <span class="n">srcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+
+    <span class="n">xy_mon_z</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">full_sim_height</span><span class="o">/</span><span class="mi">2</span>
+                <span class="o">+</span> <span class="n">pml_thickness</span>
+                <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">EH3_to_ml</span>
+                <span class="o">+</span> <span class="n">ml_thickness</span>
+                <span class="o">+</span> <span class="n">ml_to_EH4</span><span class="p">)</span>
+
+    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;setting up the monitor planes&quot;</span><span class="p">)</span>
+    <span class="n">clear_aperture</span> <span class="o">=</span> <span class="n">full_sim_width</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pml_thickness</span>
+
+    <span class="n">xy_monitor_plane_center</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">xy_mon_z</span><span class="p">)</span>
+    <span class="n">xy_monitor_plane_size</span>   <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="n">clear_aperture</span><span class="p">,</span> <span class="n">clear_aperture</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">xy_monitor_vol</span>          <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Volume</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">xy_monitor_plane_center</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">xy_monitor_plane_size</span><span class="p">)</span>
+
+    <span class="n">xz_monitor_plane_center</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">xz_monitor_plane_size</span>   <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="n">clear_aperture</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">full_sim_height</span><span class="p">)</span>
+    <span class="n">xz_monitor_vol</span>          <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Volume</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">xz_monitor_plane_center</span><span class="p">,</span>
+                                        <span class="n">size</span><span class="o">=</span><span class="n">xz_monitor_plane_size</span><span class="p">)</span>
+
+    <span class="n">yz_monitor_plane_center</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">yz_monitor_plane_size</span>   <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">clear_aperture</span><span class="p">,</span> <span class="n">full_sim_height</span><span class="p">)</span>
+    <span class="n">yz_monitor_vol</span>          <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Volume</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">yz_monitor_plane_center</span><span class="p">,</span>
+                                        <span class="n">size</span><span class="o">=</span><span class="n">yz_monitor_plane_size</span><span class="p">)</span>
+
+    <span class="n">approx_runtime</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">approx_time</span><span class="p">(</span><span class="n">sim_cell</span><span class="p">,</span> <span class="n">MEEP_resolution</span><span class="p">,</span> <span class="n">run_time</span><span class="p">)</span>
+    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;simulation is estimated to take </span><span class="si">%.1f</span><span class="s2"> minutes&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">approx_runtime</span><span class="o">/</span><span class="mf">60.</span><span class="p">))</span>
+
+    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;finalizing the setup fo the simulation object&quot;</span><span class="p">)</span>
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Simulation</span><span class="p">(</span>
+        <span class="n">cell_size</span>  <span class="o">=</span> <span class="n">sim_cell</span><span class="p">,</span>
+        <span class="n">geometry</span>   <span class="o">=</span> <span class="n">geometry</span><span class="p">,</span>
+        <span class="n">sources</span>    <span class="o">=</span> <span class="n">srcs</span><span class="p">,</span>
+        <span class="n">resolution</span> <span class="o">=</span> <span class="n">MEEP_resolution</span><span class="p">,</span>
+        <span class="n">boundary_layers</span>      <span class="o">=</span> <span class="n">pml_layers</span><span class="p">,</span>
+        <span class="n">force_complex_fields</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">until</span><span class="o">=</span><span class="n">run_time</span><span class="p">)</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">time_taken</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+
+    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;getting final coordinates used by MEEP&quot;</span><span class="p">)</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="p">(</span><span class="n">xCoords</span><span class="p">,</span> <span class="n">yCoords</span><span class="p">,</span> <span class="n">zCoords</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_array_metadata</span><span class="p">()</span>
+    <span class="n">numMVx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xCoords</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">yCoords</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">zCoords</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">xCoordsMonxy</span><span class="p">,</span> <span class="n">yCoordsMonxy</span><span class="p">,</span> <span class="n">zCoordsMonxy</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_array_metadata</span><span class="p">(</span><span class="n">xy_monitor_vol</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">xCoordsMonxz</span><span class="p">,</span> <span class="n">yCoordsMonxz</span><span class="p">,</span> <span class="n">zCoordsMonxz</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_array_metadata</span><span class="p">(</span><span class="n">xz_monitor_vol</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">xCoordsMonyz</span><span class="p">,</span> <span class="n">yCoordsMonyz</span><span class="p">,</span> <span class="n">zCoordsMonyz</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_array_metadata</span><span class="p">(</span><span class="n">yz_monitor_vol</span><span class="p">)</span>
+    <span class="n">coords</span><span class="p">[</span><span class="s1">&#39;xCoords&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xCoords</span>
+    <span class="n">coords</span><span class="p">[</span><span class="s1">&#39;yCoords&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yCoords</span>
+    <span class="n">coords</span><span class="p">[</span><span class="s1">&#39;zCoords&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">zCoords</span>
+    <span class="n">coords</span><span class="p">[</span><span class="s1">&#39;xCoordsMonxy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xCoordsMonxy</span>
+    <span class="n">coords</span><span class="p">[</span><span class="s1">&#39;yCoordsMonxy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yCoordsMonxy</span>
+    <span class="n">coords</span><span class="p">[</span><span class="s1">&#39;zCoordsMonxy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">zCoordsMonxy</span>
+    <span class="n">coords</span><span class="p">[</span><span class="s1">&#39;xCoordsMonxz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xCoordsMonxz</span>
+    <span class="n">coords</span><span class="p">[</span><span class="s1">&#39;yCoordsMonxz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yCoordsMonxz</span>
+    <span class="n">coords</span><span class="p">[</span><span class="s1">&#39;zCoordsMonxz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">zCoordsMonxz</span>
+    <span class="n">coords</span><span class="p">[</span><span class="s1">&#39;xCoordsMonyz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xCoordsMonyz</span>
+    <span class="n">coords</span><span class="p">[</span><span class="s1">&#39;yCoordsMonyz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yCoordsMonyz</span>
+    <span class="n">coords</span><span class="p">[</span><span class="s1">&#39;zCoordsMonyz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">zCoordsMonyz</span>
+
+    <span class="c1"># grab the transmitted field</span>
+
+    <span class="n">on_axis_eps</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">Dielectric</span><span class="p">,</span>
+                    <span class="n">mp</span><span class="o">.</span><span class="n">Volume</span><span class="p">(</span><span class="n">center</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                                <span class="n">size</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">full_sim_height</span><span class="p">))</span>
+                    <span class="p">)</span>
+    <span class="n">ehfieldh5fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="s1">&#39;EH4.h5&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">save_cross_eps</span><span class="p">:</span>
+        <span class="n">cross_eps</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">Dielectric</span><span class="p">,</span>
+                    <span class="n">mp</span><span class="o">.</span><span class="n">Volume</span><span class="p">(</span><span class="n">center</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">ml_cell_z_center</span><span class="p">),</span>
+                                <span class="n">size</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="n">clear_aperture</span><span class="p">,</span><span class="n">clear_aperture</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+                    <span class="p">)</span>
+    <span class="n">monitor_vols</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xy&#39;</span><span class="p">:</span> <span class="n">xy_monitor_vol</span><span class="p">,</span><span class="s1">&#39;yz&#39;</span><span class="p">:</span> <span class="n">yz_monitor_vol</span><span class="p">,</span><span class="s1">&#39;xz&#39;</span><span class="p">:</span> <span class="n">xz_monitor_vol</span><span class="p">}</span>
+    <span class="n">h5_fname</span> <span class="o">=</span> <span class="n">ehfieldh5fname</span>
+    <span class="n">export_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">export_dict</span><span class="p">[</span><span class="s1">&#39;on_axis_eps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">on_axis_eps</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">coords</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">export_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+    <span class="k">if</span> <span class="n">save_cross_eps</span><span class="p">:</span>
+        <span class="n">export_dict</span><span class="p">[</span><span class="s1">&#39;cross_eps_at_ml&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cross_eps</span>
+    <span class="k">for</span> <span class="n">monitor_plane</span> <span class="ow">in</span> <span class="s1">&#39;xz yz xy&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">):</span>
+        <span class="n">a_monitor_fields</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">field_component</span> <span class="ow">in</span> <span class="p">[</span><span class="n">mp</span><span class="o">.</span><span class="n">Ex</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ey</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ez</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Hx</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Hy</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Hz</span><span class="p">]:</span>
+            <span class="n">the_field</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="n">field_component</span><span class="p">,</span> <span class="n">monitor_vols</span><span class="p">[</span><span class="n">monitor_plane</span><span class="p">])</span>
+            <span class="n">a_monitor_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_field</span><span class="p">)</span>
+        <span class="n">a_monitor_fields</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a_monitor_fields</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">field_idx</span><span class="p">,</span> <span class="n">field_component</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="s1">&#39;ex ey ez hx hy hz&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">complex_part</span><span class="p">,</span> <span class="n">complex_fun</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;i&#39;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">]):</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;/</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">monitor_plane</span><span class="p">,</span> <span class="n">field_component</span><span class="p">,</span> <span class="n">complex_part</span><span class="p">)</span>
+                <span class="n">export_field</span> <span class="o">=</span> <span class="n">complex_fun</span><span class="p">(</span><span class="n">a_monitor_fields</span><span class="p">[</span><span class="n">field_idx</span><span class="p">])</span>
+                <span class="n">export_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">export_field</span>
+    <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ws</span><span class="o">.</span><span class="n">save_to_h5</span><span class="p">(</span><span class="n">export_dict</span><span class="p">,</span> <span class="n">h5_fname</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Transport fields across the metasurface.&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;waveguide_id&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The label for the waveguide.&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;mode_idx&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The label for the waveguide.&#39;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">meta_duct</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">waveguide_id</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">mode_idx</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>metalenses &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="across_ml.html">across_ml</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convstore.html">convstore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datapipes.html">datapipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diffkernels.html">diffkernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_animate.html">EH4_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_plotter.html">EH4_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_to_EH5.html">EH4_to_EH5</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH5_assembly.html">EH5_assembly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_animate.html">fiber_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_bridge.html">fiber_bridge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_bundle.html">fiber_bundle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_platform.html">fiber_platform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_plotter.html">fiber_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fieldgenesis.html">fieldgenesis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fields.html">fields</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fungenerators.html">fungenerators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hail_david.html">hail_david</a></li>
+<li class="toctree-l1"><a class="reference internal" href="housekeeping.html">housekeeping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="meta_designer.html">meta_designer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metal.html">metal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metaorchestra.html">metaorchestra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">misc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ml_plot_in.html">ml_plot_in</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_factory.html">phase_factory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="printech.html">printech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="slacking.html">slacking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sniffer.html">sniffer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="standard_candle.html">standard_candle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html">templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wavegraphics.html">wavegraphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wavesight.html">wavesight</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">metalenses</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/usage/metalenses.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-metalenses">
+<span id="metalenses"></span><h1>metalenses<a class="headerlink" href="#module-metalenses" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.aux_params">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">aux_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metalens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#aux_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.aux_params" title="Link to this definition">¶</a></dt>
+<dd><p>Compute additional parameters.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.compute_post_simulation_params">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">compute_post_simulation_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metalens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#compute_post_simulation_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.compute_post_simulation_params" title="Link to this definition">¶</a></dt>
+<dd><p>From the result of a simulation, compute the following quantities:
+- rho_em : electromagnetic energy density
+- S_x, S_y : the x,y components of the time averaged Poynting vector
+- max_axial_field_in_image_space: the y_coord of the maximum</p>
+<blockquote>
+<div><p>energy density along the optical axis</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>reached_det_plane: the ratio of the integrated S_y at the
+detector plane to the integrated S_y right after the metalens.</p></li>
+<li><p>hit_the_target: the ratio of the integrated S_y at the
+within the bounds of the detector to the integrated S_y right
+after the metalens.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.dipole_fluxor">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">dipole_fluxor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metalens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#dipole_fluxor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.dipole_fluxor" title="Link to this definition">¶</a></dt>
+<dd><p>Used to find the full flux
+using the partial flux through the aperture
+of the metalens</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.expand_sim_params">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">expand_sim_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#expand_sim_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.expand_sim_params" title="Link to this definition">¶</a></dt>
+<dd><p>Compute additional parameters for the S4 simulations.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.far_ez_source_amp_func">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">far_ez_source_amp_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metalens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#far_ez_source_amp_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.far_ez_source_amp_func" title="Link to this definition">¶</a></dt>
+<dd><p>returns the required amplitude
+function necessary to simulate
+an isotropic point source</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.focal_length">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">focal_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">na</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aperture</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#focal_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.focal_length" title="Link to this definition">¶</a></dt>
+<dd><p>Given NA and aperture, determine the focal length.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.fresnel_phase_profile">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">fresnel_phase_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelength</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#fresnel_phase_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.fresnel_phase_profile" title="Link to this definition">¶</a></dt>
+<dd><p>Given the depth H of a point emitter,
+the distance d from the metalens surface to the detector plane,
+the radius of the detector,
+and the radius R of the metalens,
+compute the phase required at a position x in the plane
+of the metasurface.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.function_topper">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">function_topper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#function_topper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.function_topper" title="Link to this definition">¶</a></dt>
+<dd><p>This function flattens out a set of points {x,y(x)}
+so that their interpolation would be a one-to-one function.
+x is assumed to be monotonically increasing.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.get_size">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">get_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#get_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.get_size" title="Link to this definition">¶</a></dt>
+<dd><p>Recursively finds size of objects</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.imaging_phase_profile">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">imaging_phase_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelength</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#imaging_phase_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.imaging_phase_profile" title="Link to this definition">¶</a></dt>
+<dd><p>Given the depth H of a point emitter,
+the distance d from the metalens surface to the detector plane,
+the radius of the detector,
+and the radius R of the metalens,
+compute the phase required at a position x in the plane
+of the metasurface.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.in_plane_dip_amp_func_Ex">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">in_plane_dip_amp_func_Ex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metalens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#in_plane_dip_amp_func_Ex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.in_plane_dip_amp_func_Ex" title="Link to this definition">¶</a></dt>
+<dd><p>returns the required amplitude function necessary to the z
+component of the electric current necessary to produce the fields
+of an in-plane dipole at an angle beta with respect to the
+x-axis</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.in_plane_dip_amp_func_Hz">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">in_plane_dip_amp_func_Hz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metalens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#in_plane_dip_amp_func_Hz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.in_plane_dip_amp_func_Hz" title="Link to this definition">¶</a></dt>
+<dd><p>returns the required amplitude function necessary to the z
+component of the magnetic current necessary to produce the fields
+of an in-plane dipole at an angle beta with respect to the
+x-axis</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.into_the_farfield">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">into_the_farfield</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nearfield</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#into_the_farfield"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.into_the_farfield" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.make_metalens_geometry">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">make_metalens_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metalens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#make_metalens_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.make_metalens_geometry" title="Link to this definition">¶</a></dt>
+<dd><p>Given metalens parameters, determine the required phases, and using
+these and the known width to phase relationship, determine the
+required widths for the posts.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.para_metalens">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">para_metalens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metalens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cores</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#para_metalens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.para_metalens" title="Link to this definition">¶</a></dt>
+<dd><p>Run script in the parallel environment for MEEP.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.plot_density">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">plot_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metalens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm_fun=&lt;class</span> <span class="pre">'matplotlib.colors.Normalize'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saver=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pmin=5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pmax=95</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#plot_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.plot_density" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.plot_em_energy_density">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">plot_em_energy_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metalens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normFunc=&lt;class</span> <span class="pre">'matplotlib.colors.Normalize'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saver=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#plot_em_energy_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.plot_em_energy_density" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.plot_phase_profile">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">plot_phase_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metalens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#plot_phase_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.plot_phase_profile" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.plot_simulation_cell">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">plot_simulation_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metalens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#plot_simulation_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.plot_simulation_cell" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.post_phase">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">post_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#post_phase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.post_phase" title="Link to this definition">¶</a></dt>
+<dd><p>Given the S4-simulation parameters, returns the electric field
+array(Exr, Eyr, Ezr, Exi, Eyi, Ezi) at (x_coord, y_coord, field_height)
+by executing an S4 lua script.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.post_transmission">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">post_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#post_transmission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.post_transmission" title="Link to this definition">¶</a></dt>
+<dd><p>Given the S4-simulation parameters, returns the electric field
+array(Exr, Eyr, Ezr, Exi, Eyi, Ezi) at (x_coord, y_coord, field_height)
+by executing an S4 lua script.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.print_params">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">print_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metalens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#print_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.print_params" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.simulate_metalens">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">simulate_metalens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metalens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#simulate_metalens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.simulate_metalens" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="metalenses.wave_to_rgb">
+<span class="sig-prename descclassname"><span class="pre">metalenses.</span></span><span class="sig-name descname"><span class="pre">wave_to_rgb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelength</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metalenses.html#wave_to_rgb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#metalenses.wave_to_rgb" title="Link to this definition">¶</a></dt>
+<dd><p>This converts a given wavelength of light to an
+approximate RGB color value. The wavelength must be given
+in nanometers in the range from 380 nm through 750 nm
+(789 THz through 400 THz).</p>
+<p>Based on code by Dan Bruton
+<a class="reference external" href="http://www.physics.sfasu.edu/astro/color/spectra.html">http://www.physics.sfasu.edu/astro/color/spectra.html</a></p>
+<p>REF: <a class="reference external" href="https://www.noah.org/wiki/wave_to_rgb_in_Python">https://www.noah.org/wiki/wave_to_rgb_in_Python</a></p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

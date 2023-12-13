@@ -67,6 +67,22 @@ except:
 
 
 def standard(metalens):
+    '''
+    Launches a standard simulation that may be used
+    to benchmark MEEP's performance across different
+    machines.
+
+    Parameters
+    ----------
+    metalens : dict
+        A dictionary with the parameters for the simulation.
+    
+    Returns
+    -------
+    metalens : dict
+        The same dictionary with the results of the simulation
+        added to it.
+    '''
     metalens['run_date'] = int(time())
     matter = mp.Medium(epsilon=metalens['epsilon'])
 
@@ -120,42 +136,6 @@ def standard(metalens):
     mp.output_efield(sim)
     mp.output_hfield(sim)
 
-    # print("collecting fields...")
-    # h5_fname = 'candle-{run_date}.h5'.format(run_date = metalens['run_date'])
-    # if metalens['save_fields_to_h5'] and rank ==0:#(not os.path.exists(h5_fname)):
-    #     metalens['h5_fname'] = h5_fname
-    #     h5_file = h5py.File(h5_fname,'w', driver='mpio', comm=MPI.COMM_WORLD)
-    #     fields = h5_file.create_group('fields')
-    #     Ex = np.transpose(sim.get_array(component=mp.Ex),(2,1,0))
-    #     metalens['voxels'] = Ex.shape[0]**3
-    #     metalens['voxels'] = Ex.shape[0]**3
-    #     metalens['above_pillar_index'] = int(Ex.shape[0]/2. + 3*metalens['pillar_height']*metalens['resolution']/2)
-    #     mp.output_efield('test')
-    #     fields.create_dataset('Ex',
-    #            data=Ex)
-    #     del Ex
-    #     fields.create_dataset('Ey',
-    #            data=np.transpose(sim.get_array(component=mp.Ey),(2,1,0)))
-    #     fields.create_dataset('Ez',
-    #            data=np.transpose(sim.get_array(component=mp.Ez),(2,1,0)))
-    #     fields.create_dataset('Hx',
-    #            data=np.transpose(sim.get_array(component=mp.Hx),(2,1,0)))
-    #     fields.create_dataset('Hy',
-    #            data=np.transpose(sim.get_array(component=mp.Hy),(2,1,0)))
-    #     fields.create_dataset('Hz',
-    #            data=np.transpose(sim.get_array(component=mp.Hz),(2,1,0)))
-    #     h5_file.close()
-    # else:
-    #     metalens['fields'] = {
-    #       'Ex': np.transpose(sim.get_array(component=mp.Ex),(2,1,0)),
-    #       'Ey': np.transpose(sim.get_array(component=mp.Ey),(2,1,0)),
-    #       'Ez': np.transpose(sim.get_array(component=mp.Ez),(2,1,0)),
-    #       'Hx': np.transpose(sim.get_array(component=mp.Hx),(2,1,0)),
-    #       'Hy': np.transpose(sim.get_array(component=mp.Hy),(2,1,0)),
-    #       'Hz': np.transpose(sim.get_array(component=mp.Hz),(2,1,0))
-    #       }
-    #     metalens['voxels'] = metalens['fields']['Ex'].shape[0]**3
-    #     metalens['above_pillar_index'] = int(metalens['fields']['Ex'].shape[0]/2. + 3*metalens['pillar_height']*metalens['resolution']/2)
     metalens['voxels'] = int((8*metalens['resolution'])**3)
     metalens['time_for_saving_fields'] = round(time() - start_time,0)
     metalens['max_mem_usage_in_Gb'] = metalens['num_cores']*resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1E6
@@ -168,21 +148,13 @@ def standard(metalens):
     metalens['pkl_fname'] = 'standard-candle-%d.pkl' % metalens['run_date']
     return metalens
 
-# process = psutil.Process(os.getpid())
-
 if __name__ == "__main__":
     if len(sys.argv) != 4:
         print("usage: standard_candle.py num_cores resolution duration_multiplier")
         exit()
     num_cores = int(sys.argv[1])
     resolution = int(sys.argv[2])
-    # save_to_h5 = int(sys.argv[3])
     run_time_multiplier = float(sys.argv[3])
-    # if save_to_h5 == 1:
-    #     save_to_h5 = True
-    # else:
-    #     save_to_h5 = False
-    # process = psutil.Process(os.getpid())
     metalens = {'epsilon': 5.8418,
               'pillar_radius': 0.25,
               'pillar_height' : 0.5,
@@ -196,13 +168,10 @@ if __name__ == "__main__":
               'complex_fields': True,
               'num_cores': num_cores,
               'quiet':False}
-            #   'save_fields_to_h5': save_to_h5}
     metalens = standard(metalens)
 
     param_strings_and_nums = ["{one}, {two}".format(one=k,two=metalens[k]) for k in metalens if type(metalens[k]) in [str,float,int]]
     print('\n'.join(param_strings_and_nums))
 
-    # if not os.path.exists(metalens['pkl_fname']):
-    #     pickle.dump(metalens, open(metalens['pkl_fname'],'wb'))
     if (rank == 0):
         pickle.dump(metalens, open(metalens['pkl_fname'],'wb'))

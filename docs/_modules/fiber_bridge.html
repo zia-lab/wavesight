@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fiber_bridge &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/across_ml.html">across_ml module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/convstore.html">convstore module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/datapipes.html">datapipes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/diffkernels.html">diffkernels module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_animate.html">EH4_animate module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_plotter.html">EH4_plotter module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4-to-EH5.html">EH4-to-EH5 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH5-assembly.html">EH5-assembly module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_animate.html">fiber_animate module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_bridge.html">fiber_bridge module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_bundle.html">fiber_bundle module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_launcher.html">fiber_launcher module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_platform.html">fiber_platform module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_plotter.html">fiber_plotter module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fieldgenesis.html">fieldgenesis module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fields.html">fields module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fungenerators.html">fungenerators module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/hail_david.html">hail_david module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/housekeeping.html">housekeeping module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/mem_tester.html">mem_tester module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/meta_designer.html">meta_designer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metalenses.html">metalenses module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metal.html">metal module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metaorchestra.html">metaorchestra module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/misc.html">misc module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/ml_plot_in.html">ml_plot_in module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/modules.html">wavesight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/phase_factory.html">phase_factory module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/printech.html">printech module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/pyq.html">pyq module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/readme_factory.html">readme_factory module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/slacking.html">slacking module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/sniffer.html">sniffer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/standard_candle.html">standard_candle module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/templates.html">templates module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavegraphics.html">wavegraphics module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavesight.html">wavesight module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">fiber_bridge</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for fiber_bridge</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="c1"># ┌──────────────────────────────────────────────────────────┐</span>
+<span class="c1"># │              _   _   _   _   _   _   _   _   _           │</span>
+<span class="c1"># │             / \ / \ / \ / \ / \ / \ / \ / \ / \          │</span>
+<span class="c1"># │            ( w | a | v | e | s | i | g | h | t )         │</span>
+<span class="c1"># │             \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/          │</span>
+<span class="c1"># │                                                          │</span>
+<span class="c1"># │       Given the waveguide ID, an axial propagation       │</span>
+<span class="c1"># │    distance, and a refractive index this script takes    │</span>
+<span class="c1"># │        all the transverse refracted fields of the        │</span>
+<span class="c1"># │     waveguide modes, at the position where they were     │</span>
+<span class="c1"># │     monitored, and calculates the propagated fields.     │</span>
+<span class="c1"># │    The propagated fields are saved in a single array     │</span>
+<span class="c1"># │     whose first index corresponds to the mode index,     │</span>
+<span class="c1"># │      whose second index picks between E or H, whose      │</span>
+<span class="c1"># │    third index picks between the x-y-z components of     │</span>
+<span class="c1"># │      the field, on whose fourth and fifth index are      │</span>
+<span class="c1"># │    indexed to the spatial positions at the propagation   │</span>
+<span class="c1"># │                          plane.                          │</span>
+<span class="c1"># │                                                          │</span>
+<span class="c1"># └──────────────────────────────────────────────────────────┘</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">wavesight</span> <span class="k">as</span> <span class="nn">ws</span>
+<span class="kn">from</span> <span class="nn">printech</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
+
+<span class="n">data_dir</span>        <span class="o">=</span> <span class="s1">&#39;/users/jlizaraz/data/jlizaraz/CEM/wavesight&#39;</span>
+<span class="n">exclude_dirs</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;moovies&#39;</span><span class="p">,</span> <span class="s1">&#39;moovies-EH4&#39;</span><span class="p">,</span> <span class="s1">&#39;err&#39;</span><span class="p">,</span> <span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="s1">&#39;figs&#39;</span><span class="p">]</span>
+<span class="n">overwrite</span>       <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="h5_handler">
+<a class="viewcode-back" href="../usage/fiber_bridge.html#fiber_bridge.h5_handler">[docs]</a>
+<span class="nd">@contextmanager</span>
+<span class="k">def</span> <span class="nf">h5_handler</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">file</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;An error occurred: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. File </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> has been removed.&quot;</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="wave_jumper">
+<a class="viewcode-back" href="../usage/fiber_bridge.html#fiber_bridge.wave_jumper">[docs]</a>
+<span class="k">def</span> <span class="nf">wave_jumper</span><span class="p">(</span><span class="n">waveguide_id</span><span class="p">,</span> <span class="n">zProp</span><span class="p">,</span> <span class="n">nProp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function takes the id for a given simulation and</span>
+<span class="sd">    takes the modal fields that have been launched from the</span>
+<span class="sd">    waveguide and propagates them across the given distance</span>
+<span class="sd">    zProp in the given medium with refractive index nProp.</span>
+
+<span class="sd">    The propagated fields are saved in a single array in </span>
+<span class="sd">    h5 format.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    waveguide_id : str</span>
+<span class="sd">        The label for the job.</span>
+<span class="sd">    zProp : float</span>
+<span class="sd">        The propagation distance along the z-axis.</span>
+<span class="sd">    nProp : float</span>
+<span class="sd">        The refractive index of the propagation medium.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># first find all the subdirs that correspond to the waveguide_id</span>
+    <span class="n">waveguide_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">waveguide_id</span><span class="p">)</span>
+    <span class="n">job_dir_contents</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">waveguide_dir</span><span class="p">)</span>
+    <span class="n">job_dir_contents</span> <span class="o">=</span> <span class="p">[</span><span class="n">a_dir</span> <span class="k">for</span> <span class="n">a_dir</span> <span class="ow">in</span> <span class="n">job_dir_contents</span> <span class="k">if</span> <span class="n">a_dir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude_dirs</span><span class="p">]</span>
+    <span class="n">job_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">waveguide_dir</span><span class="p">,</span> <span class="n">a_dir</span><span class="p">)</span> <span class="k">for</span> <span class="n">a_dir</span> <span class="ow">in</span> <span class="n">job_dir_contents</span><span class="p">]</span>
+    <span class="n">job_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">a_dir</span> <span class="k">for</span> <span class="n">a_dir</span> <span class="ow">in</span> <span class="n">job_dirs</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">a_dir</span><span class="p">)</span> <span class="p">]</span>
+    <span class="k">def</span> <span class="nf">wave_sorter</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">idx</span>
+    <span class="n">job_dirs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">job_dirs</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="n">wave_sorter</span><span class="p">))</span>
+    <span class="c1"># go through each folder and propagate the fields across the given gap</span>
+    <span class="k">for</span> <span class="n">job_idx</span><span class="p">,</span> <span class="n">job_dir</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">job_dirs</span><span class="p">):</span>
+        <span class="n">mode_id</span> <span class="o">=</span> <span class="n">job_dir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="mi">9</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&gt;&gt; </span><span class="si">%d</span><span class="s1">/</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">job_idx</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">job_dirs</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">refracted_h5_fname</span> <span class="o">=</span> <span class="s1">&#39;EH2.h5&#39;</span>
+        <span class="n">refracted_h5_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="n">refracted_h5_fname</span><span class="p">)</span>
+        <span class="n">propagated_h5_fname</span> <span class="o">=</span> <span class="s1">&#39;EH3.h5&#39;</span>
+        <span class="n">propagated_h5_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="n">propagated_h5_fname</span><span class="p">)</span>
+        <span class="n">mode_sol</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">load_from_h5</span><span class="p">(</span><span class="n">refracted_h5_fname</span><span class="p">)</span>
+        <span class="n">kFree</span>      <span class="o">=</span> <span class="n">mode_sol</span><span class="p">[</span><span class="s1">&#39;kFree&#39;</span><span class="p">]</span>
+        <span class="n">λFree</span>      <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">kFree</span>
+        <span class="n">coreRadius</span> <span class="o">=</span> <span class="n">mode_sol</span><span class="p">[</span><span class="s1">&#39;coreRadius&#39;</span><span class="p">]</span>
+        <span class="n">nCladding</span>  <span class="o">=</span> <span class="n">mode_sol</span><span class="p">[</span><span class="s1">&#39;nCladding&#39;</span><span class="p">]</span>
+        <span class="n">nCore</span>      <span class="o">=</span> <span class="n">mode_sol</span><span class="p">[</span><span class="s1">&#39;nCore&#39;</span><span class="p">]</span>
+        <span class="n">fiber_NA</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nCore</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">nCladding</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">fiber_β</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">fiber_NA</span><span class="p">)</span>
+        <span class="c1"># the spatial extent of the fields will be expanded to about this dimension</span>
+        <span class="n">xCoords</span>    <span class="o">=</span> <span class="n">mode_sol</span><span class="p">[</span><span class="s1">&#39;coords&#39;</span><span class="p">][</span><span class="s1">&#39;xCoordsMonxy&#39;</span><span class="p">]</span>
+        <span class="n">yCoords</span>    <span class="o">=</span> <span class="n">mode_sol</span><span class="p">[</span><span class="s1">&#39;coords&#39;</span><span class="p">][</span><span class="s1">&#39;yCoordsMonxy&#39;</span><span class="p">]</span>
+        <span class="n">N_samples</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xCoords</span><span class="p">)</span>
+        <span class="n">current_width</span> <span class="o">=</span> <span class="n">xCoords</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">xCoords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;the source field is defined over a square region with a side of </span><span class="si">%.2f</span><span class="s2"> μm&quot;</span> <span class="o">%</span> <span class="n">current_width</span><span class="p">)</span>
+        <span class="n">prop_plane_width</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">current_width</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">1.1</span> <span class="o">*</span> <span class="n">zProp</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">fiber_β</span><span class="p">))</span>
+        <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;considering the NA of the fiber and the propagation distance, the field will be propagated to an extended domain with a width of </span><span class="si">%.2f</span><span class="s2"> μm&quot;</span> <span class="o">%</span> <span class="n">prop_plane_width</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">xCoords</span><span class="p">)</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">array_stretcher</span><span class="p">(</span><span class="n">xCoords</span><span class="p">,</span> <span class="n">prop_plane_width</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">yCoords</span><span class="p">)</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">array_stretcher</span><span class="p">(</span><span class="n">yCoords</span><span class="p">,</span> <span class="n">prop_plane_width</span><span class="p">)</span>
+        <span class="n">total_pad_width</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xCoords</span><span class="p">)</span> <span class="o">-</span> <span class="n">N_samples</span>
+        <span class="n">h5_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;h_xy_slices_fname_h5&#39;</span><span class="p">,</span> <span class="s1">&#39;e_xy_slices_fname_h5&#39;</span><span class="p">]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">propagated_h5_fname</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;&gt;&gt; Done already, continue to next.&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">h5_handler</span><span class="p">(</span><span class="n">propagated_h5_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">prop_h5_file</span><span class="p">:</span>
+                <span class="c1"># the data is saved differently in the case of time-resolved</span>
+                <span class="c1"># and steady state simulations</span>
+                <span class="k">if</span> <span class="n">mode_sol</span><span class="p">[</span><span class="s1">&#39;time_resolved&#39;</span><span class="p">]:</span>
+                    <span class="k">for</span> <span class="n">h5_key</span> <span class="ow">in</span> <span class="n">h5_keys</span><span class="p">:</span>
+                        <span class="n">refracted_h5_fname</span> <span class="o">=</span> <span class="n">mode_sol</span><span class="p">[</span><span class="n">h5_key</span><span class="p">]</span>
+                        <span class="n">refracted_h5_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="n">mode_sol</span><span class="p">[</span><span class="n">h5_key</span><span class="p">])</span>
+                        <span class="n">field</span> <span class="o">=</span> <span class="n">h5_key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">plane</span> <span class="o">=</span> <span class="n">h5_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">field_list</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">data_key_root</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">plane</span><span class="p">)</span>
+                        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">refracted_h5_fname</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5f</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">cartesian_component</span> <span class="ow">in</span> <span class="s1">&#39;xyz&#39;</span><span class="p">:</span>
+                                <span class="n">data_key_r</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">.r&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">cartesian_component</span><span class="p">)</span>
+                                <span class="n">data_key_i</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">.i&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">cartesian_component</span><span class="p">)</span>
+                                <span class="n">field_data</span> <span class="o">=</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">h5f</span><span class="p">[</span><span class="n">data_key_i</span><span class="p">][:,:,</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                                <span class="n">field_data</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">h5f</span><span class="p">[</span><span class="n">data_key_r</span><span class="p">][:,:,</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                                <span class="n">field_data</span> <span class="o">=</span> <span class="n">field_data</span><span class="o">.</span><span class="n">T</span>
+                                <span class="n">field_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field_data</span><span class="p">)</span>
+                        <span class="n">field_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">field_list</span><span class="p">)</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">data_key_root</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_list</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">refracted_h5_fname</span> <span class="o">=</span> <span class="n">mode_sol</span><span class="p">[</span><span class="s1">&#39;eh_monitors_fname_h5&#39;</span><span class="p">]</span>
+                    <span class="n">refracted_h5_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="n">refracted_h5_fname</span><span class="p">)</span>
+                    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">refracted_h5_fname</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5f</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;xy&#39;</span><span class="p">]:</span>
+                            <span class="n">plane_slice</span> <span class="o">=</span> <span class="n">h5f</span><span class="p">[</span><span class="n">plane</span><span class="p">]</span>
+                            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="s1">&#39;eh&#39;</span><span class="p">:</span>
+                                <span class="n">field_list</span> <span class="o">=</span> <span class="p">[]</span>
+                                <span class="k">for</span> <span class="n">cartesian_component</span> <span class="ow">in</span> <span class="s1">&#39;xyz&#39;</span><span class="p">:</span>
+                                    <span class="n">data_key_r</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">.r&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">cartesian_component</span><span class="p">)</span>
+                                    <span class="n">data_key_i</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">.i&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">cartesian_component</span><span class="p">)</span>
+                                    <span class="n">field_data</span> <span class="o">=</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">plane_slice</span><span class="p">[</span><span class="n">data_key_i</span><span class="p">])</span>
+                                    <span class="n">field_data</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">plane_slice</span><span class="p">[</span><span class="n">data_key_r</span><span class="p">])</span>
+                                    <span class="n">field_data</span> <span class="o">=</span> <span class="n">field_data</span><span class="o">.</span><span class="n">T</span>
+                                    <span class="n">field_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field_data</span><span class="p">)</span>
+                                <span class="n">field_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">field_list</span><span class="p">)</span>
+                                <span class="n">data_key_root</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">plane</span><span class="p">)</span>
+                                <span class="n">data</span><span class="p">[</span><span class="n">data_key_root</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_list</span>
+                <span class="n">transverse_fields</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;e-xy&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;h-xy&#39;</span><span class="p">]])</span>
+                <span class="n">transverse_fields</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">sym_pad</span><span class="p">(</span><span class="n">transverse_fields</span><span class="p">,</span> <span class="n">total_pad_width</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">)</span>
+                <span class="n">prop_E_field</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">electric_vectorial_diffraction</span><span class="p">(</span><span class="n">zProp</span><span class="p">,</span> <span class="n">transverse_fields</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xCoords</span><span class="p">,</span> <span class="n">yCoords</span><span class="p">,</span> <span class="n">λFree</span><span class="p">,</span> <span class="n">nProp</span><span class="p">)</span>
+                <span class="n">prop_H_field</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">magnetic_vectorial_diffraction</span><span class="p">(</span><span class="n">zProp</span><span class="p">,</span> <span class="n">transverse_fields</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xCoords</span><span class="p">,</span> <span class="n">yCoords</span><span class="p">,</span> <span class="n">λFree</span><span class="p">,</span> <span class="n">nProp</span><span class="p">)</span>
+
+                <span class="n">dx</span> <span class="o">=</span> <span class="n">xCoords</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">xCoords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">integrand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">transverse_fields</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">E_squared_int_source</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">simpson_quad_ND</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="p">[</span><span class="n">dx</span><span class="p">,</span><span class="n">dx</span><span class="p">])</span>
+                <span class="n">integrand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">prop_E_field</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">E_squared_int_prop</span>   <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">simpson_quad_ND</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="p">[</span><span class="n">dx</span><span class="p">,</span><span class="n">dx</span><span class="p">])</span>
+                <span class="n">printer</span><span class="p">(</span><span class="s1">&#39;∫E^2_source dxdy = </span><span class="si">%.3f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">E_squared_int_source</span><span class="p">)</span>
+                <span class="n">printer</span><span class="p">(</span><span class="s1">&#39;∫E^2_propag dxdy = </span><span class="si">%.3f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">E_squared_int_prop</span><span class="p">)</span>
+
+                <span class="n">integrand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">transverse_fields</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">H_squared_int_source</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">simpson_quad_ND</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="p">[</span><span class="n">dx</span><span class="p">,</span><span class="n">dx</span><span class="p">])</span>
+                <span class="n">integrand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">prop_H_field</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">H_squared_int_prop</span>   <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">simpson_quad_ND</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="p">[</span><span class="n">dx</span><span class="p">,</span><span class="n">dx</span><span class="p">])</span>
+                <span class="n">printer</span><span class="p">(</span><span class="s1">&#39;∫H^2_source dxdy = </span><span class="si">%.3f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">H_squared_int_source</span><span class="p">)</span>
+                <span class="n">printer</span><span class="p">(</span><span class="s1">&#39;∫H^2_propag dxdy = </span><span class="si">%.3f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">H_squared_int_prop</span><span class="p">)</span>
+
+                <span class="n">propagated_field</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">prop_E_field</span><span class="p">,</span> <span class="n">prop_H_field</span><span class="p">])</span>
+                <span class="n">prop_h5_file</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;EH_field&#39;</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">propagated_field</span><span class="p">)</span>
+                <span class="n">prop_h5_file</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;xCoords&#39;</span><span class="p">,</span>  <span class="n">data</span> <span class="o">=</span> <span class="n">xCoords</span><span class="p">)</span>
+                <span class="n">prop_h5_file</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;yCoords&#39;</span><span class="p">,</span>  <span class="n">data</span> <span class="o">=</span> <span class="n">yCoords</span><span class="p">)</span>
+                <span class="n">prop_h5_file</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;zProp&#39;</span><span class="p">,</span>    <span class="n">data</span> <span class="o">=</span> <span class="n">zProp</span><span class="p">)</span>
+                <span class="n">prop_h5_file</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;nProp&#39;</span><span class="p">,</span>    <span class="n">data</span> <span class="o">=</span> <span class="n">nProp</span><span class="p">)</span>
+                <span class="n">prop_h5_file</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;E^2_integral_source&#39;</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">E_squared_int_source</span><span class="p">)</span>
+                <span class="n">prop_h5_file</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;E^2_integral_propagated&#39;</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">E_squared_int_prop</span><span class="p">)</span>
+                <span class="n">prop_h5_file</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;H^2_integral_source&#39;</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">H_squared_int_source</span><span class="p">)</span>
+                <span class="n">prop_h5_file</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;H^2_integral_propagated&#39;</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">H_squared_int_prop</span><span class="p">)</span>
+                <span class="n">prop_h5_file</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;waveguide_id&#39;</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">waveguide_id</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Job plotter.&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;waveguide_id&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The label for the job.&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;zProp&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;z-distance for propagation.&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;nProp&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Refractive index of propagating medium.&#39;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">wave_jumper</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">waveguide_id</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">zProp</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">nProp</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

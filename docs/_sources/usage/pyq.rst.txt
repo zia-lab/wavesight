@@ -1,0 +1,7 @@
+pyq module
+==========
+
+.. automodule:: pyq
+   :members:
+   :undoc-members:
+   :show-inheritance:

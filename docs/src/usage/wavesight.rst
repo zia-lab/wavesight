@@ -1,5 +1,7 @@
-wavesight.py
-========================
+wavesight
+================
 
 .. automodule:: wavesight
    :members:
+   :undoc-members:
+   :show-inheritance:

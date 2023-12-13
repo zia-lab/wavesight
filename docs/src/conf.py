@@ -31,5 +31,14 @@ html_css_files = ['custom.css']
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "sphinx_rtd_theme"
+html_context = {
+    'show_copyright': False,
+}
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_static_path = ['_static']
+
+
+html_theme_options = {
+    'prev_next_buttons_location': 'top',
+    # 'style_nav_header_background': 'blue',
+}

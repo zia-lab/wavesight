@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 import os
-import io
-import json
+import psutil
 import random
 import tempfile
 import requests
@@ -24,6 +23,18 @@ except:
     pass
 
 def send_message(message):
+    '''
+    This function sends a notification message via Pushover.
+
+    Parameters
+    ----------
+    message : str
+        The message to be sent.
+    
+    Returns
+    -------
+    None
+    '''
     conn = http.client.HTTPSConnection("api.pushover.net",443)
     conn.request("POST", "/1/messages.json",
         urllib.parse.urlencode({
@@ -35,6 +46,18 @@ def send_message(message):
     return None
 
 def send_count(count):
+    '''
+    This function sends a notification count via Pushover.
+
+    Parameters
+    ----------
+    count : int
+        The count to be sent.
+    
+    Returns
+    -------
+    None
+    '''
     conn = http.client.HTTPSConnection("api.pushover.net",443)
     conn.request("POST", "/1/glances.json",
         urllib.parse.urlencode({
@@ -46,14 +69,26 @@ def send_count(count):
     return None
 
 def send_image(image_fname,message=''):
-    if '.jpg' in image_fname.lower():
+    '''
+    This function sends images via Pushover.
+
+    Parameters
+    ----------
+    image_fname : str
+        The file name of the image to be sent
+    
+    Returns
+    -------
+    None
+    '''
+    if image_fname.lower().endswith('.jpg'):
         mime = 'image/jpeg'
-    elif '.png' in image_fname.lower():
+    elif image_fname.lower().endswith('.png'):
         mime = 'image/png'
-    elif '.jpeg' in image_fname.lower():
+    elif image_fname.lower().endswith('.jpeg'):
         mime = 'image/jpeg'
     else:
-        return "send jpg of jpeg only"
+        return "send jpg, jpeg, or png only"
     r = requests.post("https://api.pushover.net/1/messages.json", data = {
         "token": pushover_token,
         "user": pushover_user,
@@ -67,10 +102,14 @@ def send_image(image_fname,message=''):
 
 def get_total_size_of_directory(dir_path):
     '''
+    Calculate the total size of files in a given directory.
+    Only at the first level.
+
     Parameters
     ----------
     dir_path : str
         Path to the directory whose size is to be calculated.
+    
     Returns
     -------
     dir_size_in_MB : float
@@ -152,6 +191,7 @@ def rando_id(num_groups=2, sep='-', verbose=False):
     and consonants. By default the string returned  has
     27-bit entropy, which makes each string to be about
     10^-8 likely to be chosen.
+
     Parameters
     ----------
     num_groups: int
@@ -160,6 +200,7 @@ def rando_id(num_groups=2, sep='-', verbose=False):
         The string that separates the 4-char groups.
     verbose: bool
         Whether to print the entropy of the generated strings.
+    
     Returns
     -------
     rid : str
@@ -204,15 +245,16 @@ def latex_eqn_to_png(tex_code, figname, timed=True, outfolder=os.getcwd()):
     Example
     -------
     
-    tex_code = r"""\begin{equation}
-    x+y
-    \end{equation}"""
-    
-    latex_eqn_to_png(tex_code, True, 'simple_eqn', outfolder = '/Users/juan/')
-    
-    --> creates /Users/juan/simple_eqn.pdf and /Users/juan/simple_eqn.npg
-    
-    Nov-24 2021-11-24 14:39:28
+    .. code-block:: python
+
+        tex_code = r"""\begin{equation}
+        x+y
+        \end{equation}"""
+        
+        latex_eqn_to_png(tex_code, True, 'simple_eqn', outfolder = '/Users/juan/')
+        
+        --> creates /Users/juan/simple_eqn.pdf and /Users/juan/simple_eqn.npg
+
     '''
     now = int(time())
     percentage_margin = 10.
@@ -385,6 +427,7 @@ def random_in_range(xmin, xmax, shape):
         upper bound of random numbers
     shape : tuple or int
         shape of array of random numbers
+    
     Returns
     -------
     rando_array : np.array (shape)
@@ -409,23 +452,25 @@ def transient_scope(times, time_signal, tol=0.01):
     decays  in  an  oscillatory  manner, after having reached an
     initial peak.
 
-    ▲                                                                                
-    │                                                                        
-    │                                                                        
-    │       *****                                                         
-    │      **   **                                                        
-    │     **      **         *******                                      
-    │     *        *         *     ***        ******       *****          
-    │    **         **      *        **      **    ***    **   *** 
-    │    *           **    **         **** ***       ******               
-    │    *            ******             ***                              
-    │   *               **                                                
-    │   *                                                                 
-    │   *                                                                 
-    │  **                                                                                                                             
-    │                                                                        
-  ──┼─────────────────────────────────────────────────────────────▶
-    │                                                                        
+    ..code-block:: python
+
+        ▲                                                                                
+        │                                                                        
+        │                                                                        
+        │       *****                                                         
+        │      **   **                                                        
+        │     **      **         *******                                      
+        │     *        *         *     ***        ******       *****          
+        │    **         **      *        **      **    ***    **   *** 
+        │    *           **    **         **** ***       ******               
+        │    *            ******             ***                              
+        │   *               **                                                
+        │   *                                                                 
+        │   *                                                                 
+        │  **                                                                                                                             
+        │                                                                        
+    ──┼─────────────────────────────────────────────────────────────▶
+        │                                                                        
 
     Parameters
     ----------
@@ -464,10 +509,12 @@ def format_time(seconds):
     '''
     Given a time in seconds this formats a string
     as HH:MM:SS.
+
     Parameters
     ----------
     seconds : float
         Time in seconds.
+    
     Returns
     -------
     fmt_time : str
@@ -485,12 +532,14 @@ def ceil_to_multiple(number, mult = 1):
     '''
     Given a number this function returns the smallest multiple
     of mult that is larger than the given number.
+
     Parameters
     ----------
     number : float
         The number to be ceiled.
     multiple : float
         The multiple to which the number should be ceiled.
+    
     Return
     ------
     ceiled_num : float
@@ -522,7 +571,8 @@ def array_stretcher(arr, min_range_new):
     
     Returns
     -------
-    (new_range, new_array)
+    (new_range, new_array) : tuple
+        2-tuple containing
     new_range : float
         The actual range of the returned array
     new_array : np.array
@@ -557,6 +607,7 @@ def sym_pad(arr, pad_width, mode='constant', **kwargs):
     '''
     Given n (which must be even) this function will pad on all sides
     at the last two dimensions of the provided array.
+
     Parameters
     ----------
     arr : np.array (..., N, N)
@@ -568,10 +619,12 @@ def sym_pad(arr, pad_width, mode='constant', **kwargs):
         as those for np.pad.
     kwargs:
         Same as thos that may be provided to np.pad.
+    
     Return
     ------
     padded_array : np.array (..., N + n, N + n)
         Same as arr but padded.
+    
     References
     ----------
     https://numpy.org/doc/stable/reference/generated/numpy.pad.html
@@ -592,12 +645,16 @@ def insert_string_at_nth_position(str_list, to_insert, n):
     Parameters
     ----------
     str_list : list of str
+        A list of strings.
     to_insert : str
+        The string to insert.
     n         : int
+        Where should it be.
 
     Returns
     -------
-
+    riffled_strings : list of str
+        The new list of strings.
     '''
     # Check if n is valid
     if n < 1:
@@ -610,3 +667,178 @@ def insert_string_at_nth_position(str_list, to_insert, n):
             riffled_strings.append(to_insert)  # Insert to_insert after every n-th position
         count += 1  # Increment the counter
     return riffled_strings
+
+def get_memory_usage(caller_frame, string_ouput=True):
+    '''
+    This function returns the memory ussage of the given process. It also
+    returns the line in the code where the call was made.
+    Useful for debugging memory usage.
+
+    Parameters
+    ----------
+    caller_frame : frame
+        The frame of the caller function.
+    string_output : bool, optional
+        Whether to return a string or a float, by default True.
+    
+    Returns
+    -------
+    memory_usage, line_no : tuple
+        A tuple containing the memory usage and the line number.
+    memory_usage : float or str
+        Memory usage in MB either as formatted string or a float.
+    line_no : int
+        The line number of the caller function.
+    '''
+    line_no = caller_frame.f_lineno
+    process = psutil.Process(os.getpid())
+    memory_usage = process.memory_info().rss / (1024 * 1024)  # Memory in MB
+    if string_ouput:
+        return f"(MEM USAGE) #{line_no} : {memory_usage:.2f} MB"
+    else:
+        return memory_usage, line_no
+
+def get_global_memory_usage(caller_frame, job_id = None, string_ouput=True):
+    '''
+    This function returns the memory ussage of the given process. It also
+    returns the line in the code where the call was made.
+    Useful for debugging memory usage.
+
+    Parameters
+    ----------
+    caller_frame : frame
+        The frame of the caller function.
+    string_output : bool, optional
+        Whether to return a string or a float, by default True.
+    
+    Returns
+    -------
+    memory_usage, line_no : float, int
+    memory_usage : float or str
+        Memory usage in MB either as formatted string or a float.
+    line_no : int
+        The line number of the caller function.
+    '''
+    line_no = caller_frame.f_lineno
+    if job_id is None:
+        return get_memory_usage(caller_frame)
+    else:
+        memory_usage_in_GB = get_max_RSS(job_id)
+        memory_usage = memory_usage_in_GB*1024
+    if string_ouput:
+        return f"(MEM USAGE) #{line_no} : {memory_usage:.2f} MB"
+    else:
+        return memory_usage, line_no
+
+def get_max_RSS(job_id, return_as_string = False):
+    '''
+    Get the max RSS of a given job id.
+
+    Parameters
+    ----------
+    job_id : int
+        The job id at slurm.
+    return_as_string : bool, optional
+        Whether to return the max RSS as a string, by default False.
+    
+    Returns
+    -------
+    max_rss_in_GB : float or str
+        The max RSS in GB.
+    '''
+    try:
+        # Execute sacct command to get MaxRSS for the specified job
+        job_id = str(job_id)
+        job_id = job_id.replace('[','')
+        job_id = job_id.replace(']','')
+        cmd = ['sstat', 
+                '-j',
+                str(job_id),
+                '--format=MaxRSS',
+                '--noheader']
+        result = subprocess.check_output(cmd, stderr=subprocess.STDOUT).decode()
+        # Parse the output to get MaxRSS
+        max_rss = (result.strip().split('\n')[0])  # Take the first line of output
+        # Handling cases where MaxRSS is not available or the job is not found
+        if max_rss == "" or "not found" in max_rss.lower():
+            if return_as_string:
+                return ""
+            else:
+                return None
+        max_rss = max_rss.strip()
+        if 'No steps running for' in max_rss:
+            if return_as_string:
+                return ""
+            else:
+                return None
+        elif max_rss.endswith('K'):
+            max_rss = max_rss.replace('K', '')
+            max_rss = float(max_rss)
+            max_rss_in_GB = max_rss / 1024 / 1024
+        elif max_rss.endswith('M'):
+            max_rss = max_rss.replace('M', '')
+            max_rss = float(max_rss)
+            max_rss_in_GB = max_rss / 1024
+        elif max_rss.endswith('G'):
+            max_rss = max_rss.replace('G', '')
+            max_rss_in_GB = float(max_rss)
+        else:
+            max_rss_in_GB = 0.
+        if return_as_string:
+            max_rss_in_GB = "%.2f GB" % max_rss_in_GB
+        return max_rss_in_GB
+
+    except subprocess.CalledProcessError as e:
+        # Handle errors in subprocess execution
+        print("Error in subprocess execution: %s" % e)
+        return ""
+
+slurm_things=r"%j | %T | %i | %C | %l | %L | %r | %S | %m | %D | %E | %k | %N"
+
+def get_squeue_data(user='jlizaraz', get_RSS = True, return_as_dict = True):
+    '''
+    This function can be use to get the squeue data for a given user.
+
+    Parameters
+    ----------
+    user : str, optional
+        The user for which to get the squeue data, by default 'jlizaraz'.
+    get_RSS : bool, optional
+        Whether to get the max RSS for each job, by default True.
+    return_as_dict : bool, optional
+        Whether to return the data as a dictionary, by default True.
+    
+    Returns
+    -------
+    jobs : list or dict
+        The squeue data for the given user parsed as a list of a dictionary of
+        dictionaries.
+    '''
+    # Define a more comprehensive squeue format string
+    cmd = ["squeue", "-u", user, "--format", slurm_things]
+    # Execute the command
+    try:
+        output = subprocess.check_output(cmd).decode()
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing squeue: {e}")
+        return []
+    # Parse the output
+    jobs = output.splitlines()
+    jobs = [job.split(' | ') for job in jobs]
+    headers = jobs[0]
+    data = list(sorted(jobs[1:], key=lambda x: int(x[2].split('_')[0])))
+    jobs = [headers] + data
+    if get_RSS:
+        header = jobs[0] + ['MaxRSS']
+        job_data = []
+        for job in jobs[1:]:
+            max_rss = get_max_RSS(job[2])
+            job_data.append(job + [max_rss])
+        jobs = [header] + job_data
+    if return_as_dict:
+        job_dict = {}
+        for job_row in job_data:
+            job_dict[job_row[0]] = dict(zip(header, job_row))
+        return job_dict
+    else:
+        return jobs

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 # This   script   contains  some  necessary  functions  to  compute  the
 # diffracted  electric  and  magnetic fields within the Smythe-Kirchhoff
 # approximation.

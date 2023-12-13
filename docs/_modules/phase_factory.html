@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>phase_factory &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/across_ml.html">across_ml</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/convstore.html">convstore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/datapipes.html">datapipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/diffkernels.html">diffkernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_animate.html">EH4_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_plotter.html">EH4_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_to_EH5.html">EH4_to_EH5</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH5_assembly.html">EH5_assembly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_animate.html">fiber_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_bridge.html">fiber_bridge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_bundle.html">fiber_bundle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_platform.html">fiber_platform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_plotter.html">fiber_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fieldgenesis.html">fieldgenesis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fields.html">fields</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fungenerators.html">fungenerators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/hail_david.html">hail_david</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/housekeeping.html">housekeeping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/meta_designer.html">meta_designer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metal.html">metal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metaorchestra.html">metaorchestra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/misc.html">misc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/ml_plot_in.html">ml_plot_in</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/phase_factory.html">phase_factory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/printech.html">printech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/slacking.html">slacking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/sniffer.html">sniffer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/standard_candle.html">standard_candle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/templates.html">templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavegraphics.html">wavegraphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavesight.html">wavesight</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">phase_factory</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for phase_factory</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/users/jlizaraz/anaconda/S4env/bin/python</span>
+
+<span class="c1"># ┌──────────────────────────────────────────────────────────┐</span>
+<span class="c1"># │                                                          │</span>
+<span class="c1"># │       _   _   _   _   _     _   _   _   _   _   _   _    │</span>
+<span class="c1"># │      / \ / \ / \ / \ / \   / \ / \ / \ / \ / \ / \ / \   │</span>
+<span class="c1"># │     ( p | h | a | s | e ) ( f | a | c | t | o | r | y )  │</span>
+<span class="c1"># │      \_/ \_/ \_/ \_/ \_/   \_/ \_/ \_/ \_/ \_/ \_/ \_/   │</span>
+<span class="c1"># │                                                          │</span>
+<span class="c1"># │        This script uses S4 to estimate the phase         │</span>
+<span class="c1"># │        differences that different sub-wavelength         │</span>
+<span class="c1"># │      cylindrical posts would produce to a normally       │</span>
+<span class="c1"># │                   incident plane wave.                   │</span>
+<span class="c1"># │     When run from the CLI this produces a json file      │</span>
+<span class="c1"># │                    with the results.                     │</span>
+<span class="c1"># │     To estimate this a periodic structure with posts     │</span>
+<span class="c1"># │     of the given geometry is solved through the RCWA     │</span>
+<span class="c1"># │                  implementation of S4.                   │</span>
+<span class="c1"># │           Assume that the length units are um.           │</span>
+<span class="c1"># │                                                          │</span>
+<span class="c1"># └──────────────────────────────────────────────────────────┘</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">S4</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;S4 not found, this script must be run from the S4env conda environment.&quot;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">printech</span> <span class="kn">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="meta_field">
+<a class="viewcode-back" href="../usage/phase_factory.html#phase_factory.meta_field">[docs]</a>
+<span class="k">def</span> <span class="nf">meta_field</span><span class="p">(</span><span class="n">sim_params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sim_params : dict with keys</span>
+<span class="sd">        &#39;n_refractive&#39; (float): refractive index</span>
+<span class="sd">        &#39;lattice_const&#39; (float): lattice constant of hex lattice</span>
+<span class="sd">        &#39;post_width&#39; (float): width of the post</span>
+<span class="sd">        &#39;numG&#39; (int): number of basis vectors</span>
+<span class="sd">        &#39;s_amp&#39; (float): amplitude of the s-polarized field</span>
+<span class="sd">        &#39;p_amp&#39; (float): amplitude of the p-polarized field</span>
+<span class="sd">        &#39;wavelength&#39; (float): equivalent wavelength in vacuum</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    E_field, H_field : tuple of triples of complex numbers</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">n_refractive</span>                <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;n_refractive&#39;</span><span class="p">]</span>
+    <span class="n">numG</span>                        <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;numG&#39;</span><span class="p">]</span>
+    <span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">,</span> <span class="n">z_coord</span><span class="p">)</span> <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;coords&#39;</span><span class="p">]</span>
+    <span class="n">lattice_const</span>                  <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;lattice_const&#39;</span><span class="p">]</span>
+    <span class="n">post_width</span>                  <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;post_width&#39;</span><span class="p">]</span>
+    <span class="n">wavelength</span>                  <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">]</span>
+    <span class="n">post_height</span>                 <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;post_height&#39;</span><span class="p">]</span>
+    <span class="p">(</span><span class="n">s_amp</span><span class="p">,</span> <span class="n">p_amp</span><span class="p">)</span>              <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;s_amp&#39;</span><span class="p">],</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;p_amp&#39;</span><span class="p">]</span>
+    <span class="n">half_post_width</span>             <span class="o">=</span> <span class="n">post_width</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">half_cell_width</span>             <span class="o">=</span> <span class="n">lattice_const</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">excitation_frequency</span>        <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">wavelength</span>
+    <span class="n">epsilon</span>                     <span class="o">=</span> <span class="n">n_refractive</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">S4</span><span class="o">.</span><span class="n">New</span><span class="p">(((</span><span class="n">lattice_const</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">lattice_const</span><span class="p">)),</span> <span class="n">numG</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">AddMaterial</span><span class="p">(</span><span class="s2">&quot;vacuum&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">AddMaterial</span><span class="p">(</span><span class="s2">&quot;substrate&quot;</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">AddLayer</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span>
+                <span class="mi">0</span><span class="p">,</span>
+                <span class="s1">&#39;substrate&#39;</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">AddLayer</span><span class="p">(</span><span class="s1">&#39;forest&#39;</span><span class="p">,</span>
+                <span class="n">post_height</span><span class="p">,</span>
+                <span class="s1">&#39;vacuum&#39;</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">AddLayer</span><span class="p">(</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
+                <span class="mi">0</span><span class="p">,</span>
+                <span class="s1">&#39;vacuum&#39;</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">SetRegionRectangle</span><span class="p">(</span>
+        <span class="s1">&#39;forest&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;substrate&#39;</span><span class="p">,</span>
+        <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">half_post_width</span><span class="p">,</span> <span class="n">half_cell_width</span><span class="p">))</span> 
+    <span class="n">sim</span><span class="o">.</span><span class="n">SetExcitationPlanewave</span><span class="p">(</span>
+        <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+        <span class="n">s_amp</span><span class="p">,</span>  
+        <span class="n">p_amp</span> 
+    <span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">SetFrequency</span><span class="p">(</span><span class="n">excitation_frequency</span><span class="p">)</span>
+    <span class="n">E_field</span><span class="p">,</span> <span class="n">H_field</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GetFields</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">,</span> <span class="n">z_coord</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">E_field</span><span class="p">,</span> <span class="n">H_field</span></div>
+
+
+<div class="viewcode-block" id="convert">
+<a class="viewcode-back" href="../usage/phase_factory.html#phase_factory.convert">[docs]</a>
+<span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Used to convert numpy arrays to lists when saving to json.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    arr : np.ndarray</span>
+<span class="sd">        The array to be converted</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    arr.tolist() : list</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">arr</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">raise</span> <span class="ne">TypeError</span></div>
+
+
+<div class="viewcode-block" id="meta_fields_hex">
+<a class="viewcode-back" href="../usage/phase_factory.html#phase_factory.meta_fields_hex">[docs]</a>
+<span class="k">def</span> <span class="nf">meta_fields_hex</span><span class="p">(</span><span class="n">sim_params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sim_params : dict with keys</span>
+<span class="sd">        &#39;n_refractive&#39; (float): refractive index</span>
+<span class="sd">        &#39;post_radius&#39; (float): width of the post</span>
+<span class="sd">        &#39;numG&#39; (int): number of basis vectors</span>
+<span class="sd">        &#39;s_amp&#39; (float): amplitude of the s-polarized field</span>
+<span class="sd">        &#39;p_amp&#39; (float): amplitude of the p-polarized field</span>
+<span class="sd">        &#39;wavelength&#39; (float): wavelength of the light in vacuum</span>
+<span class="sd">        &#39;lattice_constant&#39; (float): lattice constant of the hexagonal lattice</span>
+<span class="sd">        &#39;samples&#39; (int): how many samples taken along the fundamental parallelogram</span>
+<span class="sd">        &#39;zCoord&#39; (float): z-coordinate where the resultant fields will be computed</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (E_field, H_field) : tuple of triples of complex numbers</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">lattice_constant</span> <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;lattice_constant&#39;</span><span class="p">]</span>
+    <span class="n">post_height</span> <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;post_height&#39;</span><span class="p">]</span>
+    <span class="n">post_radius</span> <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;post_radius&#39;</span><span class="p">]</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;samples&#39;</span><span class="p">]</span>
+    <span class="n">zCoord</span> <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;zCoord&#39;</span><span class="p">]</span>
+    <span class="p">(</span><span class="n">half_post_radius</span><span class="p">,</span> <span class="n">half_lattice_constant</span><span class="p">)</span>  <span class="o">=</span> <span class="n">post_radius</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">lattice_constant</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">numG</span> <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;numG&#39;</span><span class="p">]</span>
+    <span class="p">(</span><span class="n">s_amp</span><span class="p">,</span> <span class="n">p_amp</span><span class="p">)</span> <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;s_amp&#39;</span><span class="p">],</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;p_amp&#39;</span><span class="p">]</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;n_refractive&#39;</span><span class="p">]</span>
+    <span class="n">epsilon</span> <span class="o">=</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">wavelength</span> <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">]</span>
+    <span class="n">excitation_frequency</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">wavelength</span>
+    <span class="n">v1_arr</span> <span class="o">=</span> <span class="n">lattice_constant</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">v2_arr</span> <span class="o">=</span> <span class="n">lattice_constant</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">3</span><span class="p">)])</span>
+    <span class="n">fractions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">samples</span><span class="o">+</span><span class="mi">1</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">v1</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">v1_arr</span><span class="p">)</span>
+    <span class="n">v2</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">v2_arr</span><span class="p">)</span>
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">S4</span><span class="o">.</span><span class="n">New</span><span class="p">((</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">),</span> <span class="n">numG</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">AddMaterial</span><span class="p">(</span><span class="s2">&quot;vacuum&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">AddMaterial</span><span class="p">(</span><span class="s2">&quot;substrate&quot;</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">AddLayer</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span>
+                <span class="mi">0</span><span class="p">,</span>
+                <span class="s1">&#39;substrate&#39;</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">AddLayer</span><span class="p">(</span><span class="s1">&#39;forest&#39;</span><span class="p">,</span>
+                <span class="n">post_height</span><span class="p">,</span>
+                <span class="s1">&#39;vacuum&#39;</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">AddLayer</span><span class="p">(</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
+                <span class="mi">0</span><span class="p">,</span>
+                <span class="s1">&#39;vacuum&#39;</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">SetRegionCircle</span><span class="p">(</span>
+        <span class="s1">&#39;forest&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;substrate&#39;</span><span class="p">,</span>
+        <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+        <span class="n">post_radius</span><span class="p">)</span> 
+    <span class="n">sim</span><span class="o">.</span><span class="n">SetExcitationPlanewave</span><span class="p">(</span>
+        <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+        <span class="n">s_amp</span><span class="p">,</span>  
+        <span class="n">p_amp</span> 
+    <span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">SetFrequency</span><span class="p">(</span><span class="n">excitation_frequency</span><span class="p">)</span>
+
+    <span class="n">EH_fields</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sim</span><span class="o">.</span><span class="n">GetFieldsOnGrid</span><span class="p">(</span><span class="n">zCoord</span><span class="p">,</span> <span class="n">NumSamples</span><span class="o">=</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">samples</span><span class="p">),</span> <span class="n">Format</span> <span class="o">=</span> <span class="s1">&#39;Array&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">EH_fields</span></div>
+
+
+<div class="viewcode-block" id="phase_crunch">
+<a class="viewcode-back" href="../usage/phase_factory.html#phase_factory.phase_crunch">[docs]</a>
+<span class="k">def</span> <span class="nf">phase_crunch</span><span class="p">(</span><span class="n">n_refractive</span><span class="p">,</span> <span class="n">min_post_width</span><span class="p">,</span> <span class="n">max_post_width</span><span class="p">,</span> 
+                 <span class="n">num_post_widths</span><span class="p">,</span>
+                 <span class="n">free_wave</span><span class="p">,</span> <span class="n">lattice_const</span><span class="p">,</span> <span class="n">post_height</span><span class="p">,</span>
+                 <span class="n">numG</span><span class="p">,</span> <span class="n">s_amp</span><span class="p">,</span> <span class="n">p_amp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_refractive : float</span>
+<span class="sd">        refractive index</span>
+<span class="sd">    min_post_width : float</span>
+<span class="sd">        minimum post width</span>
+<span class="sd">    max_post_width : float</span>
+<span class="sd">        maximum post width</span>
+<span class="sd">    num_post_widths : int</span>
+<span class="sd">        number of post widths to simulate</span>
+<span class="sd">    free_wave : float</span>
+<span class="sd">        equivalent wavelength in vacuum</span>
+<span class="sd">    lattice_const : float</span>
+<span class="sd">        width of the cell</span>
+<span class="sd">    post_height : float</span>
+<span class="sd">        height of the post</span>
+<span class="sd">    numG : int</span>
+<span class="sd">        number of basis vectors</span>
+<span class="sd">    s_amp : float</span>
+<span class="sd">        amplitude of the s-polarized field</span>
+<span class="sd">    p_amp : float</span>
+<span class="sd">        amplitude of the p-polarized field</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    post_widths, phases : tuple of np.arrays</span>
+<span class="sd">        post widths and corresponding phases in radians</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">phases</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">post_widths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">min_post_width</span><span class="p">,</span> <span class="n">max_post_width</span><span class="p">,</span> <span class="n">num_post_widths</span><span class="p">)</span>
+    <span class="n">info_message</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Simulating </span><span class="si">{</span><span class="n">num_post_widths</span><span class="si">}</span><span class="s1"> post geometries with diameters in the range [</span><span class="si">{</span><span class="n">min_post_width</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">max_post_width</span><span class="si">}</span><span class="s1">] μm&#39;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s1">&#39;Using a hexagonal cell of lattice constant </span><span class="si">{</span><span class="n">lattice_const</span><span class="si">}</span><span class="s1"> μm and post height </span><span class="si">{</span><span class="n">post_height</span><span class="si">}</span><span class="s1"> μm&#39;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s1">&#39;Assuming a plane wave with free space wavelength of </span><span class="si">{</span><span class="n">free_wave</span><span class="si">}</span><span class="s1"> μm&#39;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s1">&#39;The posts are assumed to be made of a material with refractive index </span><span class="si">{</span><span class="n">n_refractive</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s1">&#39;Using </span><span class="si">{</span><span class="n">numG</span><span class="si">}</span><span class="s1"> basis vectors for RCWA&#39;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s1">&#39;Using s-polarized field amplitude of </span><span class="si">{</span><span class="n">s_amp</span><span class="si">}</span><span class="s1"> and p-polarized field amplitude of </span><span class="si">{</span><span class="n">p_amp</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+    <span class="n">rule</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">im</span> <span class="ow">in</span> <span class="n">info_message</span><span class="p">:</span>
+        <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;&gt;&gt; &quot;</span> <span class="o">+</span> <span class="n">im</span><span class="p">)</span>
+    <span class="n">rule</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">post_width</span> <span class="ow">in</span> <span class="n">post_widths</span><span class="p">:</span>
+        
+        <span class="n">sim_params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;wavelength&#39;</span>   <span class="p">:</span> <span class="n">free_wave</span><span class="p">,</span>
+            <span class="s1">&#39;lattice_constant&#39;</span>   <span class="p">:</span> <span class="n">lattice_const</span><span class="p">,</span>
+            <span class="s1">&#39;post_height&#39;</span>  <span class="p">:</span> <span class="n">post_height</span><span class="p">,</span>
+            <span class="s1">&#39;post_radius&#39;</span>  <span class="p">:</span> <span class="n">post_width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+            <span class="s1">&#39;samples&#39;</span>      <span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+            <span class="s1">&#39;numG&#39;</span>         <span class="p">:</span> <span class="n">numG</span><span class="p">,</span>
+            <span class="s1">&#39;s_amp&#39;</span>        <span class="p">:</span> <span class="n">s_amp</span><span class="p">,</span>
+            <span class="s1">&#39;p_amp&#39;</span>        <span class="p">:</span> <span class="n">p_amp</span><span class="p">,</span>
+            <span class="s1">&#39;n_refractive&#39;</span> <span class="p">:</span> <span class="n">n_refractive</span>
+        <span class="p">}</span>
+        <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;zCoord&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;post_height&#39;</span><span class="p">]</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">meta_fields_hex</span><span class="p">(</span><span class="n">sim_params</span><span class="p">)</span>
+        <span class="n">E_field</span>        <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:,:]</span>
+        <span class="n">Ex</span><span class="p">,</span> <span class="n">Ey</span>         <span class="o">=</span> <span class="n">E_field</span><span class="p">[:,:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">E_field</span><span class="p">[:,:,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">Exabs</span><span class="p">,</span> <span class="n">Eyabs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Ex</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Ey</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">Exabs</span><span class="p">,</span> <span class="n">Eyabs</span><span class="p">)</span> <span class="o">==</span> <span class="n">Exabs</span><span class="p">:</span>
+            <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Ex</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Ey</span><span class="p">))</span>
+        <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;&gt; post_width: </span><span class="si">%f</span><span class="s2"> μm -&gt; phase: </span><span class="si">%f</span><span class="s2"> rad&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">post_width</span><span class="p">,</span> <span class="n">phase</span><span class="p">))</span>
+        <span class="n">phases</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span>
+    <span class="n">rule</span><span class="p">()</span>
+    <span class="n">printer</span><span class="p">(</span><span class="s1">&#39;Unwrapping and removing offset in phases&#39;</span><span class="p">)</span>
+    <span class="n">phases</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span>
+    <span class="n">phases</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span>
+    <span class="n">phases</span> <span class="o">=</span> <span class="n">phases</span> <span class="o">-</span> <span class="n">phases</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">post_widths</span><span class="p">,</span> <span class="n">phases</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--n_refractive&#39;</span><span class="p">,</span>             <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">2.41</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--min_post_width&#39;</span><span class="p">,</span>   <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--max_post_width&#39;</span><span class="p">,</span>   <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--free_wave&#39;</span><span class="p">,</span>        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.532</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--lattice_const&#39;</span><span class="p">,</span>       <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--post_height&#39;</span><span class="p">,</span>      <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--num_post_widths&#39;</span><span class="p">,</span>  <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>   <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--numG&#39;</span><span class="p">,</span>             <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>   <span class="n">default</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--s_amp&#39;</span><span class="p">,</span>            <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--p_amp&#39;</span><span class="p">,</span>            <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="n">start_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">())</span>
+    <span class="n">post_widths</span><span class="p">,</span> <span class="n">phases</span> <span class="o">=</span> <span class="n">phase_crunch</span><span class="p">(</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">n_refractive</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">min_post_width</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">max_post_width</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">num_post_widths</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">free_wave</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">lattice_const</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">post_height</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">numG</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">s_amp</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">p_amp</span><span class="p">)</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">())</span>
+    <span class="n">rule</span><span class="p">()</span>
+    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;Total time: </span><span class="si">%d</span><span class="s2"> seconds&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">))</span>
+    <span class="n">rule</span><span class="p">()</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;numG&#39;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">numG</span><span class="p">,</span>
+        <span class="s1">&#39;s_amp&#39;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">s_amp</span><span class="p">,</span>
+        <span class="s1">&#39;p_amp&#39;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">p_amp</span><span class="p">,</span>
+        <span class="s1">&#39;created_on&#39;</span><span class="p">:</span> <span class="n">created_on</span><span class="p">,</span>
+        <span class="s1">&#39;post_widths&#39;</span><span class="p">:</span> <span class="n">post_widths</span><span class="p">,</span>
+        <span class="s1">&#39;free_wave&#39;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">free_wave</span><span class="p">,</span>
+        <span class="s1">&#39;lattice_const&#39;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">lattice_const</span><span class="p">,</span>
+        <span class="s1">&#39;phases&#39;</span><span class="p">:</span> <span class="n">phases</span><span class="p">,</span>
+        <span class="s1">&#39;post_height&#39;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">post_height</span><span class="p">,</span>
+        <span class="s1">&#39;n_refractive&#39;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">n_refractive</span><span class="p">,</span>
+        <span class="s1">&#39;num_post_widths&#39;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">num_post_widths</span><span class="p">}</span>
+    <span class="n">json_timestamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="o">*</span><span class="mf">1e7</span><span class="p">)</span>
+    <span class="n">json_fname</span> <span class="o">=</span> <span class="s1">&#39;./json_out/phase_data-</span><span class="si">%d</span><span class="s1">.json&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">json_timestamp</span><span class="p">)</span>
+    <span class="n">results</span><span class="p">[</span><span class="s1">&#39;json_fname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json_fname</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;Saving results to </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">json_fname</span><span class="p">)</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">convert</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">rule</span><span class="p">()</span>
+    <span class="c1"># this final print is necessary for being able to retrieve the results</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">json_fname</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

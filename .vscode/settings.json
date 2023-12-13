@@ -1,3 +1,4 @@
 {
-    "git.openRepositoryInParentFolders": "always"
+    "git.openRepositoryInParentFolders": "always",
+    "terminal.integrated.macOptionClickForcesSelection": true
 }

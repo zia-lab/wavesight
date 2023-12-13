@@ -8,17 +8,30 @@ from subprocess import Popen
 def zerocrossings(numarray):
     '''
     Return the indices of the zero crossings in the given numpy array.
+
+    Parameters
+    ----------
+    numarray : array
+        The array to find the zero crossings of.
+    
+    Returns
+    -------
+    zc : array
+        The indices of the elelements right before a zero crossing.
     '''
     return np.where(np.diff(np.sign(numarray)))[0]
 
 def count_shared_chars(s1, s2):
-    '''Given two strings, count the number of characters that are the same
+    '''
+    Given two strings, count the number of characters that are the same
     at the beginning of both strings.
 
     Parameters
     ----------
     s1 : str
+        The first string.
     s2 : str
+        The second string.
 
     Returns
     -------
@@ -42,7 +55,7 @@ def findallroots(fun, xmin, xmax, dx, dtype,
                  verbose=False,
                  reverse=False):
     '''
-    Find  all  roots of a function in a given interval. To accomplish this
+    Find  most roots of a function in a given interval. To accomplish this
     the  function  is  sampled  with  the  given  resolution dx within the
     interval  (xmin,  xmax)  and  the  zero  crossings are found. The zero
     crossings  are  then  used  as  initial  guesses  for the root finding
@@ -153,6 +166,23 @@ def findallroots(fun, xmin, xmax, dx, dtype,
     return zeros
 
 def find_layout_rectangle(ar, N):
+    '''
+    Given an aspect ratio and an integer number of elements,
+    find two integers such that their products is not larger
+    than N and whose ratio is closest to the given aspect ratio.
+
+    Parameters
+    ----------
+    ar : float
+        The aspect ratio.
+    N : int
+        The number of elements.
+    
+    Returns
+    -------
+    best_pair : array
+        The two integers that best fit the given aspect ratio.
+    '''
     w_est = np.sqrt(N / ar)
     h_est = w_est * ar
 
@@ -169,6 +199,13 @@ def find_layout_rectangle(ar, N):
 def round2sigfigs(x, p): 
     '''
     Round x to p significant figures.
+
+    Parameters
+    ----------
+    x : float
+        The number to round.
+    p : int
+        The number of significant figures to round to.
 
     REF: https://stackoverflow.com/questions/18915378/rounding-to-significant-figures-in-numpy
     '''

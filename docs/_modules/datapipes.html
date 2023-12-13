@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>datapipes &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/across_ml.html">across_ml module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/convstore.html">convstore module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/datapipes.html">datapipes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/diffkernels.html">diffkernels module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_animate.html">EH4_animate module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_plotter.html">EH4_plotter module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4-to-EH5.html">EH4-to-EH5 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH5-assembly.html">EH5-assembly module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_animate.html">fiber_animate module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_bridge.html">fiber_bridge module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_bundle.html">fiber_bundle module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_platform.html">fiber_platform module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_plotter.html">fiber_plotter module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fieldgenesis.html">fieldgenesis module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fields.html">fields module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fungenerators.html">fungenerators module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/hail_david.html">hail_david module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/housekeeping.html">housekeeping module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/meta_designer.html">meta_designer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metal.html">metal module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metaorchestra.html">metaorchestra module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/misc.html">misc module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/ml_plot_in.html">ml_plot_in module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/phase_factory.html">phase_factory module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/printech.html">printech module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/slacking.html">slacking module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/sniffer.html">sniffer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/standard_candle.html">standard_candle module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/templates.html">templates module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavegraphics.html">wavegraphics module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavesight.html">wavesight module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">datapipes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for datapipes</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">printech</span> <span class="kn">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="load_from_json">
+<a class="viewcode-back" href="../usage/datapipes.html#datapipes.load_from_json">[docs]</a>
+<span class="k">def</span> <span class="nf">load_from_json</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Load data from a json file into a dictionary</span>
+<span class="sd">    omitting lines that start with //. This is a simple</span>
+<span class="sd">    loader that does not support nested dictionaries.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename: str</span>
+<span class="sd">        The path to the json file to load.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    the_dictionary: dict</span>
+<span class="sd">        The dictionary with the contents of the json file.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">clear_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">clear_line</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clear_line</span><span class="p">)</span>
+    <span class="n">clear_lines</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="n">the_dictionary</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">clear_lines</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">the_dictionary</span></div>
+
+
+
+<div class="viewcode-block" id="CustomJSONEncoder">
+<a class="viewcode-back" href="../usage/datapipes.html#datapipes.CustomJSONEncoder">[docs]</a>
+<span class="k">class</span> <span class="nc">CustomJSONEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
+<div class="viewcode-block" id="CustomJSONEncoder.default">
+<a class="viewcode-back" href="../usage/datapipes.html#datapipes.CustomJSONEncoder.default">[docs]</a>
+    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="c1"># Convert numpy arrays to lists</span>
+            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="c1"># Let the base class default method raise the TypeError</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span></div>
+</div>
+
+
+<div class="viewcode-block" id="save_to_json">
+<a class="viewcode-back" href="../usage/datapipes.html#datapipes.save_to_json">[docs]</a>
+<span class="k">def</span> <span class="nf">save_to_json</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">source_dict</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function saves a dictionary to a JSON file with the given filename.</span>
+<span class="sd">    It admits values to be int, float, str, list, dict, or numpy arrays.</span>
+
+<span class="sd">    This is a simple wrapper around json.dump that uses a custom encoder that</span>
+<span class="sd">    accounts for numpy arrays.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename: str</span>
+<span class="sd">        The path to the JSON file to save.</span>
+<span class="sd">    source_dict: dict</span>
+<span class="sd">        The dictionary to save to the JSON file.</span>
+<span class="sd">    header: str</span>
+<span class="sd">        A string to be saved as a comment in the first line of the file.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">source_dict</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">CustomJSONEncoder</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="save_to_h5">
+<a class="viewcode-back" href="../usage/datapipes.html#datapipes.save_to_h5">[docs]</a>
+<span class="k">def</span> <span class="nf">save_to_h5</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Save numeric values, numpy arrays, strings, and nested dictionaries</span>
+<span class="sd">    from the provided dictionary to an H5 file.</span>
+<span class="sd">    If a value of the provided dictionary is a list, then</span>
+<span class="sd">    the list is converted to a dictionary with keys equal</span>
+<span class="sd">    to the indices of the lists (as strings).    </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data: dict</span>
+<span class="sd">        The input dictionary.</span>
+<span class="sd">    filename: str</span>
+<span class="sd">        The path to the H5 file to save.</span>
+<span class="sd">    group: (h5py.Group, optional)</span>
+<span class="sd">        Current group for recursion. Defaults to None.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        data_dict = {</span>
+<span class="sd">            &#39;a&#39;: [1,2,3],</span>
+<span class="sd">            &#39;b&#39;: {</span>
+<span class="sd">                &#39;c&#39;: &#39;hello&#39;,</span>
+<span class="sd">                &#39;d&#39;: np.array([1, 2, 3]),</span>
+<span class="sd">                &#39;e&#39;: {</span>
+<span class="sd">                    &#39;f&#39;: 3.14,</span>
+<span class="sd">                    &#39;g&#39;: &#39;world&#39;</span>
+<span class="sd">                }</span>
+<span class="sd">            },</span>
+<span class="sd">            &#39;h&#39;: np.array([[1, 2], [3, 4]])</span>
+<span class="sd">        }</span>
+<span class="sd">        save_to_h5(data_dict, &#39;output.h5&#39;)</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">group</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File already exists, overwriting ...&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File already exists, doing nothing ...&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+    
+    <span class="c1"># Initialize the file/group on the first call</span>
+    <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5f</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">comments</span><span class="p">:</span>
+                <span class="n">h5f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;comments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comments</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="n">save_to_h5</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">h5f</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># If the value is a dictionary, recurse into it</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="n">subgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="n">save_to_h5</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">subgroup</span><span class="p">)</span>
+                
+            <span class="c1"># Convert lists to dictionaries</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">list_dict</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">value</span><span class="p">)}</span>
+                <span class="n">subgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="n">save_to_h5</span><span class="p">(</span><span class="n">list_dict</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">subgroup</span><span class="p">)</span>
+            
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># If the value is a string, encode it to UTF-8</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+                <span class="n">group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_from_h5">
+<a class="viewcode-back" href="../usage/datapipes.html#datapipes.load_from_h5">[docs]</a>
+<span class="k">def</span> <span class="nf">load_from_h5</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_comments</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Load an H5 file and return its contents or its keys.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename: str</span>
+<span class="sd">        The path to the H5 file to load.</span>
+<span class="sd">    keys: (list, str, or None, optional)</span>
+<span class="sd">        A list of keys, a single key, or None to load all from the H5 file.</span>
+<span class="sd">        If a single key is given, then the function does not return</span>
+<span class="sd">        a dictionary with a comment but it simply returns the value of</span>
+<span class="sd">        that single key.</span>
+<span class="sd">    group: (h5py.Group, optional)</span>
+<span class="sd">        Current group for recursion. Defaults to None.</span>
+<span class="sd">    only_keys: (bool)</span>
+<span class="sd">        If set to True, returns only the keys without loading any data. Defaults to False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict, value, list or None</span>
+<span class="sd">        Depending on the parameters, returns a dictionary, a value, a list of keys, or None.</span>
+<span class="sd">    tuple: </span>
+<span class="sd">        A tuple containing a dictionary with the loaded data and the comments string.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">retrieve_group</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">retrieve_group</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">key</span><span class="p">][()]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">bytes</span><span class="p">):</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5f</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">only_keys</span><span class="p">:</span>
+            <span class="n">comment</span> <span class="o">=</span> <span class="n">h5f</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;comments&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">h5f</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="n">comment</span>
+
+        <span class="n">comment</span> <span class="o">=</span> <span class="n">h5f</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;comments&#39;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">h5f</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">h5f</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">retrieve_group</span><span class="p">(</span><span class="n">h5f</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">h5f</span><span class="p">[</span><span class="n">key</span><span class="p">][()]</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">bytes</span><span class="p">):</span>
+                            <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">retrieve_group</span><span class="p">(</span><span class="n">h5f</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">return_comments</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">comment</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="run_script_and_get_json">
+<a class="viewcode-back" href="../usage/datapipes.html#datapipes.run_script_and_get_json">[docs]</a>
+<span class="k">def</span> <span class="nf">run_script_and_get_json</span><span class="p">(</span><span class="n">script_path</span><span class="p">,</span> <span class="n">args_dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function takes the path to a script with a command-line</span>
+<span class="sd">    interface,   and   a  dictionary  with  values  to  all  the</span>
+<span class="sd">    parameters that the CLI receives.</span>
+
+<span class="sd">    This  assumes  that  the  names  of  the arguments are known</span>
+<span class="sd">    beforehand so that args_dict may be well formed.</span>
+
+<span class="sd">    For an alternative that automatically analyzes the script to</span>
+<span class="sd">    be run, see extract_cli_arguments_and_run.</span>
+
+<span class="sd">    Using  the given values for the arguments this function runs</span>
+<span class="sd">    the script.</span>
+
+<span class="sd">    The  script  must  save  its results to a .json file and the</span>
+<span class="sd">    last line that it prints must be the name of such file.</span>
+
+<span class="sd">    When  the  script  has  finished running, this function will</span>
+<span class="sd">    then  grab the filename of that json file, read its contents</span>
+<span class="sd">    and return them as a dictionary.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    script_path: str</span>
+<span class="sd">        Path to Python script with CLI and json output.</span>
+<span class="sd">    args_dict: dict</span>
+<span class="sd">        Dictionary with keys equal to the named arguments of the</span>
+<span class="sd">        CLI and values equal to the values one wishes to input.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result_data: dict</span>
+<span class="sd">        Dictionary with the parsed results of the function as</span>
+<span class="sd">        saved in the json file by the Python script.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Construct the command with named arguments</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="n">script_path</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">args_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">command</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--</span><span class="si">{</span><span class="n">arg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">command</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    
+    <span class="c1"># Run the command and capture the output</span>
+
+    <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span>
+                               <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                               <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span>
+                               <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">stdout_lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">output</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="n">process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
+            <span class="n">clean_output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">clean_output</span><span class="p">)</span>
+            <span class="n">stdout_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clean_output</span><span class="p">)</span>
+    
+    <span class="c1"># Parse the last line of the standard output to get the JSON filename</span>
+    <span class="n">json_output_filename</span> <span class="o">=</span> <span class="n">stdout_lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    
+    <span class="c1"># Read the result from the JSON file</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_output_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">result_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">result_data</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stdout_lines</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result_data</span></div>
+
+
+<div class="viewcode-block" id="extract_cli_arguments_and_run">
+<a class="viewcode-back" href="../usage/datapipes.html#datapipes.extract_cli_arguments_and_run">[docs]</a>
+<span class="k">def</span> <span class="nf">extract_cli_arguments_and_run</span><span class="p">(</span><span class="n">script_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given  the  path  to  a  python  script  with a command-line</span>
+<span class="sd">    interface.   This   function   inspects   the  command  line</span>
+<span class="sd">    interface, which must be built with argparse and it define a</span>
+<span class="sd">    function  that will take in the CLI parameters as positional</span>
+<span class="sd">    arguments, feed them to the script via the CLI, and load the</span>
+<span class="sd">    output of the script.</span>
+
+<span class="sd">    Eventhough the CLI might allow for optional  parameters  the </span>
+<span class="sd">    function  returned  here  requires  that  every parameter is</span>
+<span class="sd">    given.</span>
+
+<span class="sd">    The  script  needs  to output its results to a json file and</span>
+<span class="sd">    the  last  line  that it prints must contain the name of the</span>
+<span class="sd">    file to which the function saved its results to.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    script_path : str</span>
+<span class="sd">        The filepath to the script to be wrapped.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cli_function_wrapper : fun</span>
+<span class="sd">        A  function  that takes as aruments the arguments of the</span>
+<span class="sd">        CLI  and  which  returns  a  dictionary with the results</span>
+<span class="sd">        parse from json output.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Regular expression to match argparse argument definitions</span>
+    <span class="n">arg_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.add_argument\([</span><span class="se">\&#39;</span><span class="s1">&quot;]--(\w+)&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># List to store argument names</span>
+    <span class="n">arg_names</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="c1"># Read the script and search for argparse definitions</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">arg_pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                <span class="c1"># Extract the argument name and add it to the list</span>
+                <span class="n">arg_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="c1"># Function that takes CLI arguments, wraps them into a dictionary,</span>
+    <span class="c1"># and feeds them to run_script_and_get_json</span>
+    <span class="k">def</span> <span class="nf">cli_function_template</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="c1"># Construct the args dictionary from positional arguments</span>
+        <span class="n">args_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">arg_names</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        
+        <span class="c1"># Call the run_script_and_get_json function with the script path and args dictionary</span>
+        <span class="k">return</span> <span class="n">run_script_and_get_json</span><span class="p">(</span><span class="n">script_path</span><span class="p">,</span> <span class="n">args_dict</span><span class="p">)</span>
+    
+    <span class="c1"># Set the __name__ attribute of the function to a generic name like &#39;cli_function&#39;</span>
+    <span class="n">cli_function_template</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;cli_function&#39;</span>
+    
+    <span class="c1"># Use functools.wraps to preserve the metadata of the template function</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">cli_function_template</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">cli_function_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cli_function_template</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    
+    <span class="c1"># Update the signature of the wrapper function to match the argument names</span>
+    <span class="n">cli_function_wrapper</span><span class="o">.</span><span class="n">__signature__</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">cli_function_template</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">arg_names</span>
+    <span class="p">])</span>
+    
+    <span class="k">return</span> <span class="n">cli_function_wrapper</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

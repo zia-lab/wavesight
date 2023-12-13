@@ -10,6 +10,20 @@ from functools import wraps
 from printech import *
 
 def load_from_json(filename):
+    '''Load data from a json file into a dictionary
+    omitting lines that start with //. This is a simple
+    loader that does not support nested dictionaries.
+
+    Parameters
+    ----------
+    filename: str
+        The path to the json file to load.
+    
+    Returns
+    -------
+    the_dictionary: dict
+        The dictionary with the contents of the json file.
+    '''
     lines = []
     with open(filename, 'r') as file:
         for line in file:
@@ -33,6 +47,22 @@ def save_to_json(filename, source_dict, header=''):
     '''
     This function saves a dictionary to a JSON file with the given filename.
     It admits values to be int, float, str, list, dict, or numpy arrays.
+
+    This is a simple wrapper around json.dump that uses a custom encoder that
+    accounts for numpy arrays.
+
+    Parameters
+    ----------
+    filename: str
+        The path to the JSON file to save.
+    source_dict: dict
+        The dictionary to save to the JSON file.
+    header: str
+        A string to be saved as a comment in the first line of the file.
+    
+    Returns
+    -------
+    None
     '''
     with open(filename, 'w', encoding='utf-8') as file:
         json.dump(source_dict, file, ensure_ascii=False, cls=CustomJSONEncoder, indent=4)
@@ -61,19 +91,22 @@ def save_to_h5(data, filename, group=None, comments='', overwrite=False):
 
     Example
     -------
-    data_dict = {
-        'a': [1,2,3],
-        'b': {
-            'c': "hello",
-            'd': np.array([1, 2, 3]),
-            'e': {
-                'f': 3.14,
-                'g': "world"
-            }
-        },
-        'h': np.array([[1, 2], [3, 4]])
-    }
-    save_to_h5(data_dict, 'output.h5')
+    .. code-block:: python
+
+        data_dict = {
+            'a': [1,2,3],
+            'b': {
+                'c': 'hello',
+                'd': np.array([1, 2, 3]),
+                'e': {
+                    'f': 3.14,
+                    'g': 'world'
+                }
+            },
+            'h': np.array([[1, 2], [3, 4]])
+        }
+        save_to_h5(data_dict, 'output.h5')
+    
     '''
     if group == None and os.path.exists(filename):
         if overwrite:
@@ -131,8 +164,8 @@ def load_from_h5(filename, keys=None, only_keys=False, return_comments=True):
     -------
     dict, value, list or None
         Depending on the parameters, returns a dictionary, a value, a list of keys, or None.
-    Returns:
-    tuple: A tuple containing a dictionary with the loaded data and the comments string.
+    tuple: 
+        A tuple containing a dictionary with the loaded data and the comments string.
     '''
 
     def retrieve_group(group):

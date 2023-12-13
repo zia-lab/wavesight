@@ -8,7 +8,7 @@
 # │                                                          │
 # │      Given the waveguide ID this script generates a      │
 # │      sequence of animations for the transverse and       │
-# │                     sagittal fields.                     │
+# │                  sagittal fields at EH2.                 │
 # │                                                          │
 # └──────────────────────────────────────────────────────────┘
 
@@ -22,40 +22,31 @@ import wavesight as ws
 from matplotlib import style
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
-from matplotlib.backends.backend_pdf import PdfPages
 
 style.use('dark_background')
-# this script can be used to generate a compendium of the fields in the xz yz sagittal planes
-# it takes as simple argument equal to the job id for the entire simulation
-
-parser = argparse.ArgumentParser(description='Job plotter.')
-parser.add_argument('waveguide_id', type=str, help='The ID for a waveguide.')
-args = parser.parse_args()
 
 cmap          = cm.watermelon
 data_dir      = '/users/jlizaraz/data/jlizaraz/CEM/wavesight'
-post_to_slack = True
 num_frames    = 50
-phase_min     = 0
-phase_max     = 2*np.pi
-phases        = np.linspace(phase_min, phase_max, num_frames, endpoint=False)
-exclude_dirs  = ['moovies','moovies-EH4']
+phases        = np.linspace(0, 2*np.pi, num_frames, endpoint=False)
+exclude_dirs  = ['moovies', 'moovies-EH4', 'err', 'figs', 'out']
 
-def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
+def wave_animator(waveguide_id, max_animations=np.inf, extra_fname = ''):
     '''
     This function takes the job id for a given batch simulation
-    and creates plots for the fields in the saggital and xy
+    and creates animatios for the fields in the saggital and xy
     monitors.
-    A pdf is created for each monitor. Thees pdfs are saved in
-    the same directory as the data and also posted to Slack.
+
     Parameters
     ----------
     waveguide_id : str
         The label for the job.
-    max_plots : int, optional
+    max_animations : int, optional
         The maximum number of plots to generate. The default is np.inf.
+        Can be used to halt the script early.
     extra_fname : str, optional
         Extra string to append to the filename. The default is ''.
+    
     Returns
     -------
     None
@@ -76,7 +67,7 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
     # go through each folder and make the sagittal and xy animations
     for job_idx, job_dir in enumerate(job_dirs):
         mode_id = job_dir.split('/')[-1][:9]
-        if job_idx >= max_plots:
+        if job_idx >= max_animations:
             continue
         print('%d/%d' % (job_idx, len(job_dirs) - 1))
         h5_fname = 'EH2.h5'
@@ -248,4 +239,7 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
             plt.close(fig)
 
 if __name__ == '__main__':
-    wave_plotter(args.waveguide_id)
+    parser = argparse.ArgumentParser(description='Job plotter.')
+    parser.add_argument('waveguide_id', type=str, help='The ID for a waveguide.')
+    args = parser.parse_args()
+    wave_animator(args.waveguide_id)

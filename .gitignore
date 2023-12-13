@@ -141,3 +141,6 @@ dmypy.json
 FG050LGA/
 eigenbasis-FG050LGA.pkl
 dave.py
+*.doctree
+.buildinfo
+.DS_Store

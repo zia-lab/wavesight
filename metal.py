@@ -18,12 +18,14 @@ def hex_lattice_points(lattice_constant, radius):
     Given the lattice constant of a hexagonal lattice,
     this function returns as many lattice points as fit
     in a circle of the given radius.
+
     Parameters
     ----------
     lattice_constant: float
         The lattice constant of the hex lattice.
     radius: float
         The radius of the circle.
+    
     Returns
     -------
     lattice_points: np.ndarray
@@ -48,6 +50,7 @@ def fresnel_fun_gen(focal_length, wavelength, mod_2pi=True):
         The focal length of the lens in μm.
     wavelength: float
         The free space wavelength of the light in μm.
+    
     Returns
     -------
     fresnel_fun: function

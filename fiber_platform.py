@@ -22,6 +22,7 @@ import h5py
 import time
 import pickle
 import psutil
+import inspect
 import argparse
 import meep as mp
 import numpy as np
@@ -45,6 +46,7 @@ memory_boost_factor = 1.25
 # scales the run time, useful to debug by making the simulation end prematurely or run longer
 # a larger time might be necessary for a satisfactory steady state to be found in the req run
 run_time_scaler = 2.0
+
 # whether to show the plots as simulations are running
 show_plots = False
 # control which plots are made
@@ -54,18 +56,13 @@ plot_current_streams = False
 sag_plot_planes      = ['xz']
 # minimun wall time for sim jobs
 min_req_time_in_s    = 25 * 60
+
 # Whether to save the fields to the pickle or just leave them in the .h5 files
 save_fields_to_h5    = False
 # required simulation time ceiled to this many seconds
 time_req_rounded_to  = 60*15
 # and memory ceiled to this many Gb
 mem_req_rounded_to   = 1
-
-def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
-    rtime = (kappa * sim_cell.x
-             * sim_cell.y * sim_cell.z
-             * run_time * spatial_resolution**3)
-    return rtime
 
 def run_time_fun(full_sim_height, nCore):
     return 1.5 * full_sim_height * nCore
@@ -105,6 +102,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     waveguide_sol : dict
         Containing the following keys: nBetween, numModes, fiber_sol, fiber_alpha,
         slack_channel, MEEP_resolution, sample_resolution, distance_to_monitor.
+    
     Returns
     -------
     None
@@ -112,6 +110,20 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
         for mode_sol, and several .h5 files in the case of a time-resolved
         simulation or a single one in the case of a steady-state simulation.
     '''
+    waveguide_id = waveguide_sol['waveguide_id']
+    if mode_idx == 0:
+        # this means this is the requirement run
+        # from which we want to get the cluster jobid
+        # to determine memory and time requirements
+        slurm_jobs = ws.get_squeue_data(get_RSS = True, return_as_dict = True)
+        req_run_name = 'req_run_%s' % waveguide_id
+        if req_run_name in slurm_jobs:
+            jobid = slurm_jobs[req_run_name]['JOBID']
+        else:
+            jobid = None
+        printer("JOBID=",jobid)
+    else:
+        jobid = None
 
     params_dict   = ws.load_from_json(waveguide_sol['config_file_fname'])
     parallel_MEEP = params_dict['parallel_MEEP']
@@ -195,9 +207,9 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     mode_sol['β'] = float(β)
 
     nCore = mode_sol['nCore']
+    kFree = mode_sol['kFree']
     nCladding = mode_sol['nCladding']
     coreRadius = mode_sol['coreRadius']
-    kFree = mode_sol['kFree']
 
     # calculate the field functions
     printer("calculating the field functions from the analytical solution")
@@ -314,7 +326,6 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     sim_width                   = 2*(coreRadius + cladding_width)
     mode_sol['sim_width']       = float(sim_width)
     full_sim_height             = sim_height_fun(λFree, pml_thickness)
-    sim_height                  = full_sim_height - 2*pml_thickness
     mode_sol['full_sim_height'] = float(full_sim_height)
     mode_sol['pml_thickness']   = float(pml_thickness)
     mode_sol['cladding_width']  = float(cladding_width)
@@ -343,7 +354,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     # the vol of the simulation
     sim_cell    = mp.Vector3(full_sim_width, full_sim_width, full_sim_height)
     # estime the required simulation time
-    approx_runtime = approx_time(sim_cell, MEEP_resolution, run_time)
+    approx_runtime = ws.approx_time(sim_cell, MEEP_resolution, run_time)
 
     # plot of the cross section
     printer("making a design draft from the fiber geometry")
@@ -478,7 +489,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     sim.use_output_directory(mode_sol_dir)
     sim.filename_prefix = ''
 
-    msg = "simulation is estimated to take %0.2f minutes" % (approx_runtime/60)
+    msg = "simulation is estimated to take %0.2f minutes" % (approx_runtime/60/MEEP_num_cores)
     printer(msg)
     mem_usage = sim.get_estimated_memory_usage()/1024/1024
     printer(">> estimated memory usage %.2f Mb" % mem_usage)
@@ -516,6 +527,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
             with open(pkl_fname,'wb') as pkl_file:
                 pickle.dump(monitor_fields, pkl_file)
     start_time = time.time()
+    printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
     if time_resolved:
         if parallel_MEEP:
             sim.run(mp.at_every(field_sampling_interval,
@@ -552,14 +564,16 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
         sim.run(until=run_time)
     end_time = time.time()
     time_taken = end_time - start_time
-
+    printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
     coords = {}
     (xCoords, yCoords, zCoords, _) = sim.get_array_metadata()
+    printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
     numVx = len(xCoords) * len(yCoords) * len(zCoords)
     mode_sol['numVx'] = numVx
     (xCoordsMonxy, yCoordsMonxy, zCoordsMonxy, _) = sim.get_array_metadata(xy_monitor_vol)
     (xCoordsMonxz, yCoordsMonxz, zCoordsMonxz, _) = sim.get_array_metadata(xz_monitor_vol)
     (xCoordsMonyz, yCoordsMonyz, zCoordsMonyz, _) = sim.get_array_metadata(yz_monitor_vol)
+    printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
     coords['xCoords'] = xCoords
     coords['yCoords'] = yCoords
     coords['zCoords'] = zCoords
@@ -572,6 +586,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     coords['xCoordsMonyz'] = xCoordsMonyz
     coords['yCoordsMonyz'] = yCoordsMonyz
     coords['zCoordsMonyz'] = zCoordsMonyz
+    printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
     mode_sol['coords']     = coords
     mode_sol['sim_width_original'] = float(sim_width)
     sim_width = float(xCoordsMonxy[-1] - xCoordsMonxy[0])
@@ -586,21 +601,20 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
     fiber_β       = np.arcsin(fiber_NA)
     current_width = xCoords[-1] - xCoords[0]
     zProp         = params_dict['zProp']
-    prop_plane_width = 2 * (current_width/2 + 1.1 * zProp * np.tan(fiber_β))
+    prop_plane_width      = 2 * (current_width/2 + 1.1 * zProp * np.tan(fiber_β))
     runway_cell_thickness = pml_thickness + 2*EH3_to_ml
     ml_cell_thickness     = ml_thickness
-    host_cell_thickness   = 2*ml_to_EH4 + pml_thickness
+    host_cell_thickness   = 2 * ml_to_EH4 + pml_thickness
     prop_plane_width_with_pml = prop_plane_width + 2 * pml_thickness
     full_sim_height = runway_cell_thickness + ml_cell_thickness + host_cell_thickness
     numVx_2 = prop_plane_width_with_pml**2 * full_sim_height * MEEP_resolution**3
     mem_scale_factor = numVx_2 / numVx
     time_scale_factor = run_time_2 / run_time
-
-    on_axis_eps = sim.get_array(mp.Dielectric,
-                    mp.Volume(
-                        center=mp.Vector3(0,0,0),
-                    size=mp.Vector3(0,0,full_sim_height))
-                    )
+    z_axis_vol = mp.Volume(center=mp.Vector3(0,0,0),
+                           size=mp.Vector3(0,0,full_sim_height))
+    printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
+    on_axis_eps = sim.get_array(mp.Dielectric, z_axis_vol)
+    printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
 
     mode_sol['on_axis_eps'] = on_axis_eps 
     mode_sol['time_taken'] = time_taken
@@ -613,6 +627,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
         ws.post_message_to_slack(msg, slack_channel=slack_channel, thread_ts = thread_ts) 
 
     printer("getting the field data from the h5 files")
+    printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
     if time_resolved:
         if not parallel_MEEP:
             monitor_fields = {}
@@ -649,7 +664,9 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
                 xy_e_fields, xz_e_fields, yz_e_fields = [], [], []
                 xy_h_fields, xz_h_fields, yz_h_fields = [], [], []
                 monitor_fields = {}
+                printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
                 for pkl in pkls:
+                    printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
                     with open(pkl, 'rb') as f:
                         data = pickle.load(f)
                     t = data['t']
@@ -663,18 +680,20 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
                     xy_h_fields.append(data['xy'][1])
                     xz_h_fields.append(data['xz'][1])
                     yz_h_fields.append(data['yz'][1])
-
+                del data
+                printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
                 for plane_string in 'xy xz yz'.split():
+                    printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
                     monitor_fields[plane_string] = np.array(monitor_fields[plane_string])
                     monitor_fields[plane_string] = np.transpose(monitor_fields[plane_string], (1,2,3,4,0))
-
+                printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
                 xy_e_fields = np.array(xy_e_fields)
                 xz_e_fields = np.array(xz_e_fields)
                 yz_e_fields = np.array(yz_e_fields)
                 xy_h_fields = np.array(xy_h_fields)
                 xz_h_fields = np.array(xz_h_fields)
                 yz_h_fields = np.array(yz_h_fields)
-
+                printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
                 sliced_fields={}
                 sliced_fields['xy_e'] = xy_e_fields
                 sliced_fields['xz_e'] = xz_e_fields
@@ -682,9 +701,11 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
                 sliced_fields['xy_h'] = xy_h_fields
                 sliced_fields['xz_h'] = xz_h_fields
                 sliced_fields['yz_h'] = yz_h_fields
+                printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
                 ordering = (1,2,0)
                 for field_idx, field_name in enumerate(['e','h']):
                     for slice_plane in ['xy','xz','yz']:
+                        printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
                         h5_fname = f'{field_name}-field-{slice_plane}-slices.h5'
                         h5_fname = os.path.join(parent_dir, h5_fname)
                         export_dict = {}
@@ -715,6 +736,7 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
             monitor_fields[monitor_plane] = np.array([a_monitor_fields[:3], a_monitor_fields[3:]])
         if rank == 0:
             ws.save_to_h5(export_dict, h5_fname, overwrite=True)
+    printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
     printer("calculating basic plots for the end time")
     if rank == 0:
         for sagplane in sag_plot_planes:
@@ -817,9 +839,13 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
         else:
             plt.close()
         mode_sol['approx_MEEP_mem_usage_in_MB'] = int(mem_usage)
-        process = psutil.Process(os.getpid())
-        mem_used_in_bytes = process.memory_info().rss
-        mem_used_in_Mbytes = mem_used_in_bytes/1024/1024
+        if jobid is None:
+            process = psutil.Process(os.getpid())
+            mem_used_in_bytes = process.memory_info().rss
+            mem_used_in_Mbytes = mem_used_in_bytes/1024/1024
+        else:
+            mem_used_in_Gb = ws.get_max_RSS(jobid)
+            mem_used_in_Mbytes = mem_used_in_Gb * 1024
         mode_sol['overall_mem_usage_in_MB'] = int(mem_used_in_Mbytes)
         summary = ws.dict_summary(mode_sol, 'sim-'+sim_id)
         if send_to_slack:
@@ -841,14 +867,18 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
         time_req_in_s      = ws.ceil_to_multiple(time_boost_factor*time_taken_in_s,
                                             time_req_rounded_to)
         time_req_in_s      = int(max(time_req_in_s, min_req_time_in_s))
-        mem_req_in_GB_1    = MEEP_num_cores * int(ws.ceil_to_multiple(memory_boost_factor*mem_used_in_Gbytes, mem_req_rounded_to))
+        mem_req_in_GB_1    = int(ws.ceil_to_multiple(memory_boost_factor*mem_used_in_Gbytes, mem_req_rounded_to))
+        if jobid is None:
+            mem_req_in_GB_1 = MEEP_num_cores * mem_req_in_GB_1
         time_req_fmt       = ws.format_time(time_req_in_s)
         mem_req_fmt        = '%d' % mem_req_in_GB_1
         printer("took %s s to run, and spent %.1f MB of RAM" % (time_taken_in_s,mem_used_in_Mbytes ))
         printer("estimating the resource requirements for the second FDTD simulations")
-        mem_req_in_GB_2 = MEEP_num_cores * (ws.ceil_to_multiple(memory_boost_factor 
-                                            * mem_used_in_Gbytes 
-                                            * mem_scale_factor, mem_req_rounded_to))
+        mem_req_in_GB_2 = (ws.ceil_to_multiple(memory_boost_factor 
+                                * mem_used_in_Gbytes 
+                                * mem_scale_factor, mem_req_rounded_to))
+        if jobid is None:
+            mem_req_in_GB_2 = MEEP_num_cores * mem_req_in_GB_2
         mem_req_in_GB_2 = int(mem_req_in_GB_2)
         mem_req_fmt_2   = '%d' % mem_req_in_GB_2
         # sim time proportional both to number of voxels and simulation time
@@ -870,11 +900,14 @@ def mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol):
                 steady_time = '%.2f' % steady_time
                 printer("creating resource requirement file")
                 with open(reqs_fname,'w') as file:
-                    file.write('%s,%s,%s,%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB, steady_time, mem_req_fmt_2, time_req_fmt_2)) 
+                    file.write('%s,%s,%s,%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB, 
+                                                      steady_time, mem_req_fmt_2, time_req_fmt_2)) 
             else:
                 printer("creating resource requirement file")
                 with open(reqs_fname,'w') as file:
-                    file.write('%s,%s,%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB, mem_req_fmt_2, time_req_fmt_2))
+                    file.write('%s,%s,%s,%s,%s' % (mem_req_fmt, time_req_fmt, disk_usage_in_MB,
+                                                   mem_req_fmt_2, time_req_fmt_2))
+        printer(ws.get_global_memory_usage(inspect.currentframe(),jobid))
         return mode_sol
 
 if __name__ == "__main__":
@@ -910,4 +943,5 @@ if __name__ == "__main__":
         waveguide_sol = pickle.load(f)
     if sim_time == 0:
         sim_time = 'auto'
+    waveguide_sol['waveguide_id'] = waveguide_id
     mode_sol = mode_solver(num_time_slices, mode_idx, sim_time, waveguide_sol)

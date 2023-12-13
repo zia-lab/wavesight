@@ -123,7 +123,8 @@ def param_expander(sim_params):
     sim_params['num_zProps'] = num_zProps
     sim_params['start_time'] = time.time()
     if parallel_MEEP:
-        sim_params['MEEP_num_cores']  = 4
+        if 'MEEP_num_cores' not in sim_params:
+            sim_params['MEEP_num_cores']  = 4
         sim_params['python_bin_MEEP'] = 'mpirun -np %d %s -m mpi4py' % (sim_params['MEEP_num_cores'], sim_params['python_bin'])
     else:
         sim_params['MEEP_num_cores'] = 1

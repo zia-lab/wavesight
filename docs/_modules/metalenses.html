@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>metalenses &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/across_ml.html">across_ml module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/convstore.html">convstore module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/datapipes.html">datapipes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/diffkernels.html">diffkernels module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_animate.html">EH4_animate module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4_plotter.html">EH4_plotter module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH4-to-EH5.html">EH4-to-EH5 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/EH5-assembly.html">EH5-assembly module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_animate.html">fiber_animate module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_bridge.html">fiber_bridge module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_bundle.html">fiber_bundle module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_platform.html">fiber_platform module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fiber_plotter.html">fiber_plotter module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fieldgenesis.html">fieldgenesis module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fields.html">fields module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/fungenerators.html">fungenerators module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/hail_david.html">hail_david module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/housekeeping.html">housekeeping module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/meta_designer.html">meta_designer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metal.html">metal module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/metaorchestra.html">metaorchestra module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/misc.html">misc module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/ml_plot_in.html">ml_plot_in module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/phase_factory.html">phase_factory module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/printech.html">printech module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/slacking.html">slacking module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/sniffer.html">sniffer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/standard_candle.html">standard_candle module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/templates.html">templates module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavegraphics.html">wavegraphics module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/wavesight.html">wavesight module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">metalenses</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for metalenses</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="c1">#   ┌───────────────────────────────────────────────────────────────────────┐</span>
+<span class="c1">#   │***********************************************************************│</span>
+<span class="c1">#   │************@&amp;&amp;&amp;&amp;&amp;@&amp;@@&amp;&amp;@&amp;&amp;&amp;@&amp;&amp;@&amp;&amp;@@&amp;&amp;@&amp;&amp;&amp;&amp;&amp;%&amp;&amp;&amp;&amp;@&amp;&amp;/#(((#&amp;************│</span>
+<span class="c1">#   │***********@&amp;&amp;&amp;&amp;&amp;@&amp;&amp;&amp;&amp;&amp;@&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;@&amp;@&amp;@&amp;@@&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;@&amp;&amp;&amp;%/(/(%&amp;&amp;***********│</span>
+<span class="c1">#   │***********@&amp;&amp;&amp;&amp;&amp;@&amp;@&amp;&amp;&amp;@&amp;&amp;&amp;@&amp;&amp;@&amp;&amp;&amp;&amp;@&amp;&amp;@&amp;@&amp;@&amp;@&amp;&amp;@@&amp;&amp;%%**#&amp;&amp;&amp;&amp;***********│</span>
+<span class="c1">#   │***********&amp;&amp;@&amp;&amp;&amp;&amp;@&amp;@@&amp;@&amp;&amp;&amp;&amp;@@&amp;&amp;&amp;&amp;@@&amp;&amp;@&amp;&amp;%&amp;@@&amp;&amp;@&amp;@&amp;%%/%&amp;&amp;&amp;&amp;&amp;***********│</span>
+<span class="c1">#   │***********@&amp;&amp;&amp;&amp;&amp;@&amp;┌─────────────────────────────────┐%&amp;&amp;&amp;&amp;@***********│</span>
+<span class="c1">#   │***********&amp;&amp;&amp;&amp;&amp;&amp;@&amp;│           Generalized           │%&amp;&amp;&amp;&amp;@***********│</span>
+<span class="c1">#   │************@&amp;&amp;&amp;&amp;&amp;@│         Metalenses with         │@&amp;&amp;&amp;@************│</span>
+<span class="c1">#   │***********@&amp;&amp;&amp;&amp;&amp;&amp;&amp;│           S4 and MEEP           │#@&amp;&amp;@@***********│</span>
+<span class="c1">#   │***********&amp;&amp;&amp;@&amp;&amp;&amp;&amp;│   --- Juan David Lizarazo ---   │#@@@&amp;@***********│</span>
+<span class="c1">#   │***********@&amp;&amp;@&amp;&amp;&amp;&amp;│           Apr 13 2020           │#@&amp;&amp;&amp;&amp;***********│</span>
+<span class="c1">#   │***********@&amp;&amp;@&amp;&amp;&amp;&amp;│            version 4            │(&amp;&amp;&amp;&amp;@***********│</span>
+<span class="c1">#   │************@&amp;@&amp;&amp;&amp;&amp;└─────────────────────────────────┘&amp;&amp;&amp;@@************│</span>
+<span class="c1">#   │***********&amp;&amp;&amp;&amp;&amp;@&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%%##%##%#%####%(#%#%&amp;&amp;&amp;@***********│</span>
+<span class="c1">#   │***********@&amp;@&amp;&amp;@&amp;@&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%#%##%#%%%%##%%#%##%#%&amp;&amp;&amp;&amp;***********│</span>
+<span class="c1">#   │***********@&amp;&amp;&amp;&amp;@&amp;&amp;@&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%%%%%%%#%%#%%%%%&amp;%%#%###&amp;&amp;&amp;@***********│</span>
+<span class="c1">#   │***********@&amp;&amp;&amp;&amp;@&amp;&amp;@&amp;&amp;&amp;&amp;&amp;&amp;%&amp;%&amp;&amp;%#%#%%##%%%%%%#%%%%%#%%##&amp;&amp;&amp;@***********│</span>
+<span class="c1">#   │***********@&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;@&amp;&amp;&amp;&amp;&amp;&amp;%%%%%#%%#%%%%%%%#%%#%%%#%%##&amp;%&amp;&amp;***********│</span>
+<span class="c1">#   │***********&amp;&amp;@&amp;&amp;&amp;@&amp;&amp;%@&amp;&amp;&amp;&amp;&amp;%#%%%%%%#%%%%%%%%&amp;%&amp;%%&amp;%#%%%%%%&amp;@***********│</span>
+<span class="c1">#   │*************@&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%%%%%%#%&amp;%#%%%%%&amp;%%%%&amp;%%%%%#%%&amp;@*************│</span>
+<span class="c1">#   │*************&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%%%%%%#&amp;%#%%%%%%&amp;%#%#%%#%%%%#%%&amp;@*************│</span>
+<span class="c1">#   │*************@&amp;&amp;&amp;@%&amp;&amp;&amp;&amp;%%&amp;%%%%%%%%%%%%%%%#%&amp;%%%&amp;%%%%%%%%&amp;@*************│</span>
+<span class="c1">#   │************&amp;@&amp;&amp;@@%%%%%%%#%%%%%%%%%%%%%%%%&amp;%&amp;&amp;%%%%%%%%%%&amp;%@************│</span>
+<span class="c1">#   │************&amp;@&amp;&amp;&amp;&amp;%&amp;%%%%%%#%%%%%%%&amp;%&amp;&amp;%%%%%%%%&amp;%%%%%%%%%%%@************│</span>
+<span class="c1">#   │************&amp;&amp;&amp;&amp;%%&amp;%%%%%#%%%%%%%%%&amp;%&amp;%%%%%%%&amp;&amp;%&amp;%%%%%%%%&amp;%@************│</span>
+<span class="c1">#   │***********&amp;&amp;%%%%%&amp;&amp;%%%%%%%%&amp;%%%%%&amp;&amp;%%%%&amp;&amp;&amp;&amp;%%&amp;%%%%%%%%%%&amp;%&amp;***********│</span>
+<span class="c1">#   │***********%&amp;%&amp;%&amp;%&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%&amp;%%%&amp;&amp;%%%&amp;%&amp;%&amp;&amp;%%%%&amp;&amp;%&amp;%***********│</span>
+<span class="c1">#   │***********************************************************************│</span>
+<span class="c1">#   └───────────────────────────────────────────────────────────────────────┘</span>
+<span class="c1">#             ┌───────────────────────────────────────────────────┐</span>
+<span class="c1">#             │   S4 scripts are run by creating lua scripts and  │</span>
+<span class="c1">#             │ running them in terminal using the lua executable │</span>
+<span class="c1">#             │ for S4. MEEP can be easily installed on a mac by  │</span>
+<span class="c1">#             │         using the conda package manager.          │</span>
+<span class="c1">#             └───────────────────────────────────────────────────┘</span>
+<span class="c1">#             ┌───────────────────────────────────────────────────┐</span>
+<span class="c1">#             │  With the help of RCWA simulations run with S4,   │</span>
+<span class="c1">#             │   metasurfaces are designed to image points to    │</span>
+<span class="c1">#             │  surfaces, and their performance is estimated by  │</span>
+<span class="c1">#             │        running FDTD simulations with MEEP.        │</span>
+<span class="c1">#             └───────────────────────────────────────────────────┘</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">meep</span> <span class="k">as</span> <span class="nn">mp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">dedent</span>
+<span class="kn">from</span> <span class="nn">tabulate</span> <span class="kn">import</span> <span class="n">tabulate</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">LogNorm</span><span class="p">,</span> <span class="n">ListedColormap</span><span class="p">,</span> <span class="n">Normalize</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;pdf.fonttype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;ps.fonttype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">42</span>
+
+<span class="c1"># setup directories</span>
+
+<span class="n">module_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+<span class="n">s4dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">module_dir</span><span class="p">,</span><span class="s1">&#39;S4&#39;</span><span class="p">)</span>
+
+<span class="c1">##### log dirs #####</span>
+<span class="n">logdir</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;win32&#39;</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">:/Google Drive/Zia Lab/Python/&#39;</span> <span class="o">%</span> <span class="n">drive_letter</span><span class="p">)</span>
+    <span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">:/Google Drive/Zia Lab/Log/&#39;</span> <span class="o">%</span> <span class="n">drive_letter</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;darwin&#39;</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;/Users/juan/ZiaLab/Python/&#39;</span><span class="p">)</span>
+    <span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;/Users/juan/ZiaLab/TempLog/&#39;</span>
+<span class="n">datadir</span> <span class="o">=</span> <span class="n">logdir</span> <span class="o">+</span> <span class="s1">&#39;Data/&#39;</span>
+<span class="n">graphdir</span> <span class="o">=</span> <span class="n">logdir</span> <span class="o">+</span> <span class="s1">&#39;Graph/&#39;</span>
+
+<span class="c1">## TEMP</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;linux&#39;</span><span class="p">:</span>
+    <span class="n">datadir</span> <span class="o">=</span> <span class="s1">&#39;/users/jlizaraz/scratch/cem/experiments/oblique-1/out/&#39;</span>
+
+<span class="c1">##### log dirs #####</span>
+
+<span class="c1">###############################################################</span>
+<span class="c1">################# Convenient Optics functions #################</span>
+
+<div class="viewcode-block" id="focal_length">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.focal_length">[docs]</a>
+<span class="k">def</span> <span class="nf">focal_length</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">aperture</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given NA and aperture, determine the focal length.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">aperture</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">na</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="imaging_phase_profile">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.imaging_phase_profile">[docs]</a>
+<span class="k">def</span> <span class="nf">imaging_phase_profile</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given the depth H of a point emitter,</span>
+<span class="sd">    the distance d from the metalens surface to the detector plane,</span>
+<span class="sd">    the radius of the detector,</span>
+<span class="sd">    and the radius R of the metalens,</span>
+<span class="sd">    compute the phase required at a position x in the plane</span>
+<span class="sd">    of the metasurface.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">wavelength</span><span class="p">)</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">H</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">H</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">-</span>
+     <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">wavelength</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">d</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">eta</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">d</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="n">eta</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="fresnel_phase_profile">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.fresnel_phase_profile">[docs]</a>
+<span class="k">def</span> <span class="nf">fresnel_phase_profile</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given the depth H of a point emitter,</span>
+<span class="sd">    the distance d from the metalens surface to the detector plane,</span>
+<span class="sd">    the radius of the detector,</span>
+<span class="sd">    and the radius R of the metalens,</span>
+<span class="sd">    compute the phase required at a position x in the plane</span>
+<span class="sd">    of the metasurface.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">wavelength</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">f</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">f</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span></div>
+
+
+<span class="c1">################# Convenient Optics functions #################</span>
+<span class="c1">###############################################################</span>
+
+<span class="c1">###############################################################</span>
+<span class="c1">################### Convenient S4 functions ###################</span>
+
+<div class="viewcode-block" id="expand_sim_params">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.expand_sim_params">[docs]</a>
+<span class="k">def</span> <span class="nf">expand_sim_params</span><span class="p">(</span><span class="n">sim_params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Compute additional parameters for the S4 simulations.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;field_height&#39;</span><span class="p">]</span>         <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;post_height&#39;</span><span class="p">]</span>
+    <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;half_cell_width&#39;</span><span class="p">]</span>      <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;cell_width&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;half_post_width&#39;</span><span class="p">]</span>      <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;post_width&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;excitation_frequency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">sim_params</span></div>
+
+
+<div class="viewcode-block" id="post_phase">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.post_phase">[docs]</a>
+<span class="k">def</span> <span class="nf">post_phase</span><span class="p">(</span><span class="n">sim_params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given the S4-simulation parameters, returns the electric field</span>
+<span class="sd">    array(Exr, Eyr, Ezr, Exi, Eyi, Ezi) at (x_coord, y_coord, field_height)</span>
+<span class="sd">    by executing an S4 lua script.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">lua</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">    S = S4.NewSimulation()</span>
+<span class="s1">    -- specifying all lengths in microns.</span>
+<span class="s1">    S:SetLattice({{</span><span class="si">{cell_width}</span><span class="s1">,0}}, {{0,</span><span class="si">{cell_width}</span><span class="s1">}})</span>
+<span class="s1">    S:SetNumG(</span><span class="si">{num_G}</span><span class="s1">)</span>
+
+<span class="s1">    S:AddMaterial(&#39;vacuum&#39;, {{1,0}})</span>
+<span class="s1">    S:AddMaterial(&#39;substrate&#39;, {{</span><span class="si">{epsilon}</span><span class="s1">, 0}})</span>
+
+
+<span class="s1">    S:AddLayer(</span>
+<span class="s1">        &#39;bottom&#39;,    -- name</span>
+<span class="s1">        0,           -- thickness</span>
+<span class="s1">        &#39;vacuum&#39;) -- background material (semi-infinite)</span>
+
+<span class="s1">    S:AddLayer(</span>
+<span class="s1">       &#39;forest&#39;,       -- name of the layer</span>
+<span class="s1">       </span><span class="si">{post_height}</span><span class="s1">, -- height of the layer</span>
+<span class="s1">       &#39;vacuum&#39;)       -- material of the layer</span>
+
+<span class="s1">    S:AddLayer(</span>
+<span class="s1">        &#39;top&#39;,    -- new layer name</span>
+<span class="s1">        0,        -- thickness</span>
+<span class="s1">        &#39;substrate&#39;) -- background material (semi-infinite)</span>
+
+
+<span class="s1">    S:SetLayerPatternRectangle(</span>
+<span class="s1">        &#39;forest&#39;, -- layer to pattern</span>
+<span class="s1">        &#39;substrate&#39;,  -- material of the posts</span>
+<span class="s1">        {{0,0}},  -- center of rectangle</span>
+<span class="s1">        0, -- angle</span>
+<span class="s1">        {{</span><span class="si">{half_post_width}</span><span class="s1">,</span><span class="si">{half_cell_width}</span><span class="s1">}}) -- halfwidths</span>
+
+<span class="s1">    S:SetExcitationPlanewave(</span>
+<span class="s1">        {{0,0}},  -- incidence angles (sph coords: phi [0,180], theta [0,360])</span>
+<span class="s1">        {{</span><span class="si">{s_amp}</span><span class="s1">,0}},  -- s-polarization amplitude and phase (in degrees)</span>
+<span class="s1">        {{</span><span class="si">{p_amp}</span><span class="s1">,0}})  -- p-polarization amplitude and phase</span>
+
+<span class="s1">    S:SetFrequency(</span><span class="si">{excitation_frequency}</span><span class="s1">)</span>
+
+<span class="s1">    print(S:GetEField({{</span><span class="si">{x_coord}</span><span class="s1">,</span><span class="si">{y_coord}</span><span class="s1">,</span><span class="si">{field_height}</span><span class="s1">}}))</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">sim_params</span><span class="p">)</span>
+    <span class="n">script_loc</span> <span class="o">=</span> <span class="p">(</span><span class="n">s4dir</span><span class="o">+</span><span class="s1">&#39;luascript-</span><span class="si">%s</span><span class="s1">.lua&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+    <span class="n">s4command</span> <span class="o">=</span> <span class="s1">&#39;&quot;&#39;</span><span class="o">+</span><span class="n">s4dir</span><span class="o">+</span><span class="s1">&#39;/S4-1.1.1-osx&quot; &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">script_loc</span><span class="p">)</span>
+    <span class="n">lua_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_loc</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">lua_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">lua</span><span class="p">)</span>
+    <span class="n">lua_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">s4command</span><span class="p">,</span><span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;rm &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">script_loc</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)])</span></div>
+
+
+<div class="viewcode-block" id="post_transmission">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.post_transmission">[docs]</a>
+<span class="k">def</span> <span class="nf">post_transmission</span><span class="p">(</span><span class="n">sim_params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given the S4-simulation parameters, returns the electric field</span>
+<span class="sd">    array(Exr, Eyr, Ezr, Exi, Eyi, Ezi) at (x_coord, y_coord, field_height)</span>
+<span class="sd">    by executing an S4 lua script.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">lua</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">    S = S4.NewSimulation()</span>
+<span class="s1">    -- specifying all lengths in microns.</span>
+<span class="s1">    S:SetLattice({{</span><span class="si">{cell_width}</span><span class="s1">,0}}, {{0,</span><span class="si">{cell_width}</span><span class="s1">}})</span>
+<span class="s1">    S:SetNumG(</span><span class="si">{num_G}</span><span class="s1">)</span>
+
+<span class="s1">    S:AddMaterial(&#39;vacuum&#39;, {{1,0}})</span>
+<span class="s1">    S:AddMaterial(&#39;substrate&#39;, {{</span><span class="si">{epsilon}</span><span class="s1">, 0}})</span>
+
+<span class="s1">    S:AddLayer(</span>
+<span class="s1">        &#39;bottom&#39;,    -- name</span>
+<span class="s1">        0,           -- thickness</span>
+<span class="s1">        &#39;vacuum&#39;) -- background material (semi-infinite)</span>
+
+<span class="s1">    S:AddLayer(</span>
+<span class="s1">       &#39;forest&#39;,       -- name of the layer</span>
+<span class="s1">       </span><span class="si">{post_height}</span><span class="s1">, -- height of the layer</span>
+<span class="s1">       &#39;vacuum&#39;)       -- material of the layer</span>
+
+<span class="s1">    S:AddLayer(</span>
+<span class="s1">        &#39;top&#39;,    -- new layer name</span>
+<span class="s1">        0,        -- thickness</span>
+<span class="s1">        &#39;substrate&#39;) -- background material (semi-infinite)</span>
+
+<span class="s1">    S:SetLayerPatternRectangle(</span>
+<span class="s1">        &#39;forest&#39;, -- layer to pattern</span>
+<span class="s1">        &#39;substrate&#39;,  -- material of the posts</span>
+<span class="s1">        {{0,0}},  -- center of rectangle</span>
+<span class="s1">        0, -- angle</span>
+<span class="s1">        {{</span><span class="si">{half_post_width}</span><span class="s1">,</span><span class="si">{half_cell_width}</span><span class="s1">}}) -- halfwidths</span>
+
+<span class="s1">    S:SetExcitationPlanewave(</span>
+<span class="s1">        {{0,0}}, -- incidence angles (sph coords: phi [0,180], theta [0,360])</span>
+<span class="s1">        {{</span><span class="si">{s_amp}</span><span class="s1">,0}},  -- s-polarization amplitude and phase (in degrees)</span>
+<span class="s1">        {{</span><span class="si">{p_amp}</span><span class="s1">,0}})  -- p-polarization amplitude and phase</span>
+
+<span class="s1">    S:SetFrequency(</span><span class="si">{excitation_frequency}</span><span class="s1">)</span>
+
+<span class="s1">    print(S:GetPowerFlux(&#39;top&#39;))</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">sim_params</span><span class="p">)</span>
+    <span class="n">script_loc</span> <span class="o">=</span> <span class="p">(</span><span class="n">s4dir</span><span class="o">+</span><span class="s1">&#39;luascript-</span><span class="si">%s</span><span class="s1">.lua&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+    <span class="n">s4command</span> <span class="o">=</span> <span class="s1">&#39;&quot;&#39;</span><span class="o">+</span><span class="n">s4dir</span><span class="o">+</span><span class="s1">&#39;/S4-1.1.1-osx&quot; &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">script_loc</span><span class="p">)</span>
+    <span class="n">lua_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_loc</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">lua_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">lua</span><span class="p">)</span>
+    <span class="n">lua_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">s4command</span><span class="p">,</span><span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;rm &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">script_loc</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)])</span></div>
+
+
+<span class="c1">################### Convenient S4 functions ###################</span>
+<span class="c1">###############################################################</span>
+
+<span class="c1">###############################################################</span>
+<span class="c1">######################### MISC funtions #######################</span>
+
+<div class="viewcode-block" id="get_size">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.get_size">[docs]</a>
+<span class="k">def</span> <span class="nf">get_size</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">seen</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively finds size of objects&quot;&quot;&quot;</span>
+    <span class="c1"># https://goshippo.com/blog/measure-real-size-any-python-object/</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">seen</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">obj_id</span> <span class="o">=</span> <span class="nb">id</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="c1"># Important mark as seen *before* entering recursion to gracefully handle</span>
+    <span class="c1"># self-referential objects</span>
+    <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">obj_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">size</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">get_size</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">seen</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+        <span class="n">size</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">get_size</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">seen</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">keys</span><span class="p">()])</span>
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">):</span>
+        <span class="n">size</span> <span class="o">+=</span> <span class="n">get_size</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="n">seen</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">)):</span>
+        <span class="n">size</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">get_size</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">seen</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">size</span></div>
+
+
+<div class="viewcode-block" id="function_topper">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.function_topper">[docs]</a>
+<span class="k">def</span> <span class="nf">function_topper</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function flattens out a set of points {x,y(x)}</span>
+<span class="sd">    so that their interpolation would be a one-to-one function.</span>
+<span class="sd">    x is assumed to be monotonically increasing.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">clean_x</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">clean_y</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># first determine if the top function will be increasing or decreasing</span>
+    <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="n">sign</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="n">sign</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;undetermined sign&#39;</span><span class="p">)</span>
+    <span class="n">yp_current</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">clean_x</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">clean_y</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">xp</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">yp</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">next_xp</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">next_yp</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">sign</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">next_yp</span> <span class="o">&gt;</span> <span class="n">yp</span><span class="p">)</span> <span class="ow">and</span> <span class="n">next_yp</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">clean_y</span><span class="p">):</span>
+                <span class="n">clean_x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xp</span><span class="p">)</span>
+                <span class="n">clean_y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">yp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sign</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">next_yp</span> <span class="o">&lt;</span> <span class="n">yp</span><span class="p">)</span> <span class="ow">and</span> <span class="n">next_yp</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">clean_y</span><span class="p">):</span>
+                <span class="n">clean_x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xp</span><span class="p">)</span>
+                <span class="n">clean_y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">yp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">clean_x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">clean_y</span><span class="p">)</span></div>
+
+
+<span class="c1">######################### MISC funtions #######################</span>
+<span class="c1">###############################################################</span>
+
+<span class="c1">###############################################################</span>
+<span class="c1">######################## MEEP functions #######################</span>
+
+<div class="viewcode-block" id="aux_params">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.aux_params">[docs]</a>
+<span class="k">def</span> <span class="nf">aux_params</span><span class="p">(</span><span class="n">metalens</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Compute additional parameters.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;aperture&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;num_of_unit_cells&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;aperture&#39;</span><span class="p">]</span>
+                                       <span class="o">/</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;unit_cell_size&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;num_of_unit_cells&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;num_of_unit_cells&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;fcen&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">]</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;epsilon&#39;</span><span class="p">])</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;normal_incidence_transmission&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;wavelength_rgb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wave_to_rgb</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">])</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">]</span> <span class="c1"># inside dia</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;cmap&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ListedColormap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                <span class="p">[</span><span class="n">i</span><span class="o">/</span><span class="mi">255</span><span class="o">*</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;wavelength_rgb&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                 <span class="n">i</span><span class="o">/</span><span class="mi">255</span><span class="o">*</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;wavelength_rgb&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                 <span class="n">i</span><span class="o">/</span><span class="mi">255</span><span class="o">*</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;wavelength_rgb&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>
+                 <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">)]))</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;k_0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">]</span> <span class="c1"># in air</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;source_width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">/</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;fcen&#39;</span><span class="p">]</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;cell_width&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;simulation_parameters&#39;</span><span class="p">][</span><span class="s1">&#39;cell_width&#39;</span><span class="p">]</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;top_plus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1.1</span>
+
+    <span class="c1"># determine size of simulation area</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span>
+                                <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">])</span>
+
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">]</span>
+                                 <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;gap_v&#39;</span><span class="p">]</span>
+                                 <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">]</span>
+                                 <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;post_height&#39;</span><span class="p">]</span>
+                                 <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
+                                 <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;gap_v&#39;</span><span class="p">]</span>
+                                 <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">])</span>
+
+    <span class="c1"># determine locations of different features</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;source_coord&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">2.</span>
+                                <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">]</span> 
+                                <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;gap_v&#39;</span><span class="p">])</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;interface_coord&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;source_coord&#39;</span><span class="p">]</span>
+                                  <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">])</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;top_of_posts_coord&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;interface_coord&#39;</span><span class="p">]</span>
+                                    <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;post_height&#39;</span><span class="p">])</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;detector_plane_coord&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;top_of_posts_coord&#39;</span><span class="p">]</span>
+                                        <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">])</span>
+
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;simulation_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;source_width&#39;</span><span class="p">]</span>
+                                   <span class="o">+</span> <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span>
+                                      <span class="o">*</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">]</span>
+                                      <span class="o">/</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">])</span>
+                                   <span class="o">+</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;post_height&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;gap_v&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+                                       <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+                                     <span class="o">/</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">]))</span>
+
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;extent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                          <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                          <span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                          <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;full_extent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                                <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                               <span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                               <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;detector_plane_coord&#39;</span><span class="p">]</span>
+                                <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;top_plus&#39;</span><span class="p">])]</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;nearfield_coord&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;interface_coord&#39;</span><span class="p">]</span>
+                                        <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;post_height&#39;</span><span class="p">]</span>
+                                        <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">metalens</span></div>
+
+
+
+<div class="viewcode-block" id="make_metalens_geometry">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.make_metalens_geometry">[docs]</a>
+<span class="k">def</span> <span class="nf">make_metalens_geometry</span><span class="p">(</span><span class="n">metalens</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given metalens parameters, determine the required phases, and using</span>
+<span class="sd">    these and the known width to phase relationship, determine the</span>
+<span class="sd">    required widths for the posts.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># first design the mask based on the given widths and corresponding phases</span>
+    <span class="n">widths</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;widths&#39;</span><span class="p">]</span>
+    <span class="n">phases</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;phases&#39;</span><span class="p">]</span>
+    <span class="n">wavelength</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">]</span>
+    <span class="n">good_widths</span> <span class="o">=</span> <span class="p">(</span><span class="n">widths</span> <span class="o">&gt;=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;min_width&#39;</span><span class="p">])</span>
+    <span class="n">widths</span> <span class="o">=</span> <span class="n">widths</span><span class="p">[</span><span class="n">good_widths</span><span class="p">]</span>
+    <span class="n">phases</span> <span class="o">=</span> <span class="n">phases</span><span class="p">[</span><span class="n">good_widths</span><span class="p">]</span>
+    <span class="n">aperture</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span>
+    <span class="c1"># compute the required phases based on the wavelength,</span>
+    <span class="c1"># focal length and number of unit cells</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span><span class="o">-</span><span class="nb">min</span><span class="p">(</span><span class="n">phases</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">((</span><span class="nb">max</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span><span class="o">-</span><span class="nb">min</span><span class="p">(</span><span class="n">phases</span><span class="p">)))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;not a full phase coverage&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;not a full phase coverage&quot;</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">function_topper</span><span class="p">(</span><span class="n">widths</span><span class="p">,</span> <span class="n">phases</span><span class="p">)</span>
+    <span class="n">axis_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">((</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;unit_cell_size&#39;</span><span class="p">]</span><span class="o">*</span>
+                              <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;num_of_unit_cells&#39;</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span>
+                              <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;unit_cell_size&#39;</span><span class="p">]</span><span class="o">*</span>
+                              <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;num_of_unit_cells&#39;</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span>
+                              <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;num_of_unit_cells&#39;</span><span class="p">])</span>
+    <span class="n">required_phases</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fresnel_phase_profile</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">],</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">],</span> <span class="n">xs</span><span class="p">)</span> 
+                                <span class="k">for</span> <span class="n">xs</span> <span class="ow">in</span> <span class="n">axis_positions</span><span class="p">])</span>
+    <span class="n">required_phases</span> <span class="o">=</span> <span class="n">required_phases</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">required_phases</span><span class="p">)</span>
+    <span class="n">required_phases</span> <span class="o">=</span> <span class="n">required_phases</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">required_widths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">required_phases</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="c1"># create the posts</span>
+    <span class="n">the_posts</span> <span class="o">=</span> <span class="p">[</span><span class="n">mp</span><span class="o">.</span><span class="n">Block</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;post_height&#39;</span><span class="p">]),</span>
+                  <span class="n">center</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="n">position</span><span class="p">,</span>
+                                      <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;interface_coord&#39;</span><span class="p">]</span>
+                                       <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;post_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+                                     <span class="p">),</span>
+                  <span class="n">material</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Medium</span><span class="p">(</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;epsilon&#39;</span><span class="p">]))</span>
+                <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">position</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">required_widths</span><span class="p">,</span> <span class="n">axis_positions</span><span class="p">)]</span>
+    <span class="c1"># create the substrate</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;substrate_height&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">]</span>
+                                    <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;gap_v&#39;</span><span class="p">]</span>
+                                    <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">])</span>
+    <span class="n">substrate</span> <span class="o">=</span> <span class="p">[</span><span class="n">mp</span><span class="o">.</span><span class="n">Block</span><span class="p">(</span><span class="n">size</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">],</span>
+                                            <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;substrate_height&#39;</span><span class="p">]),</span>
+                        <span class="n">center</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
+                              <span class="p">(</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span>
+                              <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;substrate_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)),</span>
+                        <span class="n">material</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Medium</span><span class="p">(</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;epsilon&#39;</span><span class="p">]))]</span>
+    <span class="n">flux_substrate</span> <span class="o">=</span> <span class="p">[</span><span class="n">mp</span><span class="o">.</span><span class="n">Block</span><span class="p">(</span><span class="n">size</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">],</span>
+                                            <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]),</span>
+                        <span class="n">center</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                        <span class="n">material</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Medium</span><span class="p">(</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;epsilon&#39;</span><span class="p">]))]</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;required_phases&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">required_phases</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;required_widths&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">required_widths</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;axis_positions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">axis_positions</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">substrate</span> <span class="o">+</span> <span class="n">the_posts</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;flux_geometry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flux_substrate</span>
+    <span class="c1"># compute the contour of the metalens</span>
+    <span class="n">track</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">],</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;interface_coord&#39;</span><span class="p">]]]</span>
+    <span class="n">post_h</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;post_height&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">ax_position</span><span class="p">,</span> <span class="n">pwidth</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;axis_positions&#39;</span><span class="p">],</span>
+                                  <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;required_widths&#39;</span><span class="p">]):</span>
+        <span class="n">this_post</span> <span class="o">=</span> <span class="p">[</span>
+          <span class="p">[</span><span class="n">ax_position</span><span class="o">-</span><span class="n">pwidth</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;interface_coord&#39;</span><span class="p">]],</span>
+          <span class="p">[</span><span class="n">ax_position</span><span class="o">-</span><span class="n">pwidth</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;interface_coord&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">post_h</span><span class="p">],</span>
+          <span class="p">[</span><span class="n">ax_position</span><span class="o">+</span><span class="n">pwidth</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;interface_coord&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">post_h</span><span class="p">],</span>
+          <span class="p">[</span><span class="n">ax_position</span><span class="o">+</span><span class="n">pwidth</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;interface_coord&#39;</span><span class="p">]]</span>
+                    <span class="p">]</span>
+        <span class="n">track</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">this_post</span><span class="p">)</span>
+    <span class="n">track</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">],</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;interface_coord&#39;</span><span class="p">]])</span>
+    <span class="n">track</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;contour&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">track</span>
+    <span class="k">return</span> <span class="n">metalens</span></div>
+
+
+<div class="viewcode-block" id="plot_phase_profile">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.plot_phase_profile">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_phase_profile</span><span class="p">(</span><span class="n">metalens</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;font.size&#39;</span><span class="p">:</span> <span class="mi">18</span><span class="p">})</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;axis_positions&#39;</span><span class="p">],</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;required_widths&#39;</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;axis_positions&#39;</span><span class="p">],</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;required_widths&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;ko&#39;</span><span class="p">,</span><span class="n">ms</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x/$\mu$m&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;post width / $\mu$m&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">],</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="print_params">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.print_params">[docs]</a>
+<span class="k">def</span> <span class="nf">print_params</span><span class="p">(</span><span class="n">metalens</span><span class="p">):</span>
+    <span class="n">print_out_lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">non_printable</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">metalens</span><span class="p">:</span>
+        <span class="n">thing</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="n">thing_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">thing</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">thing_type</span> <span class="ow">in</span> <span class="n">non_printable</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">thing_type</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+            <span class="n">thing_parsed</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">thing</span>
+        <span class="k">if</span> <span class="n">thing_type</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="n">thing_parsed</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">thing</span>
+        <span class="k">if</span> <span class="n">thing_type</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+            <span class="n">thing_parsed</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">thing</span>
+        <span class="k">if</span> <span class="n">thing_type</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">thing_parsed</span> <span class="o">=</span> <span class="n">thing</span>
+        <span class="n">print_out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">k</span><span class="p">,</span> <span class="n">thing_parsed</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">tabulate</span><span class="p">(</span><span class="n">print_out_lines</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="in_plane_dip_amp_func_Ex">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.in_plane_dip_amp_func_Ex">[docs]</a>
+<span class="k">def</span> <span class="nf">in_plane_dip_amp_func_Ex</span><span class="p">(</span><span class="n">metalens</span><span class="p">):</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  returns the required amplitude function necessary to the z</span>
+<span class="sd">  component of the electric current necessary to produce the fields</span>
+<span class="sd">  of an in-plane dipole at an angle beta with respect to the</span>
+<span class="sd">  x-axis</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">def</span> <span class="nf">far_JEx</span><span class="p">(</span><span class="n">mpvec</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    remember that the vectors</span>
+<span class="sd">    that MEEP will provide here</span>
+<span class="sd">    are relative to the center of the source</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">mpvec</span><span class="o">.</span><span class="n">x</span>
+    <span class="n">H</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">]),</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">],</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span>
+    <span class="n">bet</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">k</span><span class="o">*</span><span class="n">n</span><span class="o">*</span><span class="p">(</span><span class="n">H</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">bet</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">bet</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">k</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">H</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="n">j</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">k</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">H</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">k</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">H</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="mi">5</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">far_JEx</span></div>
+
+<div class="viewcode-block" id="in_plane_dip_amp_func_Hz">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.in_plane_dip_amp_func_Hz">[docs]</a>
+<span class="k">def</span> <span class="nf">in_plane_dip_amp_func_Hz</span><span class="p">(</span><span class="n">metalens</span><span class="p">):</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  returns the required amplitude function necessary to the z</span>
+<span class="sd">  component of the magnetic current necessary to produce the fields</span>
+<span class="sd">  of an in-plane dipole at an angle beta with respect to the</span>
+<span class="sd">  x-axis</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">def</span> <span class="nf">far_JHz</span><span class="p">(</span><span class="n">mpvec</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    remember that the vectors</span>
+<span class="sd">    that MEEP will provide here</span>
+<span class="sd">    are relative to the center of the source</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">mpvec</span><span class="o">.</span><span class="n">x</span>
+    <span class="n">H</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">]),</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">],</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span>
+    <span class="n">bet</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">H</span><span class="o">*</span><span class="p">(</span><span class="n">H</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">bet</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">bet</span><span class="p">))</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">k</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">H</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">k</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">H</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">H</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">far_JHz</span></div>
+
+
+<div class="viewcode-block" id="far_ez_source_amp_func">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.far_ez_source_amp_func">[docs]</a>
+<span class="k">def</span> <span class="nf">far_ez_source_amp_func</span><span class="p">(</span><span class="n">metalens</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    returns the required amplitude</span>
+<span class="sd">    function necessary to simulate</span>
+<span class="sd">    an isotropic point source</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">far_ez</span><span class="p">(</span><span class="n">mpvec</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        remember that the vectors</span>
+<span class="sd">        that MEEP will provide here</span>
+<span class="sd">        are relative to the center of the source</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mpvec</span><span class="o">.</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">ph</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span>
+        <span class="n">am</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">**</span><span class="mf">1.5</span>
+        <span class="k">return</span> <span class="n">am</span> <span class="o">*</span> <span class="n">ph</span>
+    <span class="k">return</span> <span class="n">far_ez</span></div>
+
+
+<div class="viewcode-block" id="plot_em_energy_density">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.plot_em_energy_density">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_em_energy_density</span><span class="p">(</span><span class="n">metalens</span><span class="p">,</span> <span class="n">normFunc</span> <span class="o">=</span> <span class="n">Normalize</span><span class="p">,</span> <span class="n">saver</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;rho_em&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;rho_em&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;font.size&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">})</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">18</span><span class="p">))</span>
+    <span class="n">ims</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;rho_em&#39;</span><span class="p">]</span><span class="o">+</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;extent&#39;</span><span class="p">],</span>
+              <span class="n">cmap</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;cmap&#39;</span><span class="p">],</span>
+              <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span>
+              <span class="n">norm</span><span class="o">=</span><span class="n">normFunc</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span>
+                            <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x/$\mu$m&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;ya/$\mu$m&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">],</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]],</span>
+            <span class="p">[</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">],</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">]],</span>
+            <span class="s1">&#39;w--&#39;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ims</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$|E|^2$&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">saver</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">dpi</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;rho_em&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">fig</span><span class="o">.</span><span class="n">get_size_inches</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">saver</span><span class="o">+</span><span class="s1">&#39;.pdf&#39;</span><span class="p">,</span> <span class="n">transparent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="plot_density">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.plot_density">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_density</span><span class="p">(</span><span class="n">metalens</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="n">norm_fun</span><span class="o">=</span><span class="n">Normalize</span><span class="p">,</span> <span class="n">saver</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">pmin</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pmax</span><span class="o">=</span><span class="mi">95</span><span class="p">):</span>
+    <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="n">quantity</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span><span class="n">pmin</span><span class="p">)</span>
+    <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="n">quantity</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span><span class="n">pmax</span><span class="p">)</span>
+    <span class="n">pretty_labels</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;rho_em&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\rho_</span><span class="si">{EM}</span><span class="s1">$&#39;</span><span class="p">}</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;font.size&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">})</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">18</span><span class="p">))</span>
+    <span class="n">ims</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="n">quantity</span><span class="p">],</span><span class="n">extent</span><span class="o">=</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;full_extent&#39;</span><span class="p">],</span>
+              <span class="n">cmap</span><span class="o">=</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;cmap&#39;</span><span class="p">],</span>
+              <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span>
+              <span class="n">norm</span><span class="o">=</span><span class="n">norm_fun</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x/$\mu$m&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;y/$\mu$m&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">],</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]],</span>
+            <span class="p">[(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;detector_plane_coord&#39;</span><span class="p">])]</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span>
+            <span class="s1">&#39;wo&#39;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ims</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">pretty_labels</span><span class="p">[</span><span class="n">quantity</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">exec</span><span class="p">(</span><span class="n">extra</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">saver</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">dpi</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;rho_em&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">fig</span><span class="o">.</span><span class="n">get_size_inches</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">saver</span><span class="o">+</span><span class="s1">&#39;.pdf&#39;</span><span class="p">,</span> <span class="n">transparent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="plot_simulation_cell">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.plot_simulation_cell">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_simulation_cell</span><span class="p">(</span><span class="n">metalens</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;font.size&#39;</span><span class="p">:</span> <span class="mi">18</span><span class="p">})</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="c1"># simulation area boundary</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+             <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+             <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+             <span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+             <span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+             <span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+             <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+             <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+             <span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;border&#39;</span><span class="p">)</span>
+    <span class="c1"># pml wedge</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">],</span>
+             <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">],</span>
+             <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">],</span>
+             <span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">],</span>
+             <span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">]],</span>
+            <span class="p">[</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">],</span>
+             <span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">],</span>
+             <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">],</span>
+             <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">],</span>
+             <span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">]],</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;pml&#39;</span><span class="p">)</span>
+    <span class="c1"># interface</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span>
+            <span class="p">[(</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">]</span>
+            <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;gap_v&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">])]</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span>
+            <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;interface&#39;</span><span class="p">)</span>
+    <span class="c1"># near-field plane</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span>
+            <span class="p">[(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span>
+            <span class="o">-</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;gap_v&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">])]</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;near-field plane&#39;</span><span class="p">)</span>
+    <span class="c1"># source</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">],</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]],</span>
+    <span class="p">[</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;source_coord&#39;</span><span class="p">]]</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span>
+    <span class="s1">&#39;--&#39;</span><span class="p">,</span><span class="n">ms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;source&#39;</span><span class="p">)</span>
+    <span class="c1"># metalens box</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">],</span>
+            <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;interface_coord&#39;</span><span class="p">])),</span>
+            <span class="mi">2</span><span class="o">*</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">],</span>
+            <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;post_height&#39;</span><span class="p">],</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">))</span>
+    <span class="c1"># substrate</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">(</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)),</span>
+            <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">],</span>
+            <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;gap_v&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">],</span>
+            <span class="n">fc</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.2</span><span class="p">),</span>
+            <span class="n">hatch</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x/$\mu$m&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;y/$\mu$m&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Simulation Cell&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="simulate_metalens">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.simulate_metalens">[docs]</a>
+<span class="k">def</span> <span class="nf">simulate_metalens</span><span class="p">(</span><span class="n">metalens</span><span class="p">):</span>
+    <span class="c1"># Setup the MEEP objects</span>
+    <span class="n">cell</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">],</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">])</span>
+    <span class="c1"># All around the simulation cell</span>
+    <span class="n">pml_layers</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mp</span><span class="o">.</span><span class="n">PML</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;pml_width&#39;</span><span class="p">])</span> <span class="p">]</span>
+    <span class="c1"># Set up the sources</span>
+    <span class="n">sources</span> <span class="o">=</span> <span class="p">[</span><span class="n">mp</span><span class="o">.</span><span class="n">Source</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">mp</span><span class="o">.</span><span class="n">ContinuousSource</span><span class="p">(</span>
+                          <span class="n">wavelength</span><span class="o">=</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">],</span>
+                          <span class="n">width</span><span class="o">=</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;source_width&#39;</span><span class="p">]</span>
+                        <span class="p">),</span>
+                  <span class="n">component</span><span class="o">=</span><span class="n">mp</span><span class="o">.</span><span class="n">Ex</span><span class="p">,</span>
+                  <span class="n">center</span><span class="o">=</span><span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;source_coord&#39;</span><span class="p">]),</span>
+                  <span class="n">size</span><span class="o">=</span><span class="n">mp</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+              <span class="p">]</span>
+    <span class="c1"># Set up the symmetries</span>
+    <span class="n">syms</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># if metalens[&#39;x_mirror_symmetry&#39;] and (metalens[&#39;beta&#39;] == 0 or metalens[&#39;beta&#39;] == np.pi/2):</span>
+    <span class="c1">#     syms.append(mp.Mirror(mp.X))</span>
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Simulation</span><span class="p">(</span><span class="n">cell_size</span><span class="o">=</span><span class="n">cell</span><span class="p">,</span>
+                <span class="n">boundary_layers</span><span class="o">=</span><span class="n">pml_layers</span><span class="p">,</span>
+                <span class="n">geometry</span><span class="o">=</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">],</span>
+                <span class="n">force_complex_fields</span><span class="o">=</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;complex_fields&#39;</span><span class="p">],</span>
+                <span class="n">symmetries</span><span class="o">=</span><span class="n">syms</span><span class="p">,</span>
+                <span class="n">sources</span><span class="o">=</span><span class="n">sources</span><span class="p">,</span>
+                <span class="n">resolution</span><span class="o">=</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">])</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;run_date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span>
+                            <span class="n">datetime</span><span class="o">.</span>
+                            <span class="n">now</span><span class="p">()</span><span class="o">.</span>
+                            <span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%b </span><span class="si">%d</span><span class="s2"> %Y at %H:%M:%S&quot;</span><span class="p">))</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">quiet</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;quiet&#39;</span><span class="p">])</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">init_sim</span><span class="p">()</span>
+    <span class="c1"># Branch if saving for making an animation</span>
+    <span class="k">if</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;save_output&#39;</span><span class="p">]:</span>
+      <span class="n">sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">to_appended</span><span class="p">(</span><span class="s2">&quot;ez-</span><span class="si">{sim_id}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">metalens</span><span class="p">),</span>
+              <span class="n">mp</span><span class="o">.</span><span class="n">at_every</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;simulation_time&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">1000.</span><span class="p">,</span>
+              <span class="n">mp</span><span class="o">.</span><span class="n">output_efield_z</span><span class="p">)),</span>
+              <span class="n">until</span><span class="o">=</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;simulation_time&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">until</span><span class="o">=</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;simulation_time&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Compute the clock run time and grab the fields</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;array_metadata&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_array_metadata</span><span class="p">()</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;run_time_in_s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Ex&#39;</span><span class="p">:</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">mp</span><span class="o">.</span><span class="n">Ex</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span>
+                          <span class="s1">&#39;Ey&#39;</span><span class="p">:</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">mp</span><span class="o">.</span><span class="n">Ey</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span>
+                          <span class="s1">&#39;Hz&#39;</span><span class="p">:</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">mp</span><span class="o">.</span><span class="n">Hz</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+                          <span class="p">}</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;eps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">get_epsilon</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+    <span class="c1"># Dump the result to disk</span>
+    <span class="k">if</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;log_to_pkl&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;log_to_pkl&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">pkl_fname</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">metalens-</span><span class="si">%s</span><span class="s1">.pkl&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">datadir</span><span class="p">,</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_id&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pkl_fname</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;log_to_pkl&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">pkl_fname</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">metalens</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">pkl_fname</span><span class="p">,</span><span class="s1">&#39;wb&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">metalens</span></div>
+
+
+<div class="viewcode-block" id="para_metalens">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.para_metalens">[docs]</a>
+<span class="k">def</span> <span class="nf">para_metalens</span><span class="p">(</span><span class="n">metalens</span><span class="p">,</span> <span class="n">num_cores</span><span class="p">):</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Run script in the parallel environment for MEEP.</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;See progress in terminal.&quot;</span><span class="p">)</span>
+  <span class="c1"># save the params to disk</span>
+  <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">metalens</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;metalens_temp.pkl&#39;</span><span class="p">,</span><span class="s1">&#39;wb&#39;</span><span class="p">))</span>
+  <span class="c1"># compose the script to be run</span>
+  <span class="n">script</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">          main_dir = &#39;/Users/juan/Google Drive/Zia Lab/CEM/MEEP&#39;</span>
+<span class="s1">          import meep as mp</span>
+<span class="s1">          import numpy as np</span>
+<span class="s1">          from matplotlib import pyplot as plt</span>
+<span class="s1">          import os</span>
+<span class="s1">          os.chdir(main_dir)</span>
+<span class="s1">          module_dir = os.path.expanduser(&#39;~&#39;)</span>
+
+<span class="s1">          import uuid</span>
+<span class="s1">          import subprocess</span>
+<span class="s1">          import pickle</span>
+<span class="s1">          import time</span>
+<span class="s1">          import sys</span>
+<span class="s1">          sys.path.append(os.getcwd())</span>
+<span class="s1">          import datetime</span>
+<span class="s1">          if sys.platform == &#39;darwin&#39;:</span>
+<span class="s1">            sys.path.append(os.path.join(module_dir,</span>
+<span class="s1">                    &#39;Google Drive/Zia Lab/Codebase/zialab&#39;))</span>
+<span class="s1">          else:</span>
+<span class="s1">            print(&quot;Make amends for Windows or your other OS.&quot;)</span>
+
+<span class="s1">          from cem.metalenses_4 import *</span>
+
+<span class="s1">          metalens = pickle.load(open(&#39;metalens_temp.pkl&#39;,&#39;rb&#39;))</span>
+<span class="s1">          metalens = simulate_metalens(metalens)</span>
+<span class="s1">          # metalens = compute_post_simulation_params(metalens)</span>
+<span class="s1">          pickle.dump(metalens, open(os.path.join(main_dir,&#39;out.pkl&#39;), &#39;wb&#39;))</span>
+<span class="s1">          print(&#39;done&#39;)</span>
+<span class="s1">  &#39;&#39;&#39;</span>
+  <span class="n">script_fname</span> <span class="o">=</span> <span class="s1">&#39;parameep-hack-</span><span class="si">%s</span><span class="s1">.py&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+  <span class="c1"># save the python script to the playground dir</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_fname</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">dedent</span><span class="p">(</span><span class="n">script</span><span class="p">))</span>
+  <span class="n">command_sequence</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;source activate parameep; &#39;</span><span class="p">,</span>
+        <span class="s1">&#39;mpirun -n </span><span class="si">%d</span><span class="s1"> python </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">num_cores</span><span class="p">,</span> <span class="n">script_fname</span><span class="p">)])</span>
+  <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">command_sequence</span><span class="p">)</span>
+  <span class="n">out</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;out.pkl&#39;</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+  <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;mv out.pkl parametalens-</span><span class="si">%s</span><span class="s1">.pkl&#39;</span> <span class="o">%</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_id&#39;</span><span class="p">])</span>
+  <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="dipole_fluxor">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.dipole_fluxor">[docs]</a>
+<span class="k">def</span> <span class="nf">dipole_fluxor</span><span class="p">(</span><span class="n">metalens</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Used to find the full flux</span>
+<span class="sd">    using the partial flux through the aperture</span>
+<span class="sd">    of the metalens</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;chi&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;chi&#39;</span><span class="p">])</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;chi&#39;</span><span class="p">])</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">]))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="into_the_farfield">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.into_the_farfield">[docs]</a>
+<span class="k">def</span> <span class="nf">into_the_farfield</span><span class="p">(</span><span class="n">nearfield</span><span class="p">,</span> <span class="n">propagator</span><span class="p">):</span>
+    <span class="n">nearfield_fft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">nearfield</span><span class="p">)</span>
+    <span class="n">field_ft</span> <span class="o">=</span> <span class="n">nearfield_fft</span> <span class="o">*</span> <span class="n">propagator</span>
+    <span class="n">farfield</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">field_ft</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">farfield</span></div>
+
+
+<div class="viewcode-block" id="compute_post_simulation_params">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.compute_post_simulation_params">[docs]</a>
+<span class="k">def</span> <span class="nf">compute_post_simulation_params</span><span class="p">(</span><span class="n">metalens</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;From the result of a simulation, compute the following quantities:</span>
+<span class="sd">      - rho_em : electromagnetic energy density</span>
+<span class="sd">      - S_x, S_y : the x,y components of the time averaged Poynting vector</span>
+<span class="sd">      - max_axial_field_in_image_space: the y_coord of the maximum</span>
+<span class="sd">        energy density along the optical axis</span>
+<span class="sd">      - reached_det_plane: the ratio of the integrated S_y at the</span>
+<span class="sd">        detector plane to the integrated S_y right after the metalens.</span>
+<span class="sd">      - hit_the_target: the ratio of the integrated S_y at the</span>
+<span class="sd">        within the bounds of the detector to the integrated S_y right</span>
+<span class="sd">        after the metalens.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;optical_axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                                            <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_height&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                                            <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="s1">&#39;Hz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;transverse_axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                                            <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                                            <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="s1">&#39;Hz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;optical_axis_index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span>
+                                          <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;transverse_axis&#39;</span><span class="p">]))</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;top_of_post_index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;optical_axis&#39;</span><span class="p">]</span>
+                                    <span class="o">-</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;top_of_posts_coord&#39;</span><span class="p">]))</span>
+    <span class="c1"># far-field propagation</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;nearfield_index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;optical_axis&#39;</span><span class="p">]</span>
+                                    <span class="o">-</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;nearfield_coord&#39;</span><span class="p">]))</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;lr_copies&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;freq_multiplier&#39;</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;nearfields&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;top_plus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1.1</span>
+
+    <span class="n">one_field</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">zeropad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="n">one_field</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;lr_copies&#39;</span><span class="p">])</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;kx_freqs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span>
+                            <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="n">one_field</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">zeropad</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                            <span class="n">d</span><span class="o">=</span><span class="mf">1.</span><span class="o">/</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">])</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;ky&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;k_0&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+                            <span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;kx_freqs&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="mi">0</span><span class="n">j</span><span class="p">)</span>
+
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;optical_axis_for_farfield&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+                  <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;nearfield_coord&#39;</span><span class="p">],</span>
+                  <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;detector_plane_coord&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;top_plus&#39;</span><span class="p">],</span>
+                  <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;top_plus&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">])))</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;optical_axis_for_farfield&#39;</span><span class="p">]</span> <span class="o">-=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;nearfield_coord&#39;</span><span class="p">]</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;optical_axis_for_farfield&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+              <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;optical_axis_for_farfield&#39;</span><span class="p">]</span>
+              <span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;optical_axis_for_farfield&#39;</span><span class="p">]),</span><span class="mi">1</span><span class="p">)))</span>                                     <span class="p">)</span>
+    <span class="n">propagator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;ky&#39;</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;optical_axis_for_farfield&#39;</span><span class="p">])</span>
+
+    <span class="c1"># grab, pad, and fourier-transform the nearfields</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing the farfield for </span><span class="si">%s</span><span class="s2">...&quot;</span> <span class="o">%</span> <span class="n">field</span><span class="p">)</span>
+        <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;nearfields&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;nearfield_index&#39;</span><span class="p">]])</span>
+        <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;nearfields&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+              <span class="p">(</span><span class="n">zeropad</span><span class="p">,</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;nearfields&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">],</span><span class="n">zeropad</span><span class="p">))</span>
+        <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">into_the_farfield</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;nearfields&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">],</span><span class="n">propagator</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">propagator</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="s1">&#39;rho_em&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="s1">&#39;Hz&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="s1">&#39;rho_em&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="s1">&#39;Hz&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="c1"># stitch the nearfield and the farfield together</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Patching the entire field for </span><span class="si">%s</span><span class="s2">...&quot;</span> <span class="o">%</span> <span class="n">field</span><span class="p">)</span>
+        <span class="n">nearFieldChunk</span> <span class="o">=</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">][:</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;nearfield_index&#39;</span><span class="p">]]</span>
+        <span class="n">zeropad2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nearFieldChunk</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                            <span class="n">nearFieldChunk</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;lr_copies&#39;</span><span class="p">]))</span>
+        <span class="n">paddedfield</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">zeropad2</span><span class="p">,</span><span class="n">nearFieldChunk</span><span class="p">,</span><span class="n">zeropad2</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                              <span class="p">(</span><span class="n">paddedfield</span><span class="p">,</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">]))</span>
+    <span class="c1"># compute the Poyting vector</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="s1">&#39;Sx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="s1">&#39;Ey&#39;</span><span class="p">])</span>
+                                <span class="o">*</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="s1">&#39;Hz&#39;</span><span class="p">])</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="s1">&#39;Sy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="s1">&#39;Ex&#39;</span><span class="p">])</span>
+                          <span class="o">*</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="s1">&#39;Hz&#39;</span><span class="p">])</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="s1">&#39;Sr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="s1">&#39;Sx&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+                                  <span class="o">+</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="s1">&#39;Sy&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="c1"># update a few objects</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;full_extent&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span>
+                                  <span class="o">*</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;freq_multiplier&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;full_extent&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;sim_cell_width&#39;</span><span class="p">]</span>
+                                  <span class="o">*</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;freq_multiplier&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;transverse_axis_extended&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+                                      <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;full_extent&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                                      <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;full_extent&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                                      <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="s1">&#39;Hz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;optical_axis_index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;transverse_axis_extended&#39;</span><span class="p">]))</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;optical_axis_extended&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;full_extent&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>
+                                        <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;full_extent&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span>
+                                        <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;farfields&#39;</span><span class="p">][</span><span class="s1">&#39;Hz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;detector_plane_index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span>
+                              <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;optical_axis_extended&#39;</span><span class="p">]</span>
+                              <span class="o">-</span> <span class="n">metalens</span><span class="p">[</span><span class="s1">&#39;detector_plane_coord&#39;</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">metalens</span></div>
+
+
+<div class="viewcode-block" id="wave_to_rgb">
+<a class="viewcode-back" href="../usage/metalenses.html#metalenses.wave_to_rgb">[docs]</a>
+<span class="k">def</span> <span class="nf">wave_to_rgb</span><span class="p">(</span><span class="n">wavelength</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.8</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;This converts a given wavelength of light to an</span>
+<span class="sd">    approximate RGB color value. The wavelength must be given</span>
+<span class="sd">    in nanometers in the range from 380 nm through 750 nm</span>
+<span class="sd">    (789 THz through 400 THz).</span>
+
+<span class="sd">    Based on code by Dan Bruton</span>
+<span class="sd">    http://www.physics.sfasu.edu/astro/color/spectra.html</span>
+
+<span class="sd">    REF: https://www.noah.org/wiki/wave_to_rgb_in_Python</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">wavelength</span> <span class="o">=</span> <span class="mi">1000</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">wavelength</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">wavelength</span> <span class="o">&gt;=</span> <span class="mi">380</span> <span class="ow">and</span> <span class="n">wavelength</span> <span class="o">&lt;=</span> <span class="mi">440</span><span class="p">:</span>
+      <span class="n">attenuation</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="o">+</span> <span class="mf">0.7</span> <span class="o">*</span> <span class="p">(</span><span class="n">wavelength</span> <span class="o">-</span> <span class="mi">380</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">440</span> <span class="o">-</span> <span class="mi">380</span><span class="p">)</span>
+      <span class="n">R</span> <span class="o">=</span> <span class="p">((</span><span class="o">-</span><span class="p">(</span><span class="n">wavelength</span> <span class="o">-</span> <span class="mi">440</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">440</span> <span class="o">-</span> <span class="mi">380</span><span class="p">))</span> <span class="o">*</span> <span class="n">attenuation</span><span class="p">)</span> <span class="o">**</span> <span class="n">gamma</span>
+      <span class="n">G</span> <span class="o">=</span> <span class="mf">0.0</span>
+      <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">attenuation</span><span class="p">)</span> <span class="o">**</span> <span class="n">gamma</span>
+    <span class="k">elif</span> <span class="n">wavelength</span> <span class="o">&gt;=</span> <span class="mi">440</span> <span class="ow">and</span> <span class="n">wavelength</span> <span class="o">&lt;=</span> <span class="mi">490</span><span class="p">:</span>
+      <span class="n">R</span> <span class="o">=</span> <span class="mf">0.0</span>
+      <span class="n">G</span> <span class="o">=</span> <span class="p">((</span><span class="n">wavelength</span> <span class="o">-</span> <span class="mi">440</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">490</span> <span class="o">-</span> <span class="mi">440</span><span class="p">))</span> <span class="o">**</span> <span class="n">gamma</span>
+      <span class="n">B</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="k">elif</span> <span class="n">wavelength</span> <span class="o">&gt;=</span> <span class="mi">490</span> <span class="ow">and</span> <span class="n">wavelength</span> <span class="o">&lt;=</span> <span class="mi">510</span><span class="p">:</span>
+      <span class="n">R</span> <span class="o">=</span> <span class="mf">0.0</span>
+      <span class="n">G</span> <span class="o">=</span> <span class="mf">1.0</span>
+      <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">wavelength</span> <span class="o">-</span> <span class="mi">510</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">510</span> <span class="o">-</span> <span class="mi">490</span><span class="p">))</span> <span class="o">**</span> <span class="n">gamma</span>
+    <span class="k">elif</span> <span class="n">wavelength</span> <span class="o">&gt;=</span> <span class="mi">510</span> <span class="ow">and</span> <span class="n">wavelength</span> <span class="o">&lt;=</span> <span class="mi">580</span><span class="p">:</span>
+      <span class="n">R</span> <span class="o">=</span> <span class="p">((</span><span class="n">wavelength</span> <span class="o">-</span> <span class="mi">510</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">580</span> <span class="o">-</span> <span class="mi">510</span><span class="p">))</span> <span class="o">**</span> <span class="n">gamma</span>
+      <span class="n">G</span> <span class="o">=</span> <span class="mf">1.0</span>
+      <span class="n">B</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">elif</span> <span class="n">wavelength</span> <span class="o">&gt;=</span> <span class="mi">580</span> <span class="ow">and</span> <span class="n">wavelength</span> <span class="o">&lt;=</span> <span class="mi">645</span><span class="p">:</span>
+      <span class="n">R</span> <span class="o">=</span> <span class="mf">1.0</span>
+      <span class="n">G</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">wavelength</span> <span class="o">-</span> <span class="mi">645</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">645</span> <span class="o">-</span> <span class="mi">580</span><span class="p">))</span> <span class="o">**</span> <span class="n">gamma</span>
+      <span class="n">B</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">elif</span> <span class="n">wavelength</span> <span class="o">&gt;=</span> <span class="mi">645</span> <span class="ow">and</span> <span class="n">wavelength</span> <span class="o">&lt;=</span> <span class="mi">750</span><span class="p">:</span>
+      <span class="n">attenuation</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="o">+</span> <span class="mf">0.7</span> <span class="o">*</span> <span class="p">(</span><span class="mi">750</span> <span class="o">-</span> <span class="n">wavelength</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">750</span> <span class="o">-</span> <span class="mi">645</span><span class="p">)</span>
+      <span class="n">R</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">attenuation</span><span class="p">)</span> <span class="o">**</span> <span class="n">gamma</span>
+      <span class="n">G</span> <span class="o">=</span> <span class="mf">0.0</span>
+      <span class="n">B</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">R</span> <span class="o">=</span> <span class="mf">1.0</span>
+      <span class="n">G</span> <span class="o">=</span> <span class="mf">1.0</span>
+      <span class="n">B</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span></div>
+
+
+
+
+<span class="c1">######################## MEEP functions #######################</span>
+<span class="c1">###############################################################</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

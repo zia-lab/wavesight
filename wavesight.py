@@ -1158,6 +1158,7 @@ def from_near_to_far_angular(field, xy_span,
         of the field is calculated.
     make_plots: bool
         Whether to show plots as the calculation is carried out.
+    
     Returns
     -------
     (angular_rep, theta_range, phi_range, phi_sum, θmax) : tuple
@@ -1310,6 +1311,7 @@ def simpson_quad_1D(arr, dx):
         Uniform samples of a function on a cartesian grid.
     dx: float
         The size of the sampling, shared by both axes.
+    
     Returns
     -------
     simp_int: float
@@ -1324,10 +1326,10 @@ def simpson_quad_1D(arr, dx):
             extras = (np.newaxis,) * extra_dims
             Bsimpsonx = Bsimpsonx[:,extras]
         arrB = Bsimpsonx * arr
-        simp_int = np.sum(arrB, axis=0) * dx
+        simp_int = np.nansum(arrB, axis=0) * dx
     else:
         arrB = Bsimpsonx * arr
-        simp_int = np.sum(arrB) * dx
+        simp_int = np.nansum(arrB) * dx
     return simp_int
 
 def simpson_quad_ND(arr, dr):
@@ -1344,6 +1346,7 @@ def simpson_quad_ND(arr, dr):
         dr[i] being the sampling interval for dim-i in
         the given arr. If a float is given, then the assumption
         is that the sampling is equal in every dimension.
+    
     Returns
     -------
     the_integral : float
@@ -1921,11 +1924,11 @@ def field_sampler(funPairs, cross_width, resolution, m, parity,
     funPairs : 3-tuple of 2-tuples of 2-tuples of functions
         The  functions  that  describe the field in the core and cladding.
         Having the following structure:
-            (
-            ((ECoreρ, ECladdingρ), (HCoreρ, HCladdingρ)),
-            ((ECoreϕ, ECladdingϕ), (HCoreϕ, HCladdingϕ)),
-            ((ECorez, ECladdingz), (HCorez, HCladdingz))
-            )
+        (
+        ((ECoreρ, ECladdingρ), (HCoreρ, HCladdingρ)),
+        ((ECoreϕ, ECladdingϕ), (HCoreϕ, HCladdingϕ)),
+        ((ECorez, ECladdingz), (HCorez, HCladdingz))
+        )
     cross_width : float
         The width of the cross-section of the computational grid.
     resolution : float
@@ -2055,6 +2058,7 @@ def from_sampled_field_to_sampled_equiv_currents(EH_field):
     EH_field : np.ndarray
         Sampled EH field,  in  cartesian  coordinates, of  shape
         (2, 3, N, N) or (2, 2, N, N).
+    
     Returns
     -------
     electric_J : np.ndarray
@@ -2392,6 +2396,38 @@ def device_layout(device_design, text_legend=True):
     ax.set_aspect('equal')
     plt.close()
     return fig, ax
+
+def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
+    '''
+    Given a MEP simulation cell, the resolution, and
+    the run time of the simulation, this function will return the approximate
+    time in seconds that the simulation will take to run.
+
+    This function does not take into account possible parallelization of the
+    simulation.
+
+    Parameters
+    ----------
+    sim_cell : meep.Vector3
+        The simulation cell.
+    spatial_resolution : int
+        The spatial resolution of the simulation. How many pixels per unit length.
+    run_time : float
+        The run time of the simulation in MEEP units.
+    kappa : float, optional
+        The proportionality constant that relates the run time of the simulation
+        to the number of pixels in the simulation cell. The default is 3.06e-6.
+    
+    Returns
+    -------
+    rtime : float
+        The approximate time in seconds that the simulation will take to run.
+    
+    '''
+    rtime = (kappa * sim_cell.x
+             * sim_cell.y * sim_cell.z
+             * run_time * spatial_resolution**3)
+    return rtime
 
 ########################################## Others ##########################################
 ############################################################################################

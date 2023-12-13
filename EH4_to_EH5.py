@@ -25,6 +25,29 @@ def h5_handler(filename, mode):
             file.close()
 
 def wave_to_vol(waveguide_id, zPropindex):
+    '''
+    This function takes the id for a given simulation and 
+    takes the fields that have been propagated across the
+    metalens and propagate them along the z-axis by   the
+    provided distance.
+
+    The distance is provided as an index in the the zProps
+    array which is determined from the start of the 
+    simulation.
+
+    The result is save into a new folder called EH5 in 
+    h5 format.
+
+    Parameters
+    ----------
+    waveguide_id : str
+        The label for the job.
+    zPropindex : int
+         
+    Returns
+    -------
+    None
+    '''
     # first find all the subdirs that correspond to the waveguide_id
     waveguide_dir = os.path.join(data_dir, waveguide_id)
     printer("loading the configuration parameters")

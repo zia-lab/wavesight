@@ -198,7 +198,7 @@ sbatch_output=$(sbatch --dependency=afterany:$across_job_id <<EOL
 #SBATCH -e "{waveguide_dir}/{waveguide_id}-EH4-to-EH5-%a.err"
 
 cd {wavesight_dir}
-{python_bin} {code_dir}EH4-to-EH5.py --waveguide_id {waveguide_id} --zPropindex -1
+{python_bin} {code_dir}EH4_to_EH5.py --waveguide_id {waveguide_id} --zPropindex -1
 EOL
 )
 
@@ -217,7 +217,7 @@ sbatch_output=$(sbatch --dependency=afterany:$eh4_to_eh5_id <<EOL
 #SBATCH --time=00:20:00
 
 cd {wavesight_dir}
-{python_bin} {code_dir}EH5-assembly.py {waveguide_id}
+{python_bin} {code_dir}EH5_assembly.py {waveguide_id}
 EOL
 )
 

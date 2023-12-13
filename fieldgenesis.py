@@ -1735,6 +1735,32 @@ def HE_HCladdinggenz(a,kFree,kz,m,nCladding,nCore):
 
 
 def fieldGenerator(a,kFree,kz,m,nCladding,nCore,fieldType='HE'):
+    '''
+    This function simplifies returning all the corresponding 
+    modal field functions for given parameters.
+
+    Parameters
+    ----------
+    a : float
+        The radius of the waveguide core.
+    kFree : float
+        The free space wavenumber.
+    kz : float
+        The longitudinal propagation constant.
+    m : int
+        The mode order, for HE modes m>=1, for TM and TE, m=0.
+    nCladding : float
+        The refractive index of cladding.
+    nCore : float
+        The refractive index of core.
+    fieldType : str, optional
+        The field type, 'HE', 'TE', or 'TM'. The default is 'HE'.
+    
+    Returns
+    -------
+    Efuncs, Hfuncs : tuple
+        A 2-tuple with the E and H field functions.
+    '''
     if fieldType == 'HE':
         assert m>=1, 'Not an HE mode'
         ECoreρ = HE_ECoregenρ(a=a, kFree=kFree, kz=kz, m=m, nCladding=nCladding, nCore=nCore)

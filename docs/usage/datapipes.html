@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>datapipes &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="diffkernels" href="diffkernels.html" />
+    <link rel="prev" title="convstore" href="convstore.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            wavesight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="across_ml.html">across_ml</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convstore.html">convstore</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">datapipes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#datapipes.CustomJSONEncoder"><code class="docutils literal notranslate"><span class="pre">CustomJSONEncoder</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#datapipes.CustomJSONEncoder.default"><code class="docutils literal notranslate"><span class="pre">CustomJSONEncoder.default()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#datapipes.extract_cli_arguments_and_run"><code class="docutils literal notranslate"><span class="pre">extract_cli_arguments_and_run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#datapipes.load_from_h5"><code class="docutils literal notranslate"><span class="pre">load_from_h5()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#datapipes.load_from_json"><code class="docutils literal notranslate"><span class="pre">load_from_json()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#datapipes.run_script_and_get_json"><code class="docutils literal notranslate"><span class="pre">run_script_and_get_json()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#datapipes.save_to_h5"><code class="docutils literal notranslate"><span class="pre">save_to_h5()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#datapipes.save_to_json"><code class="docutils literal notranslate"><span class="pre">save_to_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="diffkernels.html">diffkernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_animate.html">EH4_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_plotter.html">EH4_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_to_EH5.html">EH4_to_EH5</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH5_assembly.html">EH5_assembly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_animate.html">fiber_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_bridge.html">fiber_bridge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_bundle.html">fiber_bundle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_platform.html">fiber_platform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_plotter.html">fiber_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fieldgenesis.html">fieldgenesis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fields.html">fields</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fungenerators.html">fungenerators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hail_david.html">hail_david</a></li>
+<li class="toctree-l1"><a class="reference internal" href="housekeeping.html">housekeeping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="meta_designer.html">meta_designer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metal.html">metal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metaorchestra.html">metaorchestra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">misc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ml_plot_in.html">ml_plot_in</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_factory.html">phase_factory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="printech.html">printech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="slacking.html">slacking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sniffer.html">sniffer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="standard_candle.html">standard_candle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html">templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wavegraphics.html">wavegraphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wavesight.html">wavesight</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wavesight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">datapipes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/usage/datapipes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="convstore.html" class="btn btn-neutral float-left" title="convstore" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="diffkernels.html" class="btn btn-neutral float-right" title="diffkernels" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="datapipes">
+<h1>datapipes<a class="headerlink" href="#datapipes" title="Link to this heading">¶</a></h1>
+<p>This module has a collection of convenient functions to load and save data to h5 and json files.</p>
+<dl class="py class" id="module-datapipes">
+<dt class="sig sig-object py" id="datapipes.CustomJSONEncoder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datapipes.</span></span><span class="sig-name descname"><span class="pre">CustomJSONEncoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipkeys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_ascii</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datapipes.html#CustomJSONEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datapipes.CustomJSONEncoder" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">JSONEncoder</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datapipes.CustomJSONEncoder.default">
+<span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datapipes.html#CustomJSONEncoder.default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datapipes.CustomJSONEncoder.default" title="Link to this definition">¶</a></dt>
+<dd><p>Implement this method in a subclass such that it returns
+a serializable object for <code class="docutils literal notranslate"><span class="pre">o</span></code>, or calls the base implementation
+(to raise a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>).</p>
+<p>For example, to support arbitrary iterators, you could
+implement default like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">iterable</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="c1"># Let the base class default method raise the TypeError</span>
+    <span class="k">return</span> <span class="n">JSONEncoder</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datapipes.extract_cli_arguments_and_run">
+<span class="sig-prename descclassname"><span class="pre">datapipes.</span></span><span class="sig-name descname"><span class="pre">extract_cli_arguments_and_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datapipes.html#extract_cli_arguments_and_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datapipes.extract_cli_arguments_and_run" title="Link to this definition">¶</a></dt>
+<dd><p>Given  the  path  to  a  python  script  with a command-line
+interface.   This   function   inspects   the  command  line
+interface, which must be built with argparse and it define a
+function  that will take in the CLI parameters as positional
+arguments, feed them to the script via the CLI, and load the
+output of the script.</p>
+<p>Eventhough the CLI might allow for optional  parameters  the 
+function  returned  here  requires  that  every parameter is
+given.</p>
+<p>The  script  needs  to output its results to a json file and
+the  last  line  that it prints must contain the name of the
+file to which the function saved its results to.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>script_path<span class="classifier">str</span></dt><dd><p>The filepath to the script to be wrapped.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>cli_function_wrapper<span class="classifier">fun</span></dt><dd><p>A  function  that takes as aruments the arguments of the
+CLI  and  which  returns  a  dictionary with the results
+parse from json output.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datapipes.load_from_h5">
+<span class="sig-prename descclassname"><span class="pre">datapipes.</span></span><span class="sig-name descname"><span class="pre">load_from_h5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datapipes.html#load_from_h5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datapipes.load_from_h5" title="Link to this definition">¶</a></dt>
+<dd><p>Load an H5 file and return its contents or its keys.</p>
+<section id="id1">
+<h2>Parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>filename: str</dt><dd><p>The path to the H5 file to load.</p>
+</dd>
+<dt>keys: (list, str, or None, optional)</dt><dd><p>A list of keys, a single key, or None to load all from the H5 file.
+If a single key is given, then the function does not return
+a dictionary with a comment but it simply returns the value of
+that single key.</p>
+</dd>
+<dt>group: (h5py.Group, optional)</dt><dd><p>Current group for recursion. Defaults to None.</p>
+</dd>
+<dt>only_keys: (bool)</dt><dd><p>If set to True, returns only the keys without loading any data. Defaults to False.</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h2>Returns<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>dict, value, list or None</dt><dd><p>Depending on the parameters, returns a dictionary, a value, a list of keys, or None.</p>
+</dd>
+<dt>tuple: </dt><dd><p>A tuple containing a dictionary with the loaded data and the comments string.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datapipes.load_from_json">
+<span class="sig-prename descclassname"><span class="pre">datapipes.</span></span><span class="sig-name descname"><span class="pre">load_from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datapipes.html#load_from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datapipes.load_from_json" title="Link to this definition">¶</a></dt>
+<dd><p>Load data from a json file into a dictionary
+omitting lines that start with //. This is a simple
+loader that does not support nested dictionaries.</p>
+<section id="id3">
+<h2>Parameters<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>filename: str</dt><dd><p>The path to the json file to load.</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h2>Returns<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>the_dictionary: dict</dt><dd><p>The dictionary with the contents of the json file.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datapipes.run_script_and_get_json">
+<span class="sig-prename descclassname"><span class="pre">datapipes.</span></span><span class="sig-name descname"><span class="pre">run_script_and_get_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datapipes.html#run_script_and_get_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datapipes.run_script_and_get_json" title="Link to this definition">¶</a></dt>
+<dd><p>This function takes the path to a script with a command-line
+interface,   and   a  dictionary  with  values  to  all  the
+parameters that the CLI receives.</p>
+<p>This  assumes  that  the  names  of  the arguments are known
+beforehand so that args_dict may be well formed.</p>
+<p>For an alternative that automatically analyzes the script to
+be run, see extract_cli_arguments_and_run.</p>
+<p>Using  the given values for the arguments this function runs
+the script.</p>
+<p>The  script  must  save  its results to a .json file and the
+last line that it prints must be the name of such file.</p>
+<p>When  the  script  has  finished running, this function will
+then  grab the filename of that json file, read its contents
+and return them as a dictionary.</p>
+<section id="id5">
+<h2>Parameters<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>script_path: str</dt><dd><p>Path to Python script with CLI and json output.</p>
+</dd>
+<dt>args_dict: dict</dt><dd><p>Dictionary with keys equal to the named arguments of the
+CLI and values equal to the values one wishes to input.</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h2>Returns<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>result_data: dict</dt><dd><p>Dictionary with the parsed results of the function as
+saved in the json file by the Python script.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datapipes.save_to_h5">
+<span class="sig-prename descclassname"><span class="pre">datapipes.</span></span><span class="sig-name descname"><span class="pre">save_to_h5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datapipes.html#save_to_h5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datapipes.save_to_h5" title="Link to this definition">¶</a></dt>
+<dd><p>Save numeric values, numpy arrays, strings, and nested dictionaries
+from the provided dictionary to an H5 file.
+If a value of the provided dictionary is a list, then
+the list is converted to a dictionary with keys equal
+to the indices of the lists (as strings).</p>
+<section id="id7">
+<h2>Parameters<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>data: dict</dt><dd><p>The input dictionary.</p>
+</dd>
+<dt>filename: str</dt><dd><p>The path to the H5 file to save.</p>
+</dd>
+<dt>group: (h5py.Group, optional)</dt><dd><p>Current group for recursion. Defaults to None.</p>
+</dd>
+</dl>
+</section>
+<section id="id8">
+<h2>Returns<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<p>None</p>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>
+    <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="s1">&#39;hello&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span>
+        <span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="mf">3.14</span><span class="p">,</span>
+            <span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="s1">&#39;world&#39;</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="p">}</span>
+<span class="n">save_to_h5</span><span class="p">(</span><span class="n">data_dict</span><span class="p">,</span> <span class="s1">&#39;output.h5&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datapipes.save_to_json">
+<span class="sig-prename descclassname"><span class="pre">datapipes.</span></span><span class="sig-name descname"><span class="pre">save_to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datapipes.html#save_to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datapipes.save_to_json" title="Link to this definition">¶</a></dt>
+<dd><p>This function saves a dictionary to a JSON file with the given filename.
+It admits values to be int, float, str, list, dict, or numpy arrays.</p>
+<p>This is a simple wrapper around json.dump that uses a custom encoder that
+accounts for numpy arrays.</p>
+<section id="id9">
+<h2>Parameters<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>filename: str</dt><dd><p>The path to the JSON file to save.</p>
+</dd>
+<dt>source_dict: dict</dt><dd><p>The dictionary to save to the JSON file.</p>
+</dd>
+<dt>header: str</dt><dd><p>A string to be saved as a comment in the first line of the file.</p>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h2>Returns<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
+<p>None</p>
+</section>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

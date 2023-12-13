@@ -24,13 +24,10 @@ from matplotlib import pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
 style.use('dark_background')
-# this script can be used to generate a compendium of the fields in the xz yz sagittal planes
-# it takes as simple argument equal to the job id for the entire simulation
-
 cmap          = cm.watermelon
 data_dir      = '/users/jlizaraz/data/jlizaraz/CEM/wavesight'
 post_to_slack = True
-exclude_dirs  = ['moovies']
+exclude_dirs  = ['moovies', 'moovies-EH4', 'err', 'out', 'figs']
 
 def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
     '''
@@ -39,6 +36,7 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
     monitors.
     A pdf is created for each monitor. Thees pdfs are saved in
     the same directory as the data and also posted to Slack.
+
     Parameters
     ----------
     waveguide_id : str
@@ -47,6 +45,7 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
         The maximum number of plots to generate. The default is np.inf.
     extra_fname : str, optional
         Extra string to append to the filename. The default is ''.
+    
     Returns
     -------
     None

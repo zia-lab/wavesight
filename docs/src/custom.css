@@ -5,10 +5,14 @@ div[role=contentinfo] {
 	position: relative;
 }
 
-div[role=contentinfo]:after {
+/* div[role=contentinfo]:after {
 	visibility: visible;
 	position: absolute;
 	top: 0;
 	left: 0;
 	content: "Copyright (c) 2019 Our Company. All rights reserved.";
-}
+} */
+
+/* .search {
+    display: none;
+} */

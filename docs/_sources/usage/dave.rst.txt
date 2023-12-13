@@ -1,0 +1,7 @@
+dave module
+===========
+
+.. automodule:: dave
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>diffkernels.py &mdash; wavesight  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <title>diffkernels &mdash; wavesight  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -19,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="misc.py" href="misc.html" />
-    <link rel="prev" title="Maxwell’s Equations" href="maxwell.html" /> 
+    <link rel="next" title="EH4_animate" href="EH4_animate.html" />
+    <link rel="prev" title="datapipes" href="datapipes.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,19 +44,45 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="wavesight.html">wavesight.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fields.html">fields.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="maxwell.html">Maxwell’s Equations</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">diffkernels.py</a><ul>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="across_ml.html">across_ml</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convstore.html">convstore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datapipes.html">datapipes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">diffkernels</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#diffkernels.electricKernels"><code class="docutils literal notranslate"><span class="pre">electricKernels()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#diffkernels.jit"><code class="docutils literal notranslate"><span class="pre">jit()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#diffkernels.magneticKernels"><code class="docutils literal notranslate"><span class="pre">magneticKernels()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">misc.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fieldgenesis.html">fieldgenesis.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fungenerators.html">fungenerators.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="convstore.html">convstore.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_animate.html">EH4_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_plotter.html">EH4_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH4_to_EH5.html">EH4_to_EH5</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EH5_assembly.html">EH5_assembly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_animate.html">fiber_animate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_bridge.html">fiber_bridge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_bundle.html">fiber_bundle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_platform.html">fiber_platform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fiber_plotter.html">fiber_plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fieldgenesis.html">fieldgenesis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fields.html">fields</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fungenerators.html">fungenerators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hail_david.html">hail_david</a></li>
+<li class="toctree-l1"><a class="reference internal" href="housekeeping.html">housekeeping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maxwell.html">Maxwell’s Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="meta_designer.html">meta_designer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metal.html">metal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metaorchestra.html">metaorchestra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">misc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ml_plot_in.html">ml_plot_in</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_factory.html">phase_factory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="printech.html">printech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="slacking.html">slacking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sniffer.html">sniffer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="standard_candle.html">standard_candle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html">templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wavegraphics.html">wavegraphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wavesight.html">wavesight</a></li>
 </ul>
 
         </div>
@@ -71,19 +99,23 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">diffkernels.py</li>
+      <li class="breadcrumb-item active">diffkernels</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/usage/diffkernels.rst.txt" rel="nofollow"> View page source</a>
       </li>
-  </ul>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="datapipes.html" class="btn btn-neutral float-left" title="datapipes" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="EH4_animate.html" class="btn btn-neutral float-right" title="EH4_animate" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-diffkernels">
-<span id="diffkernels-py"></span><h1>diffkernels.py<a class="headerlink" href="#module-diffkernels" title="Link to this heading">¶</a></h1>
-<dl class="py function">
+  <section id="diffkernels">
+<h1>diffkernels<a class="headerlink" href="#diffkernels" title="Link to this heading">¶</a></h1>
+<p>This module includes a couple of functions that are useful to calculate the Smythe-Kirchhoff diffraction integrals.</p>
+<dl class="py function" id="module-diffkernels">
 <dt class="sig sig-object py" id="diffkernels.electricKernels">
 <span class="sig-prename descclassname"><span class="pre">diffkernels.</span></span><span class="sig-name descname"><span class="pre">electricKernels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/diffkernels.html#electricKernels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diffkernels.electricKernels" title="Link to this definition">¶</a></dt>
 <dd><p>This function returns the necessary kernels for computing the diffracted electric field
@@ -105,6 +137,11 @@ obtained from the Smythe-Kirchhoff diffraction integrals.</p>
 </dl>
 </section>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="diffkernels.jit">
+<span class="sig-prename descclassname"><span class="pre">diffkernels.</span></span><span class="sig-name descname"><span class="pre">jit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nopython</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/diffkernels.html#jit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diffkernels.jit" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="diffkernels.magneticKernels">
@@ -134,15 +171,12 @@ obtained from the Smythe-Kirchhoff diffraction integrals.</p>
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="maxwell.html" class="btn btn-neutral float-left" title="Maxwell’s Equations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="misc.html" class="btn btn-neutral float-right" title="misc.py" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright .</p>
+    <p></p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
