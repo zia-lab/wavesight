@@ -170,10 +170,7 @@ def dict_summary(adict, header, prekey='', bullet='', aslist=False, split=False)
             else:
                 txt_summary.append(bullet + key + ' : ' + str(val))
         elif isinstance(val, float_types):
-            if prekey:
-                txt_summary.append('%s%s : %.3f' % (prekey, key, val))
-            else:
-                txt_summary.append('%s%s : %.3f' % (prekey, key, val))
+            txt_summary.append('%s%s : %.3e' % (prekey, key, val))
         elif type(val) == dict:
             nested_dict = dict_summary(val, header='', prekey= prekey + '-' + key, aslist = True)
             txt_summary.extend(nested_dict)
@@ -436,7 +433,7 @@ def random_in_range(xmin, xmax, shape):
     rando_array = np.random.random(shape)*(xmax-xmin) + xmin
     return rando_array
 
-def transient_scope(times, time_signal, tol=0.01):
+def transient_scope_wiggler(times, time_signal, tol=0.01):
     '''
     This   function   finds  the  time  at  which  the  relative
     oscillations  of  a  signal that is heading towards a steady
@@ -504,6 +501,62 @@ def transient_scope(times, time_signal, tol=0.01):
         else:
             print('No steady state time found within given tolerance.')
             return None
+
+def transient_scope_sigmoid(times, signal, tol=0.01):
+    '''
+    This  function finds the time at which a given signal with a
+    sigmoid-like  behaviour  has  reached  its  steady  state to
+    within a given relative tolerance.
+
+    The signal is assumed to be non-negative.
+
+    ..code-block:: python
+
+        ▲                                  ***************  
+        │                                ***                
+        │                             ***                   
+        │                            **                     
+        │                          ***                      
+        │                         **                        
+        │                        **                         
+        │                       **                          
+        │                      **                           
+        │                     **                            
+        │                   ***                             
+        │                 ***                               
+        │               ***                                 
+        │             ***                                   
+        │         ****                                      
+        │**********                                         
+        ────────────────────────────────────────────────────▶
+        │                                                                                                                     
+
+    Parameters
+    ----------
+    times : np.array
+        the time
+    signal : np.array
+        the time-dependent signal
+    tol : float, optional
+        the tolerance, default is 0.01
+    Returns
+    -------
+    good_time: float
+        Time at which the signal relative change have
+        dropped below the tolerance.
+
+    '''
+    signal = signal - signal[0]
+    # avoid getting stuck on the initial values
+    mean_value = np.mean(signal)
+    good_value_indices = np.where(signal >= mean_value)[0]
+    relative_diffs = np.abs(np.diff(signal[good_value_indices]))
+    relative_diffs /= signal[good_value_indices][:-1]
+    good_times = times[good_value_indices][:-1][relative_diffs<tol]
+    if len(good_times)>1:
+        return (good_times[0])
+    else:
+        return None
 
 def format_time(seconds):
     '''
@@ -698,7 +751,7 @@ def get_memory_usage(caller_frame, string_ouput=True):
     else:
         return memory_usage, line_no
 
-def get_global_memory_usage(caller_frame, job_id = None, string_ouput=True):
+def get_global_memory_usage(caller_frame, job_id = None, string_output=True):
     '''
     This function returns the memory ussage of the given process. It also
     returns the line in the code where the call was made.
@@ -724,13 +777,21 @@ def get_global_memory_usage(caller_frame, job_id = None, string_ouput=True):
         return get_memory_usage(caller_frame)
     else:
         memory_usage_in_GB = get_max_RSS(job_id)
-        memory_usage = memory_usage_in_GB*1024
-    if string_ouput:
-        return f"(MEM USAGE) #{line_no} : {memory_usage:.2f} MB"
-    else:
-        return memory_usage, line_no
+        if memory_usage_in_GB == None:
+            memory_usage_in_GB = 0.
+            memory_usage = 0
+            if string_output:
+                return f"(MEM USAGE) #{line_no} : nan MB"
+            else:
+                return memory_usage, line_no
+        else:
+            memory_usage = memory_usage_in_GB*1024
+            if string_output:
+                return f"(MEM USAGE) #{line_no} : {memory_usage:.2f} MB"
+            else:
+                return memory_usage, line_no
 
-def get_max_RSS(job_id, return_as_string = False):
+def get_max_RSS(job_id, return_as_string = False, max_retries = 5):
     '''
     Get the max RSS of a given job id.
 
@@ -761,12 +822,14 @@ def get_max_RSS(job_id, return_as_string = False):
         max_rss = (result.strip().split('\n')[0])  # Take the first line of output
         # Handling cases where MaxRSS is not available or the job is not found
         if max_rss == "" or "not found" in max_rss.lower():
+            print("job %s not found for maxRSS query" % job_id)
             if return_as_string:
                 return ""
             else:
                 return None
         max_rss = max_rss.strip()
         if 'No steps running for' in max_rss:
+            print("No steps running for job %s" % job_id)
             if return_as_string:
                 return ""
             else:
@@ -842,3 +905,58 @@ def get_squeue_data(user='jlizaraz', get_RSS = True, return_as_dict = True):
         return job_dict
     else:
         return jobs
+
+def index_divider(the_sequence, num_sub_groups, return_indices=False):
+    '''
+    Given a sequence of elements, divide it into num_sub_groups sub-groups.
+    If return_indices is True, return the indices of the elements in the
+    original sequence. Otherwise, return the elements themselves.
+
+    Parameters
+    ----------
+    the_sequence : list, tuple, np.ndarray
+        The sequence to be divided.
+    num_sub_groups : int
+        The number of sub-groups to divide the sequence into.
+
+    Returns
+    -------
+    index_groups : list of lists
+        The indices of the elements in the original sequence, divided into
+        at most num_sub_groups sub-groups.
+    or iter_groups : list of (same type as the_sequence)
+        The elements of the original sequence, divided into at most
+        num_sub_groups sub-groups.
+    '''
+    assert num_sub_groups > 0
+    assert isinstance(num_sub_groups, int)
+    assert isinstance(the_sequence, (list, tuple, np.ndarray))
+    if num_sub_groups == 1:
+        if return_indices:
+            return [[0]]
+        else:
+            return [the_sequence]
+    range_size = int(len(the_sequence))
+    indices = list(range(range_size))
+    group_size = int(np.ceil(range_size/num_sub_groups))
+    index_groups = []
+    iter_groups = []
+    for group_idx in range(num_sub_groups):
+        idx_start = group_idx * group_size
+        idx_end   = min((group_idx + 1) * group_size, range_size)
+        group_indices = indices[idx_start: idx_end]
+        group_elements = [the_sequence[idx] for idx in group_indices]
+        if len(group_elements) == 0:
+            break
+        index_groups.append(group_indices)
+        iter_groups.append(group_elements)
+    if return_indices:
+        return index_groups
+    else:
+        if isinstance(the_sequence, np.ndarray):
+            return list(map(np.array,iter_groups))
+        elif isinstance(the_sequence, list):
+            return list(map(list,iter_groups))
+        elif isinstance(the_sequence, tuple):
+            return list(map(tuple,iter_groups))
+        return iter_groups

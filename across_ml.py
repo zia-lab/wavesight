@@ -76,6 +76,7 @@ def meta_duct(waveguide_id, mode_idx):
     ml_to_EH4       = params_dict['ml_to_EH4']
     ml_thickness    = params_dict['ml_thickness']
     parallel_MEEP   = params_dict['parallel_MEEP']
+    full_ml_sim_height = params_dict['full_ml_sim_height']
     if parallel_MEEP:
         from mpi4py import MPI
         rank = MPI.COMM_WORLD.rank
@@ -126,16 +127,14 @@ def meta_duct(waveguide_id, mode_idx):
     ml_cell_thickness     = params_dict['ml_cell_thickness']
     host_cell_thickness   = params_dict['host_cell_thickness']
 
-    full_sim_height = runway_cell_thickness + ml_cell_thickness + host_cell_thickness
-
-    runway_cell_z_center = (-full_sim_height/2
+    runway_cell_z_center = (-full_ml_sim_height/2
                             + runway_cell_thickness/2)
 
-    ml_cell_z_center = (-full_sim_height/2
+    ml_cell_z_center = (-full_ml_sim_height/2
                 + runway_cell_thickness
                 + ml_thickness/2)
 
-    host_cell_z_center = (-full_sim_height/2
+    host_cell_z_center = (-full_ml_sim_height/2
                 + runway_cell_thickness
                 + ml_thickness
                 + host_cell_thickness/2.)
@@ -180,7 +179,7 @@ def meta_duct(waveguide_id, mode_idx):
         return complex(Kyf((vec.x, vec.y)))
 
     printer("setting up the simulation cell")
-    sim_cell = mp.Vector3(full_sim_width, full_sim_width, full_sim_height)
+    sim_cell = mp.Vector3(full_sim_width, full_sim_width, full_ml_sim_height)
 
     printer("setting up the PML layers")
     pml_layers  = [mp.PML(pml_thickness)]
@@ -190,7 +189,7 @@ def meta_duct(waveguide_id, mode_idx):
     run_time        = params_dict['run_time_2']
     source_time     = run_time
 
-    source_z = (-full_sim_height/2
+    source_z = (-full_ml_sim_height/2
                 + pml_thickness
                 + EH3_to_ml)
 
@@ -213,7 +212,7 @@ def meta_duct(waveguide_id, mode_idx):
                             )
             srcs.append(src)
 
-    xy_mon_z = (-full_sim_height/2
+    xy_mon_z = (-full_ml_sim_height/2
                 + pml_thickness
                 + 2*EH3_to_ml
                 + ml_thickness
@@ -227,12 +226,12 @@ def meta_duct(waveguide_id, mode_idx):
     xy_monitor_vol          = mp.Volume(center=xy_monitor_plane_center, size=xy_monitor_plane_size)
 
     xz_monitor_plane_center = mp.Vector3(0,0,0)
-    xz_monitor_plane_size   = mp.Vector3(clear_aperture, 0, full_sim_height)
+    xz_monitor_plane_size   = mp.Vector3(clear_aperture, 0, full_ml_sim_height)
     xz_monitor_vol          = mp.Volume(center=xz_monitor_plane_center,
                                         size=xz_monitor_plane_size)
 
     yz_monitor_plane_center = mp.Vector3(0,0,0)
-    yz_monitor_plane_size   = mp.Vector3(0, clear_aperture, full_sim_height)
+    yz_monitor_plane_size   = mp.Vector3(0, clear_aperture, full_ml_sim_height)
     yz_monitor_vol          = mp.Volume(center=yz_monitor_plane_center,
                                         size=yz_monitor_plane_size)
 
@@ -278,7 +277,7 @@ def meta_duct(waveguide_id, mode_idx):
 
     on_axis_eps = sim.get_array(mp.Dielectric,
                     mp.Volume(center = mp.Vector3(0,0,0),
-                                size = mp.Vector3(0,0,full_sim_height))
+                                size = mp.Vector3(0,0,full_ml_sim_height))
                     )
     ehfieldh5fname = os.path.join(job_dir, 'EH4.h5')
     if save_cross_eps:

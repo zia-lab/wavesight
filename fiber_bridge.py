@@ -184,9 +184,9 @@ def wave_jumper(waveguide_id, zProp, nProp):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Job plotter.')
-    parser.add_argument('waveguide_id', type=str, help='The label for the job.')
-    parser.add_argument('zProp', type=float, help='z-distance for propagation.')
-    parser.add_argument('nProp', type=float, help='Refractive index of propagating medium.')
+    parser = argparse.ArgumentParser(description='free space propagation from EH2 to EH3')
+    parser.add_argument('waveguide_id', type=str, help='the label for the job')
+    parser.add_argument('zProp', type=float, help='distance for propagation')
+    parser.add_argument('nProp', type=float, help='refractive index of propagating medium')
     args = parser.parse_args()
     wave_jumper(args.waveguide_id, args.zProp, args.nProp)

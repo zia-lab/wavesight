@@ -78,8 +78,6 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
         h5_fname = os.path.join(job_dir, h5_fname)
         mode_sol, _ = ws.load_from_h5(h5_fname)
         mode_idx, kz, m, modeType, parity = mode_sol['mode_idx'], mode_sol['kz'], mode_sol['m'], mode_sol['modeType'], mode_sol['parity']
-        sim_width            = mode_sol['sim_width']
-        full_sim_height      = mode_sol['full_sim_height']
         coreRadius           = mode_sol['coreRadius']
         kFree                = mode_sol['kFree']
         λFree                = 2*np.pi/kFree

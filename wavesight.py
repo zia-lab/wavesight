@@ -2429,5 +2429,26 @@ def approx_time(sim_cell, spatial_resolution, run_time, kappa=3.06e-6):
              * run_time * spatial_resolution**3)
     return rtime
 
+def unit_vec_in_dir(theta, phi):
+    '''
+    Given spherical coordinates theta and phi, this function returns the unit
+    vector in that direction.
+
+    Parameters
+    ----------
+    theta : float
+        The polar angle.
+    phi : float
+        The azimuthal angle.
+    Returns
+    -------
+    np.array([x, y, z]) : np.array
+        The unit vector in the given direction.
+    '''
+    x = np.sin(theta) * np.cos(phi)
+    y = np.sin(theta) * np.sin(phi)
+    z = np.cos(theta)
+    return np.array([x, y, z])
+
 ########################################## Others ##########################################
 ############################################################################################

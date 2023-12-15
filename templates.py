@@ -142,7 +142,7 @@ sbatch_output_bridge=$(sbatch --dependency=afterany:$plotter_job_id <<EOL
 #SBATCH -e "{waveguide_dir}/{waveguide_id}-bridge.err"
 
 cd {wavesight_dir}
-{python_bin} {code_dir}fiber_bridge.py {waveguide_id} {zProp} {nProp}
+{python_bin} {code_dir}fiber_bridge.py {waveguide_id} {EH2_to_EH3} {nProp}
 EOL
 )
 
@@ -189,16 +189,16 @@ EOL
 sbatch_output=$(sbatch --dependency=afterany:$across_job_id <<EOL
 #!/bin/bash
 #SBATCH -n 1
-#SBATCH --job-name=EH4-to-EH5_{waveguide_id}
+#SBATCH --job-name=EH4_to_EH5_{waveguide_id}
 #SBATCH --mem=${{memreq2}}GB
 #SBATCH --time=01:00:00
 #SBATCH --array=0-4
 
-#SBATCH -o "{waveguide_dir}/{waveguide_id}-EH4-to-EH5-%a.out"
-#SBATCH -e "{waveguide_dir}/{waveguide_id}-EH4-to-EH5-%a.err"
+#SBATCH -o "{waveguide_dir}/{waveguide_id}-EH4_to_EH5-%a.out"
+#SBATCH -e "{waveguide_dir}/{waveguide_id}-EH4_to_EH5-%a.err"
 
 cd {wavesight_dir}
-{python_bin} {code_dir}EH4_to_EH5.py --waveguide_id {waveguide_id} --zPropindex -1
+{python_bin} {code_dir}EH4_to_EH5.py --waveguide_id {waveguide_id} --zPropindex \$SLURM_ARRAY_TASK_ID
 EOL
 )
 

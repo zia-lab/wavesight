@@ -134,7 +134,7 @@ def wave_plotter(waveguide_id, max_plots=np.inf, extra_fname = ''):
         monitor_fields['xz'] = np.array([data['e-xz'], data['h-xz']])
         monitor_fields['yz'] = np.array([data['e-yz'], data['h-yz']])
         sim_width            = mode_sol['sim_width']
-        full_sim_height      = mode_sol['full_sim_height']
+        full_sim_height      = mode_sol['full_wg_sim_height']
         coreRadius           = mode_sol['coreRadius']
 
         extent = [-sim_width/2, sim_width/2, -full_sim_height/2, full_sim_height/2]

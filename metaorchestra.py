@@ -12,124 +12,173 @@ from misc import dict_summary
 from sniffer import output_vigilante
 
 #[paramExpand-Calc]
-# This script also controls all the sequences of simulations and 
-# calculations that are necessary.
 
-def param_expander(sim_params):
+def wg_sim_height_fun(λFree, pml_thickness):
+    return (10 * λFree + 2 * pml_thickness)
+
+def param_expander(config_params):
     '''
     Takes a dictionary of simulation parameters and calculates
     the dependent parameters. It also generates a random id
     for the simulation and adds it to the dictionary.
     '''
-    mlDiameter = sim_params['mlDiameter']
-    nCore = sim_params['nCore']
-    nCladding = sim_params['nCladding']
-    nBetween = sim_params['nBetween']
-    nHost = sim_params['nHost']
-    parallel_MEEP = sim_params['parallel_MEEP']
-    λFree = sim_params['λFree']
-    coreRadius = sim_params['coreRadius']
-    emDepth = sim_params['emDepth']
-    emDepth_Δz = sim_params['emDepth_Δz']
-    emDepth_Δxy = sim_params['emDepth_Δxy']
-    post_height = sim_params['post_height']
-    # using the emitter depth and the size of the core
+    mlDiameter    = config_params['mlDiameter']
+    nCore         = config_params['nCore']
+    nCladding     = config_params['nCladding']
+    nBetween      = config_params['nBetween']
+    nHost         = config_params['nHost']
+    parallel_MEEP = config_params['parallel_MEEP']
+    λFree         = config_params['λFree']
+    coreRadius    = config_params['coreRadius']
+    emDepth       = config_params['emDepth']
+    emDepth_Δz    = config_params['emDepth_Δz']
+    emDepth_Δxy   = config_params['emDepth_Δxy']
+    post_height   = config_params['post_height']
+    spacer_ML_sim = config_params['spacer_ML_sim']
+    spacer_wg_sim = config_params['spacer_wg_sim']
+
     rule()
     printer("calculating dependent model parameters")
     rule()
+
     mlRadius = mlDiameter/2.
+
     printer("determining the size of the gap between metalens and the end of fiber")
-    NA_fiber = np.sqrt(nCore**2 - nCladding**2)
-    sim_params['NA_fiber'] = NA_fiber
-    β_fiber  = np.arcsin(NA_fiber/nBetween)
-    wg_to_ml = (mlRadius - coreRadius) / np.tan(β_fiber)
+    fiber_NA = np.sqrt(nCore**2 - nCladding**2)
+    config_params['fiber_NA'] = fiber_NA
+    fiber_β  = np.arcsin(fiber_NA/nBetween)
+    config_params['fiber_β']  = fiber_β
+    wg_to_ml = (mlRadius - coreRadius) / np.tan(fiber_β)
     assert wg_to_ml >= 0, "Metalens is too small for fiber."
-    sim_params['wg_to_ml'] = wg_to_ml
+    config_params['wg_to_ml'] = wg_to_ml
+    λBetween = λFree / nBetween
+    config_params['λBetween'] = λBetween
+
     printer("defining the spatial resolution of the simulation")
     Δfields = λFree/10.
-    sim_params['Δfields'] = Δfields
+    config_params['Δfields'] = Δfields
+
     # calculate the permitivity of the different media
     printer("calculating corresponding permitivitty for given refractive indices")
     εCore     = nCore**2
     εCladding = nCladding**2
     εFree     = nBetween**2
     εHost     = nHost**2
-    sim_params['εCore'] = εCore
-    sim_params['εCladding'] = εCladding
-    sim_params['εFree'] = εFree
-    sim_params['εHost'] = εHost
+    config_params['εCore']     = εCore
+    config_params['εCladding'] = εCladding
+    config_params['εFree']     = εFree
+    config_params['εHost']     = εHost
+
+    # calculate the focal length
     printer("calculating the focal length for grazing coupling")
-    δ = coreRadius / np.tan(β_fiber)
+    δ = coreRadius / np.tan(fiber_β)
     focal_length = 1/(nHost/emDepth + nBetween/(wg_to_ml+δ))
-    sim_params['focal_length'] = focal_length
+    config_params['focal_length'] = focal_length
+
+    # calculate necessary parameters for waveguide FDTD simulations
     printer("calculating a few necessary parameters for the waveguide FDTD simulations")
-    pml_thickness = 2 * λFree
-    sim_params['pml_thickness'] = pml_thickness
-    λBetween = λFree / nBetween
-    sim_params['λBetween'] = λBetween
-    wg_to_EH2 = λBetween
-    sim_params['wg_to_EH2'] = wg_to_EH2
+    # fix the thickness of the PML proportional to the wavelength inside the intermediate medium
+    pml_thickness                  = λBetween
+    config_params['pml_thickness'] = pml_thickness
+    # fix the distance from the end face of the waveguide to the output plane EH2
+    wg_to_EH2                      = λBetween
+    config_params['wg_to_EH2']     = wg_to_EH2
+    # fix the distance between the input plane EH1 to the end face of the waveguide
+    EH1_to_wg                      = λBetween
+    config_params['EH1_to_wg']     = EH1_to_wg
+
+    # calculate a few additional goodies
+    kFree                          = 2*np.pi / λFree
+    config_params['kFree']         = kFree
+    frequency_f                    = kFree / (2*np.pi)
+    config_params['frequency_f']   = frequency_f
+    base_period                    = 1. / frequency_f
+    config_params['base_period']   = base_period
+    unit_of_length_in_m            = config_params['unit_of_length_in_m']
+    speed_of_light_in_m_per_s      = config_params['speed_of_light_in_m_per_s']
+    unit_of_time_in_fs             = unit_of_length_in_m / speed_of_light_in_m_per_s * 1e15
+    config_params['unit_of_time_in_fs'] = unit_of_time_in_fs
+
+    # the width of this FDTD simulation cannot be determined here
+    # since it depends on how thick the cladding will be determined to be
+    # the the mode solver
+    full_wg_sim_height         = (pml_thickness 
+                                  + spacer_wg_sim
+                                  + EH1_to_wg 
+                                  + wg_to_EH2
+                                  + spacer_wg_sim
+                                  + pml_thickness)
+    config_params['full_wg_sim_height'] = full_wg_sim_height
+
+
     # define the distance between the input plane to ML and EH3
     EH3_to_ml = λBetween
-    sim_params['EH3_to_ml'] = EH3_to_ml
+    config_params['EH3_to_ml'] = EH3_to_ml
+
     # and use the same as the distance between EH3 and the output plane of the ML simulation
     ml_to_EH4 = EH3_to_ml
-    sim_params['ml_to_EH4'] = ml_to_EH4
+    config_params['ml_to_EH4'] = ml_to_EH4
+
     # define the distance between EH3 to input plane of ML
-    sim_params['zProp'] =  wg_to_ml - wg_to_EH2 - EH3_to_ml
+    config_params['EH2_to_EH3'] =  wg_to_ml - wg_to_EH2 - EH3_to_ml
     # sim_id
     sim_id = rando_id(1)
-    sim_params['sim_id'] = sim_id
-    # some parameters for the second FDTD simulations
-    ml_thickness = post_height
-    sim_params['ml_thickness'] = ml_thickness
-    runway_cell_thickness = pml_thickness + 2 * EH3_to_ml
-    ml_cell_thickness     = ml_thickness
-    host_cell_thickness   = 2*ml_to_EH4 + pml_thickness
-    sim_params['runway_cell_thickness'] = runway_cell_thickness
-    sim_params['ml_cell_thickness'] = ml_cell_thickness
-    sim_params['host_cell_thickness'] = host_cell_thickness
-    full_sim_height = runway_cell_thickness + ml_cell_thickness + host_cell_thickness
-    sim_params['full_sim_height'] = full_sim_height
-    run_time_2 = (nHost + nBetween) * full_sim_height
-    sim_params['run_time_2'] = run_time_2
-    if 'zmin' not in sim_params:
+    config_params['sim_id'] = sim_id
+
+    # parameters for the FTDT simulations that see fields across the ML
+    ml_thickness               = post_height
+    config_params['ml_thickness'] = ml_thickness
+    runway_cell_thickness      = pml_thickness + EH3_to_ml + spacer_ML_sim
+    ml_cell_thickness          = ml_thickness
+    host_cell_thickness        = pml_thickness + ml_to_EH4 + spacer_ML_sim
+    config_params['runway_cell_thickness'] = runway_cell_thickness
+    config_params['ml_cell_thickness']     = ml_cell_thickness
+    config_params['host_cell_thickness']   = host_cell_thickness
+    full_ml_sim_height                  = runway_cell_thickness + ml_cell_thickness + host_cell_thickness
+    config_params['full_ml_sim_height']    = full_ml_sim_height
+
+    # the run time of the ML FDTD simulations I simply set the time a wave in free space
+    # would take to transverse the entire thickness of the ML simulation cell
+    run_time_2                          = (nHost + nBetween) * full_ml_sim_height
+    config_params['run_time_2']            = run_time_2
+
+    if 'zmin' not in config_params:
         printer("since zmin was not provided it is being calculated from the depth and uncertainty of the emitter position")
         zmin = (emDepth - ml_to_EH4 - emDepth_Δz)
         zmax = (emDepth - ml_to_EH4 + emDepth_Δz)
-        sim_params['zmin'] = zmin
-        sim_params['zmax'] = zmax
+        config_params['zmin'] = zmin
+        config_params['zmax'] = zmax
     else:
-        assert 'zmax' in sim_params, "since zmin was provided, zmax must also be provided"
-        zmin = sim_params['zmin']
-        zmax = sim_params['zmax']
+        assert 'zmax' in config_params, "since zmin was provided, zmax must also be provided"
+        zmin = config_params['zmin']
+        zmax = config_params['zmax']
         printer("since zmin and zmax were provided, these are overriding the values calculated from the depth and uncertainty of the emitter position")
-    if 'xymin' not in sim_params:
+    if 'xymin' not in config_params:
         printer("since xymin was not provided it is being calculated from the uncertainty in the lateral position of the emitter")
         xymin = -emDepth_Δxy
         xymax =  emDepth_Δxy
-        sim_params['xymin'] = xymin
-        sim_params['xymax'] = xymax
+        config_params['xymin'] = xymin
+        config_params['xymax'] = xymax
     else:
-        assert 'xymax' in sim_params, "since xymin was provided, xymax must also be provided"
+        assert 'xymax' in config_params, "since xymin was provided, xymax must also be provided"
         printer("since xymin and xymax were provided, these are overriding the inferred values from the uncertainty in the lateral position of the emitter")
     printer("calculating the array of z values for the EH5 volume")
-    num_zProps = int((zmax-zmin)*sim_params['MEEP_resolution'])+1
-    zProps = np.linspace(sim_params['zmin'] - sim_params['ml_to_EH4'],
-                         sim_params['zmax'] - sim_params['ml_to_EH4'],
+    num_zProps = int((zmax-zmin)*config_params['MEEP_resolution'])+1
+    zProps = np.linspace(config_params['zmin'] - config_params['ml_to_EH4'],
+                         config_params['zmax'] - config_params['ml_to_EH4'],
                          num_zProps
                         )
-    sim_params['zProps']     = zProps
-    sim_params['num_zProps'] = num_zProps
-    sim_params['start_time'] = time.time()
+    config_params['zProps']     = zProps
+    config_params['num_zProps'] = num_zProps
+    config_params['start_time'] = time.time()
     if parallel_MEEP:
-        if 'MEEP_num_cores' not in sim_params:
-            sim_params['MEEP_num_cores']  = 4
-        sim_params['python_bin_MEEP'] = 'mpirun -np %d %s -m mpi4py' % (sim_params['MEEP_num_cores'], sim_params['python_bin'])
+        if 'MEEP_num_cores' not in config_params:
+            config_params['MEEP_num_cores']  = 4
+        config_params['python_bin_MEEP'] = 'mpirun -np %d %s -m mpi4py' % (config_params['MEEP_num_cores'], config_params['python_bin'])
     else:
-        sim_params['MEEP_num_cores'] = 1
-        sim_params['python_bin_MEEP'] = sim_params['python_bin']
-    return sim_params
+        config_params['MEEP_num_cores'] = 1
+        config_params['python_bin_MEEP'] = config_params['python_bin']
+    return config_params
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process a json config file')
@@ -138,8 +187,8 @@ if __name__ == '__main__':
     # read the config file
     console.print(Rule("-- Metaorchestra", style="bold red", align="left"))
     printer("reading the configuration file %s" % args.configfile)
-    sim_params = load_from_json(args.configfile)
-    expanded_params = param_expander(sim_params)
+    config_params = load_from_json(args.configfile)
+    expanded_params = param_expander(config_params)
     table_rows = dict_summary(expanded_params, header='', bullet='', aslist=True, split=True)
     rule()
     table(['param','value'], table_rows, title='Expanded parameters')

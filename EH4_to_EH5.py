@@ -11,6 +11,7 @@ from contextlib import contextmanager
 data_dir        = '/users/jlizaraz/data/jlizaraz/CEM/wavesight'
 exclude_dirs    = ['moovies', 'moovies-EH4', 'err', 'out', 'figs']
 overwrite       = False
+num_batches     = 5 # this should match the number of jobs in the EH4_to_EH5 job array
 
 @contextmanager
 def h5_handler(filename, mode):
@@ -82,12 +83,14 @@ def wave_to_vol(waveguide_id, zPropindex):
         printer("the source field is defined over a square cross section with a side of %.2f μm" % current_width)
         prop_idx = zPropindex
         if prop_idx == -1:
-            zPros_job = zProps
+            zProps_job = zProps
             prop_indices = range(len(zProps))
         else:
-            zPros_job = [zProps[prop_idx]]
-            prop_indices = [prop_idx]
-        for prop_idx, zProp in zip(prop_indices, zPros_job):
+            zProps_partition = ws.index_divider(zProps, num_batches)
+            zProps_partition_indices = ws.index_divider(zProps, num_batches, return_indices=True)
+            zProps_job = zProps_partition[prop_idx]
+            prop_indices = zProps_partition_indices[prop_idx]
+        for prop_idx, zProp in zip(prop_indices, zProps_job):
             data = {}
             propagated_h5_fname = 'EH5-%d.h5' % prop_idx
             eh5_dir = os.path.join(job_dir, 'EH5')

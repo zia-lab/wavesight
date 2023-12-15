@@ -6,7 +6,10 @@ import argparse
 from printech import *
 from hail_david import send_message
 
-error_flag = 'BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES'
+error_flags = ['BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES',
+               'AssertionError',
+               'MPI_Abort'
+               ]
 
 def output_vigilante(monitor_folder, sleep_time=2):
     '''
@@ -42,8 +45,9 @@ def output_vigilante(monitor_folder, sleep_time=2):
                 if new_lines:
                     line_block = '\n'.join(new_lines)
                     printer(line_block)
-                    if error_flag in line_block:
-                        send_message('Bad termination detected in %s' % file.split('/')[-1])
+                    error_checks = [error_flag in line_block for error_flag in error_flags]
+                    if any(error_checks):
+                        send_message('Error detected!')
                 line_numbers[file] = total_lines
             time.sleep(sleep_time)
     except KeyboardInterrupt:

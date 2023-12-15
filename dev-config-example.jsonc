@@ -1,12 +1,20 @@
 {   
+    // CONSTANTS - DO NOT CHANGE, UNLESS YOU KNOW WHAT YOU ARE DOING
+    "tmux_session": "red",
+    "unit_of_length_in_m": 1e-6,
+    "speed_of_light_in_m_per_s": 299792458,
     // Requirement run time
-    "req_run_time_in_hours": 4,
+    "req_run_time_in_hours": 6,
+    // Max memory for CCV
+    "max_mem_in_GB": 256,
     // The location of the python binary
     "python_bin": "~/anaconda/pameep/bin/python",
     // Directory where the code is located
     "code_dir": "/users/jlizaraz/CEM/wavesight/",
     // Whether to use parallel MEEP
     "parallel_MEEP": true,
+    // How many cores to use for parallel MEEP
+    "MEEP_num_cores": 32,
     // depth of emitter in crystal host
     "emDepth": 25,
     // these two following parameters determine the size of the box where Eh5 is calculated
@@ -18,9 +26,9 @@
     // if zmin is provided here, then zmax also need to be provided
     // and these two together then determine the axial range of the box where Eh5 is calculated
     // both zmin and zmax assume a coordinate system where the origin is at
-    // the base of the pillars that create the metasurface
-    "zmin": 24,
-    "zmax": 32,
+    // the base of the pillars that create the metasurface see file overall_laout.png
+    "zmin": 22,
+    "zmax": 30,
     // similarly xymin and xymax determine the transverse range of the box where Eh5 is calculated
     // if provided they override the values that are calculated from emDepth_Δxy
     "xymin": -3.0,
@@ -32,6 +40,10 @@
     // ref index space between waveguide and ML
     "nBetween": 1.0, 
 
+    // spacer between bottom and top PML layers in the ML simulation
+    "spacer_ML_sim": 1.0,
+    "spacer_wg_sim": 1.0,
+
     // waveguide parameters
     // the radius of the waveguide core
     "coreRadius": 2.0,
@@ -40,11 +52,13 @@
     // ref index of cladding
     "nCladding": 1.4573, 
     // number of pixels per um
-    "MEEP_resolution": 15,
+    "MEEP_resolution": 40,
 
     // params for metasurface design
+        // manual focal length
+        "manual_focal_length": 27.0,
         // metalens aperture
-        "mlDiameter": 8.0,
+        "mlDiameter": 12.0,
         // the height of the cylindrical posts for ML
         "post_height":0.8, 
         // lattice constant of hexagonal lattice
@@ -62,6 +76,7 @@
     "autorun": true,
 
     // The amount of memory alloted for the requirement run
+    // do not set above 256 GB
     "req_run_mem_in_GB": 64,
 
     // Whether to post the progress to Slack

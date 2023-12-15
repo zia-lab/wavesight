@@ -101,7 +101,7 @@ def fan_out(sim_params):
     MEEP_num_cores = str(sim_params['MEEP_num_cores'])
 
     autorun           = sim_params['autorun']
-    zProp             = sim_params['zProp']
+    EH2_to_EH3        = sim_params['EH2_to_EH3']
     MEEP_resolution   = sim_params['MEEP_resolution']
     req_run_mem_in_GB = sim_params['req_run_mem_in_GB']
     num_zProps        = sim_params['num_zProps']
@@ -127,7 +127,6 @@ def fan_out(sim_params):
     (a, b, Δs, xrange, yrange, ρrange, φrange, Xg, Yg, ρg, φg, nxy, crossMask, numSamples) = fiber_sol['coord_layout']
 
     sample_resolution   = 10
-    distance_to_monitor = sim_params['wg_to_EH2']
     fiber_alpha         = np.arcsin(np.sqrt(nCore**2-nCladding**2))
 
     waveguide_sol = {}
@@ -145,7 +144,6 @@ def fan_out(sim_params):
     waveguide_sol['num_time_slices'] = num_time_slices
     waveguide_sol['sample_resolution'] = sample_resolution
     waveguide_sol['eigennums'] = fiber_sol['eigenbasis_nums']
-    waveguide_sol['distance_to_monitor'] = distance_to_monitor
 
     printer("There are %d modes to solve." % numModes)
     waveguide_id = ws.rando_id()
@@ -210,10 +208,10 @@ def fan_out(sim_params):
                     numModes     = numModes,
                     num_time_slices = num_time_slices,
                     MEEP_resolution = MEEP_resolution,
-                    zProp        = zProp,
+                    EH2_to_EH3      = EH2_to_EH3,
                     nProp        = nBetween,
                     num_modes    = (numModes-1),
-                    num_zProps    = (num_zProps-1))
+                    num_zProps   = (num_zProps-1))
     rule()
     with open(bash_script_fname_1, 'w') as file:
         printer("Saving bash script to %s" % bash_script_fname_1)
