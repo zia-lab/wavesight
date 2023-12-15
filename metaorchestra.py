@@ -70,10 +70,15 @@ def param_expander(config_params):
     config_params['εHost']     = εHost
 
     # calculate the focal length
-    printer("calculating the focal length for grazing coupling")
-    δ = coreRadius / np.tan(fiber_β)
-    focal_length = 1/(nHost/emDepth + nBetween/(wg_to_ml+δ))
-    config_params['focal_length'] = focal_length
+    if "manual_focal_length" not in config_params:
+        printer("calculating the focal length for grazing coupling")
+        δ = coreRadius / np.tan(fiber_β)
+        focal_length = 1/(nHost/emDepth + nBetween/(wg_to_ml+δ))
+        config_params['focal_length'] = focal_length
+    else:
+        printer("using the provided focal length")
+        focal_length = config_params['manual_focal_length']
+        config_params['focal_length'] = focal_length
 
     # calculate necessary parameters for waveguide FDTD simulations
     printer("calculating a few necessary parameters for the waveguide FDTD simulations")

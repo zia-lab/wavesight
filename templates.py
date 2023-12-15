@@ -1,6 +1,19 @@
 #!/usr/bin/env python3
 
-bash_template_1 = '''#!/bin/bash
+def remove_indentation(multiline_string):
+    """
+    Remove all leading whitespace (spaces and tabs) from each line in a multiline string.
+
+    Args:
+    multiline_string (str): A multiline string with potential leading whitespace.
+
+    Returns:
+    str: The multiline string with leading whitespace removed from each line.
+    """
+    return '\n'.join(line.lstrip() for line in multiline_string.split('\n'))
+
+
+bash_template_1 = remove_indentation('''#!/bin/bash
 
 #nCladding       : {nCladding}
 #nCore           : {nCore}
@@ -9,69 +22,83 @@ bash_template_1 = '''#!/bin/bash
 #nBetween        : {nBetween}
 #numModes        : {numModes}
 #MEEP_resolution : {MEEP_resolution}
+#variant of      : {variant_of}
 
 cd {wavesight_dir}
 echo "{nCladding},{nCore},{coreRadius},{wavelength},{nBetween},{numModes},{MEEP_resolution},{waveguide_id}" >> sim_log.txt
-# Check if the memory and time requirements have been already calculated
-if [[ -f "{waveguide_dir}/{waveguide_id}.req" ]]; then
-echo "Requirements have already been estimated ..."
-config_job_id=1
-else
-echo "Requirements have not been determined, submitting a job for this purpose ..."
-# Submit the first array job
-sbatch_output=$(sbatch <<EOL
-#!/bin/bash
-#SBATCH -n {MEEP_num_cores}
-#SBATCH --job-name=req_run_{waveguide_id}
-#SBATCH --mem={req_run_mem_in_GB}GB
-#SBATCH -t {req_run_time_in_hours}:00:00
 
-#SBATCH -o "{waveguide_dir}/{waveguide_id}-req.out"
-#SBATCH -e "{waveguide_dir}/{waveguide_id}-req.err"
 
-cd {wavesight_dir}
-{python_bin_MEEP} {code_dir}fiber_platform.py --waveguide_sol "waveguide_sol-{waveguide_id}.pkl" --num_time_slices {num_time_slices} --mode_idx 0 --sim_time 0
-EOL
-)
-# get the job id
-config_job_id=$(echo "$sbatch_output" | awk '{{print $NF}}')
-fi
-
-if [ "$config_job_id" -eq 1 ]
+# Check if this is based on a master waveguide
+if ! {master_shortcut}
 then
-#submit the axiliary job with no dependency
-echo "Submitting the array job with no dependency ..."
-sbatch <<EOL
-#!/bin/bash
-#SBATCH -n 1 
-#SBATCH --job-name=buddy_job_{waveguide_id}
-#SBATCH --mem=1GB
-#SBATCH -t 00:10:00
-#SBATCH -o "{waveguide_dir}/{waveguide_id}-buddy.out"
-#SBATCH -e "{waveguide_dir}/{waveguide_id}-buddy.err"
+    # Check if the memory and time requirements have been already calculated
+    if [[ -f "{waveguide_dir}/{waveguide_id}.req" ]]
+    then
+        echo "Requirements have already been estimated ..."
+        config_job_id=1
+    else
+        echo "Requirements have not been determined, submitting a job for this purpose ..."
+        # Submit the first array job
+        sbatch_output=$(sbatch <<EOL
+        #!/bin/bash
+        #SBATCH -n {MEEP_num_cores}
+        #SBATCH --job-name=req_run_{waveguide_id}
+        #SBATCH --mem={req_run_mem_in_GB}GB
+        #SBATCH -t {req_run_time_in_hours}:00:00
 
-cd "{waveguide_dir}"
-bash {waveguide_id}-2.sh
-EOL
+        #SBATCH -o "{waveguide_dir}/{waveguide_id}-req.out"
+        #SBATCH -e "{waveguide_dir}/{waveguide_id}-req.err"
+
+        cd {wavesight_dir}
+        {python_bin_MEEP} {code_dir}fiber_platform.py --waveguide_sol "waveguide_sol-{waveguide_id}.pkl" --num_time_slices {num_time_slices} --mode_idx 0 --sim_time 0
+        EOL
+        )
+        # get the job id
+        config_job_id=$(echo "$sbatch_output" | awk '{{print $NF}}')
+    fi
+
+    if [ "$config_job_id" -eq 1 ]
+    then
+        #submit the axiliary job with no dependency
+        echo "Submitting the array job with no dependency ..."
+        sbatch <<EOL
+            #!/bin/bash
+            #SBATCH -n 1 
+            #SBATCH --job-name=buddy_job_{waveguide_id}
+            #SBATCH --mem=1GB
+            #SBATCH -t 00:10:00
+            #SBATCH -o "{waveguide_dir}/{waveguide_id}-buddy.out"
+            #SBATCH -e "{waveguide_dir}/{waveguide_id}-buddy.err"
+
+            cd "{waveguide_dir}"
+            bash {waveguide_id}-2.sh
+        EOL
+    else
+        #submit the axiliary job with dependency
+        echo "Submitting the array job with dependency on config job ..."
+        sbatch --dependency=afterany:$config_job_id <<EOL
+            #!/bin/bash
+            #SBATCH -n 1 
+            #SBATCH --job-name=buddy_job_{waveguide_id}
+            #SBATCH --mem=1GB
+            #SBATCH -t 00:10:00
+            #SBATCH -o "{waveguide_dir}/{waveguide_id}-buddy.out"
+            #SBATCH -e "{waveguide_dir}/{waveguide_id}-buddy.err"
+
+            cd {wavesight_dir}
+            bash {waveguide_id}-2.sh
+        EOL
+    fi
 else
-#submit the axiliary job with dependency
-echo "Submitting the array job with dependency on config job ..."
-sbatch --dependency=afterany:$config_job_id <<EOL
-#!/bin/bash
-#SBATCH -n 1 
-#SBATCH --job-name=buddy_job_{waveguide_id}
-#SBATCH --mem=1GB
-#SBATCH -t 00:10:00
-#SBATCH -o "{waveguide_dir}/{waveguide_id}-buddy.out"
-#SBATCH -e "{waveguide_dir}/{waveguide_id}-buddy.err"
-
-cd {wavesight_dir}
-bash {waveguide_id}-2.sh
-EOL
+    echo "this is based on an already solved waveguide, no need to submit jobs for mode launching"
+    cd {wavesight_dir}
+    bash {waveguide_id}-2.sh
 fi
-'''
+##############################################
 
-bash_template_2 = '''#!/bin/bash
+''')
+
+bash_template_2 = remove_indentation('''#!/bin/bash
 
 #nCladding       : {nCladding}
 #nCore           : {nCore}
@@ -80,91 +107,123 @@ bash_template_2 = '''#!/bin/bash
 #nBetween        : {nBetween}
 #numModes        : {numModes}
 #MEEP_resolution : {MEEP_resolution}
+#variant of      : {variant_of}
 
 cd {wavesight_dir}
 # Check if the memory and time requirements have been already calculated
-if [[ -f "{waveguide_dir}/{waveguide_id}.req" ]]; then
-echo "Reading resource requirements ..."
-IFS=',' read -r memreq timereq diskreq simtime memreq2 timereq2 < "{waveguide_dir}/{waveguide_id}.req"
+if [[ -f "{waveguide_dir}/{waveguide_id}.req" ]]
+then
+    echo "Reading resource requirements ..."
+    IFS=',' read -r memreq timereq diskreq simtime memreq2 timereq2 < "{waveguide_dir}/{waveguide_id}.req"
 else
-echo "Requirements have not been determined."
-exit 1
+    echo "Requirements have not been determined."
+    exit 1
 fi
 
 echo "sbatch resources: ${{memreq}}GB,${{timereq}},${{diskreq}}MB,${{memreq2}}GB,${{timereq2}}"
 
-# Submit the first array job
-sbatch_output=$(sbatch <<EOL
-#!/bin/bash
-#SBATCH -n {MEEP_num_cores}
-#SBATCH --job-name=fiber_platform_{waveguide_id}
-#SBATCH --mem=${{memreq}}GB
-#SBATCH -t ${{timereq}}
-#SBATCH --array=1-{num_modes}
+# Check if this is based on a master waveguide
+if ! {master_shortcut}
+then
+    # Submit the first array job
+    sbatch_output=$(sbatch <<EOL
+        #!/bin/bash
+        #SBATCH -n {MEEP_num_cores}
+        #SBATCH --job-name=fiber_platform_{waveguide_id}
+        #SBATCH --mem=${{memreq}}GB
+        #SBATCH -t ${{timereq}}
+        #SBATCH --array=1-{num_modes}
 
-#SBATCH -o "{waveguide_dir}/{waveguide_id}-%a.out"
-#SBATCH -e "{waveguide_dir}/{waveguide_id}-%a.err"
+        #SBATCH -o "{waveguide_dir}/{waveguide_id}-%a.out"
+        #SBATCH -e "{waveguide_dir}/{waveguide_id}-%a.err"
 
-cd {wavesight_dir}
-{python_bin_MEEP} {code_dir}fiber_platform.py --waveguide_sol "waveguide_sol-{waveguide_id}.pkl" --num_time_slices 0 --mode_idx \$SLURM_ARRAY_TASK_ID --sim_time ${{simtime}}
-EOL
-)
+        cd {wavesight_dir}
+        {python_bin_MEEP} {code_dir}fiber_platform.py --waveguide_sol "waveguide_sol-{waveguide_id}.pkl" --num_time_slices 0 --mode_idx \$SLURM_ARRAY_TASK_ID --sim_time ${{simtime}}
+    EOL
+    )
+fi
 
-# get the job id
-array_job_id=$(echo "$sbatch_output" | awk '{{print $NF}}')
+# Check if this is based on a master waveguide
+if ! {master_shortcut}
+then
+    # get the job id
+    array_job_id=$(echo "$sbatch_output" | awk '{{print $NF}}')
 
-#submit the analysis job
-sbatch_output_plotter=$(sbatch --dependency=afterany:$array_job_id <<EOL
-#!/bin/bash
-#SBATCH -n 1 
-#SBATCH --job-name=fiber_plotter_{waveguide_id}
-#SBATCH --mem=${{memreq}}GB
-#SBATCH -t ${{timereq}}
-#SBATCH -o "{waveguide_dir}/{waveguide_id}-plotter.out"
-#SBATCH -e "{waveguide_dir}/{waveguide_id}-plotter.err"
+    #submit the analysis job
+    sbatch_output_plotter=$(sbatch --dependency=afterany:$array_job_id <<EOL
+        #!/bin/bash
+        #SBATCH -n 1 
+        #SBATCH --job-name=fiber_plotter_{waveguide_id}
+        #SBATCH --mem=${{memreq}}GB
+        #SBATCH -t ${{timereq}}
+        #SBATCH -o "{waveguide_dir}/{waveguide_id}-plotter.out"
+        #SBATCH -e "{waveguide_dir}/{waveguide_id}-plotter.err"
 
-cd {wavesight_dir}
-{python_bin} {code_dir}fiber_plotter.py {waveguide_id}
-EOL
-)
+        cd {wavesight_dir}
+        {python_bin} {code_dir}fiber_plotter.py {waveguide_id}
+    EOL
+    )
+fi
 
-# get the job id
-plotter_job_id=$(echo "$sbatch_output_plotter" | awk '{{print $NF}}')
+if ! {master_shortcut}
+then
+    # get the job id
+    plotter_job_id=$(echo "$sbatch_output_plotter" | awk '{{print $NF}}')
 
-# submit the propagator job
-sbatch_output_bridge=$(sbatch --dependency=afterany:$plotter_job_id <<EOL
-#!/bin/bash
-#SBATCH -n 1 
-#SBATCH --job-name=fiber_bridge_{waveguide_id}
-#SBATCH --mem=${{memreq}}GB
-#SBATCH -t ${{timereq}}
-#SBATCH -o "{waveguide_dir}/{waveguide_id}-bridge.out"
-#SBATCH -e "{waveguide_dir}/{waveguide_id}-bridge.err"
+    # submit the propagator job
+    sbatch_output_bridge=$(sbatch --dependency=afterany:$plotter_job_id <<EOL
+        #!/bin/bash
+        #SBATCH -n 1 
+        #SBATCH --job-name=fiber_bridge_{waveguide_id}
+        #SBATCH --mem=${{memreq}}GB
+        #SBATCH -t ${{timereq}}
+        #SBATCH -o "{waveguide_dir}/{waveguide_id}-bridge.out"
+        #SBATCH -e "{waveguide_dir}/{waveguide_id}-bridge.err"
 
-cd {wavesight_dir}
-{python_bin} {code_dir}fiber_bridge.py {waveguide_id} {EH2_to_EH3} {nProp}
-EOL
-)
+        cd {wavesight_dir}
+        {python_bin} {code_dir}fiber_bridge.py {waveguide_id} {EH2_to_EH3} {nProp}
+    EOL
+    )
+fi
 
 bridge_job_id=$(echo "$sbatch_output_bridge" | awk '{{print $NF}}')
 
 # once the fields have been propagated across the gap, propagate them across the metalens
 
-sbatch_output=$(sbatch --dependency=afterany:$bridge_job_id <<EOL
-#!/bin/bash
-#SBATCH -n {MEEP_num_cores}
-#SBATCH --job-name=across_ML_{waveguide_id}
-#SBATCH --mem=${{memreq2}}GB
-#SBATCH -t ${{timereq2}}
-#SBATCH --array=0-{num_modes}
+if ! {master_shortcut}
+then
+    sbatch_output=$(sbatch --dependency=afterany:$bridge_job_id <<EOL
+        #!/bin/bash
+        #SBATCH -n {MEEP_num_cores}
+        #SBATCH --job-name=across_ML_{waveguide_id}
+        #SBATCH --mem=${{memreq2}}GB
+        #SBATCH -t ${{timereq2}}
+        #SBATCH --array=0-{num_modes}
 
-#SBATCH -o "{waveguide_dir}/{waveguide_id}-acrossML-%a.out"
-#SBATCH -e "{waveguide_dir}/{waveguide_id}-acrossML-%a.err"
+        #SBATCH -o "{waveguide_dir}/{waveguide_id}-acrossML-%a.out"
+        #SBATCH -e "{waveguide_dir}/{waveguide_id}-acrossML-%a.err"
 
-cd {wavesight_dir}
-{python_bin_MEEP} {code_dir}across_ml.py {waveguide_id} \$SLURM_ARRAY_TASK_ID
-EOL
-)
+        cd {wavesight_dir}
+        {python_bin_MEEP} {code_dir}across_ml.py {waveguide_id} \$SLURM_ARRAY_TASK_ID
+    EOL
+    )
+else
+    sbatch_output=$(sbatch <<EOL
+        #!/bin/bash
+        #SBATCH -n {MEEP_num_cores}
+        #SBATCH --job-name=across_ML_{waveguide_id}
+        #SBATCH --mem=${{memreq2}}GB
+        #SBATCH -t ${{timereq2}}
+        #SBATCH --array=0-{num_modes}
+
+        #SBATCH -o "{waveguide_dir}/{waveguide_id}-acrossML-%a.out"
+        #SBATCH -e "{waveguide_dir}/{waveguide_id}-acrossML-%a.err"
+
+        cd {wavesight_dir}
+        {python_bin_MEEP} {code_dir}across_ml.py {waveguide_id} \$SLURM_ARRAY_TASK_ID
+    EOL
+    )
+fi
 
 # get the job id
 across_job_id=$(echo "$sbatch_output" | awk '{{print $NF}}')
@@ -172,33 +231,33 @@ across_job_id=$(echo "$sbatch_output" | awk '{{print $NF}}')
 # once the field have been propagated across the metalens, make plots, and propagate them to the final volume
 
 sbatch_output_h4_plot=$(sbatch --dependency=afterany:$across_job_id <<EOL
-#!/bin/bash
-#SBATCH -n 1
-#SBATCH --job-name=EH4-plotter_{waveguide_id}
-#SBATCH --mem=8GB
-#SBATCH --time=01:00:00
+    #!/bin/bash
+    #SBATCH -n 1
+    #SBATCH --job-name=EH4-plotter_{waveguide_id}
+    #SBATCH --mem=8GB
+    #SBATCH --time=01:00:00
 
-#SBATCH -o "{waveguide_dir}/{waveguide_id}-EH4-plotter.out"
-#SBATCH -e "{waveguide_dir}/{waveguide_id}-EH4-plotter.err"
+    #SBATCH -o "{waveguide_dir}/{waveguide_id}-EH4-plotter.out"
+    #SBATCH -e "{waveguide_dir}/{waveguide_id}-EH4-plotter.err"
 
-cd {wavesight_dir}
-{python_bin} {code_dir}EH4_plotter.py {waveguide_id}
+    cd {wavesight_dir}
+    {python_bin} {code_dir}EH4_plotter.py {waveguide_id}
 EOL
 )
 
 sbatch_output=$(sbatch --dependency=afterany:$across_job_id <<EOL
-#!/bin/bash
-#SBATCH -n 1
-#SBATCH --job-name=EH4_to_EH5_{waveguide_id}
-#SBATCH --mem=${{memreq2}}GB
-#SBATCH --time=01:00:00
-#SBATCH --array=0-4
+    #!/bin/bash
+    #SBATCH -n 1
+    #SBATCH --job-name=EH4_to_EH5_{waveguide_id}
+    #SBATCH --mem=${{memreq2}}GB
+    #SBATCH --time=01:00:00
+    #SBATCH --array=0-4
 
-#SBATCH -o "{waveguide_dir}/{waveguide_id}-EH4_to_EH5-%a.out"
-#SBATCH -e "{waveguide_dir}/{waveguide_id}-EH4_to_EH5-%a.err"
+    #SBATCH -o "{waveguide_dir}/{waveguide_id}-EH4_to_EH5-%a.out"
+    #SBATCH -e "{waveguide_dir}/{waveguide_id}-EH4_to_EH5-%a.err"
 
-cd {wavesight_dir}
-{python_bin} {code_dir}EH4_to_EH5.py --waveguide_id {waveguide_id} --zPropindex \$SLURM_ARRAY_TASK_ID
+    cd {wavesight_dir}
+    {python_bin} {code_dir}EH4_to_EH5.py --waveguide_id {waveguide_id} --zPropindex \$SLURM_ARRAY_TASK_ID
 EOL
 )
 
@@ -208,16 +267,16 @@ eh4_to_eh5_id=$(echo "$sbatch_output" | awk '{{print $NF}}')
 # put the EH5 fields together
 
 sbatch_output=$(sbatch --dependency=afterany:$eh4_to_eh5_id <<EOL
-#!/bin/bash
-#SBATCH -n 4
-#SBATCH --job-name=h5_assembler_{waveguide_id}
-#SBATCH --mem=2GB
-#SBATCH --output="{waveguide_dir}/{waveguide_id}-h5_assembler.out"
-#SBATCH --error="{waveguide_dir}/{waveguide_id}-h5_assembler.err"
-#SBATCH --time=00:20:00
+    #!/bin/bash
+    #SBATCH -n 4
+    #SBATCH --job-name=h5_assembler_{waveguide_id}
+    #SBATCH --mem=2GB
+    #SBATCH --output="{waveguide_dir}/{waveguide_id}-h5_assembler.out"
+    #SBATCH --error="{waveguide_dir}/{waveguide_id}-h5_assembler.err"
+    #SBATCH --time=00:20:00
 
-cd {wavesight_dir}
-{python_bin} {code_dir}EH5_assembly.py {waveguide_id}
+    cd {wavesight_dir}
+    {python_bin} {code_dir}EH5_assembly.py {waveguide_id}
 EOL
 )
 
@@ -225,16 +284,17 @@ h5_assembler_id=$(echo "$sbatch_output" | awk '{{print $NF}}')
 
 # submit the housekeeping job
 sbatch --dependency=afterany:$h5_assembler_id <<EOL
-#!/bin/bash
-#SBATCH --job-name=housekeeping_{waveguide_id}
-#SBATCH --output="{waveguide_dir}/{waveguide_id}-housekeeping.out"
-#SBATCH --error="{waveguide_dir}/housekeeping.err"
-#SBATCH --time=00:01:00
+    #!/bin/bash
+    #SBATCH --job-name=housekeeping_{waveguide_id}
+    #SBATCH --output="{waveguide_dir}/{waveguide_id}-housekeeping.out"
+    #SBATCH --error="{waveguide_dir}/housekeeping.err"
+    #SBATCH --time=00:01:00
 
-cd {wavesight_dir}
-{python_bin} {code_dir}housekeeping.py {waveguide_id}
+    cd {wavesight_dir}
+    {python_bin} {code_dir}housekeeping.py {waveguide_id}
 EOL
-'''
+''')
+
 
 config_file = '''{
     // The location of the python binary

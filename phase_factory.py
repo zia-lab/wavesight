@@ -29,6 +29,7 @@ import argparse
 import numpy as np
 from time import time
 from printech import *
+from misc import rando_id
 
 def meta_field(sim_params):
     '''
@@ -282,8 +283,8 @@ if __name__ == '__main__':
         'post_height': args.post_height,
         'n_refractive': args.n_refractive,
         'num_post_widths': args.num_post_widths}
-    json_timestamp = int(time()*1e7)
-    json_fname = './json_out/phase_data-%d.json' % (json_timestamp)
+    json_id = rando_id(4)
+    json_fname = './json_out/phase_data-%d.json' % (json_id)
     results['json_fname'] = json_fname
     with open(json_fname, 'w') as f:
         printer("Saving results to %s" % json_fname)
