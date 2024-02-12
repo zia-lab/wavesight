@@ -8,4 +8,8 @@ This was run at a HPC cluster at Brown University and includes a number of conve
 
 From these calculations `wavesight` also provides a set of tools to visualize the results of the simulations. It uses `matplotlib` to plot the results of the simulations, and `ffmpeg` to generate animations of the results. These results are logged to a private Slack channel.
 
-<center> <img src="./docs/src/img/aMode.png" style="width: 100%;"/> </center>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./img/propagator_dark.jpg">
+  <source media="(prefers-color-scheme: light)" srcset="./img/propagator_light.jpg">
+  <img alt="Propagation across metasurface." src="./img/propagator_dark.jpg"">
+</picture>
